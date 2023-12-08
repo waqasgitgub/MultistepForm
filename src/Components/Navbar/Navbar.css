@@ -1,0 +1,7 @@
+
+  .navbar-nav .nav-item .nav-link.active {
+    color: #1a2c57; /* Change this to the desired color */
+    text-decoration: underline;
+    text-shadow: 1px 1px #ded3d3;
+
+  }

@@ -1,0 +1,14 @@
+.status-heading.nav-link.active {
+    color: #1a2c57; /* Your desired color */
+    text-shadow: 1px 1px #ded3d3;
+  }
+  .status-heading.nav-link {
+    color: grey; /* Your desired color */
+  }
+
+  
+  
+  @media (max-width: 768px) {
+    
+  }
+  
