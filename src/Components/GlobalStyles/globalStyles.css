@@ -27,6 +27,111 @@ body {
   color: #192c57;
 }
 
+/* Application Page  Progress Bar Ahmed*/
+.headng{
+  font-size: 26px !important;
+  color: #00b6ff !important;
+
+}
+.step2_content{
+  color: #11B4E6;
+  text-align: justify;
+}
+.step2_content h1{
+  text-align: center;
+}
+.step2_content p{
+  margin-bottom: 0px;
+  font-weight: 600;
+  font-size: 22px;
+  color: #11B4E6;
+  text-align: center;
+}
+
+
+
+.step2_content ul{
+  list-style: auto;
+  margin-bottom: 0px;
+  font-weight: 600;
+  font-size: 22px;
+  color: #00b6ff;
+}
+.step2_content .numb{
+  border: 1px solid #11B4E6;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-weight: 600;
+}
+.step2_content .rect{
+  font-size: 20px;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  border: 3px solid blueviolet;
+  color: blueviolet;
+  margin: 0px 10px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.step2_content .p2{
+  font-weight: 500;
+}
+.step2_next{
+  background-color: #00b6ff!important;
+  padding: 28px 40px !important;
+  border-color: #00b6ff !important;
+  color: #ffff !important;
+  font-size: 20px;
+  font-weight: 700;
+}
+.step2_next:hover{
+  color: #1e30a8 !important;
+  background-color: transparent !important;
+}
+
+.app_baar{
+  position: relative;
+  height: 120px;
+  margin-bottom: 50px;
+}
+.app_bar2 .progres_man_div{
+  align-items: baseline;
+}
+.progres_man_div{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: -15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .myClas {
   display: none;
 }
@@ -199,7 +304,7 @@ input.error{
 
 .img-applic-content {
   padding: 50px 20px;
-  border: 2px solid #dff5fc;
+  /* border: 2px solid #dff5fc; */
   height: 100%;
 }
 

@@ -72,40 +72,53 @@ export default function ApplicationStatus({  }) {
   const [selectedFiles, setSelectedFiles] = useState({
     driving_licence: [],
     schedule_pdf: [],
-    // Tax_Return_2020: [],
-    // Tax_Return_2021: [],
-    // supplemental_attachment_2020: [],
-    // supplemental_attachment_2021: [],
-    // FormA1099: [],
-    // FormB1099: [],
-    // ks2020: [],
-    // ks22020: []
-     
+    Tax_Return_2020: [],
+    Tax_Return_2021: [],
+    supplemental_attachment_2020: [],
+    supplemental_attachment_2021: [],
+    FormA1099: [],
+    FormB1099: [],
+    ks2020: [],
+    ks22020: []  
   });
 
   const allFilesSelected = () => {
     return (
-      selectedFiles?.driving_licence.length > 0
+      selectedFiles?.driving_licence?.length > 0,
+      selectedFiles?.schedule_pdf?.length > 0,
+      selectedFiles?.Tax_Return_2020?.length > 0,
+      selectedFiles?.Tax_Return_2021?.length > 0
     );
   };
 
   const allFilesSelectedAdditional = () => {
     return (
-      selectedFiles?.driving_licence.length > 0
+      selectedFiles?.driving_licence?.length > 0,
+      selectedFiles?.schedule_pdf?.length > 0,
+      selectedFiles?.Tax_Return_2020?.length > 0,
+      selectedFiles?.Tax_Return_2021?.length > 0,
+     
+      selectedFiles?.supplemental_attachment_2020?.length > 0,
+      selectedFiles?.supplemental_attachment_2021?.length > 0,
+      selectedFiles?.FormA1099?.length > 0,
+      selectedFiles?.FormB1099?.length > 0,
+      selectedFiles?.ks2020?.length > 0,
+      selectedFiles?.ks22020?.length > 0
+      
     );
   };
 
   const [uploadProgress, setUploadProgress] = useState({
     driving_licence: 0,
-    // schedule_pdf: 0,
-    // Tax_Return_2020: 0,
-    // Tax_Return_2021: 0,
-    // supplemental_attachment_2020: 0,
-    // supplemental_attachment_2021: 0,
-    // FormA1099: 0,
-    // FormB1099: 0,
-    // ks2020: 0,
-    // ks22020: 0
+    schedule_pdf: 0,
+    Tax_Return_2020: 0,
+    Tax_Return_2021: 0,
+    supplemental_attachment_2020: 0,
+    supplemental_attachment_2021: 0,
+    FormA1099: 0,
+    FormB1099: 0,
+    ks2020: 0,
+    ks22020: 0
   });
 
 
@@ -183,7 +196,6 @@ export default function ApplicationStatus({  }) {
         console.log(`File uploaded successfully`, response.data.user);
         await fetchUserDataa();
 
-   
         setIsAddingFile(false)
        
 
@@ -222,48 +234,65 @@ export default function ApplicationStatus({  }) {
   };
   
 
-  const removeFile = async (fileKey) => {
+  const removeFile = async (fileKey, index, originalFileName) => {
    
-
-    // const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     // // Check if both token and fileKey are present
-    // if (!token || !fileKey) {
-    //     console.error('Token and fileKey are required.');
-    //     return;
-    // }
+    if (!token || !fileKey) {
+        console.error('Token and fileKey are required.');
+        return;
+    }
+    if (fileKey && userData) {
+      const fileUrls = userData[fileKey]; 
+      if (fileUrls && fileUrls[index]) {
+        
+        alert('Are you sure to remove file')
 
-    // try {
-    //     const url = 'http://localhost:5000/user/remove-file';
-    //     const payload = {
-    //         fieldToDelete: fileKey
-    //     };
+        // alert(fileKey)
+        // alert(fileUrls[index])
+        // alert(`${fileKey}_name`)
+        // alert(originalFileName)
+     
+        // window.open(`http://localhost:5000/${fileUrls[index]}`, '_blank');
+     
 
-    //     const response = await fetch(url, {
-    //         method: 'DELETE', // Change the method to DELETE
-    //         headers: { 
-    //             Authorization: `Bearer ${token}`, // Add the token to the headers
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(payload)
-    //     });
+    try {
+        const url = 'http://localhost:5000/user/deleteFile';
+        const payload = {
+            fieldName: fileKey,
+            fileName: fileUrls[index],
+            originalFieldName: `${fileKey}_name`,
+            originalName: originalFileName
+        };
 
-    //     if (response.ok) {
-    //         // Call fetchData() upon successful response
-    //         await fetchUserDataa();
+        const response = await fetch(url, {
+            method: 'DELETE', // Change the method to DELETE
+            headers: { 
+                Authorization: `Bearer ${token}`, // Add the token to the headers
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
 
-    //         setSelectedFiles((prevSelectedFiles) => ({
-    //           ...prevSelectedFiles,
-    //           [fileKey]: null, 
-    //         }));
+        if (response.ok) {
+            // Call fetchData() upon successful response
+            await fetchUserDataa();
+
+            setSelectedFiles((prevSelectedFiles) => ({
+              ...prevSelectedFiles,
+              [fileKey]: null, 
+            }));
            
-    //         console.log('File removed successfully.');
-    //     } else {
-    //         console.error('Failed to remove file.');
-    //     }
-    // } catch (error) {
-    //     console.error('Error removing file:', error);
-    // }
+            console.log('File removed successfully.');
+        } else {
+            console.error('Failed to remove file.');
+        }
+    } catch (error) {
+        console.error('Error removing file:', error);
+    }
+  } 
+}
 };
   
   const [steps, setSteps] = useState([
@@ -327,22 +356,22 @@ export default function ApplicationStatus({  }) {
           if (response.ok) {
 
             const userData = await response.json();
-
             setUserData(userData);
-
-       
             const currentStep = userData.step;
             setActiveStep(currentStep || 0);
             
-
-           
-
-
-           
             setSelectedFiles((prevSelectedFiles) => ({
               ...prevSelectedFiles,
               driving_licence: userData?.driving_licence,
               schedule_pdf: userData?.schedule_pdf,
+              Tax_Return_2020: userData?.Tax_Return_2020,
+              Tax_Return_2021: userData?.Tax_Return_2021,
+              supplemental_attachment_2020: userData?.supplemental_attachment_2020,
+              supplemental_attachment_2021: userData?.supplemental_attachment_2021,
+              FormA1099: userData?.FormA1099,
+              FormB1099: userData?.FormB1099,
+              ks2020: userData?.ks2020,
+              ks22020: userData?.ks22020,
 
            
             }));
@@ -373,11 +402,6 @@ export default function ApplicationStatus({  }) {
     };
   }, [userData, showRemoveButton]);
   
-
-
-
-
-
 
   const updateDocumentUploadedStatus = () => {
     
@@ -601,7 +625,7 @@ export default function ApplicationStatus({  }) {
                         
                         </div>
 
-              {(userData?.applicationStatus === false || userData?.applicationWithDocument === false)  && ( 
+              {(userData?.applicationStatus === true || userData?.applicationWithDocument === true)  && ( 
 
                         <div className={`tab-pane fade ${activeTab === 'document_tab' ? 'show active' : ''}`} id="document_tab">
                           <div class="file_div">
@@ -622,7 +646,7 @@ export default function ApplicationStatus({  }) {
           View
         </div>
         { showRemoveButton && (
-        <div onClick={() => removeFile('driving_licence', index)} className="buttonn">
+        <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
           Remove
         </div>
         ) }
@@ -673,6 +697,669 @@ export default function ApplicationStatus({  }) {
                             )} 
                             
                           </div>
+
+
+                          <div class="file_div">
+                            <h4>
+                            A PDF Copy of your 2019 Form 1040 (Tax Return), including
+                    ALL schedules, if the 2019 Self-Employed Income is higher
+                    than 2020. We would prefer one PDF file.
+                             
+                            </h4>
+                            
+                            {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
+  userData.schedule_pdf.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.schedule_pdf_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="schedule_pdf"
+    className="form-control file"
+    id="schedule_pdf"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('schedule_pdf', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+            <FileInputComponent
+              inputName="schedule_pdf"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+          )}
+
+
+                            {uploadingFile === 'schedule_pdf' && (
+                <LinearProgressWithLabel value={uploadProgress.schedule_pdf} />
+                            )} 
+                            
+                          </div>
+
+
+                          <div class="file_div">
+                            <h4>
+                            A PDF Copy of your 2020 Form 1040 (Tax Return), including
+                    ALL schedules.
+                             
+                            </h4>
+                            
+                            {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
+  userData.Tax_Return_2020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.Tax_Return_2020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="Tax_Return_2020"
+    className="form-control file"
+    id="Tax_Return_2020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('Tax_Return_2020', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="Tax_Return_2020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'Tax_Return_2020' && (
+                <LinearProgressWithLabel value={uploadProgress.Tax_Return_2020} />
+                            )} 
+                            
+                          </div>
+
+
+                          <div class="file_div">
+                            <h4>
+                            A PDF Copy of your 2021 Form 1040 (Tax Return),
+                              including ALL schedules.
+                             
+                            </h4>
+                            
+                            {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
+  userData.Tax_Return_2021.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.Tax_Return_2021_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="Tax_Return_2021"
+    className="form-control file"
+    id="Tax_Return_2021"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('Tax_Return_2021', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="Tax_Return_2021"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'Tax_Return_2021' && (
+                <LinearProgressWithLabel value={uploadProgress.Tax_Return_2021} />
+                            )} 
+                            
+                          </div>
+
+                          {userData.Family_Sick_Leave === "Yes" && userData.employed_as_W2 === "Yes"  && (
+                      <>
+                          <div class="file_div">
+                            <h4>
+                            PDF Copy of All your 2020 Form W-2(s), including
+                              ANY Family First Coronavirus Response Act (FFCRA)
+                              supplemental attachment(s).*
+                             
+                            </h4>
+                            
+                            {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
+  userData.supplemental_attachment_2020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.supplemental_attachment_2020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="supplemental_attachment_2020"
+    className="form-control file"
+    id="supplemental_attachment_2020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="supplemental_attachment_2020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'supplemental_attachment_2020' && (
+                <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2020} />
+                            )} 
+                            
+                          </div>
+
+                          <div class="file_div">
+                            <h4>
+                            PDF Copy of All your 2021 Form W-2(s), including
+                              ANY Family First Coronavirus Response Act (FFCRA)
+                              supplemental attachment(s).
+                             
+                            </h4>
+                            
+                            {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
+  userData.supplemental_attachment_2021.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.supplemental_attachment_2021_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="supplemental_attachment_2021"
+    className="form-control file"
+    id="supplemental_attachment_2021"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="supplemental_attachment_2021"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'supplemental_attachment_2021' && (
+                <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2021} />
+                            )} 
+                            
+                          </div>
+
+                          <div class="file_div">
+                            <h4>
+                            PDF Copy of All your 2020 Form 1099-R(s), if any
+                            
+                             
+                            </h4>
+                            
+                            {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
+  userData.FormA1099.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.FormA1099_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="FormA1099"
+    className="form-control file"
+    id="FormA1099"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('FormA1099', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.FormA1099 && userData?.FormA1099.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="FormA1099"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'FormA1099' && (
+                <LinearProgressWithLabel value={uploadProgress.FormA1099} />
+                            )} 
+                            
+                          </div>
+
+                          <div class="file_div">
+                            <h4>
+                            PDF Copy of All your 2020 K-1s, if any
+                             
+                            </h4>
+                            
+                            {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
+  userData.FormB1099.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.FormB1099_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="FormB1099"
+    className="form-control file"
+    id="FormB1099"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('FormB1099', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.FormB1099 && userData?.FormB1099.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="FormB1099"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'FormB1099' && (
+                <LinearProgressWithLabel value={uploadProgress.FormB1099} />
+                            )} 
+                            
+                          </div>
+
+                          <div class="file_div">
+                            <h4>
+                            PDF Copy of All your 2020 K-1s, if any
+                             
+                            </h4>
+                            
+                            {userData?.ks2020 && userData?.ks2020.length > 0 ? (
+  userData.ks2020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.ks2020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="ks2020"
+    className="form-control file"
+    id="ks2020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('ks2020', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.ks2020 && userData?.ks2020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="ks2020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'ks2020' && (
+                <LinearProgressWithLabel value={uploadProgress.ks2020} />
+                            )} 
+                            
+                          </div>
+
+                          <div class="file_div">
+                            <h4>
+                            PDF Copy of All your 2020 K-1s, if any
+                             
+                            </h4>
+                            
+                            {userData?.ks22020 && userData?.ks22020.length > 0 ? (
+  userData.ks22020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.ks22020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="ks22020"
+    className="form-control file"
+    id="ks22020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('ks22020', e)}
+  />
+)}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.ks22020 && userData?.ks22020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="ks22020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'ks22020' && (
+                <LinearProgressWithLabel value={uploadProgress.ks22020} />
+                            )} 
+                            
+                          </div>
+
+                          </>
+                          ) }
                          
                           
                         

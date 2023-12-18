@@ -12,9 +12,17 @@ import { setToken } from "../Redux/Slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import gifTick from "./GlobalImages/gif-submit.gif";
-import { TaskAlt } from "@mui/icons-material";
+import { DomainVerification, TaskAlt } from "@mui/icons-material";
+import FileInputComponent from "./FileInputComponent";
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
 
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 
+import Check from '@mui/icons-material/Check';
+import { styled } from '@mui/system';
+import { Avatar } from "@mui/material";
 function LinearProgressWithLabel(props) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 5,
@@ -47,26 +55,49 @@ const steps = [
   "Step 11",
 ];
 
+const steps1 = [
+  "Select campaign settings",
+  "Create an ad group",
+  "Create an ad",
+  "Step 4",
+  "Step 5",
+  "Step 6",
+];
+
+const steps2 = [
+  "Step 7",
+  "Step 8",
+  "Step 9",
+  "Step 10",
+  "Step 11",
+];
+
 
 
 const MultiStepForm = () => {
   const [activeStep, setActiveStep] = useState(0);
+
+
+  const [finalCreditAmountStorage, setFinalCreditAmountStorage] = useState(null);
+  
+  const [finalIncomeValue , setFinalIncomeValue] = useState(null);
+
+
   const [activeErrorQualifyOne, setActiveErrorQualifyOne] = useState(false);
   const [activeErrorQualifyTwo, setActiveErrorQualifyTwo] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [userData, setUserData] = useState();
   const [selectedFiles, setSelectedFiles] = useState({
-    driving_licence: null,
-    schedule_pdf: null,
-    Tax_Return_2020: null,
-    Tax_Return_2021: null,
-    supplemental_attachment_2020: null,
-    supplemental_attachment_2021: null,
-    FormA1099: null,
-    FormB1099: null,
-    ks2020: null,
-    ks22020: null
-
+    driving_licence: [],
+    schedule_pdf: [],
+    Tax_Return_2020: [],
+    Tax_Return_2021: [],
+    supplemental_attachment_2020: [],
+    supplemental_attachment_2021: [],
+    FormA1099: [],
+    FormB1099: [],
+    ks2020: [],
+    ks22020: []  
   });
 
 
@@ -85,14 +116,35 @@ const MultiStepForm = () => {
   
   const [uploadingFile, setUploadingFile] = useState('');
 
+  const [isAddingFile, setIsAddingFile] = useState(false);
+  
+  const [showRemoveButton, setShowRemoveButton] = useState(true);
+
+
+  
+  const handleAddFileClick = () => {
+    setIsAddingFile(true); // Set the state to allow adding more files
+  };
+
+ const handleRemoveInput = () => {
+    setIsAddingFile(false);
+  };
   const handleFileChange = (inputName, event) => {
-    const selectedFile = event.target.files[0];
+    const selectedFiles = event.target.files;
     setSelectedFiles((prevSelectedFiles) => ({
       ...prevSelectedFiles,
-      [inputName]: selectedFile,
+      [inputName]: selectedFiles, // Assign an array of files
     }));
-    
-    uploadFile(selectedFile, inputName); // Call upload function for each file change
+   
+  const formData = new FormData(); // Create a new FormData object
+
+  // Append all selected files for the inputName
+  for (const file of selectedFiles) {
+    formData.append(inputName, file);
+  }
+
+  // Call the upload function with the prepared formData
+  uploadFile(formData, inputName);
   };
 
    // Function to upload the file
@@ -107,31 +159,33 @@ const MultiStepForm = () => {
 
   const allFilesSelected = () => {
     return (
-      selectedFiles?.driving_licence &&
-      selectedFiles?.schedule_pdf &&
-      selectedFiles?.Tax_Return_2020 &&
-      selectedFiles?.Tax_Return_2021
+      selectedFiles?.driving_licence?.length > 0,
+      selectedFiles?.schedule_pdf?.length > 0,
+      selectedFiles?.Tax_Return_2020?.length > 0,
+      selectedFiles?.Tax_Return_2021?.length > 0
     );
   };
+
+
   const allFilesSelectedAdditional = () => {
     return (
-      selectedFiles?.driving_licence &&
-      selectedFiles?.schedule_pdf &&
-      selectedFiles?.Tax_Return_2020 &&
-      selectedFiles?.Tax_Return_2021 &&
-      selectedFiles?.supplemental_attachment_2020  &&
-      selectedFiles?.supplemental_attachment_2021 &&
-      selectedFiles?.FormA1099 &&
-      selectedFiles?.FormB1099 &&
-      selectedFiles?.ks2020 &&
-      selectedFiles?.ks22020
+      selectedFiles?.driving_licence?.length > 0,
+      selectedFiles?.schedule_pdf?.length > 0,
+      selectedFiles?.Tax_Return_2020?.length > 0,
+      selectedFiles?.Tax_Return_2021?.length > 0,
+     
+      selectedFiles?.supplemental_attachment_2020?.length > 0,
+      selectedFiles?.supplemental_attachment_2021?.length > 0,
+      selectedFiles?.FormA1099?.length > 0,
+      selectedFiles?.FormB1099?.length > 0,
+      selectedFiles?.ks2020?.length > 0,
+      selectedFiles?.ks22020?.length > 0
       
     );
   };
 
   const shouldDisableButtons = () => {
     return !(checkboxChecked && allFilesSelected());
-      
   };
 
 
@@ -143,6 +197,15 @@ const MultiStepForm = () => {
   const shouldDisableButtonLater = () => {
     return !(checkboxChecked);
   };
+
+
+  useEffect(() => {
+    // Fetch final_credit_amount from local storage when the component mounts
+    const storedFinalCreditAmount = localStorage.getItem('final_credit_amount');
+    if (storedFinalCreditAmount) {
+      setFinalCreditAmountStorage(storedFinalCreditAmount);
+    }
+  }, []); 
 
   const handleSubmitLater = async () => {
     const token = localStorage.getItem("token");
@@ -194,6 +257,8 @@ const MultiStepForm = () => {
         alert("Complete Application");
       console.log(`Files uploaded successfully`, response.data);
       await fetchUserDataa();
+      
+      await submitHubspotForm();
       // Handle success response
   
     } catch (error) {
@@ -365,7 +430,8 @@ console.log(formData.symptomsdays2020, 'dayssssssssssss')
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
+            body: JSON.stringify({
+            
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
@@ -385,36 +451,34 @@ console.log(formData.symptomsdays2020, 'dayssssssssssss')
             business_negatively_impacted: formData.bussinessNegatively,
 
             personal_startdate2020: formData.personal_startdate2020,
-              personal_enddate2020: formData.personal_enddate2020  ,
-              onedays:formData.numberOfDays ,
+            personal_enddate2020: formData.personal_enddate2020  ,
+            onedays:formData.numberOfDays ,
 
-              personal_startdate2021: formData.personal_startdate2021,
-              personal_enddate2021: formData.personal_enddate2021,
-              twodays: formData.numberOfDays2021,
+            personal_startdate2021: formData.personal_startdate2021,
+            personal_enddate2021: formData.personal_enddate2021,
+            twodays: formData.numberOfDays2021,
 
-              cared_startdate2020: formData.cared_startdate2020,
-              cared_enddate2020: formData.cared_enddate2020,
-              threedays:formData.symptomsdays2020 ,
+            cared_startdate2020: formData.cared_startdate2020,
+            cared_enddate2020: formData.cared_enddate2020,
+            threedays:formData.symptomsdays2020 ,
               
-              cared_startdate2021: formData.cared_startdate2021,
-              cared_enddate2021: formData. cared_enddate2021  ,
-              fourdays:formData.symptomsdays2021 ,
+            cared_startdate2021: formData.cared_startdate2021,
+            cared_enddate2021: formData. cared_enddate2021  ,
+            fourdays:formData.symptomsdays2021 ,
 
+            minor_startdate2020: formData.minor_startdate2020 ,
+            minor_enddate2020: formData.minor_enddate2020 ,
+            fivedays:formData.minordays2020 ,
 
+            minor_startdate2021: formData.minor_startdate2021 ,
+            minor_enddate2021: formData.minor_enddate2021 ,
+            sixdays:formData.minordays2021 ,
 
-              minor_startdate2020: formData.minor_startdate2020 ,
-              minor_enddate2020: formData.minor_enddate2020 ,
-              fivedays:formData.minordays2020 ,
+            employed_as_W2: formData.employed_as_W2 ,
+            Family_Sick_Leave :formData.family_sick,
 
-              minor_startdate2021: formData.minor_startdate2021 ,
-              minor_enddate2021: formData.minor_enddate2021 ,
-              sixdays:formData.minordays2021 ,
-
-              employed_as_W2: formData.employed_as_W2 ,
-              Family_Sick_Leave :formData.family_sick,
-
-              amount2020 : formData.amount2020 ,
-              amount2021 : formData.amount2021,
+            amount2020 : formData.amount2020 ,
+            amount2021 : formData.amount2021,
 
 
           }),
@@ -424,7 +488,17 @@ console.log(formData.symptomsdays2020, 'dayssssssssssss')
       if (response.ok) {
         // alert(`success ${step}`);
         const data = await response.json();
+
+        console.log(data)
+
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+
+          // Call the separate function for calculation API
+
+
+        // await callSetcformData(token, formData);
+
 
         // setActiveStep((prevActiveStep) => prevActiveStep + 1);
       } else {
@@ -436,6 +510,154 @@ console.log(formData.symptomsdays2020, 'dayssssssssssss')
       console.error("Network error", error);
     }
   };
+  const formDataUpdateCalculation = async (step) => {
+    try {
+      let token = localStorage.getItem("token");
+
+      if (!token) {
+        // Handle missing token - Redirect or handle the situation accordingly
+        console.error("Token is missing");
+        // For example, redirect to the step where the token should be available
+        setActiveStep(0); // Redirect to step 0 for token creation
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/user/${step}/updateuser`,
+        {
+          method: "PUT", // Change the method to PUT
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+            body: JSON.stringify({
+            
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            email: formData.email,
+            business_name: formData.bussinessName,
+            trade_name: formData.tradeName,
+            address_line_1: formData.streetAddressOne,
+            city: formData.city,
+            state: formData.province,
+            address_line_2: formData.streetAddressTwo,
+            zip: formData.zipCode,
+            know_about_us: formData.knowAbout,
+            self_employed_from: formData.selfEmployedFrom,
+            net_income_2019: formData.netIncome2019,
+            net_income_2020: formData.netIncome2020,
+            net_income_2021: formData.netIncome2021,
+            business_negatively_impacted: formData.bussinessNegatively,
+
+            personal_startdate2020: formData.personal_startdate2020,
+            personal_enddate2020: formData.personal_enddate2020  ,
+            onedays:formData.numberOfDays ,
+
+            personal_startdate2021: formData.personal_startdate2021,
+            personal_enddate2021: formData.personal_enddate2021,
+            twodays: formData.numberOfDays2021,
+
+            cared_startdate2020: formData.cared_startdate2020,
+            cared_enddate2020: formData.cared_enddate2020,
+            threedays:formData.symptomsdays2020 ,
+              
+            cared_startdate2021: formData.cared_startdate2021,
+            cared_enddate2021: formData. cared_enddate2021  ,
+            fourdays:formData.symptomsdays2021 ,
+
+            minor_startdate2020: formData.minor_startdate2020 ,
+            minor_enddate2020: formData.minor_enddate2020 ,
+            fivedays:formData.minordays2020 ,
+
+            minor_startdate2021: formData.minor_startdate2021 ,
+            minor_enddate2021: formData.minor_enddate2021 ,
+            sixdays:formData.minordays2021 ,
+
+            employed_as_W2: formData.employed_as_W2 ,
+            Family_Sick_Leave :formData.family_sick,
+
+            amount2020 : formData.amount2020 ,
+            amount2021 : formData.amount2021,
+
+
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // alert(`success ${step}`);
+        const data = await response.json();
+
+        console.log(data)
+
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+      
+          // Call the separate function for calculation API
+
+
+        await callSetcformData(token, formData);
+
+
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      } else {
+        // Handle error
+        console.error("Error in API call");
+      }
+    } catch (error) {
+      // Handle network error
+      console.error("Network error", error);
+    }
+  };
+
+  const callSetcformData = async (token, formData) => {
+    try {
+      const response = await fetch("http://localhost:5000/user/setcformData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          "net_income_2019": formData.netIncome2019,
+          "net_income_2020": formData.netIncome2020,
+          "net_income_2021": formData.netIncome2021,
+          "1days":formData.numberOfDays,
+          "2days":formData.numberOfDays2021,
+          "3days":formData.symptomsdays2020,
+          "4days":formData.symptomsdays2021,
+          "5days":formData.minordays2020,
+          "6days":formData.minordays2021
+        }),
+      });
+  
+    if (response.ok) {
+      const data = await response.json();
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+     // Check if final_credit_amount is not null and store it in local storage
+     if (data.user && data.user.final_credit_amount !== null) {
+
+   setFinalIncomeValue(data.user.final_credit_amount)
+
+     localStorage.setItem(
+     "final_credit_amount",
+     data.user.final_credit_amount
+    );
+     }
+
+      } else {
+        console.error("Error in calculation API call");
+      }
+    } catch (error) {
+      console.error("Network error", error);
+    }
+  };
+  
+  
+
+
   const formDataUpdateStepTwo = async (step) => {
     try {
       let token = localStorage.getItem("token");
@@ -532,7 +754,7 @@ console.log(formData.symptomsdays2020, 'dayssssssssssss')
             business_negatively_impacted: formData.bussinessNegatively,
 
             personal_startdate2020: formData.personal_startdate2020,
-              personal_enddate2020: formData.personal_enddate2020  ,
+            personal_enddate2020: formData.personal_enddate2020  ,
               onedays:formData.numberOfDays ,
 
               personal_startdate2021: formData.personal_startdate2021,
@@ -703,37 +925,48 @@ const checkEmailAvailability = async () => {
 
 
     if (activeStep === 1) {
+      // await submitHubspotForm();
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
 
 
     if (activeStep === 2) {
+     
       formDataUpdateStepTwo(activeStep);
     }
+    
     if (activeStep === 3) {
-      formDataUpdate(activeStep);
-    }
+   
+      alert(formData.netIncome2019);
+
+      formDataUpdateCalculation(activeStep);
+
+    }  
+
     if (activeStep === 4) {
       formDataUpdate(activeStep);
     }
+
     if (activeStep === 5) {
-      formDataUpdate(activeStep);
+      formDataUpdateCalculation(activeStep);
     }
+
     if (activeStep === 6) {
-      formDataUpdate(activeStep);
+      formDataUpdateCalculation(activeStep);
     }
+
     if (activeStep === 7) {
-      formDataUpdate(activeStep);
+      formDataUpdateCalculation(activeStep);
     }
+
     if (activeStep === 8) {
       formDataUpdate(activeStep);
     }
+
     if (activeStep === 9) {
       formDataUpdate(activeStep);
     }
 
-    
-    
     window.scrollTo(0, 0);
   };
 
@@ -742,9 +975,27 @@ const checkEmailAvailability = async () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     window.scrollTo(0, 0);
   };
+
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   let formattedValue = value.replace(/\D/g, ''); // Remove non-digit characters
+  //   formattedValue = formattedValue ? `$${Number(formattedValue).toLocaleString()}` : '$'; // Format as currency with dollar sign
+    
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [name]: formattedValue,
+  //   }));
+  // };
+  
+  
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
     let inputValue = value;
+
+    if (name.startsWith("netIncome")) {
+      inputValue = value.replace(/\D/g, ''); // Remove non-digit characters
+      inputValue = inputValue ? `$${Number(inputValue).toLocaleString()}` : '$'; // Format as currency with dollar sign
+    }
   
     if (type === "checkbox") {
       inputValue = event.target.checked;
@@ -922,6 +1173,7 @@ const checkEmailAvailability = async () => {
   const validateInputs = () => {
     let hasErrors = false;
     const errorsObj = {};
+    let largerThan25KCount = 0;
     const token = localStorage.getItem('token');
 
     if (activeStep === 0) {
@@ -1025,20 +1277,58 @@ const checkEmailAvailability = async () => {
       // }
     }
 
-    if (activeStep === 3) {
-      if (!formData.netIncome2019) {
-        errorsObj.netIncome2019 = "Please select an option";
-        hasErrors = true;
+    // if (activeStep === 3) {
+    //   if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
+    //     errorsObj.netIncome2019 = "Please select an option";
+    //     hasErrors = true;
+    //   }
+    //   if (!formData.netIncome2020 || formData.netIncome2020 === "$") {
+    //     errorsObj.netIncome2020 = "Please select an option";
+    //     hasErrors = true;
+    //   }
+    //   if (!formData.netIncome2021 || formData.netIncome2021 === "$") {
+    //     errorsObj.netIncome2021 = "Please select an option";
+    //     hasErrors = true;
+    //   }
+    // }
+   
+    
+      if (activeStep === 3) {
+
+        if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
+          errorsObj.netIncome2019 = "Please enter a value";
+          hasErrors = true;
+        } 
+
+       if (Number(formData.netIncome2019.replace(/\D/g, '')) < 25000) {
+          largerThan25KCount++;
+        }
+    
+        if (!formData.netIncome2020 || formData.netIncome2020 === "$") {
+          errorsObj.netIncome2020 = "Please enter a value";
+          hasErrors = true;
+        } 
+
+         if (Number(formData.netIncome2020.replace(/\D/g, '')) < 25000) {
+          largerThan25KCount++;
+        }
+    
+        if (!formData.netIncome2021 || formData.netIncome2021 === "$") {
+          errorsObj.netIncome2021 = "Please enter a value";
+          hasErrors = true;
+        } 
+        
+        if (Number(formData.netIncome2021.replace(/\D/g, '')) < 25000) {
+          largerThan25KCount++;
+        }
+    
+        if (largerThan25KCount >= 2) {
+          hasErrors = true;
+        }
       }
-      if (!formData.netIncome2020) {
-        errorsObj.netIncome2020 = "Please select an option";
-        hasErrors = true;
-      }
-      if (!formData.netIncome2021) {
-        errorsObj.netIncome2021 = "Please select an option";
-        hasErrors = true;
-      }
-    }
+    
+    
+    
 
     if(activeStep === 4) {
       if (!formData.bussinessNegatively) {
@@ -1318,9 +1608,14 @@ const checkEmailAvailability = async () => {
               province: userData.state || "",
               streetAddressTwo: userData.address_line_2 || "",
               zipCode: userData.zip || "",
-              knowAked: userData.email? true : false || false,
-              selfEmbout: userData.know_about_us || "",
-              isChecployedFrom: userData.self_employed_from || "",
+
+
+             
+
+
+              isChecked: userData.email? true : false || false,
+              knowAbout: userData.know_about_us || "",
+              selfEmployedFrom: userData.self_employed_from || "",
               isCheckedStepThree: userData.self_employed_from === "Yes" ? true : false || false,
               netIncome2019: userData.net_income_2019 || '',
               netIncome2020: userData.net_income_2020 || '',
@@ -1424,16 +1719,44 @@ const checkEmailAvailability = async () => {
       }
     }
   };
+
+  const submitHubspotForm = async () => {
+    const apiUrl = 'http://localhost:5000/user/dataPosttoHubspot';
+    const token = localStorage.getItem("token");
+
+    const data = {
+      properties: {
+        email: 'rizwwtsddnsir@hubspot.com',
+        firstname: 'weddddqi',
+        lastname: 'ahmmdeddd'
+      }
+    };
+    
+    axios.post(apiUrl, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    })
+      .then(response => {
+        console.log('Success:', response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      });
+  };
+  
   
 
 
-  const openFileInNewTab =  (fileKey) => {
+  const openFileInNewTab = (fileKey, index) => {
+    // alert(selectedFiles?.driving_licence.length)
     if (fileKey && userData) {
-      const fileUrl = userData[fileKey];
-      if (fileUrl) {
-        window.open(`http://localhost:5000/${fileUrl}`, '_blank');
+      const fileUrls = userData[fileKey]; // Array of file URLs
+      if (fileUrls && fileUrls[index]) {
+        window.open(`http://localhost:5000/${fileUrls[index]}`, '_blank');
       } else {
-        console.error('File URL not found for the provided fileKey');
+        console.error('File URL not found for the provided index');
       }
     } else {
       console.error('Invalid fileKey or userData is missing');
@@ -1441,94 +1764,111 @@ const checkEmailAvailability = async () => {
   };
  
  
-  const removeFile = async (fileKey) => {
-
-    alert(fileKey)
-    // const token = localStorage.getItem("token");
+  const removeFile = async (fileKey, index, originalFileName) => {
+   
+    const token = localStorage.getItem("token");
 
     // // Check if both token and fileKey are present
-    // if (!token || !fileKey) {
-    //     console.error('Token and fileKey are required.');
-    //     return;
-    // }
+    if (!token || !fileKey) {
+        console.error('Token and fileKey are required.');
+        return;
+    }
+    if (fileKey && userData) {
+      const fileUrls = userData[fileKey]; 
+      if (fileUrls && fileUrls[index]) {
+        
+        alert('Are you sure to remove file')
 
-    // try {
-    //     const url = 'http://localhost:5000/user/remove-file';
-    //     const payload = {
-    //         fieldToDelete: fileKey
-    //     };
+        // alert(fileKey)
+        // alert(fileUrls[index])
+        // alert(`${fileKey}_name`)
+        // alert(originalFileName)
+     
+        // window.open(`http://localhost:5000/${fileUrls[index]}`, '_blank');
+     
 
-    //     const response = await fetch(url, {
-    //         method: 'DELETE', // Change the method to DELETE
-    //         headers: { 
-    //             Authorization: `Bearer ${token}`, // Add the token to the headers
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(payload)
-    //     });
+    try {
+        const url = 'http://localhost:5000/user/deleteFile';
+        const payload = {
+            fieldName: fileKey,
+            fileName: fileUrls[index],
+            originalFieldName: `${fileKey}_name`,
+            originalName: originalFileName
+        };
 
-    //     if (response.ok) {
-    //         // Call fetchData() upon successful response
-    //         await fetchUserDataa();
-    //         setSelectedFiles((prevSelectedFiles) => ({
-    //           ...prevSelectedFiles,
-    //           [fileKey]: null, 
-    //         }));
-    //         console.log('File removed successfully.');
-    //     } else {
-    //         console.error('Failed to remove file.');
-    //     }
-    // } catch (error) {
-    //     console.error('Error removing file:', error);
-    // }
-    
+        const response = await fetch(url, {
+            method: 'DELETE', // Change the method to DELETE
+            headers: { 
+                Authorization: `Bearer ${token}`, // Add the token to the headers
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            // Call fetchData() upon successful response
+            await fetchUserDataa();
+
+            setSelectedFiles((prevSelectedFiles) => ({
+              ...prevSelectedFiles,
+              [fileKey]: null, 
+            }));
+           
+            console.log('File removed successfully.');
+        } else {
+            console.error('Failed to remove file.');
+        }
+    } catch (error) {
+        console.error('Error removing file:', error);
+    }
+  } 
+}
 };
 
   
 
-  const uploadFile = async (file, inputName) => {
-    const token = localStorage.getItem("token");
-    
-    if (file) {
-      try {
-        setUploadingFile(inputName); // Start showing progress for this file
-      
-        const formData = new FormData();
-      
-        formData.append(inputName, file);
-      
-        formData.append('step', 10);
+const uploadFile = async (formData, inputName) => {
+  const token = localStorage.getItem("token");
   
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setUploadProgress((prevProgress) => ({
-              ...prevProgress,
-              [inputName]: percentCompleted,
-            }));
-          },
-        };
-  
-        const response = await axios.put('http://localhost:5000/user/upload-form-data', formData, config);
-  
-        console.log(`File uploaded successfully`, response.data.user);
-        await fetchUserDataa();
-        
-      } catch (error) {
-        console.error(`Error uploading file:`, error);
-      } finally {
-        setUploadingFile(''); // Stop showing progress for this file after upload completion or failure
-        setUploadProgress((prevProgress) => ({
-          ...prevProgress,
-          [inputName]: 0, // Reset progress to 0
-        }));
-      }
+  if (formData) {
+    try {
+      setUploadingFile(inputName);
+      formData.append('step', 10);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress((prevProgress) => ({
+            ...prevProgress,
+            [inputName]: percentCompleted,
+          }));
+        },
+      };
+
+      const response = await axios.put('http://localhost:5000/user/multiple-form-data', formData, config);
+
+      console.log(`File uploaded successfully`, response.data.user);
+      await fetchUserDataa();
+
+      setIsAddingFile(false)
+     
+
+
+    } catch (error) {
+      console.error(`Error uploading file:`, error);
+    } finally {
+      setUploadingFile('');
+      setUploadProgress((prevProgress) => ({
+        ...prevProgress,
+        [inputName]: 0,
+      }));
     }
-  };
+  }
+};
 
 
   const getStepContent = () => {
@@ -1970,123 +2310,115 @@ const checkEmailAvailability = async () => {
           //   name="adGroupDetails"
           //   fullWidth
           // />
-          <div class="step step-2">
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 ">
-                          <input
-                            type="hidden"
-                            name="record_id"
-                            id="record_id"
-                            value=""
-                          />
-                          <h3
-                            style={{
-                              paddingBottom: "120px",
-                              color: "rgb(13, 189, 243)",
-                            }}
-                          >
-                            Are you eligible for up to $32,200?
-                          </h3>
-                          <h3>
-                            Almost everybody with Schedule C income qualiﬁes to
-                            some extent.
-                          </h3>
-                          <p class="mb-0">
-                            If you filed taxes in 2020 and 2021 and were
-                            affected by the pandemic.
-                          </p>
-                          <img src={frameFluid} class="img-fluid" alt="" />
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <h4>
-                            In response to the coronavirus (COVID-19) crisis, an
-                            eligible self-employed individual was allowed to
-                            claim an income tax credit for any tax year for:
-                          </h4>
-                          <div class="data-p py-2 mb-2">
-                            <p>
-                              A qualified sick leave equivalent amount, under
-                              Section 7002 of the Families First Coronavirus
-                              Response Act
-                              <a href="./1_lead.pdf" type="pdf" target="_blank">
-                                (P.L. 116-127)
-                              </a>
-                              ; and/or
-                            </p>
-                          </div>
-                          <div class="data-p py-2 mb-2">
-                            <p>
-                              100 percent of a qualified family leave equivalent
-                              amount, under Section 7004 of
-                              <a href="./2_lead.pdf" type="pdf" target="_blank">
-                                P.L. 116-127
-                              </a>
-                              .COVID-19: Credits for Sick and Family Leave for
-                              April 1st, 2020-March 31st, 2021
-                            </p>
-                            <p>
-                              The American Rescue Plan Act Extended the dates
-                              from April 1st, 2020 to September 30th, 2021
-                            </p>
-                          </div>
+          <div class="step step-2 ">
+                                        
+                                        <div class="container-fluid px-0">
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-12">
+                                                    <div class="start-application">
+                                                        <div class="row roww">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 ps-0">
+                                                                <div class="img-applic-content">
+                                                                    <div class="step2_content">
+                                                                        <h1>How does this application work?</h1>
+                                                                        <div
+                                                                            class="d-flex justify-content-center align-items-center gap-3">
+                                                                            <ul>
+                                                                                <li>
+                                                                                    Answer 6 questions to determine
+                                                                                    eligibility
+                                                                                </li>
+                                                                                <li>
+                                                                                    See if you are pre-qualified for up
+                                                                                    to $32,220.00
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="step2_content mt-5">
+                                                                        <h1>What if I am pre-qualified?</h1>
+                                                                        <div
+                                                                            class="d-flex justify-content-center align-items-center gap-3">
+                                                                           
+                                                                            <ul>
+                                                                                <li>Continue the application by
+                                                                                    answering 7 additional questions.
+                                                                                </li>
+                                                                                <li>Upload necesary documents</li>
+                                                                                <li>receive a calculated refund amount
+                                                                                </li>
+                                                                                <li>
+                                                                                    Our professinal Team will process
+                                                                                    and file your return
+                                                                                </li>
+                                                                            </ul>
 
-                          <div class="data-p py-2 mb-2"></div>
-                          <div class="data-p py-2 mb-2">
-                            <p>
-                              100 percent of a qualified family leave equivalent
-                              amount, under Section 9643 of
-                              <a href="./4_lead.pdf" type="pdf" target="_blank">
-                                P.L. 117-2.
-                              </a>
-                            </p>
-                          </div>
 
-                          <div class="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                             
-                              class="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              class="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="step2_content my-5">
+                                                                        <h1>What documents will be needed?</h1>
+                                                                       
+
+                                                                <Typography
+                                                                  style={{
+                                                                    marginBottom: '3px',
+                                                                    fontWeight: 600,
+                                                                    fontSize: '22px',
+                                                                    color: '#11B4E6',
+                                                                    padding: '0px 40px',
+                                                                    textAlign: 'center',
+                                                                  }}
+                                                                >
+                                                                  No Documents will be needed for the pre-qualification questionnaire. If you are pre-qualified and decide to move forward to determine calculation, you will need the following documents:
+                                                                </Typography>
+
+
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center">
+                                                                            {/* <div class="rect"> */}
+                                                                                {/* <i class="fa-solid fa-check"></i> */}
+                                                                                <DomainVerification style={{ color: 'blueviolet',  width: '25px', height: '25px',  marginTop: 2}}/>
+                                                                            {/* </div> */}
+                                                                            <p class="p2">2019 Schedule C (Form 1040)
+                                                                                <span style={{color: 'red'}}>Click For
+                                                                                    Example</span></p>
+                                                                        </div>
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center">
+                                                                            {/* <div class="rect"> */}
+                                                                                {/* <i class="fa-solid fa-check"></i> */}
+                                                                                <DomainVerification style={{ color: 'blueviolet',  width: '25px', height: '25px', marginTop: 2}}/>                                                                            {/* </div> */}
+                                                                            <p class="p2">2019 Schedule C (Form 1040)
+                                                                                <span style={{color: 'red'}}>Click For
+                                                                                    Example</span></p>
+                                                                        </div>
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center">
+                                                                            {/* <div class="rect"> */}
+                                                                                {/* <i class="fa-solid fa-check"></i> */}
+                                                                                <DomainVerification style={{ color: 'blueviolet',  width: '25px', height: '25px',  marginTop: 2}}/>                                                                          {/* </div> */}
+                                                                            <p class="p2">2019 Schedule C (Form 1040)
+                                                                                <span style={{color: 'red'}}>Click For
+                                                                                    Example</span></p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="d-flex justify-content-center mt-3">
+                                                                      
+                                                                        <button type="button"  onClick={handleNext}
+                                                                            class="btn btn-primary next-step step2_next">
+                                                                            Pre-Qualification Questionaire
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
         );
       case 2:
         return (
@@ -2099,12 +2431,12 @@ const checkEmailAvailability = async () => {
           // />
 
           <div class="step step-3">
-            <div class="container-fluid px-0">
+            <div class="container px-0">
               <div class="row justify-content-center">
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                   <div class="start-application">
                     <div class="row ROWW">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
                         <div class="img-applci h-100 align-items-start">
                           <input
                             type="hidden"
@@ -2131,10 +2463,10 @@ const checkEmailAvailability = async () => {
                           <p>-Driver’s License</p>
                           <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                         </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+                      </div> */}
+                      <div class="col-lg-12 col-md-12 col-sm-12">
                         <div class="img-applic-content">
-                          <LinearProgress
+                          {/* <LinearProgress
                             variant="determinate"
                             sx={{
                               height: "8px",
@@ -2146,7 +2478,7 @@ const checkEmailAvailability = async () => {
                               },
                             }}
                             value={getProgressPercentage()}
-                          />
+                          /> */}
                           <label
                             for="self_employed_from"
                             class="form-label fs-5"
@@ -2293,7 +2625,7 @@ const checkEmailAvailability = async () => {
                               }`}
                               name="netIncome2019"
                               onChange={handleInputChange}
-                              placeholder="2019 Income"
+                              placeholder="$"
                               id="net_income_2019"
                             />
                           </div>
@@ -2308,7 +2640,7 @@ const checkEmailAvailability = async () => {
                               class={` for ${
                                 errors.netIncome2020 ? "border-danger" : ""
                               }`}
-                              placeholder="2019 or 2020 Income"
+                              placeholder="$"
                               onChange={handleInputChange}
                               id="net_income_2020"
                             />
@@ -2324,7 +2656,7 @@ const checkEmailAvailability = async () => {
                               class={` for ${
                                 errors.netIncome2021 ? "border-danger" : ""
                               }`}
-                              placeholder="2021 Income"
+                              placeholder="$"
                               onChange={handleInputChange}
                               id="net_income_2021"
                             />
@@ -3870,12 +4202,21 @@ const checkEmailAvailability = async () => {
                                   <h3 class="text-success text-center fs-1 mb-3">
                                     Hurray!
                                   </h3>
-                                  <h6 class="fs-4">
+                                  {/* <h6 class="fs-4">
                                     You may be eligible for
-                                    <span class="text-success">$0000</span>. We
+                                    <span class="text-success">{finalIncomeValue || finalCreditAmountStorage}</span>. We
                                     encourage you to complete the application
                                     and get paid. 🤩
-                                  </h6>
+                                  </h6> */}
+      <h3 class="fs-4">
+      Based on the information you provided, we’ve estimated that you might be eligible for up to
+    <span class="text-success text-success text-center h3 fs-1 mb-3" id="final_amount"> {finalIncomeValue || finalCreditAmountStorage}</span>
+     <br/>
+    </h3>
+
+    <h3 class="mt-4">
+The next step is to upload your documents for our CPAs to calculate your exact credit amount.
+  </h3>
                                 </div>
                                 <div class="d-flex justify-content-end mt-3">
                                   <button
@@ -3939,41 +4280,69 @@ const checkEmailAvailability = async () => {
                   <label for="driving_licence" class="form-label">
                     A PDF Copy of a Current ID or Driver's License
                   </label>
-
-          {userData?.driving_licence ? (
-           <div class="containerr">
-           <div class="itemm">
-           <TaskAlt/>
-             <span class="namee">{userData?.driving_licence_name}</span>
-           </div>
-         
-           <div class="itemm" style={{padding: '0px 20px !important'}}> 
-           <div  onClick={() => openFileInNewTab('driving_licence')} class="buttonn" >
-             View
-           </div>
-           <div onClick={() => removeFile('driving_licence')} class="buttonn" >
-             Remove
-           </div>
-           </div>
-         </div>
-         
-                 
-          ) :
-          (
-            <input
-            type="file"
-            name="driving_licence"
-            class="form-control file"
-            id="driving_licence"
-            accept=".pdf"
-            required
-            onChange={(e) => handleFileChange('driving_licence', e)}
-          />
-          )
-          }
-{uploadingFile === 'driving_licence' && (
-  <LinearProgressWithLabel value={uploadProgress.driving_licence} />
+                  {userData?.driving_licence && userData?.driving_licence.length > 0 ? (
+  userData.driving_licence.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.driving_licence_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('driving_licence', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="driving_licence"
+    className="form-control file"
+    id="driving_licence"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('driving_licence', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+            <FileInputComponent
+              inputName="driving_licence"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+          )}
+
+
+                            {uploadingFile === 'driving_licence' && (
+                <LinearProgressWithLabel value={uploadProgress.driving_licence} />
+                            )
+                            } 
+         
                 </div>
                 <div class="mb-3 file_div">
                   <label for="schedule_pdf" class="form-label">
@@ -3982,38 +4351,67 @@ const checkEmailAvailability = async () => {
                     than 2020. We would prefer one PDF file.
                   </label>
 
-                  {userData?.schedule_pdf ? (
-             <div class="containerr">
-             <div class="itemm">
-             <TaskAlt/>
-               <span class="namee">{userData?.schedule_pdf_name}</span>
-             </div>
-            
-             <div class="itemm" style={{padding: '0px 20px !important'}}> 
-             <div  onClick={() => openFileInNewTab('schedule_pdf')} class="buttonn" >
-               View
-             </div>
-             <div onClick={() => removeFile('schedule_pdf')} class="buttonn" >
-               Remove
-             </div>
-             </div>
-            </div>
-                 
-          ) :
-          (
-                  <input
-                    type="file"
-                    name="schedule_pdf"
-                    class="form-control"
-                    id="schedule_pdf"
-                    accept=".pdf"
-                    required
-                    onChange={(e) => handleFileChange('schedule_pdf', e)}
-                  />
-                  )}
-                  {uploadingFile === 'schedule_pdf' && (
-  <LinearProgressWithLabel value={uploadProgress?.schedule_pdf} />
+                  {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
+  userData.schedule_pdf.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.schedule_pdf_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="schedule_pdf"
+    className="form-control file"
+    id="schedule_pdf"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('schedule_pdf', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+            <FileInputComponent
+              inputName="schedule_pdf"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+          )}
+
+
+                            {uploadingFile === 'schedule_pdf' && (
+                <LinearProgressWithLabel value={uploadProgress.schedule_pdf} />
+                            )} 
                 </div>
                 <div class="mb-3 file_div">
                   <label for="Tax_Return_2020" class="form-label">
@@ -4022,76 +4420,138 @@ const checkEmailAvailability = async () => {
                     ALL schedules.{" "}
                   </label>
 
-                  {userData?.Tax_Return_2020 ? (
-                           <div class="containerr">
-                           <div class="itemm">
-                           <TaskAlt/>
-                             <span class="namee">{userData?.Tax_Return_2020_name}</span>
-                           </div>
-                          
-                           <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                           <div  onClick={() => openFileInNewTab('Tax_Return_2020')} class="buttonn" >
-                             View
-                           </div>
-                           <div onClick={() => removeFile('Tax_Return_2020')}  class="buttonn" >
-                             Remove
-                           </div>
-                           </div>
-                          </div>
-                 
-          ) :     (
-                  <input
-                    type="file"
-                    name="Tax_Return_2020"
-                    class="form-control"
-                    id="Tax_Return_2020"
-                    accept=".pdf"
-                    required
-                    onChange={(e) => handleFileChange('Tax_Return_2020', e)}
-                  />
-          )
-          }
-          {uploadingFile === 'Tax_Return_2020' && (
-  <LinearProgressWithLabel value={uploadProgress?.Tax_Return_2020} />
+                  {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
+  userData.Tax_Return_2020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.Tax_Return_2020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="Tax_Return_2020"
+    className="form-control file"
+    id="Tax_Return_2020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('Tax_Return_2020', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="Tax_Return_2020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'Tax_Return_2020' && (
+                <LinearProgressWithLabel value={uploadProgress.Tax_Return_2020} />
+                            )} 
                 </div>
                 <div class="mb-3 file_div">
                   <label for="Tax_Return_2021" class="form-label">
                     A PDF Copy of your 2021 Form 1040 (Tax Return), including
                     ALL schedules.{" "}
                   </label>
-                  {userData?.Tax_Return_2021 ? (
-                     <div class="containerr">
-                     <div class="itemm">
-                     <TaskAlt/>
-                       <span class="namee">{userData?.Tax_Return_2021_name}</span>
-                     </div>
-                    
-                     <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                     <div  onClick={() => openFileInNewTab('Tax_Return_2021')} class="buttonn" >
-                       View
-                     </div>
-                     <div  onClick={() => removeFile('Tax_Return_2021')}  class="buttonn" >
-                       Remove
-                     </div>
-                     </div>
-                    </div>
-                 
-          ) :     (
-                  <input
-                    type="file"
-                    name="Tax_Return_2021"
-                    class="form-control"
-                    id="Tax_Return_2021"
-                    accept=".pdf"
-                    required
-                    onChange={(e) => handleFileChange('Tax_Return_2021', e)}
-                  />
-          )
-    }
-    {uploadingFile === 'Tax_Return_2021' && (
-  <LinearProgressWithLabel value={uploadProgress?.Tax_Return_2021} />
+                  {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
+  userData.Tax_Return_2021.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.Tax_Return_2021_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="Tax_Return_2021"
+    className="form-control file"
+    id="Tax_Return_2021"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('Tax_Return_2021', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="Tax_Return_2021"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'Tax_Return_2021' && (
+                <LinearProgressWithLabel value={uploadProgress.Tax_Return_2021} />
+                            )} 
                 </div>
               
                {formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes"  && (
@@ -4107,37 +4567,69 @@ const checkEmailAvailability = async () => {
                       Family First Coronavirus Response Act (FFCRA) supplemental
                       attachment(s).*
                     </label>
-                    {userData?.supplemental_attachment_2020 ? (
-                          <div class="containerr">
-                          <div class="itemm">
-                          <TaskAlt/>
-                            <span class="namee">{userData?.supplemental_attachment_2020_name}</span>
-                          </div>
-                         
-                          <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                          <div  onClick={() => openFileInNewTab('supplemental_attachment_2020')} class="buttonn" >
-                            View
-                          </div>
-                          <div onClick={() => removeFile('supplemental_attachment_2020')} class="buttonn" >
-                            Remove
-                          </div>
-                          </div>
-                         </div>
-          ) :  (
-                    <input
-                      type="file"
-                      name="supplemental_attachment_2020"
-                      class="form-control"
-                      id="supplemental_attachment_2020"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
-                    />
-          )
-    }
-     {uploadingFile === 'supplemental_attachment_2020' && (
-  <LinearProgressWithLabel value={uploadProgress?.supplemental_attachment_2020} />
+                    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
+  userData.supplemental_attachment_2020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.supplemental_attachment_2020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="supplemental_attachment_2020"
+    className="form-control file"
+    id="supplemental_attachment_2020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="supplemental_attachment_2020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'supplemental_attachment_2020' && (
+                <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2020} />
+                            )} 
                   </div>
 
                   <div class="mb-3 file_div">
@@ -4149,38 +4641,69 @@ const checkEmailAvailability = async () => {
                       Family First Coronavirus Response Act (FFCRA) supplemental
                       attachment(s).
                     </label>
-                    {userData?.supplemental_attachment_2021 ? (
-                     <div class="containerr">
-                     <div class="itemm">
-                     <TaskAlt/>
-                       <span class="namee">{userData?.supplemental_attachment_2021_name}</span>
-                     </div>
-                    
-                     <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                     <div  onClick={() => openFileInNewTab('supplemental_attachment_2021')} class="buttonn" >
-                       View
-                     </div>
-                     <div onClick={() => removeFile('supplemental_attachment_2021')} class="buttonn" >
-                       Remove
-                     </div>
-                     </div>
-                    </div>
-                 
-          ) :  (
-                    <input
-                      type="file"
-                      name="supplemental_attachment_2021"
-                      class="form-control"
-                      id="supplemental_attachment_2021"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
-                    />
-          )
-    }
-     {uploadingFile === 'supplemental_attachment_2021' && (
-  <LinearProgressWithLabel value={uploadProgress?.supplemental_attachment_2021} />
+                    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
+  userData.supplemental_attachment_2021.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.supplemental_attachment_2021_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="supplemental_attachment_2021"
+    className="form-control file"
+    id="supplemental_attachment_2021"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="supplemental_attachment_2021"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'supplemental_attachment_2021' && (
+                <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2021} />
+                            )} 
                   </div>
 
                   <div class="mb-3 file_div">
@@ -4188,39 +4711,69 @@ const checkEmailAvailability = async () => {
                       PDF Copy of All your 2020 Form 1099-R(s), if any
                     </label>
 
-                    {userData?.FormA1099 ? (
-                            <div class="containerr">
-                            <div class="itemm">
-                            <TaskAlt/>
-                              <span class="namee">{userData?.FormA1099_name}</span>
-                            </div>
-                           
-                            <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                            <div  onClick={() => openFileInNewTab('FormA1099')} class="buttonn" >
-                              View
-                            </div>
-                            <div onClick={() => removeFile('FormA1099')} onClick={() => removeFile('FormA1099')} class="buttonn" >
-                              Remove
-                            </div>
-                            </div>
-                           </div>
-                 
-          ) :  (
-                    <input
-                      type="file"
-                      name="FormA1099"
-                      class="form-control"
-                      id="FormA1099"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleFileChange('FormA1099', e)}
-                    />
-
-          )
-    }
-      {uploadingFile === 'FormA1099' && (
-  <LinearProgressWithLabel value={uploadProgress?.FormA1099} />
+                    {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
+  userData.FormA1099.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.FormA1099_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="FormA1099"
+    className="form-control file"
+    id="FormA1099"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('FormA1099', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.FormA1099 && userData?.FormA1099.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="FormA1099"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'FormA1099' && (
+                <LinearProgressWithLabel value={uploadProgress.FormA1099} />
+                            )} 
                   </div>
 
                   <div class="mb-3 file_div">
@@ -4228,114 +4781,207 @@ const checkEmailAvailability = async () => {
                       PDF Copy of All your 2021 Form 1099-R(s), if any
                     </label>
                     
-                    {userData?.FormB1099 ? (
-                             <div class="containerr">
-                             <div class="itemm">
-                             <TaskAlt/>
-                               <span class="namee">{userData?.FormB1099_name}</span>
-                             </div>
-                            
-                             <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                             <div  onClick={() => openFileInNewTab('FormB1099')} class="buttonn" >
-                               View
-                             </div>
-                             <div onClick={() => removeFile('FormB1099')} class="buttonn" >
-                               Remove
-                             </div>
-                             </div>
-                            </div>
-                 
-          ) :  (
-                    <input
-                      type="file"
-                      name="FormB1099"
-                      class="form-control"
-                      id="FormB1099"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleFileChange('FormB1099', e)}
-                    />
-          )
-    }
-     {uploadingFile === 'FormB1099' && (
-  <LinearProgressWithLabel value={uploadProgress?.FormB1099} />
+                    {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
+  userData.FormB1099.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.FormB1099_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="FormB1099"
+    className="form-control file"
+    id="FormB1099"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('FormB1099', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.FormB1099 && userData?.FormB1099.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="FormB1099"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'FormB1099' && (
+                <LinearProgressWithLabel value={uploadProgress.FormB1099} />
+                            )} 
                   </div>
 
                   <div class="mb-3 file_div">
                     <label for="ks2020" class="form-label">
                       PDF Copy of All your 2020 K-1s, if any
                     </label>
-                    {userData?.ks2020 ? (
-                           <div class="containerr">
-                           <div class="itemm">
-                           <TaskAlt/>
-                             <span class="namee">{userData?.ks2020_name}</span>
-                           </div>
-                          
-                           <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                           <div  onClick={() => openFileInNewTab('ks2020')} class="buttonn" >
-                             View
-                           </div>
-                           <div onClick={() => removeFile('ks2020')} class="buttonn" >
-                             Remove
-                           </div>
-                           </div>
-                          </div>
-                 
-          ) :  (
-                    <input
-                      type="file"
-                      name="ks2020"
-                      class="form-control"
-                      id="ks2020"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleFileChange('ks2020', e)}
-                    />
-          )
-    }
-     {uploadingFile === 'ks2020' && (
-  <LinearProgressWithLabel value={uploadProgress?.ks2020} />
+                    {userData?.ks2020 && userData?.ks2020.length > 0 ? (
+  userData.ks2020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.ks2020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="ks2020"
+    className="form-control file"
+    id="ks2020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('ks2020', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.ks2020 && userData?.ks2020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="ks2020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'ks2020' && (
+                <LinearProgressWithLabel value={uploadProgress.ks2020} />
+                            )} 
                   </div>
 
                   <div class="mb-3 file_div">
                     <label for="ks22020" class="form-label">
                       PDF Copy of All your 2020 K-1s, if any
                     </label>
-                    {userData?.ks22020 ? (
-                         <div class="containerr">
-                         <div class="itemm">
-                         <TaskAlt/>
-                           <span class="namee">{userData?.ks22020_name}</span>
-                         </div>
-                        
-                         <div class="itemm" style={{padding: '0px 20px !important'}}> 
-                         <div  onClick={() => openFileInNewTab('ks22020')} class="buttonn" >
-                           View
-                         </div>
-                         <div onClick={() => removeFile('ks22020')} class="buttonn" >
-                           Remove
-                         </div>
-                         </div>
-                        </div>
-                 
-          ) :  (
-                    <input
-                      type="file"
-                      name="ks22020"
-                      class="form-control"
-                      id="ks22020"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleFileChange('ks22020', e)}
-                    />
-          )
-    }
-    {uploadingFile === 'ks22020' && (
-  <LinearProgressWithLabel value={uploadProgress?.ks22020} />
+                    {userData?.ks22020 && userData?.ks22020.length > 0 ? (
+  userData.ks22020.map((file, index) => (
+    <div key={index} className="containerr">
+      <div className="itemm">
+        <TaskAlt />
+        <span className="namee">{userData.ks22020_name[index]}</span>
+      </div>
+      <div className="itemm" style={{ padding: '0px 20px !important' }}>
+        <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
+          View
+        </div>
+        { showRemoveButton && (
+        <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
+          Remove
+        </div>
+        ) }
+      </div>
+    </div>
+  ))
+) : (
+  <input
+    style={{ marginTop: 20 }}
+    type="file"
+    name="ks22020"
+    className="form-control file"
+    id="ks22020"
+    accept=".pdf"
+    required
+    multiple  // Allow multiple file selection
+    onChange={(e) => handleFileChange('ks22020', e)}
+  />
 )}
+
+              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+  <button >Add File</button>
+)} */}
+
+    {userData?.ks22020 && userData?.ks22020.length > 0 && (
+    
+     <button style={{    marginTop: '20px',
+      borderRadius: '6px',
+      border: '1px solid transparent',
+      fontWeight: 'bold',
+      color: 'white',
+      background: '#3c4d77'}} 
+      onClick={handleAddFileClick}>Add File</button>
+    
+      )} 
+         
+          {isAddingFile && ( 
+
+            <FileInputComponent
+              inputName="ks22020"
+              onRemove={handleRemoveInput} 
+              handleFileChange={handleFileChange} // Pass the file change handler
+            />
+
+          )}
+
+
+                            {uploadingFile === 'ks22020' && (
+                <LinearProgressWithLabel value={uploadProgress.ks22020} />
+                            )} 
                   </div>
 
                 </div>
@@ -4492,10 +5138,148 @@ const checkEmailAvailability = async () => {
         return "File is here";
     }
   };
-
+  const ColorlibConnector = (props) => (
+    <StepConnector
+      {...props}
+      style={{
+        marginLeft: '12px', // Adjust the space between the labels and the connector
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <div
+        style={{
+          width: '2px', // Width of the vertical line
+          backgroundColor: props.active ? 'green' : 'gray', // Color of the line
+          flex: '1', // Expand the line to fill available space
+        }}
+      />
+    </StepConnector>
+  );
+  const QontoStepIconRoot = styled('div')({
+    display: 'flex',
+    height: 22,
+    alignItems: 'center',
+    color: '#eaeaf0',
+    '&.active': {
+      color: '#784af4',
+    },
+    '&.completed': {
+      color: '#784af4',
+    },
+  });
+  const QontoConnector = styled(StepConnector)(({ theme }) => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+      top: 10,
+      left: 'calc(-50% + 16px)',
+      right: 'calc(50% + 16px)',
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: '#784af4',
+      },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: '#784af4',
+      },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+      borderTopWidth: 3,
+      borderRadius: 1,
+    },
+  }));
+  function QontoStepIcon(props) {
+    const { active, completed, className } = props;
+  
+    return (
+      <>
+      <QontoStepIconRoot className={`${className} ${active ? 'active' : ''} ${completed ? 'completed' : ''}`}>
+        {completed ? (
+          <Check />
+        ) : (
+          <div className="QontoStepIcon-circle" />
+        )}
+      </QontoStepIconRoot>
+      </>
+    );
+  }
   return (
     <Box sx={{ width: "100%", marginTop: 10 , backgroundImage: ' linear-gradient(direction, color-stop1, color-stop2)' }}>
-   
+      {(activeStep !== 0 && activeStep !== 1) && (
+        <>
+      {activeStep <= 6  && (
+       <Stepper activeStep={activeStep} alternativeLabel connector={<QontoConnector />}>
+        {activeStep <= 6 && steps1.map((label) =>  (
+          <Step key={label}>
+            {/* <StepLabel
+              sx={{
+                '& .MuiStepLabel-label': {
+                  color: activeStep === index ? 'green' : 'gray', // Change label color based on active step
+                },
+              }}
+            >
+              {label}
+            </StepLabel> */}
+             <StepLabel 
+              sx={{
+                '& .MuiStepLabel-label.Mui-completed': {
+                  color:'red', // Change label color based on active step
+                },
+                '& .MuiStepLabel-label.Mui-active': {
+                  color:'red', // Change label color based on active step
+                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'/* Offset X, Offset Y, Blur Radius, Shadow Color */
+
+                },
+                '& .MuiStepLabel-label': {
+                  color:'green', // Change label color based on active step
+                },
+
+                
+              }}
+             StepIconComponent={QontoStepIcon}>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      )}
+      </>
+      )}
+       {activeStep > 6 && (
+       <Stepper activeStep={activeStep - 7} alternativeLabel connector={<QontoConnector />}>
+        {steps2.map((label, index) => (
+          <Step key={label}>
+            {/* <StepLabel
+              sx={{
+                '& .MuiStepLabel-label': {
+                  color: activeStep === index ? 'green' : 'gray', // Change label color based on active step
+                },
+              }}
+            >
+              {label}
+            </StepLabel> */}
+             <StepLabel 
+              sx={{
+                '& .MuiStepLabel-label.Mui-completed': {
+                  color:'orange', // Change label color based on active step
+                },
+                '& .MuiStepLabel-label.Mui-active': {
+                  color:'orange', // Change label color based on active step
+                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'/* Offset X, Offset Y, Blur Radius, Shadow Color */
+
+                },
+                '& .MuiStepLabel-label': {
+                  color:'black', // Change label color based on active step
+                },
+
+                
+              }}
+             StepIconComponent={QontoStepIcon}>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      )}
 
       {(userData?.applicationStatus !== true &&  userData?.applicationWithDocument !== true) &&  (
         <>
