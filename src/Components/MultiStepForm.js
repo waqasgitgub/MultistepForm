@@ -12,6 +12,7 @@ import { setToken } from "../Redux/Slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import gifTick from "./GlobalImages/gif-submit.gif";
+import newImage from "./GlobalImages/Group 940.png";
 import { DomainVerification, TaskAlt } from "@mui/icons-material";
 import FileInputComponent from "./FileInputComponent";
 import Stepper from '@mui/material/Stepper';
@@ -53,23 +54,52 @@ const steps = [
   "Step 9",
   "Step 10",
   "Step 11",
+  "Step 12",
+  "Step 13",
+  "Step 14",
+  "Step 15",
+  "Step 16",
+  "Step 17",
+  "Step 18",
+  "Step 19",
+  "Step 20",
 ];
 
 const steps1 = [
-  "Select campaign settings",
-  "Create an ad group",
-  "Create an ad",
-  "Step 4",
-  "Step 5",
-  "Step 6",
+  "Contact Form",
+  "Eligibility",
+  "1 of 6",
+  "2 of 6",
+  "3 of 6",
+  "4 of 6",
+  "5 of 6",
+  "6 of 6",
+  "Pre-Qualification Complete",
 ];
 
 const steps2 = [
-  "Step 7",
-  "Step 8",
-  "Step 9",
-  "Step 10",
-  "Step 11",
+  "Begin Application",
+  "1 of 8",
+  "2 of 8",
+  "3 of 8",
+  "4 of 8",
+  "5 of 8",
+  "6 of 8",
+  "7 of 8",
+  "8 of 8",
+  "Estimate Calculator",
+  "Upload Documents"
+];
+
+const steps19 = [
+  'Portal',
+  '',
+  '',
+  '',
+  '',
+  '',
+  'Calculation',
+  'Upload Documents',
 ];
 
 
@@ -935,37 +965,99 @@ const checkEmailAvailability = async () => {
       formDataUpdateStepTwo(activeStep);
     }
     
+    // if (activeStep === 3) {
+   
+    //   alert(formData.netIncome2019);
+
+    //   formDataUpdateCalculation(activeStep);
+
+    // }  
     if (activeStep === 3) {
    
-      alert(formData.netIncome2019);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-      formDataUpdateCalculation(activeStep);
 
     }  
 
-    if (activeStep === 4) {
-      formDataUpdate(activeStep);
+    // if (activeStep === 4) {
+    //   formDataUpdate(activeStep);
+    // }
+    if(activeStep === 4){
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
     }
 
-    if (activeStep === 5) {
-      formDataUpdateCalculation(activeStep);
+    // if (activeStep === 5) {
+    //   formDataUpdateCalculation(activeStep);
+    // }
+    if(activeStep === 5){
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
     }
 
+    // if (activeStep === 6) {
+    //   formDataUpdateCalculation(activeStep);
+    // }
     if (activeStep === 6) {
-      formDataUpdateCalculation(activeStep);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
 
-    if (activeStep === 7) {
-      formDataUpdateCalculation(activeStep);
-    }
-
-    if (activeStep === 8) {
+    // if (activeStep === 7) {
+    //   formDataUpdateCalculation(activeStep);
+    // }
+     if (activeStep === 7) {
       formDataUpdate(activeStep);
     }
 
+    // if (activeStep === 8) {
+    //   formDataUpdate(activeStep);
+    // }
+  if (activeStep === 8) {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  }
     if (activeStep === 9) {
-      formDataUpdate(activeStep);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
+   
+    
+
+    // if (activeStep === 9) {
+    //   formDataUpdate(activeStep);
+    // }
+    if (activeStep === 10) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+     if (activeStep === 11) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 12) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 13) {
+      formDataUpdateCalculation(activeStep);
+    }
+
+    if (activeStep === 14) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 15) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 16) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 17) {
+      formDataUpdateCalculation(activeStep);
+    }
+
+    if (activeStep === 18) {
+      alert(activeStep)
+      // formDataUpdate(activeStep);
+
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+
+    
 
     window.scrollTo(0, 0);
   };
@@ -1293,7 +1385,7 @@ const checkEmailAvailability = async () => {
     // }
    
     
-      if (activeStep === 3) {
+      if (activeStep === 17) {
 
         if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
           errorsObj.netIncome2019 = "Please enter a value";
@@ -1330,54 +1422,51 @@ const checkEmailAvailability = async () => {
     
     
 
-    if(activeStep === 4) {
-      if (!formData.bussinessNegatively) {
-        errorsObj.bussinessNegatively = "Please select an option";
-        hasErrors = true;
-      }
+    // if(activeStep === 4) {
+    //   if (!formData.bussinessNegatively) {
+    //     errorsObj.bussinessNegatively = "Please select an option";
+    //     hasErrors = true;
+    //   }
 
-      if (
-        formData.bussinessNegatively === "No" &&
-        formData.bussinessNegatively !== "Yes"
-      ) {
-        setActiveErrorQualifyTwo(true);
-        hasErrors = true;
-        formDataUpdateWithoutNextStep(activeStep);
-      }
-      if (formData.bussinessNegatively === "Yes" ) {
-        setActiveErrorQualifyTwo(false);
-        hasErrors = false;
-      }
+    //   if (
+    //     formData.bussinessNegatively === "No" &&
+    //     formData.bussinessNegatively !== "Yes"
+    //   ) {
+    //     setActiveErrorQualifyTwo(true);
+    //     hasErrors = true;
+    //     formDataUpdateWithoutNextStep(activeStep);
+    //   }
+    //   if (formData.bussinessNegatively === "Yes" ) {
+    //     setActiveErrorQualifyTwo(false);
+    //     hasErrors = false;
+    //   }
 
+    // }
+ if(activeStep === 11){
+  if (!formData.personallySick2020) {
+    errorsObj.personallySick2020 = "Please select an option";
+    hasErrors = true;
+  }
+
+ 
+    if (!formData.personal_startdate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
+      errorsObj.personal_startdate2020 = "Please select date";
+      hasErrors = true;
     }
 
+    if (!formData.personal_enddate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
+      errorsObj.personal_enddate2020 = "Please select date";
+      hasErrors = true;
+    }
 
+    if (!formData.numberOfDays && formData.personallySick2020 === 'Yes') {
+      errorsObj.numberOfDays = "Please select number";
+      hasErrors = true;
+    }
+ }
 
-    if (activeStep === 5) {
-
-      if (!formData.personallySick2020) {
-        errorsObj.personallySick2020 = "Please select an option";
-        hasErrors = true;
-      }
-
-     
-        if (!formData.personal_startdate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
-          errorsObj.personal_startdate2020 = "Please select date";
-          hasErrors = true;
-        }
-
-        if (!formData.personal_enddate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
-          errorsObj.personal_enddate2020 = "Please select date";
-          hasErrors = true;
-        }
-
-        if (!formData.numberOfDays && formData.personallySick2020 === 'Yes') {
-          errorsObj.numberOfDays = "Please select number";
-          hasErrors = true;
-        }
-
-
-        if (!formData.personallySick2021) {
+ if(activeStep === 12) {
+          if (!formData.personallySick2021) {
           errorsObj.personallySick2021 = "Please select an option";
           hasErrors = true;
         }
@@ -1395,12 +1484,11 @@ const checkEmailAvailability = async () => {
         errorsObj.numberOfDays2021 = "Please select number";
         hasErrors = true;
       }
-    }
+ }
 
 
-    if (activeStep === 6) {
-
-      if (!formData.symptoms2020) {
+ if (activeStep === 13) {
+     if (!formData.symptoms2020) {
         errorsObj.symptoms2020 = "Please select an option";
         hasErrors = true;
       }
@@ -1421,9 +1509,11 @@ const checkEmailAvailability = async () => {
           hasErrors = true;
         }
 
+ }
 
 
-        if (!formData.symptoms2021) {
+ if(activeStep === 14){
+       if (!formData.symptoms2021) {
           errorsObj.symptoms2021 = "Please select an option";
           hasErrors = true;
         }
@@ -1443,13 +1533,11 @@ const checkEmailAvailability = async () => {
             errorsObj.symptomsdays2021 = "Please select number";
             hasErrors = true;
           }
-      }
+ }
 
 
-
-      if (activeStep === 7) {
-
-        if (!formData.closure2020) {
+ if(activeStep === 15){
+     if (!formData.closure2020) {
           errorsObj.closure2020 = "Please select an option";
           hasErrors = true;
         }
@@ -1471,8 +1559,10 @@ const checkEmailAvailability = async () => {
           }
   
   
-  
-          if (!formData.closure2021) {
+ }
+
+ if(activeStep === 16){
+       if (!formData.closure2021) {
             errorsObj.closure2021 = "Please select an option";
             hasErrors = true;
           }
@@ -1492,13 +1582,155 @@ const checkEmailAvailability = async () => {
               errorsObj.minordays2021 = "Please select number";
               hasErrors = true;
             }
-        }
+ }
+
+
+    // if (activeStep === 5) {
+
+    //   if (!formData.personallySick2020) {
+    //     errorsObj.personallySick2020 = "Please select an option";
+    //     hasErrors = true;
+    //   }
+
+     
+    //     if (!formData.personal_startdate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
+    //       errorsObj.personal_startdate2020 = "Please select date";
+    //       hasErrors = true;
+    //     }
+
+    //     if (!formData.personal_enddate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
+    //       errorsObj.personal_enddate2020 = "Please select date";
+    //       hasErrors = true;
+    //     }
+
+    //     if (!formData.numberOfDays && formData.personallySick2020 === 'Yes') {
+    //       errorsObj.numberOfDays = "Please select number";
+    //       hasErrors = true;
+    //     }
+
+
+    //     if (!formData.personallySick2021) {
+    //       errorsObj.personallySick2021 = "Please select an option";
+    //       hasErrors = true;
+    //     }
+
+    //   if (!formData.personal_startdate2021 && formData.numberOfDays2021 !== "0" && formData.personallySick2021 === 'Yes') {
+    //     errorsObj.personal_startdate2021 = "Please select date";
+    //     hasErrors = true;
+    //   }
+
+    //   if (!formData.personal_enddate2021 && formData.numberOfDays2021 !== "0" && formData.personallySick2021 === 'Yes') {
+    //     errorsObj.personal_enddate2021 = "Please select date";
+    //     hasErrors = true;
+    //   }
+    //   if (!formData.numberOfDays2021 && formData.personallySick2021 === 'Yes') {
+    //     errorsObj.numberOfDays2021 = "Please select number";
+    //     hasErrors = true;
+    //   }
+    // }
+
+
+    // if (activeStep === 6) {
+
+    //   if (!formData.symptoms2020) {
+    //     errorsObj.symptoms2020 = "Please select an option";
+    //     hasErrors = true;
+    //   }
+
+     
+    //     if (!formData.cared_startdate2020 && formData.symptomsdays2020 !== "0" && formData.symptoms2020 === 'Yes') {
+    //       errorsObj.cared_startdate2020 = "Please select date";
+    //       hasErrors = true;
+    //     }
+
+    //     if (!formData.cared_enddate2020 && formData.symptomsdays2020 !== "0" && formData.symptoms2020 === 'Yes') {
+    //       errorsObj.cared_enddate2020 = "Please select date";
+    //       hasErrors = true;
+    //     }
+
+    //     if (!formData.symptomsdays2020 && formData.symptoms2020 === 'Yes') {
+    //       errorsObj.symptomsdays2020 = "Please select number";
+    //       hasErrors = true;
+    //     }
+
+
+
+    //     if (!formData.symptoms2021) {
+    //       errorsObj.symptoms2021 = "Please select an option";
+    //       hasErrors = true;
+    //     }
+  
+       
+    //       if (!formData.cared_startdate2021 && formData.symptomsdays2021 !== "0" && formData.symptoms2021 === 'Yes') {
+    //         errorsObj.cared_startdate2021 = "Please select date";
+    //         hasErrors = true;
+    //       }
+  
+    //       if (!formData.cared_enddate2021 && formData.symptomsdays2021 !== "0" && formData.symptoms2021 === 'Yes') {
+    //         errorsObj.cared_enddate2021 = "Please select date";
+    //         hasErrors = true;
+    //       }
+  
+    //       if (!formData.symptomsdays2021 && formData.symptoms2021 === 'Yes') {
+    //         errorsObj.symptomsdays2021 = "Please select number";
+    //         hasErrors = true;
+    //       }
+    //   }
+
+
+
+      // if (activeStep === 7) {
+
+      //   if (!formData.closure2020) {
+      //     errorsObj.closure2020 = "Please select an option";
+      //     hasErrors = true;
+      //   }
+  
+       
+      //     if (!formData.minor_startdate2020 && formData.minordays2020 !== "0" && formData.closure2020 === 'Yes') {
+      //       errorsObj.minor_startdate2020 = "Please select date";
+      //       hasErrors = true;
+      //     }
+  
+      //     if (!formData.minor_enddate2020 && formData.minordays2020 !== "0" && formData.closure2020 === 'Yes') {
+      //       errorsObj.minor_enddate2020 = "Please select date";
+      //       hasErrors = true;
+      //     }
+  
+      //     if (!formData.minordays2020 && formData.closure2020 === 'Yes') {
+      //       errorsObj.minordays2020 = "Please select number";
+      //       hasErrors = true;
+      //     }
+  
+  
+  
+      //     if (!formData.closure2021) {
+      //       errorsObj.closure2021 = "Please select an option";
+      //       hasErrors = true;
+      //     }
+    
+         
+      //       if (!formData.minor_startdate2021 && formData.minordays2021 !== "0" && formData.closure2021 === 'Yes') {
+      //         errorsObj.minor_startdate2021 = "Please select date";
+      //         hasErrors = true;
+      //       }
+    
+      //       if (!formData.minor_enddate2021 && formData.minordays2021 !== "0" && formData.closure2021 === 'Yes') {
+      //         errorsObj.minor_enddate2021 = "Please select date";
+      //         hasErrors = true;
+      //       }
+    
+      //       if (!formData.minordays2021 && formData.closure2021 === 'Yes') {
+      //         errorsObj.minordays2021 = "Please select number";
+      //         hasErrors = true;
+      //       }
+      //   }
 
 
 
 
 
-        if (activeStep === 8) {
+        if (activeStep === 7) {
 
           if (!formData.employed_as_W2) {
             errorsObj.employed_as_W2 = "Please select an option";
@@ -1833,7 +2065,7 @@ const uploadFile = async (formData, inputName) => {
   if (formData) {
     try {
       setUploadingFile(inputName);
-      formData.append('step', 10);
+      formData.append('step', activeStep);
 
       const config = {
         headers: {
@@ -1904,7 +2136,7 @@ const uploadFile = async (formData, inputName) => {
                     {/* <div class="progress mb-4" style={{height: "15px"}}>
                   <div class="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div> */}
-                    <LinearProgress
+                    {/* <LinearProgress
                       variant="determinate"
                       sx={{
                         height: "8px",
@@ -1915,7 +2147,7 @@ const uploadFile = async (formData, inputName) => {
                         },
                       }}
                       value={getProgressPercentage()}
-                    />
+                    /> */}
                     <input
                       type="hidden"
                       name="record_id"
@@ -2037,8 +2269,67 @@ const uploadFile = async (formData, inputName) => {
 </div>
 
                     </div>
+<div class="row mt-4">
+                      <label
+                        for="Business-Legal-Name"
+                        class="form-label requiredField"
+                      >
+                           Business Legal Name
+                      </label>
+                      <div class="col-sm-6 mb-3">
+                        <input
+                          type="text"
+                          value={formData.bussinessName}
+                          name="bussinessName"
+                          maxLength="1024"
+                          placeholder="Business Legal Name"
+                          class={`textinput form-control ${
+                            errors.bussinessName ? "border-danger" : ""
+                          }`}
+                          required=""
+                          id="Business-Legal-Name"
+                          onChange={handleInputChange}
+                        />
 
-                    <div class="mb-2">
+                        {errors.bussinessName && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "12px" }}
+                          >
+                            {errors.bussinessName}
+                          </div>
+                        )}
+                      </div>
+                      <div class="col-sm-6">
+                        
+
+                        <input
+                          type="text"
+                          value={formData.employees}
+                          class={` form-control ${
+                            errors.employees ? "border-danger" : ""
+                          }`}
+                          id="employees"
+                          placeholder=" Number of  Employees"
+                          name="employees"
+                          required=""
+                          onChange={handleInputChange}
+                        />
+                        {errors.employees && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "14px" }}
+                          >
+                            {errors.employees}
+                          </div>
+                        )}
+
+                        <div class="invalid-feedback emailError"></div>
+                      </div>
+                
+
+                    </div>
+                    {/* <div class="mb-2">
                       <div class="col-sm-6">
                         <label for="Business-Legal-Name" class="form-label">
                           Business Legal Name
@@ -2066,7 +2357,7 @@ const uploadFile = async (formData, inputName) => {
                         )}
                         <div class="invalid-feedback phoneError"></div>
                       </div>
-                    </div>
+                    </div> */}
                     <div class="mb-2">
                       <div class="col-sm-6">
                         <label for="Trade-Name" class="form-label">
@@ -2422,13 +2713,7 @@ const uploadFile = async (formData, inputName) => {
         );
       case 2:
         return (
-          // <TextField
-          //   label="Ad Group Details"
-          //   value={adGroupDetails}
-          //   onChange={handleInputChange}
-          //   name="adGroupDetails"
-          //   fullWidth
-          // />
+          
 
           <div class="step step-3">
             <div class="container px-0">
@@ -2479,45 +2764,57 @@ const uploadFile = async (formData, inputName) => {
                             }}
                             value={getProgressPercentage()}
                           /> */}
-                          <label
-                            for="self_employed_from"
-                            class="form-label fs-5"
-                          >
-                            Were you self-employed from 4/1/2020-9/30/2021?
-                          </label>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.selfEmployedFrom ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="selfEmployedFrom"
-                                checked={formData.selfEmployedFrom === "Yes"}
-                                value="Yes"
-                                id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.selfEmployedFrom ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="selfEmployedFrom"
-                                value="No"
-                                checked={formData.selfEmployedFrom === "No"}
-                                id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
+                         <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Are you eligible?</h1>
+                                                                    <h3  style={{fontWeight: 300, lineHeight: 0.2, color: 'rgb(13, 189, 243)'}} class="text-center">Question 1 of 6</h3>
+                <div style={{marginTop: 40}}>
+                                                                    <label for="self_employed_from"
+                                                                        class="form-label headng " style={{ fontWeight: '600'}}>
+                                                                   Were you self-employed
+                                                                            from 4/1/2020-9/30/2021?
+                                                                    </label>
+      <div class="optio mb-2">
+  <label for="self_employed_from_yes">
+    <p  style={{
+        backgroundColor: formData.selfEmployedFrom === 'Yes' ? 'lightblue' : 'initial',
+      }}>
+      <input
+        className="form-check-input"
+        class={`form-check-input ${
+          errors.selfEmployedFrom ? "border-danger" : ""
+        }`}
+        type="radio"
+        name="selfEmployedFrom"
+        checked={formData.selfEmployedFrom === "Yes"}
+        value="Yes"
+        id="self_employed_from_yes"
+        onChange={handleInputChange}
+      />
+         Yes
+    </p>
+  </label>
+</div>
+
+<div class="optio">
+  <label for="self_employed_from_no">
+    <p  style={{
+        backgroundColor: formData.selfEmployedFrom === 'No' ? 'lightblue' : 'initial',
+      }}>
+      <input
+        class={`form-check-input ${
+          errors.selfEmployedFrom ? "border-danger" : ""
+        }`}
+        type="radio"
+        name="selfEmployedFrom"
+        value="No"
+        checked={formData.selfEmployedFrom === "No"}
+        id="self_employed_from_no"
+        onChange={handleInputChange}
+      />
+      No
+    </p>
+  </label>
+</div>
+
 
                           <div class="data-p py-2 mb-2">
                             <p>
@@ -2568,6 +2865,8 @@ const uploadFile = async (formData, inputName) => {
                                 : "Next"}
                             </button>
                           </div>
+                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -2579,290 +2878,575 @@ const uploadFile = async (formData, inputName) => {
         );
       case 3:
         return (
-          <div class="step step-4">
-            <input type="hidden" name="record_id" id="record_id" value="" />
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 align-items-start">
-                          <p class="mb-0">
-                            <b style={{ color: "#e62e2d" }}>Note:</b>
-                            Self-employed income is a limiting factor. If your
-                            self-employed income is low for 2019, 2020 and 2021,
-                            it will severly effect the outcome. If your
-                            self-employed income is negative for 2019, 2020 and
-                            2021, you would not qualify for this program.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <label for="net_income_2019" class="form-label fs-5">
-                            Total NET Income For 2019?
-                          </label>
-                          <div class="optio mb-2">
-                            <input
-                              type="text"
-                              value={formData.netIncome2019}
-                              class={` for ${
-                                errors.netIncome2019 ? "border-danger" : ""
-                              }`}
-                              name="netIncome2019"
-                              onChange={handleInputChange}
-                              placeholder="$"
-                              id="net_income_2019"
-                            />
-                          </div>
-                          <label for="net_income_2020" class="form-label fs-5">
-                            Total NET Income For 2020?
-                          </label>
-                          <div class="optio mb-2">
-                            <input
-                              type="text"
-                              value={formData.netIncome2020}
-                              name="netIncome2020"
-                              class={` for ${
-                                errors.netIncome2020 ? "border-danger" : ""
-                              }`}
-                              placeholder="$"
-                              onChange={handleInputChange}
-                              id="net_income_2020"
-                            />
-                          </div>
-                          <label for="net_income_2021" class="form-label fs-5">
-                            Total NET Income For 2021?
-                          </label>
-                          <div class="optio mb-2">
-                            <input
-                              type="text"
-                              value={formData.netIncome2021}
-                              name="netIncome2021"
-                              class={` for ${
-                                errors.netIncome2021 ? "border-danger" : ""
-                              }`}
-                              placeholder="$"
-                              onChange={handleInputChange}
-                              id="net_income_2021"
-                            />
-                          </div>
+          // <div class="step step-4">
+          //   <input type="hidden" name="record_id" id="record_id" value="" />
+          //   <div class="container-fluid px-0">
+          //     <div class="row justify-content-center">
+          //       <div class="col-lg-12">
+          //         <div class="start-application">
+          //           <div class="row roww">
+          //             <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+          //               <div class="img-applci h-100 align-items-start">
+          //                 <p class="mb-0">
+          //                   <b style={{ color: "#e62e2d" }}>Note:</b>
+          //                   Self-employed income is a limiting factor. If your
+          //                   self-employed income is low for 2019, 2020 and 2021,
+          //                   it will severly effect the outcome. If your
+          //                   self-employed income is negative for 2019, 2020 and
+          //                   2021, you would not qualify for this program.
+          //                 </p>
+          //               </div>
+          //             </div>
+          //             <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+          //               <div class="img-applic-content">
+          //                 <LinearProgress
+          //                   variant="determinate"
+          //                   sx={{
+          //                     height: "8px",
+          //                     marginBottom: 4,
+          //                     borderRadius: "4px",
+          //                     backgroundColor: "#f0f0f0",
+          //                     "& .MuiLinearProgress-bar": {
+          //                       backgroundColor: "rgb(13, 189, 243);",
+          //                     },
+          //                   }}
+          //                   value={getProgressPercentage()}
+          //                 />
+                          // <label for="net_income_2019" class="form-label fs-5">
+                          //   Total NET Income For 2019?
+                          // </label>
+                          // <div class="optio mb-2">
+                          //   <input
+                          //     type="text"
+                          //     value={formData.netIncome2019}
+                          //     class={` for ${
+                          //       errors.netIncome2019 ? "border-danger" : ""
+                          //     }`}
+                          //     name="netIncome2019"
+                          //     onChange={handleInputChange}
+                          //     placeholder="$"
+                          //     id="net_income_2019"
+                          //   />
+                          // </div>
+                          // <label for="net_income_2020" class="form-label fs-5">
+                          //   Total NET Income For 2020?
+                          // </label>
+                          // <div class="optio mb-2">
+                          //   <input
+                          //     type="text"
+                          //     value={formData.netIncome2020}
+                          //     name="netIncome2020"
+                          //     class={` for ${
+                          //       errors.netIncome2020 ? "border-danger" : ""
+                          //     }`}
+                          //     placeholder="$"
+                          //     onChange={handleInputChange}
+                          //     id="net_income_2020"
+                          //   />
+                          // </div>
+                          // <label for="net_income_2021" class="form-label fs-5">
+                          //   Total NET Income For 2021?
+                          // </label>
+                          // <div class="optio mb-2">
+                          //   <input
+                          //     type="text"
+                          //     value={formData.netIncome2021}
+                          //     name="netIncome2021"
+                          //     class={` for ${
+                          //       errors.netIncome2021 ? "border-danger" : ""
+                          //     }`}
+                          //     placeholder="$"
+                          //     onChange={handleInputChange}
+                          //     id="net_income_2021"
+                          //   />
+                          // </div>
 
-                          <div class="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              class="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              class="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          //                 <div class="d-flex justify-content-end mt-3">
+          //                   <button
+          //                     onClick={handlePrevious}
+          //                     type="button"
+          //                     class="px-3 py-2 prev-step"
+          //                   >
+          //                     Previous
+          //                   </button>
+          //                   <button
+          //                     onClick={handleNext}
+          //                     type="button"
+          //                     class="px-3 py-2 next-step"
+          //                   >
+          //                     {activeStep === steps.length - 1
+          //                       ? "Submit"
+          //                       : "Next"}
+          //                   </button>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+
+        //   <div class="step step-4">
+        //   <div class="container px-0">
+        //     <div class="row justify-content-center">
+        //       <div class="col-lg-10">
+        //         <div class="start-application">
+        //           <div class="row ROWW">
+        //             {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+        //               <div class="img-applci h-100 align-items-start">
+        //                 <input
+        //                   type="hidden"
+        //                   name="record_id"
+        //                   id="record_id"
+        //                   value=""
+        //                 />
+        //                 <p class="mb-0">
+        //                   If you were self-employed in 2020 and/or 2021, you
+        //                   could be eligible for the SETC. This includes sole
+        //                   proprietors who run businesses with employees, 1099
+        //                   subcontractors, and single-member LLCs. This unique
+        //                   tax credit is exclusively available to business
+        //                   owners who filed a “Schedule C” or a Partnership
+        //                   (1065) on their federal tax returns for 2020 and/or
+        //                   2021.
+        //                 </p>
+        //                 <h6 class="mt-3 warn">Important Note:</h6>
+        //                 <p>
+        //                   Sub S or True S Corps/C Corps are not eligible for
+        //                   the SETC.
+        //                 </p>
+        //                 <h6 class="warn">Required Documents:</h6>
+        //                 <p>-Driver’s License</p>
+        //                 <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+        //               </div>
+        //             </div> */}
+        //             <div class="col-lg-12 col-md-12 col-sm-12">
+        //               <div class="img-applic-content">
+        //                 {/* <LinearProgress
+        //                   variant="determinate"
+        //                   sx={{
+        //                     height: "8px",
+        //                     marginBottom: 4,
+        //                     borderRadius: "4px",
+        //                     backgroundColor: "#f0f0f0",
+        //                     "& .MuiLinearProgress-bar": {
+        //                       backgroundColor: "rgb(13, 189, 243);",
+        //                     },
+        //                   }}
+        //                   value={getProgressPercentage()}
+        //                 /> */}
+        //                <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Are you eligible?</h1>
+        //               <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">Question 2 of 6</h3>
+        //       <div style={{marginTop: 40}}>
+        //       <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+        //                                                                 (Self-Employment
+        //                                                                 Tax) for the years of 2020 or 2021?</h1>
+        //                                                           {/* <label for="self_employed_from"
+        //                                                               class="form-label headng " style={{ fontWeight: '600'}}>
+        //                                                        Were you self-employed from
+        //                                                                 4/1/2020-9/30/2021?
+        //                                                           </label> */}
+        //                                                           <p class="text-center" style={{fontWeight: '600', color: 'red'}}>Click
+        //                                                                 here on how to find it</p>
+        //                                                                 <div class="optio mb-2">
+        //                                                                 <p>
+        //                                                                     <input class="form-check-input" type="radio"
+        //                                                                         name="schedule_self_employement" value="Yes"
+        //                                                                         />Yes
+        //                                                                 </p>
+        //                                                             </div>
+        //                                                             <div class="optio">
+        //                                                                 <p>
+        //                                                                     <input class="form-check-input" type="radio"
+        //                                                                         name="schedule_self_employement" value="No"
+        //                                                                          />No
+        //                                                                 </p>
+        //                                                             </div>
+
+        //                 <div class="d-flex justify-content-end mt-3">
+        //                   <button
+        //                     onClick={handlePrevious}
+        //                     type="button"
+        //                     class="px-3 py-2 prev-step"
+        //                   >
+        //                     Previous
+        //                   </button>
+        //                   <button
+        //                     onClick={handleNext}
+        //                     type="button"
+        //                     class="px-3 py-2 next-step"
+        //                   >
+        //                     {activeStep === steps.length - 1
+        //                       ? "Submit"
+        //                       : "Next"}
+        //                   </button>
+        //                 </div>
+        //                 </div>
+
+        //               </div>
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // </div>
+
+
+        <div class="step step-4">
+                                  <input type="hidden" name="record_id" id="record_id" value=""/>
+                                  <div class="container-fluid px-0">
+                                      <div class="row justify-content-center">
+                                          <div class="col-lg-12">
+                                              <div class="start-application">
+                                                  <div class="progress mb-4" style={{height: '15px'}}>
+                                                  <div class="progress-bar" role="progressbar"
+                                                      style={{width: "0%"}} aria-valuenow="0"
+                                                      aria-valuemin="0" aria-valuemax="100"></div>
+                                              </div>
+                                                  <div class="row roww">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                                                      <div class="img-applci h-100 justify-content-start" style={{padding: '140px 30px'}}>
+                                                      
+                                                      <img src={newImage} class="img-fluid" alt="" srcset=""/>
+                                                      </div>
+                                                    </div>
+                                                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+                                                          <div class="img-applic-content">
+                                                             
+                                                              
+                                                              <label for="se_self_employement"
+                                                                  class="form-label headng ">
+                                                                  Did you file your schedule SE
+                                                                  (Self-Employment
+                                                                  Tax) for the years of 2020 or 2021?
+                                                                  </label>
+                                                              <p class="text-center midc" >Click
+                                                                  here on how to find it</p>
+
+                                                              <div class="optio mb-2">
+                                                                  <p>
+                                                                      <input class="form-check-input" type="radio"
+                                                                          name="se_self_employement" value="Yes"
+                                                                          id="se_self_employement" />Yes
+                                                                  </p>
+                                                              </div>
+                                                              <div class="optio">
+                                                                  <p>
+                                                                      <input class="form-check-input" type="radio"
+                                                                          name="se_self_employement" value="No"
+                                                                          id="se_self_employement" />No
+                                                                  </p>
+                                                              </div>
+
+
+                                                              <div class="d-flex justify-content-end mt-3">
+                                                                  <button type="button"
+                                                                      class="btn btn-primary prev-step">
+                                                                      Previous
+                                                                  </button>
+                                                                  <button type="button"
+                                                                      class="btn btn-primary next-step">
+                                                                      Next
+                                                                  </button>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </div>
+
+
+
         );
       case 4:
         return (
-          <div class="step step-5">
-            <input type="hidden" name="record_id" id="record_id" value="" />
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 align-items-start ">
-                          <div class="rt" style={{ marginTop: "-90px" }}>
-                            <h6 class="mt-3 warn">COVID Impacts:</h6>
-                            <p class="mb-0">
-                              Whether you battled COVID, experienced COVID-like
-                              symptoms, needed to quarantine, underwent testing
-                              or cared for a family member affected by the
-                              virus, the SETC could be your ﬁnancial relief. If
-                              the closure of your child's school or daycare due
-                              to COVID restrictions forced you to stay home and
-                              impacted your work, we're here to help.
-                            </p>
-                            <h6 class="mt-3 warn">Qualifying Days:</h6>
+          // <div class="step step-5">
+          //   <input type="hidden" name="record_id" id="record_id" value="" />
+          //   <div class="container-fluid px-0">
+          //     <div class="row justify-content-center">
+          //       <div class="col-lg-12">
+          //         <div class="start-application">
+          //           <div class="row roww">
+          //             <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+          //               <div class="img-applci h-100 align-items-start ">
+          //                 <div class="rt" style={{ marginTop: "-90px" }}>
+          //                   <h6 class="mt-3 warn">COVID Impacts:</h6>
+          //                   <p class="mb-0">
+          //                     Whether you battled COVID, experienced COVID-like
+          //                     symptoms, needed to quarantine, underwent testing
+          //                     or cared for a family member affected by the
+          //                     virus, the SETC could be your ﬁnancial relief. If
+          //                     the closure of your child's school or daycare due
+          //                     to COVID restrictions forced you to stay home and
+          //                     impacted your work, we're here to help.
+          //                   </p>
+          //                   <h6 class="mt-3 warn">Qualifying Days:</h6>
 
-                            <ul>
-                              <li>
-                                You took time off in 2020 or 2021 due to
-                                COVID-19 or to care for someone with COVID-19
-                                during the same period.
-                              </li>
-                              <li>
-                                You took time off to care for a child under 18
-                                years old due to school or daycare closures.
-                              </li>
-                              <li>
-                                You took time off in 2020 or 2021 due to
-                                COVID-19 to care for a loved one such as spouse,
-                                parents, etc.
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <label
-                            for="business_negatively_impacted"
-                            class="form-label fs-5"
-                          >
-                            Were you or your business negatively impacted by
-                            Covid?
-                          </label>
-                          <div class="optio mb-2">
-                            <p>
-                              {/* <input
-                                class="form-check-input"
-                                type="radio"
-                                name="flexRadioDefault"
-                                value="Yes"
-                                id="business_negatively_impacted"
-                              />
-                              Yes */}
-                               <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.bussinessNegatively ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="bussinessNegatively"
-                                checked={formData.bussinessNegatively === "Yes"}
-                                value="Yes"
-                                id="bussinessNegatively"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              {/* <input
-                                class="form-check-input"
-                                type="radio"
-                                name="flexRadioDefault"
-                                id="business_negatively_impacted"
-                                value="No"
-                              />
-                              No */}
-                               <input
-                                class={`form-check-input ${
-                                  errors.bussinessNegatively ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="bussinessNegatively"
-                                value="No"
-                                checked={formData.bussinessNegatively === "No"}
-                                id="bussinessNegatively"
-                                onChange={handleInputChange}
-                              />
-                              No
+          //                   <ul>
+          //                     <li>
+          //                       You took time off in 2020 or 2021 due to
+          //                       COVID-19 or to care for someone with COVID-19
+          //                       during the same period.
+          //                     </li>
+          //                     <li>
+          //                       You took time off to care for a child under 18
+          //                       years old due to school or daycare closures.
+          //                     </li>
+          //                     <li>
+          //                       You took time off in 2020 or 2021 due to
+          //                       COVID-19 to care for a loved one such as spouse,
+          //                       parents, etc.
+          //                     </li>
+          //                   </ul>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //             <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+          //               <div class="img-applic-content">
+          //                 <LinearProgress
+          //                   variant="determinate"
+          //                   sx={{
+          //                     height: "8px",
+          //                     marginBottom: 4,
+          //                     borderRadius: "4px",
+          //                     backgroundColor: "#f0f0f0",
+          //                     "& .MuiLinearProgress-bar": {
+          //                       backgroundColor: "rgb(13, 189, 243);",
+          //                     },
+          //                   }}
+          //                   value={getProgressPercentage()}
+          //                 />
+          //                 <label
+          //                   for="business_negatively_impacted"
+          //                   class="form-label fs-5"
+          //                 >
+          //                   Were you or your business negatively impacted by
+          //                   Covid?
+          //                 </label>
+          //                 <div class="optio mb-2">
+          //                   <p>
+          //                     {/* <input
+          //                       class="form-check-input"
+          //                       type="radio"
+          //                       name="flexRadioDefault"
+          //                       value="Yes"
+          //                       id="business_negatively_impacted"
+          //                     />
+          //                     Yes */}
+          //                      <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.bussinessNegatively ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="bussinessNegatively"
+          //                       checked={formData.bussinessNegatively === "Yes"}
+          //                       value="Yes"
+          //                       id="bussinessNegatively"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     Yes
+          //                   </p>
+          //                 </div>
+          //                 <div class="optio">
+          //                   <p>
+          //                     {/* <input
+          //                       class="form-check-input"
+          //                       type="radio"
+          //                       name="flexRadioDefault"
+          //                       id="business_negatively_impacted"
+          //                       value="No"
+          //                     />
+          //                     No */}
+          //                      <input
+          //                       class={`form-check-input ${
+          //                         errors.bussinessNegatively ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="bussinessNegatively"
+          //                       value="No"
+          //                       checked={formData.bussinessNegatively === "No"}
+          //                       id="bussinessNegatively"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     No
 
-                            </p>
-                          </div>
-                          {formData.bussinessNegatively === "No" &&
-                            activeErrorQualifyTwo && (
-                              <div>
-                                <h4 style={{ color: "#e62e2d" }}>
-                                Unfortunately you are not eligible for this tax
-                              created, you must have experienced negative impact
-                              during 2020 and/or 2021.
-                                </h4>
-                              </div>
-                            )}
+          //                   </p>
+          //                 </div>
+          //                 {formData.bussinessNegatively === "No" &&
+          //                   activeErrorQualifyTwo && (
+          //                     <div>
+          //                       <h4 style={{ color: "#e62e2d" }}>
+          //                       Unfortunately you are not eligible for this tax
+          //                     created, you must have experienced negative impact
+          //                     during 2020 and/or 2021.
+          //                       </h4>
+          //                     </div>
+          //                   )}
                           
 
-                          <h5 class="mt-2 mb-4">
-                            Almost every American was negatively impacted by
-                            COVID-19 between the dates of 4/1/20 and 3/31/21. &
-                            4/1/2021-9/30/2021
-                          </h5>
-                          <div class="data-p py-2 mb-2">
-                            <p>
-                              As per IRS guidelines, you are NOT required to
-                              provide proof of a positive COVID-19 test or your
-                              COVID-19 status when submitting your filing.
-                              Instead, you are confirming IN GOOD FAITH that you
-                              experienced COVID-19, its symptoms, related
-                              illness, or quarantine, resulting in the inability
-                              to work and earn income. While no specific
-                              evidence is needed for filing, it's advisable to
-                              retain certain records for your records. These
-                              might include a positive COVID-19 test result, a
-                              healthcare provider's note about your positive
-                              test or symptoms, or documentation indicating
-                              quarantine. Also, remember that maintaining
-                              records of non-working days due to COVID-19
-                              exposure or symptoms could be beneficial, such as
-                              data from your business software or bank
-                              statements reflecting the absence of sales
-                              deposits during that period.
-                            </p>
-                          </div>
+          //                 <h5 class="mt-2 mb-4">
+          //                   Almost every American was negatively impacted by
+          //                   COVID-19 between the dates of 4/1/20 and 3/31/21. &
+          //                   4/1/2021-9/30/2021
+          //                 </h5>
+          //                 <div class="data-p py-2 mb-2">
+          //                   <p>
+          //                     As per IRS guidelines, you are NOT required to
+          //                     provide proof of a positive COVID-19 test or your
+          //                     COVID-19 status when submitting your filing.
+          //                     Instead, you are confirming IN GOOD FAITH that you
+          //                     experienced COVID-19, its symptoms, related
+          //                     illness, or quarantine, resulting in the inability
+          //                     to work and earn income. While no specific
+          //                     evidence is needed for filing, it's advisable to
+          //                     retain certain records for your records. These
+          //                     might include a positive COVID-19 test result, a
+          //                     healthcare provider's note about your positive
+          //                     test or symptoms, or documentation indicating
+          //                     quarantine. Also, remember that maintaining
+          //                     records of non-working days due to COVID-19
+          //                     exposure or symptoms could be beneficial, such as
+          //                     data from your business software or bank
+          //                     statements reflecting the absence of sales
+          //                     deposits during that period.
+          //                   </p>
+          //                 </div>
 
-                          <div class="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              class="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              class="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
+          //                 <div class="d-flex justify-content-end mt-3">
+          //                   <button
+          //                     onClick={handlePrevious}
+          //                     type="button"
+          //                     class="px-3 py-2 prev-step"
+          //                   >
+          //                     Previous
+          //                   </button>
+          //                   <button
+          //                     onClick={handleNext}
+          //                     type="button"
+          //                     class="px-3 py-2 next-step"
+          //                   >
+          //                     {activeStep === steps.length - 1
+          //                       ? "Submit"
+          //                       : "Next"}
+          //                   </button>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+
+          <div class="step step-5">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                      </div>
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                       <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Are you eligible?</h1>
+                      <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">Question 3 of 6</h3>
+              <div style={{marginTop: 40}}>
+              {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+                                                                        (Self-Employment
+                                                                        Tax) for the years of 2020 or 2021?</h1> */}
+                                                                  <label for="positive_net_earning"
+                                                                      class="form-label headng " style={{ fontWeight: '600'}}>
+                                                              Did you have positive net earnings for the years
+                                                                        of
+                                                                        2020 or 2021? This can be found in <span
+                                                                            style={{color: 'red', fontSize: 23, textDecoration: 'underline'}}>line 6 of your
+                                                                            schedule SE</span>. (If this line is blank
+                                                                        or negative,
+                                                                        select No.)
+                                                                  </label>
+                                                                  
+                                                                        <div class="optio mb-2">
+                                                                        <p>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="positive_net_earning" value="Yes"
+                                                                                />Yes
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="optio">
+                                                                        <p>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="positive_net_earning" value="No"
+                                                                                 />No
+                                                                        </p>
+                                                                    </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                          <button
+                            onClick={handlePrevious}
+                            type="button"
+                            class="px-3 py-2 prev-step"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={handleNext}
+                            type="button"
+                            class="px-3 py-2 next-step"
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Submit"
+                              : "Next"}
+                          </button>
                         </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -2870,325 +3454,434 @@ const uploadFile = async (formData, inputName) => {
               </div>
             </div>
           </div>
+        </div>
+
         );
       case 5:
         return (
-          <div class="step step-6">
-            <input type="hidden" name="record_id" id="record_id" value="" />
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 align-items-start">
-                          <h6 class="mt-3 warn">Claimable Days</h6>
-                          <p class="mb-0">
-                            The IRS considers specific timeframes for claiming
-                            the Self-Employed Tax Credit:
-                            <ul>
-                              <li>
-                                {" "}
-                                Whether you battled COVID, experienced
-                                COVID-like symptoms, needed to quarantine,
-                                underwent testing and took time off between
-                                April 1, 2020, and March 31, 2021, or between
-                                April 1, 2021, and September 30, 2021, you can
-                                claim up to 10 days in each period.
-                              </li>
-                            </ul>
-                          </p>
-                          <p>
-                            <b style={{ color: "#e62e2d" }}>Note:</b> Qualifying
-                            days are a limiting factor. If your qualifying days
-                            are low for 2020 and 2021, it will severely affect
-                            the outcome. If you have no qualifying days for 2020
-                            or 2021, you would not qualify for this program.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <label for="Self-employed" class="form-label fs-5">
-                            How many days were you personally sick with Covid,
-                            experienced Covid like symptoms, needed to
-                            quarantine, underwent testing, and took time off in
-                            2020?
-                          </label>
+          // <div class="step step-6">
+          //   <input type="hidden" name="record_id" id="record_id" value="" />
+          //   <div class="container-fluid px-0">
+          //     <div class="row justify-content-center">
+          //       <div class="col-lg-12">
+          //         <div class="start-application">
+          //           <div class="row roww">
+          //             <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+          //               <div class="img-applci h-100 align-items-start">
+          //                 <h6 class="mt-3 warn">Claimable Days</h6>
+          //                 <p class="mb-0">
+          //                   The IRS considers specific timeframes for claiming
+          //                   the Self-Employed Tax Credit:
+          //                   <ul>
+          //                     <li>
+          //                       {" "}
+          //                       Whether you battled COVID, experienced
+          //                       COVID-like symptoms, needed to quarantine,
+          //                       underwent testing and took time off between
+          //                       April 1, 2020, and March 31, 2021, or between
+          //                       April 1, 2021, and September 30, 2021, you can
+          //                       claim up to 10 days in each period.
+          //                     </li>
+          //                   </ul>
+          //                 </p>
+          //                 <p>
+          //                   <b style={{ color: "#e62e2d" }}>Note:</b> Qualifying
+          //                   days are a limiting factor. If your qualifying days
+          //                   are low for 2020 and 2021, it will severely affect
+          //                   the outcome. If you have no qualifying days for 2020
+          //                   or 2021, you would not qualify for this program.
+          //                 </p>
+          //               </div>
+          //             </div>
+          //             <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+          //               <div class="img-applic-content">
+          //                 <LinearProgress
+          //                   variant="determinate"
+          //                   sx={{
+          //                     height: "8px",
+          //                     marginBottom: 4,
+          //                     borderRadius: "4px",
+          //                     backgroundColor: "#f0f0f0",
+          //                     "& .MuiLinearProgress-bar": {
+          //                       backgroundColor: "rgb(13, 189, 243);",
+          //                     },
+          //                   }}
+          //                   value={getProgressPercentage()}
+          //                 />
+          //                 <label for="Self-employed" class="form-label fs-5">
+          //                   How many days were you personally sick with Covid,
+          //                   experienced Covid like symptoms, needed to
+          //                   quarantine, underwent testing, and took time off in
+          //                   2020?
+          //                 </label>
                           
 
-                            {/* Here we showing options */}
+          //                   {/* Here we showing options */}
 
-                       <div style={{display: 'flex', flexDirection: 'row'}}>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.personallySick2020 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="personallySick2020"
-                                checked={formData.personallySick2020 === "Yes"}
-                                value="Yes"
-                                // id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.personallySick2020 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="personallySick2020"
-                                value="No"
-                                checked={formData.personallySick2020 === "No"}
-                                // id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
-                          </div>
+          //              <div style={{display: 'flex', flexDirection: 'row'}}>
+          //                 <div class="optio mb-2">
+          //                   <p>
+          //                     <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.personallySick2020 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="personallySick2020"
+          //                       checked={formData.personallySick2020 === "Yes"}
+          //                       value="Yes"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     Yes
+          //                   </p>
+          //                 </div>
+          //                 <div class="optio">
+          //                   <p>
+          //                     <input
+          //                       class={`form-check-input ${
+          //                         errors.personallySick2020 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="personallySick2020"
+          //                       value="No"
+          //                       checked={formData.personallySick2020 === "No"}
+          //                       // id="self_employed_from_no"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     No
+          //                   </p>
+          //                 </div>
+          //                 </div>
 
-                          {formData.personallySick2020 === "Yes" && (
+          //                 {formData.personallySick2020 === "Yes" && (
 
-                          <div class="row">
+          //                 <div class="row">
               
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="personal_startdate2020"
-                                  class="form-label fs-6"
-                                >
-                                  Start
-                                </label>
-                                <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.personal_startdate2020
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="personal_startdate2020"
-                                  name="personal_startdate2020"
-                                  value={formData.personal_startdate2020}
-                                  onChange={handleInputChange}
-                                  disabled={formData.numberOfDays === "0"}
-                                />{" "}
-                              </div>
-                            </div>
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="personal_enddate2020"
-                                  class="form-label fs-6"
-                                >
-                                  End
-                                </label>
-                                <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  className={` date-picker ${
-                                    errors.personal_enddate2020
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="personal_enddate2020"
-                                  name="personal_enddate2020"
-                                  value={formData.personal_enddate2020}
-                                  onChange={handleInputChange}
-                                  disabled={formData.numberOfDays === "0"}
-                                />
-                              </div>
-                            </div>
-                            {formData.numberOfDays === "0" && (
-                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
-                                Start and end date is not significant for days zero.
-                              </p>
-                            )}
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label for="1days" class="form-label fs-6">
-                                  Number of days:
-                                </label>
-                                <input
-                                  type="number"
-                                  className={` date-picker ${
-                                    errors.numberOfDays ? "border-danger" : ""
-                                  }`}
-                                  id="1days"
-                                  name="numberOfDays"
-                                  value={formData.numberOfDays}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )}
-                          <label for="Self-employed" class="form-label fs-5">
-                            How many days were you personally sick with Covid,
-                            experienced Covid like symptoms, needed to
-                            quarantine, underwent testing, and took time off in
-                            2021?
-                          </label>
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label
+          //                         for="personal_startdate2020"
+          //                         class="form-label fs-6"
+          //                       >
+          //                         Start
+          //                       </label>
+          //                       <input
+          //                         type="date"
+          //                         min="2020-04-01"
+          //                         max="2020-12-31"
+          //                         // className="date-picker"
+          //                         className={` date-picker ${
+          //                           errors.personal_startdate2020
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         id="personal_startdate2020"
+          //                         name="personal_startdate2020"
+          //                         value={formData.personal_startdate2020}
+          //                         onChange={handleInputChange}
+          //                         disabled={formData.numberOfDays === "0"}
+          //                       />{" "}
+          //                     </div>
+          //                   </div>
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label
+          //                         for="personal_enddate2020"
+          //                         class="form-label fs-6"
+          //                       >
+          //                         End
+          //                       </label>
+          //                       <input
+          //                         type="date"
+          //                         min="2020-04-01"
+          //                         max="2020-12-31"
+          //                         className={` date-picker ${
+          //                           errors.personal_enddate2020
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         id="personal_enddate2020"
+          //                         name="personal_enddate2020"
+          //                         value={formData.personal_enddate2020}
+          //                         onChange={handleInputChange}
+          //                         disabled={formData.numberOfDays === "0"}
+          //                       />
+          //                     </div>
+          //                   </div>
+          //                   {formData.numberOfDays === "0" && (
+          //                     <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+          //                       Start and end date is not significant for days zero.
+          //                     </p>
+          //                   )}
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label for="1days" class="form-label fs-6">
+          //                         Number of days:
+          //                       </label>
+          //                       <input
+          //                         type="number"
+          //                         className={` date-picker ${
+          //                           errors.numberOfDays ? "border-danger" : ""
+          //                         }`}
+          //                         id="1days"
+          //                         name="numberOfDays"
+          //                         value={formData.numberOfDays}
+          //                         onChange={handleInputChange}
+          //                       />
+          //                     </div>
+          //                   </div>
+          //                 </div>
+          //                 )}
+          //                 <label for="Self-employed" class="form-label fs-5">
+          //                   How many days were you personally sick with Covid,
+          //                   experienced Covid like symptoms, needed to
+          //                   quarantine, underwent testing, and took time off in
+          //                   2021?
+          //                 </label>
 
-                          <div style={{display: 'flex', flexDirection: 'row'}}>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.personallySick2021 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="personallySick2021"
-                                checked={formData.personallySick2021 === "Yes"}
-                                value="Yes"
-                                // id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.personallySick2021 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="personallySick2021"
-                                value="No"
-                                checked={formData.personallySick2021 === "No"}
-                                // id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
-                          </div>
+          //                 <div style={{display: 'flex', flexDirection: 'row'}}>
+          //                 <div class="optio mb-2">
+          //                   <p>
+          //                     <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.personallySick2021 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="personallySick2021"
+          //                       checked={formData.personallySick2021 === "Yes"}
+          //                       value="Yes"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     Yes
+          //                   </p>
+          //                 </div>
+          //                 <div class="optio">
+          //                   <p>
+          //                     <input
+          //                       class={`form-check-input ${
+          //                         errors.personallySick2021 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="personallySick2021"
+          //                       value="No"
+          //                       checked={formData.personallySick2021 === "No"}
+          //                       // id="self_employed_from_no"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     No
+          //                   </p>
+          //                 </div>
+          //                 </div>
 
-                          {formData.personallySick2021 === "Yes" && (
-                          <div class="row">
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="personal_startdate2021"
-                                  class="form-label fs-6"
-                                >
-                                  Start
-                                </label>
+          //                 {formData.personallySick2021 === "Yes" && (
+          //                 <div class="row">
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label
+          //                         for="personal_startdate2021"
+          //                         class="form-label fs-6"
+          //                       >
+          //                         Start
+          //                       </label>
                                
-                                <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  className={` date-picker ${
-                                    errors.personal_startdate2021
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="personal_startdate2021"
-                                  name="personal_startdate2021"
-                                  value={formData.personal_startdate2021}
-                                  onChange={handleInputChange}
-                                  disabled={formData.numberOfDays2021 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
+          //                       <input
+          //                         type="date"
+          //                         min="2021-01-01"
+          //                         max="2021-09-30"
+          //                         className={` date-picker ${
+          //                           errors.personal_startdate2021
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         id="personal_startdate2021"
+          //                         name="personal_startdate2021"
+          //                         value={formData.personal_startdate2021}
+          //                         onChange={handleInputChange}
+          //                         disabled={formData.numberOfDays2021 === "0"}
+          //                       />{" "}
+          //                     </div>
+          //                   </div>
                            
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="personal_enddate2021"
-                                  class="form-label fs-6"
-                                >
-                                  End
-                                </label>
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label
+          //                         for="personal_enddate2021"
+          //                         class="form-label fs-6"
+          //                       >
+          //                         End
+          //                       </label>
                              
-                                <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  className={` date-picker ${
-                                    errors.personal_enddate2021
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="personal_enddate2021"
-                                  name="personal_enddate2021"
-                                  value={formData.personal_enddate2021}
-                                  onChange={handleInputChange}
-                                  disabled={formData.numberOfDays2021 === "0"}
-                                />
-                              </div>
-                            </div>
-                            {formData.numberOfDays2021 === "0" && (
-                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif',  fontSize: 15}}>
-                             Start and end date is not significant for days zero.                
-                              </p>
-                            )}
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label for="2days" class="form-label fs-6">
-                                  Number of days:
-                                </label>
+          //                       <input
+          //                         type="date"
+          //                         min="2021-01-01"
+          //                         max="2021-09-30"
+          //                         className={` date-picker ${
+          //                           errors.personal_enddate2021
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         id="personal_enddate2021"
+          //                         name="personal_enddate2021"
+          //                         value={formData.personal_enddate2021}
+          //                         onChange={handleInputChange}
+          //                         disabled={formData.numberOfDays2021 === "0"}
+          //                       />
+          //                     </div>
+          //                   </div>
+          //                   {formData.numberOfDays2021 === "0" && (
+          //                     <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif',  fontSize: 15}}>
+          //                    Start and end date is not significant for days zero.                
+          //                     </p>
+          //                   )}
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label for="2days" class="form-label fs-6">
+          //                         Number of days:
+          //                       </label>
                                
-                                 <input
-                                  type="number"
-                                  class={` date-picker ${
-                                    errors.numberOfDays2021 ? "border-danger" : ""
-                                  }`}
-                                  id="2days"
-                                  name="numberOfDays2021"
-                                  value={formData.numberOfDays2021}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )}
-                          <div class="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              class="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              class="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
+          //                        <input
+          //                         type="number"
+          //                         class={` date-picker ${
+          //                           errors.numberOfDays2021 ? "border-danger" : ""
+          //                         }`}
+          //                         id="2days"
+          //                         name="numberOfDays2021"
+          //                         value={formData.numberOfDays2021}
+          //                         onChange={handleInputChange}
+          //                       />
+          //                     </div>
+          //                   </div>
+          //                 </div>
+          //                 )}
+          //                 <div class="d-flex justify-content-end mt-3">
+          //                   <button
+          //                     onClick={handlePrevious}
+          //                     type="button"
+          //                     class="px-3 py-2 prev-step"
+          //                   >
+          //                     Previous
+          //                   </button>
+          //                   <button
+          //                     onClick={handleNext}
+          //                     type="button"
+          //                     class="px-3 py-2 next-step"
+          //                   >
+          //                     {activeStep === steps.length - 1
+          //                       ? "Submit"
+          //                       : "Next"}
+          //                   </button>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+          <div class="step step-6">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                      </div>
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                       <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Are you eligible?</h1>
+                      <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">Question 4 of 6</h3>
+              <div style={{marginTop: 40}}>
+              {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+                                                                        (Self-Employment
+                                                                        Tax) for the years of 2020 or 2021?</h1> */}
+                                                                  <label for="covid_related_issues"
+                                                                      class="form-label headng " style={{ fontWeight: '600'}}>
+                                                            
+                                                                        Did you miss any self employment work in 2020 or
+                                                                        2021 due to Covid-19 related issues. <span><a
+                                                                                href=""  style={{color: 'red', fontSize: 23, textDecoration: 'underline'}}>Click here
+                                                                                for
+                                                                                examples</a></span>
+                                                                  </label>
+                                                                  
+                                                                        <div class="optio mb-2">
+                                                                        <p>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="covid_related_issues" value="Yes"
+                                                                                />Yes
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="optio">
+                                                                        <p>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="covid_related_issues" value="No"
+                                                                                 />No
+                                                                        </p>
+                                                                    </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                          <button
+                            onClick={handlePrevious}
+                            type="button"
+                            class="px-3 py-2 prev-step"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={handleNext}
+                            type="button"
+                            class="px-3 py-2 next-step"
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Submit"
+                              : "Next"}
+                          </button>
                         </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -3196,363 +3889,470 @@ const uploadFile = async (formData, inputName) => {
               </div>
             </div>
           </div>
+        </div>
         );
       case 6:
         return (
-          <div class="step step-7">
-            <input type="hidden" name="record_id" id="record_id" value="" />
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 align-items-start">
-                          <h6 class="mt-3 warn">Qualifying Days:</h6>
-                          <p class="mb-0">
-                            Whether you battled COVID, experienced COVID-like
-                            symptoms, needed to quarantine, underwent testing,
-                            or cared for a family member affected by the virus,
-                            the SETC could be your financial relief. If the
-                            closure of your child's school or daycare due to
-                            COVID restrictions forced you to stay home and
-                            impacted your work, we're here to help. Qualifying
-                            days would include,
-                          </p>
-                          <ul>
-                            <li>
-                              You took time off in 2020 or 2021 due to COVID-19
-                              or to care for someone with COVID-19 during the
-                              same period.
-                            </li>
-                            <li>
-                              You took time off to care for a child under 18
-                              years old due to school or daycare closures.
-                            </li>
-                          </ul>
-                          <p>
-                            <b style={{ color: "#e62e2d" }}>Note:</b> Qualifying
-                            days are a limiting factor. If your qualifying days
-                            are low for 2020 and 2021, it will severely affect
-                            the outcome. If you have no qualifying days for 2020
-                            or 2021, you would not qualify for this program.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <label for="Self-employed" class="form-label fs-5">
-                            How many days did you care for someone else who was
-                            affected by Covid, experienced Covid like symptoms,
-                            needed to quarantine, underwent testing, and took
-                            time off in 2020?
-                          </label>
+          // <div class="step step-7">
+          //   <input type="hidden" name="record_id" id="record_id" value="" />
+          //   <div class="container-fluid px-0">
+          //     <div class="row justify-content-center">
+          //       <div class="col-lg-12">
+          //         <div class="start-application">
+          //           <div class="row roww">
+          //             <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+          //               <div class="img-applci h-100 align-items-start">
+          //                 <h6 class="mt-3 warn">Qualifying Days:</h6>
+          //                 <p class="mb-0">
+          //                   Whether you battled COVID, experienced COVID-like
+          //                   symptoms, needed to quarantine, underwent testing,
+          //                   or cared for a family member affected by the virus,
+          //                   the SETC could be your financial relief. If the
+          //                   closure of your child's school or daycare due to
+          //                   COVID restrictions forced you to stay home and
+          //                   impacted your work, we're here to help. Qualifying
+          //                   days would include,
+          //                 </p>
+          //                 <ul>
+          //                   <li>
+          //                     You took time off in 2020 or 2021 due to COVID-19
+          //                     or to care for someone with COVID-19 during the
+          //                     same period.
+          //                   </li>
+          //                   <li>
+          //                     You took time off to care for a child under 18
+          //                     years old due to school or daycare closures.
+          //                   </li>
+          //                 </ul>
+          //                 <p>
+          //                   <b style={{ color: "#e62e2d" }}>Note:</b> Qualifying
+          //                   days are a limiting factor. If your qualifying days
+          //                   are low for 2020 and 2021, it will severely affect
+          //                   the outcome. If you have no qualifying days for 2020
+          //                   or 2021, you would not qualify for this program.
+          //                 </p>
+          //               </div>
+          //             </div>
+          //             <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+          //               <div class="img-applic-content">
+          //                 <LinearProgress
+          //                   variant="determinate"
+          //                   sx={{
+          //                     height: "8px",
+          //                     marginBottom: 4,
+          //                     borderRadius: "4px",
+          //                     backgroundColor: "#f0f0f0",
+          //                     "& .MuiLinearProgress-bar": {
+          //                       backgroundColor: "rgb(13, 189, 243);",
+          //                     },
+          //                   }}
+          //                   value={getProgressPercentage()}
+          //                 />
+          //                 <label for="Self-employed" class="form-label fs-5">
+          //                   How many days did you care for someone else who was
+          //                   affected by Covid, experienced Covid like symptoms,
+          //                   needed to quarantine, underwent testing, and took
+          //                   time off in 2020?
+          //                 </label>
 
 
-                          <div style={{display: 'flex', flexDirection: 'row'}}>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.symptoms2020 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="symptoms2020"
-                                checked={formData.symptoms2020 === "Yes"}
-                                value="Yes"
-                                // id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.symptoms2020 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="symptoms2020"
-                                value="No"
-                                checked={formData.symptoms2020 === "No"}
-                                // id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
-                          </div>
+                          // <div style={{display: 'flex', flexDirection: 'row'}}>
+                          // <div class="optio mb-2">
+                          //   <p>
+                          //     <input
+                          //       className="form-check-input"
+                          //       class={`form-check-input ${
+                          //         errors.symptoms2020 ? "border-danger" : ""
+                          //       }`}
+                          //       type="radio"
+                          //       name="symptoms2020"
+                          //       checked={formData.symptoms2020 === "Yes"}
+                          //       value="Yes"
+                          //       // id="self_employed_from_yes"
+                          //       onChange={handleInputChange}
+                          //     />
+                          //     Yes
+                          //   </p>
+                          // </div>
+                          // <div class="optio">
+                          //   <p>
+                          //     <input
+                          //       class={`form-check-input ${
+                          //         errors.symptoms2020 ? "border-danger" : ""
+                          //       }`}
+                          //       type="radio"
+                          //       name="symptoms2020"
+                          //       value="No"
+                          //       checked={formData.symptoms2020 === "No"}
+                          //       // id="self_employed_from_no"
+                          //       onChange={handleInputChange}
+                          //     />
+                          //     No
+                          //   </p>
+                          // </div>
+                          // </div>
 
-                          {formData.symptoms2020 === "Yes" && (
-                          <div class="row">
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="cared_startdate2020"
-                                  class="form-label fs-6"
-                                >
-                                  Start
-                                </label>
-                                {/* <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  class="date-picker"
-                                  id="cared_startdate2020"
-                                  name="cared_startdate2020"
-                                />
-                              </div> */}
-                               <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.cared_startdate2020
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="cared_startdate2020"
-                                  name="cared_startdate2020"
-                                  value={formData.cared_startdate2020}
-                                  onChange={handleInputChange}
-                                  disabled={formData.symptomsdays2020 === "0"}
-                                />{" "}
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="cared_enddate2020"
-                                  class="form-label fs-6"
-                                >
-                                  End
-                                </label>
+                          // {formData.symptoms2020 === "Yes" && (
+                          // <div class="row">
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label
+                          //         for="cared_startdate2020"
+                          //         class="form-label fs-6"
+                          //       >
+                          //         Start
+                          //       </label>
+                          //       {/* <input
+                          //         type="date"
+                          //         min="2020-04-01"
+                          //         max="2020-12-31"
+                          //         class="date-picker"
+                          //         id="cared_startdate2020"
+                          //         name="cared_startdate2020"
+                          //       />
+                          //     </div> */}
+                          //      <input
+                          //         type="date"
+                          //         min="2020-04-01"
+                          //         max="2020-12-31"
+                          //         // className="date-picker"
+                          //         className={` date-picker ${
+                          //           errors.cared_startdate2020
+                          //             ? "border-danger"
+                          //             : ""
+                          //         }`}
+                          //         id="cared_startdate2020"
+                          //         name="cared_startdate2020"
+                          //         value={formData.cared_startdate2020}
+                          //         onChange={handleInputChange}
+                          //         disabled={formData.symptomsdays2020 === "0"}
+                          //       />{" "}
+                          //       </div>
+                          //   </div>
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label
+                          //         for="cared_enddate2020"
+                          //         class="form-label fs-6"
+                          //       >
+                          //         End
+                          //       </label>
                               
-                                 <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.cared_enddate2020
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="cared_enddate2020"
-                                  name="cared_enddate2020"
-                                  value={formData.cared_enddate2020}
-                                  onChange={handleInputChange}
-                                  disabled={formData.symptomsdays2020 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
-                            {formData.symptomsdays2020 === "0" && (
-                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
-                                Start and end date is not significant for days zero.
-                              </p>
-                            )}
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label for="3days" class="form-label fs-6">
-                                  Number of days:
-                                </label>
+                          //        <input
+                          //         type="date"
+                          //         min="2020-04-01"
+                          //         max="2020-12-31"
+                          //         // className="date-picker"
+                          //         className={` date-picker ${
+                          //           errors.cared_enddate2020
+                          //             ? "border-danger"
+                          //             : ""
+                          //         }`}
+                          //         id="cared_enddate2020"
+                          //         name="cared_enddate2020"
+                          //         value={formData.cared_enddate2020}
+                          //         onChange={handleInputChange}
+                          //         disabled={formData.symptomsdays2020 === "0"}
+                          //       />{" "}
+                          //     </div>
+                          //   </div>
+                          //   {formData.symptomsdays2020 === "0" && (
+                          //     <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                          //       Start and end date is not significant for days zero.
+                          //     </p>
+                          //   )}
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label for="3days" class="form-label fs-6">
+                          //         Number of days:
+                          //       </label>
                                 
-                                 <input
-                                  type="number"
-                                  className={` date-picker ${
-                                    errors.symptomsdays2020 ? "border-danger" : ""
-                                  }`}
-                                  id="3days"
-                                  name="symptomsdays2020"
-                                  value={formData.symptomsdays2020}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )}
+                          //        <input
+                          //         type="number"
+                          //         className={` date-picker ${
+                          //           errors.symptomsdays2020 ? "border-danger" : ""
+                          //         }`}
+                          //         id="3days"
+                          //         name="symptomsdays2020"
+                          //         value={formData.symptomsdays2020}
+                          //         onChange={handleInputChange}
+                          //       />
+                          //     </div>
+                          //   </div>
+                          // </div>
+                          // )}
 
-                          <label for="Self-employed" class="form-label fs-5">
-                            How many days did you care for someone else who was
-                            affected by Covid, experienced Covid like symptoms,
-                            needed to quarantine, underwent testing, and took
-                            time off in 2021?
-                          </label>
-                          <div style={{display: 'flex', flexDirection: 'row'}}>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.symptoms2021 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="symptoms2021"
-                                checked={formData.symptoms2021 === "Yes"}
-                                value="Yes"
-                                // id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.symptoms2021 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="symptoms2021"
-                                value="No"
-                                checked={formData.symptoms2021 === "No"}
-                                // id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
-                          </div>
+                          // <label for="Self-employed" class="form-label fs-5">
+                          //   How many days did you care for someone else who was
+                          //   affected by Covid, experienced Covid like symptoms,
+                          //   needed to quarantine, underwent testing, and took
+                          //   time off in 2021?
+                          // </label>
+                          // <div style={{display: 'flex', flexDirection: 'row'}}>
+                          // <div class="optio mb-2">
+                          //   <p>
+                          //     <input
+                          //       className="form-check-input"
+                          //       class={`form-check-input ${
+                          //         errors.symptoms2021 ? "border-danger" : ""
+                          //       }`}
+                          //       type="radio"
+                          //       name="symptoms2021"
+                          //       checked={formData.symptoms2021 === "Yes"}
+                          //       value="Yes"
+                          //       // id="self_employed_from_yes"
+                          //       onChange={handleInputChange}
+                          //     />
+                          //     Yes
+                          //   </p>
+                          // </div>
+                          // <div class="optio">
+                          //   <p>
+                          //     <input
+                          //       class={`form-check-input ${
+                          //         errors.symptoms2021 ? "border-danger" : ""
+                          //       }`}
+                          //       type="radio"
+                          //       name="symptoms2021"
+                          //       value="No"
+                          //       checked={formData.symptoms2021 === "No"}
+                          //       // id="self_employed_from_no"
+                          //       onChange={handleInputChange}
+                          //     />
+                          //     No
+                          //   </p>
+                          // </div>
+                          // </div>
 
 
-                          {formData.symptoms2021 === "Yes" && (
-                          <div class="row">
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="cared_startdate2021"
-                                  class="form-label fs-6"
-                                >
-                                  Start
-                                </label>
-                                {/* <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  class="date-picker"
-                                  id="cared_startdate2021"
-                                  name="cared_startdate2021"
-                                /> */}
-                                <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.cared_startdate2021  && formData.symptomsdays2021 !== "0"
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="cared_startdate2021"
-                                  name="cared_startdate2021"
-                                  value={formData.cared_startdate2021}
-                                  onChange={handleInputChange}
-                                  disabled={formData.symptomsdays2021 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="cared_enddate2021"
-                                  class="form-label fs-6"
-                                >
-                                  End
-                                </label>
-                                {/* <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  class="date-picker"
-                                  id="cared_enddate2021"
-                                  name="cared_enddate2021"
-                                /> */}
-                                  <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.cared_enddate2021 &&  formData.symptomsdays2021 !== "0"
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="cared_enddate2021"
-                                  name="cared_enddate2021"
-                                  value={formData.cared_enddate2021}
-                                  onChange={handleInputChange}
-                                  disabled={formData.symptomsdays2021 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
+                          // {formData.symptoms2021 === "Yes" && (
+                          // <div class="row">
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label
+                          //         for="cared_startdate2021"
+                          //         class="form-label fs-6"
+                          //       >
+                          //         Start
+                          //       </label>
+                          //       {/* <input
+                          //         type="date"
+                          //         min="2021-01-01"
+                          //         max="2021-09-30"
+                          //         class="date-picker"
+                          //         id="cared_startdate2021"
+                          //         name="cared_startdate2021"
+                          //       /> */}
+                          //       <input
+                          //         type="date"
+                          //         min="2021-01-01"
+                          //         max="2021-09-30"
+                          //         // className="date-picker"
+                          //         className={` date-picker ${
+                          //           errors.cared_startdate2021  && formData.symptomsdays2021 !== "0"
+                          //             ? "border-danger"
+                          //             : ""
+                          //         }`}
+                          //         id="cared_startdate2021"
+                          //         name="cared_startdate2021"
+                          //         value={formData.cared_startdate2021}
+                          //         onChange={handleInputChange}
+                          //         disabled={formData.symptomsdays2021 === "0"}
+                          //       />{" "}
+                          //     </div>
+                          //   </div>
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label
+                          //         for="cared_enddate2021"
+                          //         class="form-label fs-6"
+                          //       >
+                          //         End
+                          //       </label>
+                          //       {/* <input
+                          //         type="date"
+                          //         min="2021-01-01"
+                          //         max="2021-09-30"
+                          //         class="date-picker"
+                          //         id="cared_enddate2021"
+                          //         name="cared_enddate2021"
+                          //       /> */}
+                          //         <input
+                          //         type="date"
+                          //         min="2021-01-01"
+                          //         max="2021-09-30"
+                          //         // className="date-picker"
+                          //         className={` date-picker ${
+                          //           errors.cared_enddate2021 &&  formData.symptomsdays2021 !== "0"
+                          //             ? "border-danger"
+                          //             : ""
+                          //         }`}
+                          //         id="cared_enddate2021"
+                          //         name="cared_enddate2021"
+                          //         value={formData.cared_enddate2021}
+                          //         onChange={handleInputChange}
+                          //         disabled={formData.symptomsdays2021 === "0"}
+                          //       />{" "}
+                          //     </div>
+                          //   </div>
 
-                            {formData.symptomsdays2021 === "0" && (
-                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
-                                Start and end date is not significant for days zero.
-                              </p>
-                            )}
+                          //   {formData.symptomsdays2021 === "0" && (
+                          //     <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                          //       Start and end date is not significant for days zero.
+                          //     </p>
+                          //   )}
 
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label for="4days" class="form-label fs-6">
-                                  Number of days:
-                                </label>
-                                {/* <input
-                                  type="number"
-                                  class="date-picker"
-                                  id="4days"
-                                  name="4days"
-                                /> */}
-                                 <input
-                                  type="number"
-                                  className={` date-picker ${
-                                    errors.symptomsdays2021 ? "border-danger" : ""
-                                  }`}
-                                  id="4days"
-                                  name="symptomsdays2021"
-                                  value={formData.symptomsdays2021}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )}
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label for="4days" class="form-label fs-6">
+                          //         Number of days:
+                          //       </label>
+                          //       {/* <input
+                          //         type="number"
+                          //         class="date-picker"
+                          //         id="4days"
+                          //         name="4days"
+                          //       /> */}
+                          //        <input
+                          //         type="number"
+                          //         className={` date-picker ${
+                          //           errors.symptomsdays2021 ? "border-danger" : ""
+                          //         }`}
+                          //         id="4days"
+                          //         name="symptomsdays2021"
+                          //         value={formData.symptomsdays2021}
+                          //         onChange={handleInputChange}
+                          //       />
+                          //     </div>
+                          //   </div>
+                          // </div>
+                          // )}
 
-                          <div class="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              class="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              class="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
+          //                 <div class="d-flex justify-content-end mt-3">
+          //                   <button
+          //                     onClick={handlePrevious}
+          //                     type="button"
+          //                     class="px-3 py-2 prev-step"
+          //                   >
+          //                     Previous
+          //                   </button>
+          //                   <button
+          //                     onClick={handleNext}
+          //                     type="button"
+          //                     class="px-3 py-2 next-step"
+          //                   >
+          //                     {activeStep === steps.length - 1
+          //                       ? "Submit"
+          //                       : "Next"}
+          //                   </button>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+
+          <div class="step step-7">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                      </div>
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                       <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Are you eligible?</h1>
+                      <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">Question 5 of 6</h3>
+              <div style={{marginTop: 40}}>
+              {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+                                                                        (Self-Employment
+                                                                        Tax) for the years of 2020 or 2021?</h1> */}
+                                                                  <label for="setc_program"
+                                                                      class="form-label headng " style={{ fontWeight: '600'}}>
+                                                            
+                                                            Have you already filed for the SETC program/FFCRA
+for the years of 2020 and 2021?
+
+                                                                  </label>
+                                                                  
+                                                                        <div class="optio mb-2">
+                                                                        <p>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="setc_program" value="Yes"
+                                                                                />Yes
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="optio">
+                                                                        <p>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="setc_program" value="No"
+                                                                                 />No
+                                                                        </p>
+                                                                    </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                          <button
+                            onClick={handlePrevious}
+                            type="button"
+                            class="px-3 py-2 prev-step"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={handleNext}
+                            type="button"
+                            class="px-3 py-2 next-step"
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Submit"
+                              : "Next"}
+                          </button>
                         </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -3560,447 +4360,458 @@ const uploadFile = async (formData, inputName) => {
               </div>
             </div>
           </div>
+        </div>
         );
       case 7:
         return (
-          <div class="step step-8">
-            <input type="hidden" name="record_id" id="record_id" value="" />
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 align-items-start">
-                          <h6 class="mt-3 warn">Qualifying Days:</h6>
-                          <p class="mb-0">
-                            Whether you battled COVID, experienced COVID-like
-                            symptoms, needed to quarantine, underwent testing,
-                            or cared for a minor affected by the virus, the SETC
-                            could be your financial relief. Qualifying days
-                            would include,
-                            <ul>
-                              <li>
-                                You took time off in 2020 or 2021 due to
-                                COVID-19 or to care for your child/children with
-                                COVID-19 during the same period.
-                              </li>
-                              <li>
-                                You took time off to care for a child under 18
-                                years old due to school or daycare closures.
-                              </li>
-                              <li>
-                                If you cared for someone under eighteen years
-                                old between April 1, 2020, and March 31, 2021,
-                                you can claim up to 50 days. From April 1, 2021,
-                                to September 30, 2021, you can claim up to 60
-                                days.
-                              </li>
-                            </ul>
-                          </p>
-                          <p>
-                            <b style={{ color: "#e62e2d" }}>Note:</b> Qualifying
-                            days are a limiting factor. If your qualifying days
-                            are low for 2020 and 2021, it will severely affect
-                            the outcome. If you have no qualifying days for 2020
-                            or 2021, you would not qualify for this program.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <label for="Self-employed" class="form-label fs-5">
-                            How many days were you affected by the closure of
-                            your child's school/daycare due to COVID
-                            restrictions, or how many days did you care for your
-                            minor child who was affected by COVID, which
-                            impacted your work in 2020?
-                            <span
-                              style={{
-                                color: "rgb(13, 189, 243)",
-                                marginLeft: "10px",
-                              }}
-                            >
-                              (50 days max)
-                            </span>
-                          </label>
+          // <div class="step step-8">
+          //   <input type="hidden" name="record_id" id="record_id" value="" />
+          //   <div class="container-fluid px-0">
+          //     <div class="row justify-content-center">
+          //       <div class="col-lg-12">
+          //         <div class="start-application">
+          //           <div class="row roww">
+          //             <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+          //               <div class="img-applci h-100 align-items-start">
+          //                 <h6 class="mt-3 warn">Qualifying Days:</h6>
+          //                 <p class="mb-0">
+          //                   Whether you battled COVID, experienced COVID-like
+          //                   symptoms, needed to quarantine, underwent testing,
+          //                   or cared for a minor affected by the virus, the SETC
+          //                   could be your financial relief. Qualifying days
+          //                   would include,
+          //                   <ul>
+          //                     <li>
+          //                       You took time off in 2020 or 2021 due to
+          //                       COVID-19 or to care for your child/children with
+          //                       COVID-19 during the same period.
+          //                     </li>
+          //                     <li>
+          //                       You took time off to care for a child under 18
+          //                       years old due to school or daycare closures.
+          //                     </li>
+          //                     <li>
+          //                       If you cared for someone under eighteen years
+          //                       old between April 1, 2020, and March 31, 2021,
+          //                       you can claim up to 50 days. From April 1, 2021,
+          //                       to September 30, 2021, you can claim up to 60
+          //                       days.
+          //                     </li>
+          //                   </ul>
+          //                 </p>
+          //                 <p>
+          //                   <b style={{ color: "#e62e2d" }}>Note:</b> Qualifying
+          //                   days are a limiting factor. If your qualifying days
+          //                   are low for 2020 and 2021, it will severely affect
+          //                   the outcome. If you have no qualifying days for 2020
+          //                   or 2021, you would not qualify for this program.
+          //                 </p>
+          //               </div>
+          //             </div>
+          //             <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+          //               <div class="img-applic-content">
+          //                 <LinearProgress
+          //                   variant="determinate"
+          //                   sx={{
+          //                     height: "8px",
+          //                     marginBottom: 4,
+          //                     borderRadius: "4px",
+          //                     backgroundColor: "#f0f0f0",
+          //                     "& .MuiLinearProgress-bar": {
+          //                       backgroundColor: "rgb(13, 189, 243);",
+          //                     },
+          //                   }}
+          //                   value={getProgressPercentage()}
+          //                 />
+          //                 <label for="Self-employed" class="form-label fs-5">
+          //                   How many days were you affected by the closure of
+          //                   your child's school/daycare due to COVID
+          //                   restrictions, or how many days did you care for your
+          //                   minor child who was affected by COVID, which
+          //                   impacted your work in 2020?
+          //                   <span
+          //                     style={{
+          //                       color: "rgb(13, 189, 243)",
+          //                       marginLeft: "10px",
+          //                     }}
+          //                   >
+          //                     (50 days max)
+          //                   </span>
+          //                 </label>
 
 
-                          <div style={{display: 'flex', flexDirection: 'row'}}>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.closure2020 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="closure2020"
-                                checked={formData.closure2020 === "Yes"}
-                                value="Yes"
-                                // id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.closure2020 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="closure2020"
-                                value="No"
-                                checked={formData.closure2020 === "No"}
-                                // id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
-                          </div>
+                          // <div style={{display: 'flex', flexDirection: 'row'}}>
+                          // <div class="optio mb-2">
+                          //   <p>
+                          //     <input
+                          //       className="form-check-input"
+                          //       class={`form-check-input ${
+                          //         errors.closure2020 ? "border-danger" : ""
+                          //       }`}
+                          //       type="radio"
+                          //       name="closure2020"
+                          //       checked={formData.closure2020 === "Yes"}
+                          //       value="Yes"
+                          //       // id="self_employed_from_yes"
+                          //       onChange={handleInputChange}
+                          //     />
+                          //     Yes
+                          //   </p>
+                          // </div>
+                          // <div class="optio">
+                          //   <p>
+                          //     <input
+                          //       class={`form-check-input ${
+                          //         errors.closure2020 ? "border-danger" : ""
+                          //       }`}
+                          //       type="radio"
+                          //       name="closure2020"
+                          //       value="No"
+                          //       checked={formData.closure2020 === "No"}
+                          //       // id="self_employed_from_no"
+                          //       onChange={handleInputChange}
+                          //     />
+                          //     No
+                          //   </p>
+                          // </div>
+                          // </div>
 
-                          {formData.closure2020 === "Yes" && (
-                          <div class="row">
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="minor_startdate2020"
-                                  class="form-label fs-6"
-                                >
-                                  Start
-                                </label>
-                                {/* <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  class="date-picker"
-                                  id="minor_startdate2020"
-                                  name="minor_startdate2020"
-                                /> */}
+                          // {formData.closure2020 === "Yes" && (
+                          // <div class="row">
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label
+                          //         for="minor_startdate2020"
+                          //         class="form-label fs-6"
+                          //       >
+                          //         Start
+                          //       </label>
+                          //       {/* <input
+                          //         type="date"
+                          //         min="2020-04-01"
+                          //         max="2020-12-31"
+                          //         class="date-picker"
+                          //         id="minor_startdate2020"
+                          //         name="minor_startdate2020"
+                          //       /> */}
 
-                                <input
-                                 type="date"
-                                 min="2020-04-01"
-                                 max="2020-12-31" 
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.minor_startdate2020
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="minor_startdate2020"
-                                  name="minor_startdate2020"
-                                  value={formData.minor_startdate2020}
-                                  onChange={handleInputChange}
-                                  disabled={formData.minordays2020 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="minor_enddate2020"
-                                  class="form-label fs-6"
-                                >
-                                  End
-                                </label>
-                                {/* <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  class="date-picker"
-                                  id="minor_enddate2020"
-                                  name="minor_enddate2020"
-                                />
-                                 */}
-                                <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.minor_enddate2020
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="minor_enddate2020"
-                                  name="minor_enddate2020"
-                                  value={formData.minor_enddate2020}
-                                  onChange={handleInputChange}
-                                  disabled={formData.minordays2020 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
+                          //       <input
+                          //        type="date"
+                          //        min="2020-04-01"
+                          //        max="2020-12-31" 
+                          //         // className="date-picker"
+                          //         className={` date-picker ${
+                          //           errors.minor_startdate2020
+                          //             ? "border-danger"
+                          //             : ""
+                          //         }`}
+                          //         id="minor_startdate2020"
+                          //         name="minor_startdate2020"
+                          //         value={formData.minor_startdate2020}
+                          //         onChange={handleInputChange}
+                          //         disabled={formData.minordays2020 === "0"}
+                          //       />{" "}
+                          //     </div>
+                          //   </div>
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label
+                          //         for="minor_enddate2020"
+                          //         class="form-label fs-6"
+                          //       >
+                          //         End
+                          //       </label>
+                          //       {/* <input
+                          //         type="date"
+                          //         min="2020-04-01"
+                          //         max="2020-12-31"
+                          //         class="date-picker"
+                          //         id="minor_enddate2020"
+                          //         name="minor_enddate2020"
+                          //       />
+                          //        */}
+                          //       <input
+                          //         type="date"
+                          //         min="2020-04-01"
+                          //         max="2020-12-31"
+                          //         // className="date-picker"
+                          //         className={` date-picker ${
+                          //           errors.minor_enddate2020
+                          //             ? "border-danger"
+                          //             : ""
+                          //         }`}
+                          //         id="minor_enddate2020"
+                          //         name="minor_enddate2020"
+                          //         value={formData.minor_enddate2020}
+                          //         onChange={handleInputChange}
+                          //         disabled={formData.minordays2020 === "0"}
+                          //       />{" "}
+                          //     </div>
+                          //   </div>
 
-                            {formData.minordays2020 === "0" && (
-                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
-                                Start and end date is not significant for days zero.
-                              </p>
-                            )}
+                          //   {formData.minordays2020 === "0" && (
+                          //     <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                          //       Start and end date is not significant for days zero.
+                          //     </p>
+                          //   )}
 
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label for="5days" class="form-label fs-6">
-                                  Number of days:
-                                </label>
-                                {/* <input
-                                  type="number"
-                                  placeholder="(50 days max)"
-                                  class="date-picker"
-                                  id="5days"
-                                  name="5days"
-                                /> */}
-                                 <input
-                                  type="number"
-                                  placeholder="(50 days max)"
-                                  className={` date-picker ${
-                                    errors.minordays2020 ? "border-danger" : ""
-                                  }`}
-                                  id="5days"
-                                  name="minordays2020"
-                                  value={formData.minordays2020}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )}
+                          //   <div class="col-lg-6">
+                          //     <div class="optio mb-2">
+                          //       <label for="5days" class="form-label fs-6">
+                          //         Number of days:
+                          //       </label>
+                          //       {/* <input
+                          //         type="number"
+                          //         placeholder="(50 days max)"
+                          //         class="date-picker"
+                          //         id="5days"
+                          //         name="5days"
+                          //       /> */}
+                          //        <input
+                          //         type="number"
+                          //         placeholder="(50 days max)"
+                          //         className={` date-picker ${
+                          //           errors.minordays2020 ? "border-danger" : ""
+                          //         }`}
+                          //         id="5days"
+                          //         name="minordays2020"
+                          //         value={formData.minordays2020}
+                          //         onChange={handleInputChange}
+                          //       />
+                          //     </div>
+                          //   </div>
+                          // </div>
+                          // )}
 
 
-                          <label for="Self-employed" class="form-label fs-5">
-                            How many days were you affected by the closure of
-                            your child's school/daycare due to COVID
-                            restrictions, or how many days did you care for your
-                            minor child who was affected by COVID, which
-                            impacted your work in 2021?
-                            <span
-                              style={{
-                                color: "rgb(13, 189, 243)",
-                                marginLeft: "10px",
-                              }}
-                            >
-                              (60 days max)
-                            </span>
-                          </label>
+          //                 <label for="Self-employed" class="form-label fs-5">
+          //                   How many days were you affected by the closure of
+          //                   your child's school/daycare due to COVID
+          //                   restrictions, or how many days did you care for your
+          //                   minor child who was affected by COVID, which
+          //                   impacted your work in 2021?
+          //                   <span
+          //                     style={{
+          //                       color: "rgb(13, 189, 243)",
+          //                       marginLeft: "10px",
+          //                     }}
+          //                   >
+          //                     (60 days max)
+          //                   </span>
+          //                 </label>
 
-                          <div style={{display: 'flex', flexDirection: 'row'}}>
-                          <div class="optio mb-2">
-                            <p>
-                              <input
-                                className="form-check-input"
-                                class={`form-check-input ${
-                                  errors.closure2021 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="closure2021"
-                                checked={formData.closure2021 === "Yes"}
-                                value="Yes"
-                                // id="self_employed_from_yes"
-                                onChange={handleInputChange}
-                              />
-                              Yes
-                            </p>
-                          </div>
-                          <div class="optio">
-                            <p>
-                              <input
-                                class={`form-check-input ${
-                                  errors.closure2021 ? "border-danger" : ""
-                                }`}
-                                type="radio"
-                                name="closure2021"
-                                value="No"
-                                checked={formData.closure2021 === "No"}
-                                // id="self_employed_from_no"
-                                onChange={handleInputChange}
-                              />
-                              No
-                            </p>
-                          </div>
-                          </div>
+          //                 <div style={{display: 'flex', flexDirection: 'row'}}>
+          //                 <div class="optio mb-2">
+          //                   <p>
+          //                     <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.closure2021 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="closure2021"
+          //                       checked={formData.closure2021 === "Yes"}
+          //                       value="Yes"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     Yes
+          //                   </p>
+          //                 </div>
+          //                 <div class="optio">
+          //                   <p>
+          //                     <input
+          //                       class={`form-check-input ${
+          //                         errors.closure2021 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="closure2021"
+          //                       value="No"
+          //                       checked={formData.closure2021 === "No"}
+          //                       // id="self_employed_from_no"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     No
+          //                   </p>
+          //                 </div>
+          //                 </div>
 
-                          {formData.closure2021 === "Yes" && (
-                          <div class="row">
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="minor_startdate2021"
-                                  class="form-label fs-6"
-                                >
-                                  Start
-                                </label>
+          //                 {formData.closure2021 === "Yes" && (
+          //                 <div class="row">
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label
+          //                         for="minor_startdate2021"
+          //                         class="form-label fs-6"
+          //                       >
+          //                         Start
+          //                       </label>
                                
-                                  <input
-                                 type="date"
-                                 min="2021-01-01"
-                                 max="2021-09-30"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.minor_startdate2021
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="minor_startdate2021"
-                                  name="minor_startdate2021"
-                                  value={formData.minor_startdate2021}
-                                  onChange={handleInputChange}
-                                  disabled={formData.minordays2021 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label
-                                  for="minor_enddate2021"
-                                  class="form-label fs-6"
-                                >
-                                  End
-                                </label>
+          //                         <input
+          //                        type="date"
+          //                        min="2021-01-01"
+          //                        max="2021-09-30"
+          //                         // className="date-picker"
+          //                         className={` date-picker ${
+          //                           errors.minor_startdate2021
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         id="minor_startdate2021"
+          //                         name="minor_startdate2021"
+          //                         value={formData.minor_startdate2021}
+          //                         onChange={handleInputChange}
+          //                         disabled={formData.minordays2021 === "0"}
+          //                       />{" "}
+          //                     </div>
+          //                   </div>
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label
+          //                         for="minor_enddate2021"
+          //                         class="form-label fs-6"
+          //                       >
+          //                         End
+          //                       </label>
                               
-                                   <input
-                                 type="date"
-                                 min="2021-01-01"
-                                 max="2021-09-30"
-                                  // className="date-picker"
-                                  className={` date-picker ${
-                                    errors.minor_enddate2021
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  id="minor_enddate2021"
-                                  name="minor_enddate2021"
-                                  value={formData.minor_enddate2021}
-                                  onChange={handleInputChange}
-                                  disabled={formData.minordays2021 === "0"}
-                                />{" "}
-                              </div>
-                            </div>
+          //                          <input
+          //                        type="date"
+          //                        min="2021-01-01"
+          //                        max="2021-09-30"
+          //                         // className="date-picker"
+          //                         className={` date-picker ${
+          //                           errors.minor_enddate2021
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         id="minor_enddate2021"
+          //                         name="minor_enddate2021"
+          //                         value={formData.minor_enddate2021}
+          //                         onChange={handleInputChange}
+          //                         disabled={formData.minordays2021 === "0"}
+          //                       />{" "}
+          //                     </div>
+          //                   </div>
 
-                            {formData.minordays2021 === "0" && (
-                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
-                                Start and end date is not significant for days zero.
-                              </p>
-                            )}
+          //                   {formData.minordays2021 === "0" && (
+          //                     <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+          //                       Start and end date is not significant for days zero.
+          //                     </p>
+          //                   )}
 
 
-                            <div class="col-lg-6">
-                              <div class="optio mb-2">
-                                <label for="6days" class="form-label fs-6">
-                                  Number of days:
-                                </label>
+          //                   <div class="col-lg-6">
+          //                     <div class="optio mb-2">
+          //                       <label for="6days" class="form-label fs-6">
+          //                         Number of days:
+          //                       </label>
                                
-                                   <input
-                                  type="number"
-                                  placeholder="(60 days max)"
-                                  className={` date-picker ${
-                                    errors.minordays2021 ? "border-danger" : ""
-                                  }`}
+          //                          <input
+          //                         type="number"
+          //                         placeholder="(60 days max)"
+          //                         className={` date-picker ${
+          //                           errors.minordays2021 ? "border-danger" : ""
+          //                         }`}
                                   
-                                  id="6days"
-                                  name="minordays2021"
-                                  value={formData.minordays2021}
-                                  onChange={handleInputChange}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )}
+          //                         id="6days"
+          //                         name="minordays2021"
+          //                         value={formData.minordays2021}
+          //                         onChange={handleInputChange}
+          //                       />
+          //                     </div>
+          //                   </div>
+          //                 </div>
+          //                 )}
 
-                          <div class="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              class="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              class="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
-                        </div>
+          //                 <div class="d-flex justify-content-end mt-3">
+          //                   <button
+          //                     onClick={handlePrevious}
+          //                     type="button"
+          //                     class="px-3 py-2 prev-step"
+          //                   >
+          //                     Previous
+          //                   </button>
+          //                   <button
+          //                     onClick={handleNext}
+          //                     type="button"
+          //                     class="px-3 py-2 next-step"
+          //                   >
+          //                     {activeStep === steps.length - 1
+          //                       ? "Submit"
+          //                       : "Next"}
+          //                   </button>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+          <div class="step step-8">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      case 8:
-        return (
-          <div class="step step-9">
-            <input type="hidden" name="record_id" id="record_id" value="" />
-            <div class="container-fluid px-0">
-              <div class="row justify-content-center">
-                <div class="col-lg-12">
-                  <div class="start-application">
-                    <div class="row roww">
-                      <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div class="img-applci h-100 align-items-start">
-                          <h6 class="mt-3 warn">Extremely Important:</h6>
-                          <p class="mb-0">
-                            "If you were both employed as a W-2 and
-                            self-employed in the years 2020 and/or 2021 and your
-                            employer paid you under the Families First
-                            Coronavirus Response Act for qualified sick and/or
-                            family leave wages, these wages MUST be disclosed by
-                            your employer on the Form W-2, box 14 or an
-                            equivalent supporting statement." The employer is
-                            required to disclose the amounts of qualified sick
-                            and/or family leave wages paid by category. These
-                            payments MUST be disclosed on this survey by
-                            category and year, which will reduce the allowable
-                            credit under the Self-Employed Tax Credit. Both the
-                            employer FFCRA and SETC program were credited under
-                            the Families First Coronaviris Response Act, and
-                            therefore, you may not double-dip under both
-                            programs.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
-                        <div class="img-applic-content">
-                          <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          />
-                          <label for="Self-employed-w2" class="form-label fs-5">
-                            Were you self-employed and employed as a W2 during
-                            4/1/2020-9/30/2021?
-                          </label>
-                          <div class="optio mb-2">
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                       <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Are you eligible?</h1>
+                      <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">Question 6 of 6</h3>
+              <div style={{marginTop: 40}}>
+              {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+                                                                        (Self-Employment
+                                                                        Tax) for the years of 2020 or 2021?</h1> */}
+                                                                  <label for="setc_program"
+                                                                      class="form-label headng " style={{ fontWeight: '600'}}>
+                                                            
+                                                            Were you self-employed and also a W2 employee in 2020 or 2021?
+
+                                                                  </label>
+                                                                  
+                                                                  <div class="optio mb-2">
                             <p>
                             
                               <input
@@ -4143,6 +4954,2165 @@ const uploadFile = async (formData, inputName) => {
                           )}
                           </>
                           )}
+                        <div class="d-flex justify-content-end mt-3">
+                          <button
+                            onClick={handlePrevious}
+                            type="button"
+                            class="px-3 py-2 prev-step"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={handleNext}
+                            type="button"
+                            class="px-3 py-2 next-step"
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Submit"
+                              : "Next"}
+                          </button>
+                        </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        );
+      case 8:
+        return (
+          // <div class="step step-9">
+          //   <input type="hidden" name="record_id" id="record_id" value="" />
+          //   <div class="container-fluid px-0">
+          //     <div class="row justify-content-center">
+          //       <div class="col-lg-12">
+          //         <div class="start-application">
+          //           <div class="row roww">
+          //             <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+          //               <div class="img-applci h-100 align-items-start">
+          //                 <h6 class="mt-3 warn">Extremely Important:</h6>
+          //                 <p class="mb-0">
+          //                   "If you were both employed as a W-2 and
+          //                   self-employed in the years 2020 and/or 2021 and your
+          //                   employer paid you under the Families First
+          //                   Coronavirus Response Act for qualified sick and/or
+          //                   family leave wages, these wages MUST be disclosed by
+          //                   your employer on the Form W-2, box 14 or an
+          //                   equivalent supporting statement." The employer is
+          //                   required to disclose the amounts of qualified sick
+          //                   and/or family leave wages paid by category. These
+          //                   payments MUST be disclosed on this survey by
+          //                   category and year, which will reduce the allowable
+          //                   credit under the Self-Employed Tax Credit. Both the
+          //                   employer FFCRA and SETC program were credited under
+          //                   the Families First Coronaviris Response Act, and
+          //                   therefore, you may not double-dip under both
+          //                   programs.
+          //                 </p>
+          //               </div>
+          //             </div>
+          //             <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+          //               <div class="img-applic-content">
+          //                 <LinearProgress
+          //                   variant="determinate"
+          //                   sx={{
+          //                     height: "8px",
+          //                     marginBottom: 4,
+          //                     borderRadius: "4px",
+          //                     backgroundColor: "#f0f0f0",
+          //                     "& .MuiLinearProgress-bar": {
+          //                       backgroundColor: "rgb(13, 189, 243);",
+          //                     },
+          //                   }}
+          //                   value={getProgressPercentage()}
+          //                 />
+          //                 <label for="Self-employed-w2" class="form-label fs-5">
+          //                   Were you self-employed and employed as a W2 during
+          //                   4/1/2020-9/30/2021?
+          //                 </label>
+          //                 <div class="optio mb-2">
+          //                   <p>
+                            
+          //                     <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.employed_as_W2 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="employed_as_W2"
+          //                       checked={formData.employed_as_W2 === "Yes"}
+          //                       value="Yes"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     Yes
+          //                   </p>
+          //                 </div>
+          //                 <div class="optio">
+          //                   <p>
+                             
+          //                        <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.employed_as_W2 ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="employed_as_W2"
+          //                       checked={formData.employed_as_W2 === "No"}
+          //                       value="No"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     No
+          //                   </p>
+          //                 </div>
+          //                 {formData.employed_as_W2 === "Yes" && (
+          //                   <>
+          //                 <div id="additional">
+          //                   <label
+          //                     for="Self-employed"
+          //                     class="form-label bg-light py-3 px-1 fs-5"
+          //                   >
+          //                     If yes, did your employer pay Family Sick Leave
+          //                     during Covid, and what amount?
+          //                   </label>
+          //                   <div class="optio mb-2">
+          //                     <p>
+          //                       {/* <input
+          //                         class="form-check-input"
+          //                         type="radio"
+          //                         name="Family_Sick_Leave"
+          //                         value="Yes"
+          //                         id="flexRadioAmount"
+          //                       />
+          //                       Yes */}
+          //                        <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.family_sick ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="family_sick"
+          //                       checked={formData.family_sick === "Yes"}
+          //                       value="Yes"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     Yes
+          //                     </p>
+          //                   </div>
+          //                   <div class="optio">
+          //                     <p>
+          //                       {/* <input
+          //                         class="form-check-input"
+          //                         type="radio"
+          //                         name="Family_Sick_Leave"
+          //                         value="No"
+          //                         id="flexRadioAmountNo"
+          //                       />
+          //                       No */}
+          //                       <input
+          //                       className="form-check-input"
+          //                       class={`form-check-input ${
+          //                         errors.family_sick ? "border-danger" : ""
+          //                       }`}
+          //                       type="radio"
+          //                       name="family_sick"
+          //                       checked={formData.family_sick === "No"}
+          //                       value="No"
+          //                       // id="self_employed_from_yes"
+          //                       onChange={handleInputChange}
+          //                     />
+          //                     No
+          //                     </p>
+          //                   </div>
+          //                 </div>
+          //                 {formData.family_sick === "Yes" && (
+                         
+
+          //                 <div id="amount" style={{ marginTop: "5.5px" }}>
+          //                   <div class="optio mb-2">
+          //                     {/* <input
+          //                       type="text"
+          //                       class="for mb-2"
+          //                       name="amount2020"
+          //                       placeholder="$2020"
+          //                       id="amount2020"
+          //                     /> */}
+          //                      <input
+          //                     type="text"
+          //                     value={formData.amount2020}
+          //                     name="amount2020"
+          //                     class={` for mb-2 ${
+          //                       errors.amount2020 ? "border-danger" : ""
+          //                     }`}
+          //                     placeholder="2021 Income"
+          //                     onChange={handleInputChange}
+          //                     id="amount2020"
+          //                   />
+          //                     {/* <input
+          //                       type="text"
+          //                       class="for "
+          //                       name="amount2021"
+          //                       placeholder="$2021"
+          //                       id="amount2021"
+          //                     /> */}
+          //                      <input
+          //                     type="text"
+          //                     value={formData.amount2021}
+          //                     name="amount2021"
+          //                     class={` for ${
+          //                       errors.amount2021 ? "border-danger" : ""
+          //                     }`}
+          //                     placeholder="2021 Income"
+          //                     onChange={handleInputChange}
+          //                     id="amount2021"
+          //                   />
+          //                   </div>
+          //                 </div>
+          //                 )}
+          //                 </>
+          //                 )}
+          //                 <div class="d-flex justify-content-end mt-3">
+          //                   <button
+          //                     onClick={handlePrevious}
+          //                     type="button"
+          //                     class="px-3 py-2 prev-step"
+          //                   >
+          //                     Previous
+          //                   </button>
+          //                   <button
+          //                     onClick={handleNext}
+          //                     type="button"
+          //                     class="px-3 py-2 next-step"
+          //                   >
+          //                     {activeStep === steps.length - 1
+          //                       ? "Submit"
+          //                       : "Next"}
+          //                   </button>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+
+          <div class="step step-9">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                      </div>
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                       <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Congratulations!
+</h1>
+                      <h1  style={{fontWeight: 300,  color: 'rgb(13, 189, 243)'}} class="text-center">Your Pre-Qualified for up to
+                           $32,220.00!!!</h1>
+              <div style={{marginTop: 40}}>
+              {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+                                                                        (Self-Employment
+                                                                        Tax) for the years of 2020 or 2021?</h1> */}
+                                                                  <label for="congrats"
+                                                                      class="form-label headng " style={{ fontWeight: '600'}}>
+                                                            
+                                                            Based on the information you submitted you are prequalified to receive the Self Employed Tax Credit.
+Click below to continue your application!
+
+                                                                  </label>
+                                                                  
+                                                                    
+
+                                                                  <div class="d-flex justify-content-center mt-3">
+                                                                      
+                                                                      <button type="button"  onClick={handleNext}
+                                                                          class="btn btn-primary next-step step2_next">
+                                                                          Continue Application
+                                                                      </button>
+                                                                  </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        );
+      case 9:
+        return (
+//           <div class="step step-9">
+//             <input type="hidden" name="record_id" id="record_id" value="" />
+//             <div class="container">
+//               <div class="row justify-content-center">
+//                 {/* <canvas id="confetti"></canvas> */}
+//                 <div class="col-lg-12">
+//                   <div class="start-application">
+//                     <div class="row">
+//                       <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+//                         <div class="img-applci sd h-100">
+//                           <div class="col-lg-12">
+//                             <div class="step-9-congrats">
+//                               <div class="step_9_con border-0 d-flex justify-content-center">
+//                                 <h3 class="text-success text-center fs-1 mb-3">
+//                                   Congratulations!
+//                                 </h3>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                       <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+//                         <div class="img-applic-content d-flex align-items-center">
+//                           <div class="row justify-content-center align-items-center">
+//                             <div class="col-lg-12">
+//                               <div class="h-100 d-flex align-items-center flex-column">
+//                                 <div class="h-90">
+//                                   <h3 class="text-success text-center fs-1 mb-3">
+//                                     Hurray!
+//                                   </h3>
+//                                   {/* <h6 class="fs-4">
+//                                     You may be eligible for
+//                                     <span class="text-success">{finalIncomeValue || finalCreditAmountStorage}</span>. We
+//                                     encourage you to complete the application
+//                                     and get paid. 🤩
+//                                   </h6> */}
+//       <h3 class="fs-4">
+//       Based on the information you provided, we’ve estimated that you might be eligible for up to
+//     <span class="text-success text-success text-center h3 fs-1 mb-3" id="final_amount"> {finalIncomeValue || finalCreditAmountStorage}</span>
+//      <br/>
+//     </h3>
+
+//     <h3 class="mt-4">
+// The next step is to upload your documents for our CPAs to calculate your exact credit amount.
+//   </h3>
+//                                 </div>
+//                                 <div class="d-flex justify-content-end mt-3">
+//                                   <button
+//                                     onClick={handlePrevious}
+//                                     type="button"
+//                                     class="px-3 py-2 prev-step"
+//                                   >
+//                                     Previous
+//                                   </button>
+//                                   <button
+//                                     onClick={handleNext}
+//                                     type="button"
+//                                     class="px-3 py-2 next-step"
+//                                   >
+//                                     {activeStep === steps.length - 1
+//                                       ? "Submit"
+//                                       : "Next"}
+//                                   </button>
+//                                 </div>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+<div class="step step-10 ">
+                                        
+                                        <div class="container-fluid px-0">
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-12">
+                                                    <div class="start-application">
+                                                        <div class="row roww">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 ps-0">
+                                                                <div class="img-applic-content">
+                                                                    <div class="step2_content">
+                                                                    <h1>Welcome To Your SETC
+                                        Application!</h1>
+                                                                        <h1>How does this work?</h1>
+                                                                        <div
+                                                                            class="d-flex justify-content-center align-items-center gap-3">
+                                                                            <ul>
+                                                                                <li>
+                                                                                Answer 8 questions of the questionaire
+                                                                                </li>
+                                                                                <li>
+                                                                                Get a calculated estimate amount
+                                        
+                                                                                </li>
+                                                                                <li>
+                                                                                Upload your documents
+                                                                                </li>
+                                                                                <li>
+                                                                                Receive your exact calculation from our CPA firm
+                                                                                </li>
+                                                                                <li>
+                                                                                Our CPA firm will process and file your return
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                        
+                                                                      
+                                                                    </div>
+                                                                 
+                                                                    <div class="step2_content my-5">
+                                                                        <h1>What documents will be needed?</h1>
+                                                                       
+                                        
+                                        
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center">
+                                                                            {/* <div class="rect"> */}
+                                                                                {/* <i class="fa-solid fa-check"></i> */}
+                                                                                <DomainVerification style={{ color: 'blueviolet',  width: '25px', height: '25px',  marginTop: 2}}/>
+                                                                            {/* </div> */}
+                                                                            <p class="p2">2019 Schedule C (Form 1040)
+                                                                                <span style={{color: 'red'}}>Click For
+                                                                                    Example</span></p>
+                                                                        </div>
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center">
+                                                                            {/* <div class="rect"> */}
+                                                                                {/* <i class="fa-solid fa-check"></i> */}
+                                                                                <DomainVerification style={{ color: 'blueviolet',  width: '25px', height: '25px', marginTop: 2}}/>                                                                            {/* </div> */}
+                                                                            <p class="p2">2019 Schedule C (Form 1040)
+                                                                                <span style={{color: 'red'}}>Click For
+                                                                                    Example</span></p>
+                                                                        </div>
+                                                                        <div
+                                                                            class="d-flex align-items-center justify-content-center">
+                                                                            {/* <div class="rect"> */}
+                                                                                {/* <i class="fa-solid fa-check"></i> */}
+                                                                                <DomainVerification style={{ color: 'blueviolet',  width: '25px', height: '25px',  marginTop: 2}}/>                                                                          {/* </div> */}
+                                                                            <p class="p2">2019 Schedule C (Form 1040)
+                                                                                <span style={{color: 'red'}}>Click For
+                                                                                    Example</span></p>
+                                                                        </div>
+                                                                    </div>
+                                                                                      <div class="d-flex" style={{ alignItems: "center ", padding: '20px 30px', background: '#cceffa', borderRadius: '10px'  }}>
+
+                                                                                                                <p>
+                                                                                                                    <input class="form-check-input me-1"
+                                                                                                                        type="checkbox" value=""
+                                                                                                                        id="flexCheckDefault" />I certify that I
+                                                                                                                    am in a position to properly
+                                                                                                                    evaluate and answer the questions as they
+                                                                                                                    relate to my self-employed business
+                                                                                                                    qualifications for the Self-Employed Tax
+                                                                                                                    Credit (SETC) Program.
+                                                                                                                </p>
+                                                                                                            </div>
+                                                                                                            <div class="d-flex justify-content-end mt-3">
+                                                                    <button
+                                                                      onClick={handlePrevious}
+                                                                      type="button"
+                                                                      class="px-3 py-2 prev-step"
+                                                                    >
+                                                                      Previous
+                                                                    </button>
+                                                                    <button
+                                                                      onClick={handleNext}
+                                                                      type="button"
+                                                                      class="px-3 py-2 next-step"
+                                                                    >
+                                                                      {activeStep === steps.length - 1
+                                                                        ? "Submit"
+                                                                        : "Next"}
+                                                                    </button>
+                                                                  </div>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+        );
+      case 10:
+        return (
+//           <div class="row justify-content-center step step-10">
+//             <div class="col-lg-8">
+//               <div
+//                 class="step step-10 bg-white shadow px-3 py-5"
+//                 style={{ borderRadius: "20px" }}
+//               >
+//                 {/* <div class="progress mb-4" style={{height: "15px"}}>
+//                       <input type="hidden" name="record_id" id="record_id" value=""/>
+//                       <div class="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+//                     </div> */}
+//                 <LinearProgress
+//                   variant="determinate"
+//                   sx={{
+//                     height: "8px",
+//                     marginBottom: 4,
+//                     borderRadius: "4px",
+//                     backgroundColor: "#f0f0f0",
+//                     "& .MuiLinearProgress-bar": {
+//                       backgroundColor: "rgb(13, 189, 243);",
+//                     },
+//                   }}
+//                   value={getProgressPercentage()}
+//                 />
+
+//                 <h3>Documents</h3>
+
+//                 <div class="mb-3 file_div">
+//                   <label for="driving_licence" class="form-label">
+//                     A PDF Copy of a Current ID or Driver's License
+//                   </label>
+//                   {userData?.driving_licence && userData?.driving_licence.length > 0 ? (
+//   userData.driving_licence.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.driving_licence_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('driving_licence', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="driving_licence"
+//     className="form-control file"
+//     id="driving_licence"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('driving_licence', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+//             <FileInputComponent
+//               inputName="driving_licence"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+//           )}
+
+
+//                             {uploadingFile === 'driving_licence' && (
+//                 <LinearProgressWithLabel value={uploadProgress.driving_licence} />
+//                             )
+//                             } 
+         
+//                 </div>
+//                 <div class="mb-3 file_div">
+//                   <label for="schedule_pdf" class="form-label">
+//                     A PDF Copy of your 2019 Form 1040 (Tax Return), including
+//                     ALL schedules, if the 2019 Self-Employed Income is higher
+//                     than 2020. We would prefer one PDF file.
+//                   </label>
+
+//                   {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
+//   userData.schedule_pdf.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.schedule_pdf_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="schedule_pdf"
+//     className="form-control file"
+//     id="schedule_pdf"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('schedule_pdf', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+//             <FileInputComponent
+//               inputName="schedule_pdf"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+//           )}
+
+
+//                             {uploadingFile === 'schedule_pdf' && (
+//                 <LinearProgressWithLabel value={uploadProgress.schedule_pdf} />
+//                             )} 
+//                 </div>
+//                 <div class="mb-3 file_div">
+//                   <label for="Tax_Return_2020" class="form-label">
+//                     {" "}
+//                     A PDF Copy of your 2020 Form 1040 (Tax Return), including
+//                     ALL schedules.{" "}
+//                   </label>
+
+//                   {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
+//   userData.Tax_Return_2020.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.Tax_Return_2020_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="Tax_Return_2020"
+//     className="form-control file"
+//     id="Tax_Return_2020"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('Tax_Return_2020', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="Tax_Return_2020"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'Tax_Return_2020' && (
+//                 <LinearProgressWithLabel value={uploadProgress.Tax_Return_2020} />
+//                             )} 
+//                 </div>
+//                 <div class="mb-3 file_div">
+//                   <label for="Tax_Return_2021" class="form-label">
+//                     A PDF Copy of your 2021 Form 1040 (Tax Return), including
+//                     ALL schedules.{" "}
+//                   </label>
+//                   {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
+//   userData.Tax_Return_2021.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.Tax_Return_2021_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="Tax_Return_2021"
+//     className="form-control file"
+//     id="Tax_Return_2021"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('Tax_Return_2021', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="Tax_Return_2021"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'Tax_Return_2021' && (
+//                 <LinearProgressWithLabel value={uploadProgress.Tax_Return_2021} />
+//                             )} 
+//                 </div>
+              
+//                {formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes"  && (
+
+//                 <div class="pdf-upload-extra">
+
+//                   <div class="mb-3 file_div">
+//                     <label
+//                       for="supplemental_attachment_2020"
+//                       class="form-label"
+//                     >
+//                       PDF Copy of All your 2020 Form W-2(s), including ANY
+//                       Family First Coronavirus Response Act (FFCRA) supplemental
+//                       attachment(s).*
+//                     </label>
+//                     {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
+//   userData.supplemental_attachment_2020.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.supplemental_attachment_2020_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="supplemental_attachment_2020"
+//     className="form-control file"
+//     id="supplemental_attachment_2020"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="supplemental_attachment_2020"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'supplemental_attachment_2020' && (
+//                 <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2020} />
+//                             )} 
+//                   </div>
+
+//                   <div class="mb-3 file_div">
+//                     <label
+//                       for="2021_supplemental_attachment_2021"
+//                       class="form-label"
+//                     >
+//                       PDF Copy of All your 2021 Form W-2(s), including ANY
+//                       Family First Coronavirus Response Act (FFCRA) supplemental
+//                       attachment(s).
+//                     </label>
+//                     {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
+//   userData.supplemental_attachment_2021.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.supplemental_attachment_2021_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="supplemental_attachment_2021"
+//     className="form-control file"
+//     id="supplemental_attachment_2021"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="supplemental_attachment_2021"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'supplemental_attachment_2021' && (
+//                 <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2021} />
+//                             )} 
+//                   </div>
+
+//                   <div class="mb-3 file_div">
+//                     <label for="FormA1099" class="form-label">
+//                       PDF Copy of All your 2020 Form 1099-R(s), if any
+//                     </label>
+
+//                     {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
+//   userData.FormA1099.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.FormA1099_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="FormA1099"
+//     className="form-control file"
+//     id="FormA1099"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('FormA1099', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.FormA1099 && userData?.FormA1099.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="FormA1099"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'FormA1099' && (
+//                 <LinearProgressWithLabel value={uploadProgress.FormA1099} />
+//                             )} 
+//                   </div>
+
+//                   <div class="mb-3 file_div">
+//                     <label for="FormB1099" class="form-label">
+//                       PDF Copy of All your 2021 Form 1099-R(s), if any
+//                     </label>
+                    
+//                     {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
+//   userData.FormB1099.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.FormB1099_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="FormB1099"
+//     className="form-control file"
+//     id="FormB1099"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('FormB1099', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.FormB1099 && userData?.FormB1099.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="FormB1099"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'FormB1099' && (
+//                 <LinearProgressWithLabel value={uploadProgress.FormB1099} />
+//                             )} 
+//                   </div>
+
+//                   <div class="mb-3 file_div">
+//                     <label for="ks2020" class="form-label">
+//                       PDF Copy of All your 2020 K-1s, if any
+//                     </label>
+//                     {userData?.ks2020 && userData?.ks2020.length > 0 ? (
+//   userData.ks2020.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.ks2020_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="ks2020"
+//     className="form-control file"
+//     id="ks2020"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('ks2020', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.ks2020 && userData?.ks2020.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="ks2020"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'ks2020' && (
+//                 <LinearProgressWithLabel value={uploadProgress.ks2020} />
+//                             )} 
+//                   </div>
+
+//                   <div class="mb-3 file_div">
+//                     <label for="ks22020" class="form-label">
+//                       PDF Copy of All your 2020 K-1s, if any
+//                     </label>
+//                     {userData?.ks22020 && userData?.ks22020.length > 0 ? (
+//   userData.ks22020.map((file, index) => (
+//     <div key={index} className="containerr">
+//       <div className="itemm">
+//         <TaskAlt />
+//         <span className="namee">{userData.ks22020_name[index]}</span>
+//       </div>
+//       <div className="itemm" style={{ padding: '0px 20px !important' }}>
+//         <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
+//           View
+//         </div>
+//         { showRemoveButton && (
+//         <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
+//           Remove
+//         </div>
+//         ) }
+//       </div>
+//     </div>
+//   ))
+// ) : (
+//   <input
+//     style={{ marginTop: 20 }}
+//     type="file"
+//     name="ks22020"
+//     className="form-control file"
+//     id="ks22020"
+//     accept=".pdf"
+//     required
+//     multiple  // Allow multiple file selection
+//     onChange={(e) => handleFileChange('ks22020', e)}
+//   />
+// )}
+
+//               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+//   <button >Add File</button>
+// )} */}
+
+//     {userData?.ks22020 && userData?.ks22020.length > 0 && (
+    
+//      <button style={{    marginTop: '20px',
+//       borderRadius: '6px',
+//       border: '1px solid transparent',
+//       fontWeight: 'bold',
+//       color: 'white',
+//       background: '#3c4d77'}} 
+//       onClick={handleAddFileClick}>Add File</button>
+    
+//       )} 
+         
+//           {isAddingFile && ( 
+
+//             <FileInputComponent
+//               inputName="ks22020"
+//               onRemove={handleRemoveInput} 
+//               handleFileChange={handleFileChange} // Pass the file change handler
+//             />
+
+//           )}
+
+
+//                             {uploadingFile === 'ks22020' && (
+//                 <LinearProgressWithLabel value={uploadProgress.ks22020} />
+//                             )} 
+//                   </div>
+
+//                 </div>
+
+//                 )} 
+                
+//                 <div class="data-p py-2 mb-2">
+//                   <p>
+//                    <input
+//             className="form-check-input me-1"
+//             type="checkbox"
+//             value=""
+//             id="flexCheckD"
+//             onChange={handleCheckboxChange}
+//           />
+//                     By checking this box you attest that the answers and
+//                     information provided are true and accurate to the best of
+//                     your knowledge, and understand that once submitted your
+//                     responses cannot be changed. You agree to our{" "}
+//                     <a
+//                       href=""
+//                       data-bs-toggle="modal"
+//                       data-bs-target="#term_condition"
+//                     >
+//                       {" "}
+//                       terms & conditions
+//                     </a>
+//                     , and also agree to keep documentation on file that
+//                     substantiates claims made in this application.
+//                   </p>
+//                 </div>
+//                 <div class="d-flex justify-content-center flex-wrap">
+//                   <button  onClick={handlePrevious} type="button" class=" prev-step mb-2">
+//                     Previous
+//                   </button>
+//                   <button
+//         type="button"
+//         id="confirmSubmitModalLaterBtn"
+//         data-bs-target="#confirmSubmitModalwithout"
+//         className="btn btn-primary px-5 py-2 me-2 mb-2 next-step"
+//         disabled={shouldDisableButtonLater()}
+//         onClick={handleSubmitLater}
+//       >
+//         Submit Documents Later
+//       </button>
+
+//       <button
+//         type="button"
+//         className="btn btn-primary px-5 py-2 mb-2 next-step"
+//         style={{ backgroundColor: '#29abe2' }}
+//         data-bs-target="#confirmSubmitModalLater"
+//         disabled={formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes" ? shouldDisableButtonsAdditional() : shouldDisableButtons()}
+//         onClick={handleSubmiDocuments}
+//       >
+//         Submit Now
+//       </button>
+
+//                   <div
+//                     class="modal fade"
+//                     id="confirmSubmitModalLater"
+//                     data-bs-backdrop="static"
+//                     data-bs-keyboard="false"
+//                     tabindex="-1"
+//                     aria-labelledby="staticBackdropLabel"
+//                     aria-hidden="true"
+//                   >
+//                     <div class="modal-dialog">
+//                       <div class="modal-content confirm-modal">
+//                         <div
+//                           class="modal-header py-2"
+//                           style={{ borderBottom: "none" }}
+//                         >
+//                           <h5 class="modal-title" id="exampleModalLabel"></h5>
+
+//                           <a href="#">
+//                             <i
+//                               class="fa-solid fa-xmark fs-3"
+//                               data-bs-dismiss="modal"
+//                               aria-label="Close"
+//                             ></i>
+//                           </a>
+//                         </div>
+
+//                         <div class="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
+//                           <img
+//                             src="./images/gif-submit.gif"
+//                             style={{ width: "120px" }}
+//                           />
+//                           <h5 class="text-center pb-4">
+//                             <span class="text-success">Congratultion</span> Your
+//                             application has been submitted!{" "}
+//                           </h5>
+//                           <h5 class="text-center">
+//                             Our team will get back to you in 24-72 hours. Thank
+//                             you.
+//                           </h5>
+
+//                           <a href="#" class="btn btn-primary px-5 go-on-btn">
+//                             Go on
+//                           </a>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                   <div
+//                     class="modal fade"
+//                     id="confirmSubmitModalwithout"
+//                     data-bs-backdrop="static"
+//                     data-bs-keyboard="false"
+//                     tabindex="-1"
+//                     aria-labelledby="staticBackdropLabel"
+//                     aria-hidden="true"
+//                   >
+//                     <div class="modal-dialog">
+//                       <div class="modal-content confirm-modal2">
+//                         <div
+//                           class="modal-header py-2"
+//                           style={{ borderBottom: "none" }}
+//                         >
+//                           <h5 class="modal-title" id="exampleModalLabel"></h5>
+
+//                           <a href="">
+//                             <i
+//                               class="fa-solid fa-xmark fs-3"
+//                               data-bs-dismiss="modal"
+//                               aria-label="Close"
+//                             ></i>
+//                           </a>
+//                         </div>
+
+//                         <div class="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
+//                           <img
+//                             src="./images/gif-submit.gif"
+//                             style={{ width: "120px" }}
+//                           />
+//                           <h5 class="text-center pb-4">
+//                             <span class="text-success">Great</span>, your
+//                             application has been submittd.We will send you a
+//                             personalupload link for your documents.
+//                           </h5>
+//                           <a href="#" class="btn btn-primary px-5 go-on-btn2">
+//                             Go on
+//                           </a>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+<div class="step step-3">
+<div class="container px-0">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="start-application">
+        <div class="row ROWW">
+          {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+            <div class="img-applci h-100 align-items-start">
+              <input
+                type="hidden"
+                name="record_id"
+                id="record_id"
+                value=""
+              />
+              <p class="mb-0">
+                If you were self-employed in 2020 and/or 2021, you
+                could be eligible for the SETC. This includes sole
+                proprietors who run businesses with employees, 1099
+                subcontractors, and single-member LLCs. This unique
+                tax credit is exclusively available to business
+                owners who filed a “Schedule C” or a Partnership
+                (1065) on their federal tax returns for 2020 and/or
+                2021.
+              </p>
+              <h6 class="mt-3 warn">Important Note:</h6>
+              <p>
+                Sub S or True S Corps/C Corps are not eligible for
+                the SETC.
+              </p>
+              <h6 class="warn">Required Documents:</h6>
+              <p>-Driver’s License</p>
+              <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+            </div>
+          </div> */}
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="img-applic-content">
+              {/* <LinearProgress
+                variant="determinate"
+                sx={{
+                  height: "8px",
+                  marginBottom: 4,
+                  borderRadius: "4px",
+                  backgroundColor: "#f0f0f0",
+                  "& .MuiLinearProgress-bar": {
+                    backgroundColor: "rgb(13, 189, 243);",
+                  },
+                }}
+                value={getProgressPercentage()}
+              /> */}
+              <label for="self_employed_from"
+                                                            class="form-label headng " style={{ fontWeight: '600'}}>
+                                                      What type of business entity did
+you have in 2020 and 2021?
+                                                        </label>
+
+             <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                                                        <h3  style={{fontWeight: 300, lineHeight: 0.2, color: 'rgb(13, 189, 243)'}} class="text-center">1 of 8</h3>
+    <div style={{marginTop: 40}}>
+                                                        
+            {/* <Sole Proprie */}
+            <div class="row col-xs-12">
+                                                                            <div class="col-md-12">
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="SoleProprietorship" id="sole_partnership"/>Sole Proprietorship 
+                                                                                  </p>
+                                                                                </div>
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="contractor" id="contractor"/>1099 Contractor
+                                                                                  </p>
+                                                                                </div>
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="partnership" id="partnership"/>Partnership
+                                                                                  </p>
+                                                                                </div>
+                                                                              
+                                                                            </div>
+                                                                            <div class="col-md-12">
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="LimitedLiability" id="limited_liability"/>Limited Liability(LLC)
+                                                                                  </p>
+                                                                                </div>
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="C-CorpandS-Corp" id="c_corp"/>Corporation (C-Corp and S-Corp)
+                                                                                  </p>
+                                                                                </div>
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="W2" id="w2"/>W2
+                                                                                  </p>
+                                                                                </div>
+                                                                                <div class="optio">
+                                                                                  <p class="w-100">
+                                                                                    <input class="form-check-input" type="radio" name="mandatory_questions" value="None" id="none_above"/>None of the above
+                                                                                  </p>
+                                                                                </div>
+                                                                            </div>
+                                                                      </div>
+            
+              <div class="d-flex justify-content-end mt-3">
+                <button
+                  onClick={handlePrevious}
+                  type="button"
+                  class="px-3 py-2 prev-step"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={handleNext}
+                  type="button"
+                  class="px-3 py-2 next-step"
+                >
+                  {activeStep === steps.length - 1
+                    ? "Submit"
+                    : "Next"}
+                </button>
+              </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+   
+
+
+        );
+        case 11: 
+        return (
+          <div class="step step-12">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                      </div>
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                      
+             
+          
+                                                                  <label for="self_employed_from"
+                                                                      class="form-label headng text-center" style={{ fontWeight: '600'}}>
+                                                              Were you personally sick with Covid, experienced
+Covid like symptoms, needed to quarantine,
+underwent testing, were unable to perform services
+including tele-work and took time off in 2020?
+                                                                  </label>
+                                                                  <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                      <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">2 of 8</h3>
+                                                                 
+                      <div style={{marginTop: 40}}>
+                          
+                      <div style={{display: 'flex', flexDirection: 'column'}}>
+                          <div class="optio mb-2">
+                            <p>
+                              <input
+                                className="form-check-input"
+                                class={`form-check-input ${
+                                  errors.personallySick2020 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="personallySick2020"
+                                checked={formData.personallySick2020 === "Yes"}
+                                value="Yes"
+                                // id="self_employed_from_yes"
+                                onChange={handleInputChange}
+                              />
+                              Yes
+                            </p>
+                          </div>
+                          <div class="optio">
+                            <p>
+                              <input
+                                class={`form-check-input ${
+                                  errors.personallySick2020 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="personallySick2020"
+                                value="No"
+                                checked={formData.personallySick2020 === "No"}
+                                // id="self_employed_from_no"
+                                onChange={handleInputChange}
+                              />
+                              No
+                            </p>
+                          </div>
+                          </div>
+
+                          {formData.personallySick2020 === "Yes" && (
+
+                          <div class="row">
+              
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="personal_startdate2020"
+                                  class="form-label fs-6"
+                                >
+                                  Start
+                                </label>
+                                <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.personal_startdate2020
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="personal_startdate2020"
+                                  name="personal_startdate2020"
+                                  value={formData.personal_startdate2020}
+                                  onChange={handleInputChange}
+                                  disabled={formData.numberOfDays === "0"}
+                                />{" "}
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="personal_enddate2020"
+                                  class="form-label fs-6"
+                                >
+                                  End
+                                </label>
+                                <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  className={` date-picker ${
+                                    errors.personal_enddate2020
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="personal_enddate2020"
+                                  name="personal_enddate2020"
+                                  value={formData.personal_enddate2020}
+                                  onChange={handleInputChange}
+                                  disabled={formData.numberOfDays === "0"}
+                                />
+                              </div>
+                            </div>
+                            {formData.numberOfDays === "0" && (
+                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                                Start and end date is not significant for days zero.
+                              </p>
+                            )}
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label for="1days" class="form-label fs-6">
+                                  Number of days:
+                                </label>
+                                <input
+                                  type="number"
+                                  className={` date-picker ${
+                                    errors.numberOfDays ? "border-danger" : ""
+                                  }`}
+                                  id="1days"
+                                  name="numberOfDays"
+                                  value={formData.numberOfDays}
+                                  onChange={handleInputChange}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          )}
+
+                        <div class="d-flex justify-content-end mt-3">
+                          <button
+                            onClick={handlePrevious}
+                            type="button"
+                            class="px-3 py-2 prev-step"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={handleNext}
+                            type="button"
+                            class="px-3 py-2 next-step"
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Submit"
+                              : "Next"}
+                          </button>
+                        </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        );
+        case 12: 
+        return (
+          <div class="step step-13">
+          <div class="container px-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="start-application">
+                  <div class="row ROWW">
+                    {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                      <div class="img-applci h-100 align-items-start">
+                        <input
+                          type="hidden"
+                          name="record_id"
+                          id="record_id"
+                          value=""
+                        />
+                        <p class="mb-0">
+                          If you were self-employed in 2020 and/or 2021, you
+                          could be eligible for the SETC. This includes sole
+                          proprietors who run businesses with employees, 1099
+                          subcontractors, and single-member LLCs. This unique
+                          tax credit is exclusively available to business
+                          owners who filed a “Schedule C” or a Partnership
+                          (1065) on their federal tax returns for 2020 and/or
+                          2021.
+                        </p>
+                        <h6 class="mt-3 warn">Important Note:</h6>
+                        <p>
+                          Sub S or True S Corps/C Corps are not eligible for
+                          the SETC.
+                        </p>
+                        <h6 class="warn">Required Documents:</h6>
+                        <p>-Driver’s License</p>
+                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                      </div>
+                    </div> */}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="img-applic-content">
+                        {/* <LinearProgress
+                          variant="determinate"
+                          sx={{
+                            height: "8px",
+                            marginBottom: 4,
+                            borderRadius: "4px",
+                            backgroundColor: "#f0f0f0",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: "rgb(13, 189, 243);",
+                            },
+                          }}
+                          value={getProgressPercentage()}
+                        /> */}
+                      
+             
+          
+                                                                  <label for="self_employed_from"
+                                                                      class="form-label headng text-center" style={{ fontWeight: '600'}}>
+                                                             Were you personally sick with Covid, experienced
+Covid like symptoms, needed to quarantine,
+underwent testing, were unable to perform services
+including tele-work and took time off in 2021?
+                                                                  </label>
+                                                                  <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                      <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">3 of 8</h3>
+                                                                 
+                      <div style={{marginTop: 40}}>
+                          
+                      <div style={{display: 'flex', flexDirection: 'column'}}>
+        <div class="optio mb-2">
+          <p>
+            <input
+              className="form-check-input"
+              class={`form-check-input ${
+                errors.personallySick2021 ? "border-danger" : ""
+              }`}
+              type="radio"
+              name="personallySick2021"
+              checked={formData.personallySick2021 === "Yes"}
+              value="Yes"
+              // id="self_employed_from_yes"
+              onChange={handleInputChange}
+            />
+            Yes
+          </p>
+        </div>
+        <div class="optio">
+          <p>
+            <input
+              class={`form-check-input ${
+                errors.personallySick2021 ? "border-danger" : ""
+              }`}
+              type="radio"
+              name="personallySick2021"
+              value="No"
+              checked={formData.personallySick2021 === "No"}
+              // id="self_employed_from_no"
+              onChange={handleInputChange}
+            />
+            No
+          </p>
+        </div>
+        </div>
+
+        {formData.personallySick2021 === "Yes" && (
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="optio mb-2">
+              <label
+                for="personal_startdate2021"
+                class="form-label fs-6"
+              >
+                Start
+              </label>
+             
+              <input
+                type="date"
+                min="2021-01-01"
+                max="2021-09-30"
+                className={` date-picker ${
+                  errors.personal_startdate2021
+                    ? "border-danger"
+                    : ""
+                }`}
+                id="personal_startdate2021"
+                name="personal_startdate2021"
+                value={formData.personal_startdate2021}
+                onChange={handleInputChange}
+                disabled={formData.numberOfDays2021 === "0"}
+              />{" "}
+            </div>
+          </div>
+         
+          <div class="col-lg-6">
+            <div class="optio mb-2">
+              <label
+                for="personal_enddate2021"
+                class="form-label fs-6"
+              >
+                End
+              </label>
+           
+              <input
+                type="date"
+                min="2021-01-01"
+                max="2021-09-30"
+                className={` date-picker ${
+                  errors.personal_enddate2021
+                    ? "border-danger"
+                    : ""
+                }`}
+                id="personal_enddate2021"
+                name="personal_enddate2021"
+                value={formData.personal_enddate2021}
+                onChange={handleInputChange}
+                disabled={formData.numberOfDays2021 === "0"}
+              />
+            </div>
+          </div>
+          {formData.numberOfDays2021 === "0" && (
+            <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif',  fontSize: 15}}>
+           Start and end date is not significant for days zero.                
+            </p>
+          )}
+          <div class="col-lg-6">
+            <div class="optio mb-2">
+              <label for="2days" class="form-label fs-6">
+                Number of days:
+              </label>
+             
+               <input
+                type="number"
+                class={` date-picker ${
+                  errors.numberOfDays2021 ? "border-danger" : ""
+                }`}
+                id="2days"
+                name="numberOfDays2021"
+                value={formData.numberOfDays2021}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+        </div>
+        )}
+
+                        <div class="d-flex justify-content-end mt-3">
+                          <button
+                            onClick={handlePrevious}
+                            type="button"
+                            class="px-3 py-2 prev-step"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={handleNext}
+                            type="button"
+                            class="px-3 py-2 next-step"
+                          >
+                            {activeStep === steps.length - 1
+                              ? "Submit"
+                              : "Next"}
+                          </button>
+                        </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        );
+        case 13 :
+          return (
+            <div class="step step-14">
+            <div class="container px-0">
+              <div class="row justify-content-center">
+                <div class="col-lg-10">
+                  <div class="start-application">
+                    <div class="row ROWW">
+                      {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                        <div class="img-applci h-100 align-items-start">
+                          <input
+                            type="hidden"
+                            name="record_id"
+                            id="record_id"
+                            value=""
+                          />
+                          <p class="mb-0">
+                            If you were self-employed in 2020 and/or 2021, you
+                            could be eligible for the SETC. This includes sole
+                            proprietors who run businesses with employees, 1099
+                            subcontractors, and single-member LLCs. This unique
+                            tax credit is exclusively available to business
+                            owners who filed a “Schedule C” or a Partnership
+                            (1065) on their federal tax returns for 2020 and/or
+                            2021.
+                          </p>
+                          <h6 class="mt-3 warn">Important Note:</h6>
+                          <p>
+                            Sub S or True S Corps/C Corps are not eligible for
+                            the SETC.
+                          </p>
+                          <h6 class="warn">Required Documents:</h6>
+                          <p>-Driver’s License</p>
+                          <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                        </div>
+                      </div> */}
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="img-applic-content">
+                          {/* <LinearProgress
+                            variant="determinate"
+                            sx={{
+                              height: "8px",
+                              marginBottom: 4,
+                              borderRadius: "4px",
+                              backgroundColor: "#f0f0f0",
+                              "& .MuiLinearProgress-bar": {
+                                backgroundColor: "rgb(13, 189, 243);",
+                              },
+                            }}
+                            value={getProgressPercentage()}
+                          /> */}
+                        
+               
+            
+                                                                    <label for="self_employed_from"
+                                                                        class="form-label headng text-center" style={{ fontWeight: '600'}}>
+                                                               Did you care for someone else who was affected by Covid,
+experienced Covid like symptoms, needed to quarantine,
+underwent testing, and took time off in 2020?
+                                                                    </label>
+                                                                    <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                        <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">4 of 8</h3>
+                                                                   
+                        <div style={{marginTop: 40}}>
+                            
+                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                          <div class="optio mb-2">
+                            <p>
+                              <input
+                                className="form-check-input"
+                                class={`form-check-input ${
+                                  errors.symptoms2020 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="symptoms2020"
+                                checked={formData.symptoms2020 === "Yes"}
+                                value="Yes"
+                                // id="self_employed_from_yes"
+                                onChange={handleInputChange}
+                              />
+                              Yes
+                            </p>
+                          </div>
+                          <div class="optio">
+                            <p>
+                              <input
+                                class={`form-check-input ${
+                                  errors.symptoms2020 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="symptoms2020"
+                                value="No"
+                                checked={formData.symptoms2020 === "No"}
+                                // id="self_employed_from_no"
+                                onChange={handleInputChange}
+                              />
+                              No
+                            </p>
+                          </div>
+                          </div>
+
+                          {formData.symptoms2020 === "Yes" && (
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="cared_startdate2020"
+                                  class="form-label fs-6"
+                                >
+                                  Start
+                                </label>
+                                {/* <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  class="date-picker"
+                                  id="cared_startdate2020"
+                                  name="cared_startdate2020"
+                                />
+                              </div> */}
+                               <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.cared_startdate2020
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="cared_startdate2020"
+                                  name="cared_startdate2020"
+                                  value={formData.cared_startdate2020}
+                                  onChange={handleInputChange}
+                                  disabled={formData.symptomsdays2020 === "0"}
+                                />{" "}
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="cared_enddate2020"
+                                  class="form-label fs-6"
+                                >
+                                  End
+                                </label>
+                              
+                                 <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.cared_enddate2020
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="cared_enddate2020"
+                                  name="cared_enddate2020"
+                                  value={formData.cared_enddate2020}
+                                  onChange={handleInputChange}
+                                  disabled={formData.symptomsdays2020 === "0"}
+                                />{" "}
+                              </div>
+                            </div>
+                            {formData.symptomsdays2020 === "0" && (
+                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                                Start and end date is not significant for days zero.
+                              </p>
+                            )}
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label for="3days" class="form-label fs-6">
+                                  Number of days:
+                                </label>
+                                
+                                 <input
+                                  type="number"
+                                  className={` date-picker ${
+                                    errors.symptomsdays2020 ? "border-danger" : ""
+                                  }`}
+                                  id="3days"
+                                  name="symptomsdays2020"
+                                  value={formData.symptomsdays2020}
+                                  onChange={handleInputChange}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          )}
+  
                           <div class="d-flex justify-content-end mt-3">
                             <button
                               onClick={handlePrevious}
@@ -4161,6 +7131,8 @@ const uploadFile = async (formData, inputName) => {
                                 : "Next"}
                             </button>
                           </div>
+                          </div>
+  
                         </div>
                       </div>
                     </div>
@@ -4169,10 +7141,989 @@ const uploadFile = async (formData, inputName) => {
               </div>
             </div>
           </div>
-        );
-      case 9:
-        return (
-          <div class="step step-9">
+       
+          );
+          case 14 :
+            return (
+              <div class="step step-15">
+              <div class="container px-0">
+                <div class="row justify-content-center">
+                  <div class="col-lg-10">
+                    <div class="start-application">
+                      <div class="row ROWW">
+                        {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                          <div class="img-applci h-100 align-items-start">
+                            <input
+                              type="hidden"
+                              name="record_id"
+                              id="record_id"
+                              value=""
+                            />
+                            <p class="mb-0">
+                              If you were self-employed in 2020 and/or 2021, you
+                              could be eligible for the SETC. This includes sole
+                              proprietors who run businesses with employees, 1099
+                              subcontractors, and single-member LLCs. This unique
+                              tax credit is exclusively available to business
+                              owners who filed a “Schedule C” or a Partnership
+                              (1065) on their federal tax returns for 2020 and/or
+                              2021.
+                            </p>
+                            <h6 class="mt-3 warn">Important Note:</h6>
+                            <p>
+                              Sub S or True S Corps/C Corps are not eligible for
+                              the SETC.
+                            </p>
+                            <h6 class="warn">Required Documents:</h6>
+                            <p>-Driver’s License</p>
+                            <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                          </div>
+                        </div> */}
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="img-applic-content">
+                            {/* <LinearProgress
+                              variant="determinate"
+                              sx={{
+                                height: "8px",
+                                marginBottom: 4,
+                                borderRadius: "4px",
+                                backgroundColor: "#f0f0f0",
+                                "& .MuiLinearProgress-bar": {
+                                  backgroundColor: "rgb(13, 189, 243);",
+                                },
+                              }}
+                              value={getProgressPercentage()}
+                            /> */}
+                          
+                 
+              
+                                                                      <label for="self_employed_from"
+                                                                          class="form-label headng text-center" style={{ fontWeight: '600'}}>
+                                                                 Did you care for someone else who was affected by Covid,
+experienced Covid like symptoms, needed to quarantine,
+underwent testing, and took time off in 2021?
+                                                                      </label>
+                                                                      <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                          <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">5 of 8</h3>
+                                                                     
+                          <div style={{marginTop: 40}}>
+                              
+                        
+                          <div style={{display: 'flex', flexDirection: 'column'}}>
+                          <div class="optio mb-2">
+                            <p>
+                              <input
+                                className="form-check-input"
+                                class={`form-check-input ${
+                                  errors.symptoms2021 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="symptoms2021"
+                                checked={formData.symptoms2021 === "Yes"}
+                                value="Yes"
+                                // id="self_employed_from_yes"
+                                onChange={handleInputChange}
+                              />
+                              Yes
+                            </p>
+                          </div>
+                          <div class="optio">
+                            <p>
+                              <input
+                                class={`form-check-input ${
+                                  errors.symptoms2021 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="symptoms2021"
+                                value="No"
+                                checked={formData.symptoms2021 === "No"}
+                                // id="self_employed_from_no"
+                                onChange={handleInputChange}
+                              />
+                              No
+                            </p>
+                          </div>
+                          </div>
+
+
+                          {formData.symptoms2021 === "Yes" && (
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="cared_startdate2021"
+                                  class="form-label fs-6"
+                                >
+                                  Start
+                                </label>
+                                {/* <input
+                                  type="date"
+                                  min="2021-01-01"
+                                  max="2021-09-30"
+                                  class="date-picker"
+                                  id="cared_startdate2021"
+                                  name="cared_startdate2021"
+                                /> */}
+                                <input
+                                  type="date"
+                                  min="2021-01-01"
+                                  max="2021-09-30"
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.cared_startdate2021  && formData.symptomsdays2021 !== "0"
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="cared_startdate2021"
+                                  name="cared_startdate2021"
+                                  value={formData.cared_startdate2021}
+                                  onChange={handleInputChange}
+                                  disabled={formData.symptomsdays2021 === "0"}
+                                />{" "}
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="cared_enddate2021"
+                                  class="form-label fs-6"
+                                >
+                                  End
+                                </label>
+                                {/* <input
+                                  type="date"
+                                  min="2021-01-01"
+                                  max="2021-09-30"
+                                  class="date-picker"
+                                  id="cared_enddate2021"
+                                  name="cared_enddate2021"
+                                /> */}
+                                  <input
+                                  type="date"
+                                  min="2021-01-01"
+                                  max="2021-09-30"
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.cared_enddate2021 &&  formData.symptomsdays2021 !== "0"
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="cared_enddate2021"
+                                  name="cared_enddate2021"
+                                  value={formData.cared_enddate2021}
+                                  onChange={handleInputChange}
+                                  disabled={formData.symptomsdays2021 === "0"}
+                                />{" "}
+                              </div>
+                            </div>
+
+                            {formData.symptomsdays2021 === "0" && (
+                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                                Start and end date is not significant for days zero.
+                              </p>
+                            )}
+
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label for="4days" class="form-label fs-6">
+                                  Number of days:
+                                </label>
+                                {/* <input
+                                  type="number"
+                                  class="date-picker"
+                                  id="4days"
+                                  name="4days"
+                                /> */}
+                                 <input
+                                  type="number"
+                                  className={` date-picker ${
+                                    errors.symptomsdays2021 ? "border-danger" : ""
+                                  }`}
+                                  id="4days"
+                                  name="symptomsdays2021"
+                                  value={formData.symptomsdays2021}
+                                  onChange={handleInputChange}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          )}
+    
+                            <div class="d-flex justify-content-end mt-3">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                class="px-3 py-2 prev-step"
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                class="px-3 py-2 next-step"
+                              >
+                                {activeStep === steps.length - 1
+                                  ? "Submit"
+                                  : "Next"}
+                              </button>
+                            </div>
+                            </div>
+    
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            );
+            case 15 :
+              return (
+                <div class="step step-16">
+                <div class="container px-0">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                      <div class="start-application">
+                        <div class="row ROWW">
+                          {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                            <div class="img-applci h-100 align-items-start">
+                              <input
+                                type="hidden"
+                                name="record_id"
+                                id="record_id"
+                                value=""
+                              />
+                              <p class="mb-0">
+                                If you were self-employed in 2020 and/or 2021, you
+                                could be eligible for the SETC. This includes sole
+                                proprietors who run businesses with employees, 1099
+                                subcontractors, and single-member LLCs. This unique
+                                tax credit is exclusively available to business
+                                owners who filed a “Schedule C” or a Partnership
+                                (1065) on their federal tax returns for 2020 and/or
+                                2021.
+                              </p>
+                              <h6 class="mt-3 warn">Important Note:</h6>
+                              <p>
+                                Sub S or True S Corps/C Corps are not eligible for
+                                the SETC.
+                              </p>
+                              <h6 class="warn">Required Documents:</h6>
+                              <p>-Driver’s License</p>
+                              <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                            </div>
+                          </div> */}
+                          <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="img-applic-content">
+                              {/* <LinearProgress
+                                variant="determinate"
+                                sx={{
+                                  height: "8px",
+                                  marginBottom: 4,
+                                  borderRadius: "4px",
+                                  backgroundColor: "#f0f0f0",
+                                  "& .MuiLinearProgress-bar": {
+                                    backgroundColor: "rgb(13, 189, 243);",
+                                  },
+                                }}
+                                value={getProgressPercentage()}
+                              /> */}
+                            
+                   
+                
+                                                                        <label for="self_employed_from"
+                                                                            class="form-label headng text-center" style={{ fontWeight: '600'}}>
+                                                                   Were you affected by the closure of your child's
+school/daycare due to COVID restrictions, or how many
+days did you care for your minor child who was affected by
+COVID, which impacted your work in 2020?
+                                                                        </label>
+                                                                        <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                            <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">6 of 8</h3>
+                                                                       
+                            <div style={{marginTop: 40}}>
+                                
+                        
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                          <div class="optio mb-2">
+                            <p>
+                              <input
+                                className="form-check-input"
+                                class={`form-check-input ${
+                                  errors.closure2020 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="closure2020"
+                                checked={formData.closure2020 === "Yes"}
+                                value="Yes"
+                                // id="self_employed_from_yes"
+                                onChange={handleInputChange}
+                              />
+                              Yes
+                            </p>
+                          </div>
+                          <div class="optio">
+                            <p>
+                              <input
+                                class={`form-check-input ${
+                                  errors.closure2020 ? "border-danger" : ""
+                                }`}
+                                type="radio"
+                                name="closure2020"
+                                value="No"
+                                checked={formData.closure2020 === "No"}
+                                // id="self_employed_from_no"
+                                onChange={handleInputChange}
+                              />
+                              No
+                            </p>
+                          </div>
+                          </div>
+
+                          {formData.closure2020 === "Yes" && (
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="minor_startdate2020"
+                                  class="form-label fs-6"
+                                >
+                                  Start
+                                </label>
+                                {/* <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  class="date-picker"
+                                  id="minor_startdate2020"
+                                  name="minor_startdate2020"
+                                /> */}
+
+                                <input
+                                 type="date"
+                                 min="2020-04-01"
+                                 max="2020-12-31" 
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.minor_startdate2020
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="minor_startdate2020"
+                                  name="minor_startdate2020"
+                                  value={formData.minor_startdate2020}
+                                  onChange={handleInputChange}
+                                  disabled={formData.minordays2020 === "0"}
+                                />{" "}
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label
+                                  for="minor_enddate2020"
+                                  class="form-label fs-6"
+                                >
+                                  End
+                                </label>
+                                {/* <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  class="date-picker"
+                                  id="minor_enddate2020"
+                                  name="minor_enddate2020"
+                                />
+                                 */}
+                                <input
+                                  type="date"
+                                  min="2020-04-01"
+                                  max="2020-12-31"
+                                  // className="date-picker"
+                                  className={` date-picker ${
+                                    errors.minor_enddate2020
+                                      ? "border-danger"
+                                      : ""
+                                  }`}
+                                  id="minor_enddate2020"
+                                  name="minor_enddate2020"
+                                  value={formData.minor_enddate2020}
+                                  onChange={handleInputChange}
+                                  disabled={formData.minordays2020 === "0"}
+                                />{" "}
+                              </div>
+                            </div>
+
+                            {formData.minordays2020 === "0" && (
+                              <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                                Start and end date is not significant for days zero.
+                              </p>
+                            )}
+
+                            <div class="col-lg-6">
+                              <div class="optio mb-2">
+                                <label for="5days" class="form-label fs-6">
+                                  Number of days:
+                                </label>
+                                {/* <input
+                                  type="number"
+                                  placeholder="(50 days max)"
+                                  class="date-picker"
+                                  id="5days"
+                                  name="5days"
+                                /> */}
+                                 <input
+                                  type="number"
+                                  placeholder="(50 days max)"
+                                  className={` date-picker ${
+                                    errors.minordays2020 ? "border-danger" : ""
+                                  }`}
+                                  id="5days"
+                                  name="minordays2020"
+                                  value={formData.minordays2020}
+                                  onChange={handleInputChange}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          )}
+      
+                              <div class="d-flex justify-content-end mt-3">
+                                <button
+                                  onClick={handlePrevious}
+                                  type="button"
+                                  class="px-3 py-2 prev-step"
+                                >
+                                  Previous
+                                </button>
+                                <button
+                                  onClick={handleNext}
+                                  type="button"
+                                  class="px-3 py-2 next-step"
+                                >
+                                  {activeStep === steps.length - 1
+                                    ? "Submit"
+                                    : "Next"}
+                                </button>
+                              </div>
+                              </div>
+      
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              );
+              case 16 :
+                return (
+                  <div class="step step-16">
+                  <div class="container px-0">
+                    <div class="row justify-content-center">
+                      <div class="col-lg-10">
+                        <div class="start-application">
+                          <div class="row ROWW">
+                            {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                              <div class="img-applci h-100 align-items-start">
+                                <input
+                                  type="hidden"
+                                  name="record_id"
+                                  id="record_id"
+                                  value=""
+                                />
+                                <p class="mb-0">
+                                  If you were self-employed in 2020 and/or 2021, you
+                                  could be eligible for the SETC. This includes sole
+                                  proprietors who run businesses with employees, 1099
+                                  subcontractors, and single-member LLCs. This unique
+                                  tax credit is exclusively available to business
+                                  owners who filed a “Schedule C” or a Partnership
+                                  (1065) on their federal tax returns for 2020 and/or
+                                  2021.
+                                </p>
+                                <h6 class="mt-3 warn">Important Note:</h6>
+                                <p>
+                                  Sub S or True S Corps/C Corps are not eligible for
+                                  the SETC.
+                                </p>
+                                <h6 class="warn">Required Documents:</h6>
+                                <p>-Driver’s License</p>
+                                <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                              </div>
+                            </div> */}
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <div class="img-applic-content">
+                                {/* <LinearProgress
+                                  variant="determinate"
+                                  sx={{
+                                    height: "8px",
+                                    marginBottom: 4,
+                                    borderRadius: "4px",
+                                    backgroundColor: "#f0f0f0",
+                                    "& .MuiLinearProgress-bar": {
+                                      backgroundColor: "rgb(13, 189, 243);",
+                                    },
+                                  }}
+                                  value={getProgressPercentage()}
+                                /> */}
+                              
+                     
+                  
+                                                                          <label for="self_employed_from"
+                                                                              class="form-label headng text-center" style={{ fontWeight: '600'}}>
+                                                                     Were you affected by the closure of your child's
+school/daycare due to COVID restrictions, or how many
+days did you care for your minor child who was affected by
+COVID, which impacted your work in 2021?
+                                                                          </label>
+                                                                          <h1 class="text-center" style={{  color: 'rgb(13, 189, 243)'}}>Question</h1>
+                              <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">7 of 8</h3>
+                                                                         
+                              <div style={{marginTop: 40}}>
+                                  
+                          
+                              <div style={{display: 'flex', flexDirection: 'column'}}>
+                            <div class="optio mb-2">
+                              <p>
+                                <input
+                                  className="form-check-input"
+                                  class={`form-check-input ${
+                                    errors.closure2021 ? "border-danger" : ""
+                                  }`}
+                                  type="radio"
+                                  name="closure2021"
+                                  checked={formData.closure2021 === "Yes"}
+                                  value="Yes"
+                                  // id="self_employed_from_yes"
+                                  onChange={handleInputChange}
+                                />
+                                Yes
+                              </p>
+                            </div>
+                            <div class="optio">
+                              <p>
+                                <input
+                                  class={`form-check-input ${
+                                    errors.closure2021 ? "border-danger" : ""
+                                  }`}
+                                  type="radio"
+                                  name="closure2021"
+                                  value="No"
+                                  checked={formData.closure2021 === "No"}
+                                  // id="self_employed_from_no"
+                                  onChange={handleInputChange}
+                                />
+                                No
+                              </p>
+                            </div>
+                            </div>
+  
+                            {formData.closure2021 === "Yes" && (
+                            <div class="row">
+                              <div class="col-lg-6">
+                                <div class="optio mb-2">
+                                  <label
+                                    for="minor_startdate2021"
+                                    class="form-label fs-6"
+                                  >
+                                    Start
+                                  </label>
+                                 
+                                    <input
+                                   type="date"
+                                   min="2021-01-01"
+                                   max="2021-09-30"
+                                    // className="date-picker"
+                                    className={` date-picker ${
+                                      errors.minor_startdate2021
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    id="minor_startdate2021"
+                                    name="minor_startdate2021"
+                                    value={formData.minor_startdate2021}
+                                    onChange={handleInputChange}
+                                    disabled={formData.minordays2021 === "0"}
+                                  />{" "}
+                                </div>
+                              </div>
+                              <div class="col-lg-6">
+                                <div class="optio mb-2">
+                                  <label
+                                    for="minor_enddate2021"
+                                    class="form-label fs-6"
+                                  >
+                                    End
+                                  </label>
+                                
+                                     <input
+                                   type="date"
+                                   min="2021-01-01"
+                                   max="2021-09-30"
+                                    // className="date-picker"
+                                    className={` date-picker ${
+                                      errors.minor_enddate2021
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    id="minor_enddate2021"
+                                    name="minor_enddate2021"
+                                    value={formData.minor_enddate2021}
+                                    onChange={handleInputChange}
+                                    disabled={formData.minordays2021 === "0"}
+                                  />{" "}
+                                </div>
+                              </div>
+  
+                              {formData.minordays2021 === "0" && (
+                                <p style={{color: 'rgb(255, 149, 0)', fontFamily: 'sans-serif', fontSize: 15}}>
+                                  Start and end date is not significant for days zero.
+                                </p>
+                              )}
+  
+  
+                              <div class="col-lg-6">
+                                <div class="optio mb-2">
+                                  <label for="6days" class="form-label fs-6">
+                                    Number of days:
+                                  </label>
+                                 
+                                     <input
+                                    type="number"
+                                    placeholder="(60 days max)"
+                                    className={` date-picker ${
+                                      errors.minordays2021 ? "border-danger" : ""
+                                    }`}
+                                    
+                                    id="6days"
+                                    name="minordays2021"
+                                    value={formData.minordays2021}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            )}
+        
+                                <div class="d-flex justify-content-end mt-3">
+                                  <button
+                                    onClick={handlePrevious}
+                                    type="button"
+                                    class="px-3 py-2 prev-step"
+                                  >
+                                    Previous
+                                  </button>
+                                  <button
+                                    onClick={handleNext}
+                                    type="button"
+                                    class="px-3 py-2 next-step"
+                                  >
+                                    {activeStep === steps.length - 1
+                                      ? "Submit"
+                                      : "Next"}
+                                  </button>
+                                </div>
+                                </div>
+        
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                );
+                case 17 :
+                  return (
+                    // <div class="step step-18">
+                    // <div class="container px-0">
+                    //   <div class="row justify-content-center">
+                    //     <div class="col-lg-10">
+                    //       <div class="start-application">
+                    //         <div class="row ROWW">
+                    //           {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                    //             <div class="img-applci h-100 align-items-start">
+                    //               <input
+                    //                 type="hidden"
+                    //                 name="record_id"
+                    //                 id="record_id"
+                    //                 value=""
+                    //               />
+                    //               <p class="mb-0">
+                    //                 If you were self-employed in 2020 and/or 2021, you
+                    //                 could be eligible for the SETC. This includes sole
+                    //                 proprietors who run businesses with employees, 1099
+                    //                 subcontractors, and single-member LLCs. This unique
+                    //                 tax credit is exclusively available to business
+                    //                 owners who filed a “Schedule C” or a Partnership
+                    //                 (1065) on their federal tax returns for 2020 and/or
+                    //                 2021.
+                    //               </p>
+                    //               <h6 class="mt-3 warn">Important Note:</h6>
+                    //               <p>
+                    //                 Sub S or True S Corps/C Corps are not eligible for
+                    //                 the SETC.
+                    //               </p>
+                    //               <h6 class="warn">Required Documents:</h6>
+                    //               <p>-Driver’s License</p>
+                    //               <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                    //             </div>
+                    //           </div> */}
+                    //           <div class="col-lg-12 col-md-12 col-sm-12">
+                    //             <div class="img-applic-content">
+                    //               {/* <LinearProgress
+                    //                 variant="determinate"
+                    //                 sx={{
+                    //                   height: "8px",
+                    //                   marginBottom: 4,
+                    //                   borderRadius: "4px",
+                    //                   backgroundColor: "#f0f0f0",
+                    //                   "& .MuiLinearProgress-bar": {
+                    //                     backgroundColor: "rgb(13, 189, 243);",
+                    //                   },
+                    //                 }}
+                    //                 value={getProgressPercentage()}
+                    //               /> */}
+                    //             <h1 class="text-center">What was my Net Income for
+                    //                                                     the years 2019,2020 and 2021?</h1>
+                    //                                                     <h2 style="color: red;">Located on line 6 of your Schedule C (Form 1040)</h2>
+                    //                                                 <h5 class="text-center">8 of 8</h5>
+                    //                                                 <p><span style="color: red;">Note:</span>Must be greater than $25,000.00
+                    //                                                     for 2 of the three years</p>
+                    //                                                         {/* <label for="self_employed_from"
+                    //                                                             class="form-label headng " style={{ fontWeight: '600'}}>
+                    //                                                      Were you self-employed from
+                    //                                                               4/1/2020-9/30/2021?
+                    //                                                         </label> */}
+                                                                            
+                    //                                                         <label for="net_income_2019" class="form-label fs-5">
+                    //         Total NET Income For 2019?
+                    //       </label>
+                    //       <div class="optio mb-2">
+                    //         <input
+                    //           type="text"
+                    //           value={formData.netIncome2019}
+                    //           class={` for ${
+                    //             errors.netIncome2019 ? "border-danger" : ""
+                    //           }`}
+                    //           name="netIncome2019"
+                    //           onChange={handleInputChange}
+                    //           placeholder="$"
+                    //           id="net_income_2019"
+                    //         />
+                    //       </div>
+                    //       <label for="net_income_2020" class="form-label fs-5">
+                    //         Total NET Income For 2020?
+                    //       </label>
+                    //       <div class="optio mb-2">
+                    //         <input
+                    //           type="text"
+                    //           value={formData.netIncome2020}
+                    //           name="netIncome2020"
+                    //           class={` for ${
+                    //             errors.netIncome2020 ? "border-danger" : ""
+                    //           }`}
+                    //           placeholder="$"
+                    //           onChange={handleInputChange}
+                    //           id="net_income_2020"
+                    //         />
+                    //       </div>
+                    //       <label for="net_income_2021" class="form-label fs-5">
+                    //         Total NET Income For 2021?
+                    //       </label>
+                    //       <div class="optio mb-2">
+                    //         <input
+                    //           type="text"
+                    //           value={formData.netIncome2021}
+                    //           name="netIncome2021"
+                    //           class={` for ${
+                    //             errors.netIncome2021 ? "border-danger" : ""
+                    //           }`}
+                    //           placeholder="$"
+                    //           onChange={handleInputChange}
+                    //           id="net_income_2021"
+                    //         />
+                    //       </div>
+
+          
+                    //               <div class="d-flex justify-content-end mt-3">
+                    //                 <button
+                    //                   onClick={handlePrevious}
+                    //                   type="button"
+                    //                   class="px-3 py-2 prev-step"
+                    //                 >
+                    //                   Previous
+                    //                 </button>
+                    //                 <button
+                    //                   onClick={handleNext}
+                    //                   type="button"
+                    //                   class="px-3 py-2 next-step"
+                    //                 >
+                    //                   {activeStep === steps.length - 1
+                    //                     ? "Submit"
+                    //                     : "Next"}
+                    //                 </button>
+                    //               </div>
+                    //               </div>
+          
+                    //             </div>
+                    //           </div>
+                    //         </div>
+                    //       </div>
+                    //     </div>
+                    //   </div>
+                    // </div>
+                    <div class="step step-18">
+                    <div class="container px-0">
+                      <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                          <div class="start-application">
+                            <div class="row ROWW">
+                              {/* <div class="col-lg-6 col-md-6 col-sm-12 pe-0">
+                                <div class="img-applci h-100 align-items-start">
+                                  <input
+                                    type="hidden"
+                                    name="record_id"
+                                    id="record_id"
+                                    value=""
+                                  />
+                                  <p class="mb-0">
+                                    If you were self-employed in 2020 and/or 2021, you
+                                    could be eligible for the SETC. This includes sole
+                                    proprietors who run businesses with employees, 1099
+                                    subcontractors, and single-member LLCs. This unique
+                                    tax credit is exclusively available to business
+                                    owners who filed a “Schedule C” or a Partnership
+                                    (1065) on their federal tax returns for 2020 and/or
+                                    2021.
+                                  </p>
+                                  <h6 class="mt-3 warn">Important Note:</h6>
+                                  <p>
+                                    Sub S or True S Corps/C Corps are not eligible for
+                                    the SETC.
+                                  </p>
+                                  <h6 class="warn">Required Documents:</h6>
+                                  <p>-Driver’s License</p>
+                                  <p>-1040 with schedule C for 2019, 2020, and 2021</p>
+                                </div>
+                              </div> */}
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="img-applic-content">
+                                  {/* <LinearProgress
+                                    variant="determinate"
+                                    sx={{
+                                      height: "8px",
+                                      marginBottom: 4,
+                                      borderRadius: "4px",
+                                      backgroundColor: "#f0f0f0",
+                                      "& .MuiLinearProgress-bar": {
+                                        backgroundColor: "rgb(13, 189, 243);",
+                                      },
+                                    }}
+                                    value={getProgressPercentage()}
+                                  /> */}
+ 
+                                   <p  style={{textAlign: 'center', fontSize: 25, fontWeight: 600,   color: 'rgb(13, 189, 243)'}}>
+                                                                      
+                                                                      What was my Net Income for
+                                                                        the years 2019,2020 and 2021?
+                                                                            </p>
+                                                                            <p style={{color: 'red',lineHeight: 0.9, fontWeight: '600', textAlign: 'center'}}>Located on line 6 of your Schedule C (Form 1040)</p>
+                                                                            <p style={{textAlign: 'center'}}><span style={{color: 'red'}}>Note:</span>Must be greater than $25,000.00
+                                                                        for 2 of the three years</p>
+                                                                        <h3  style={{fontWeight: 300, lineHeight: 0.2,  color: 'rgb(13, 189, 243)'}} class="text-center">Question 8 of 8</h3>                         
+                        <div style={{marginTop: 40}}>
+                        {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
+                                                                                  (Self-Employment
+                                                                                  Tax) for the years of 2020 or 2021?</h1> */}
+                                                                           
+
+                                                                            
+              <label for="net_income_2019" class="form-label fs-5">
+                          Total NET Income For 2019?
+                          </label>
+                           <div class="optio mb-2">
+                             <input
+                              type="text"
+                              value={formData.netIncome2019}
+                              class={` for ${
+                                errors.netIncome2019 ? "border-danger" : ""
+                              }`}
+                              name="netIncome2019"
+                              onChange={handleInputChange}
+                              placeholder="$"
+                              id="net_income_2019"
+                            />
+                          </div>
+                          <label for="net_income_2020" class="form-label fs-5">
+                            Total NET Income For 2020?
+                          </label>
+                          <div class="optio mb-2">
+                            <input
+                              type="text"
+                              value={formData.netIncome2020}
+                              name="netIncome2020"
+                              class={` for ${
+                                errors.netIncome2020 ? "border-danger" : ""
+                              }`}
+                              placeholder="$"
+                              onChange={handleInputChange}
+                              id="net_income_2020"
+                            />
+                          </div>
+                          <label for="net_income_2021" class="form-label fs-5">
+                            Total NET Income For 2021?
+                          </label>
+                          <div class="optio mb-2">
+                            <input
+                              type="text"
+                              value={formData.netIncome2021}
+                              name="netIncome2021"
+                              class={` for ${
+                                errors.netIncome2021 ? "border-danger" : ""
+                              }`}
+                              placeholder="$"
+                              onChange={handleInputChange}
+                              id="net_income_2021"
+                            />
+                          </div>
+          
+                                  <div class="d-flex justify-content-end mt-3">
+                                    <button
+                                      onClick={handlePrevious}
+                                      type="button"
+                                      class="px-3 py-2 prev-step"
+                                    >
+                                      Previous
+                                    </button>
+                                    <button
+                                      onClick={handleNext}
+                                      type="button"
+                                      class="px-3 py-2 next-step"
+                                    >
+                                      {activeStep === steps.length - 1
+                                        ? "Submit"
+                                        : "Next"}
+                                    </button>
+                                  </div>
+                                  </div>
+          
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 
+                  );
+                  case 18 : 
+                  return (
+                            <div class="step step-19">
             <input type="hidden" name="record_id" id="record_id" value="" />
             <div class="container">
               <div class="row justify-content-center">
@@ -4247,893 +8198,894 @@ The next step is to upload your documents for our CPAs to calculate your exact c
               </div>
             </div>
           </div>
-        );
-      case 10:
-        return (
-          <div class="row justify-content-center step step-10">
-            <div class="col-lg-8">
-              <div
-                class="step step-10 bg-white shadow px-3 py-5"
-                style={{ borderRadius: "20px" }}
-              >
-                {/* <div class="progress mb-4" style={{height: "15px"}}>
-                      <input type="hidden" name="record_id" id="record_id" value=""/>
-                      <div class="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div> */}
-                <LinearProgress
-                  variant="determinate"
-                  sx={{
-                    height: "8px",
-                    marginBottom: 4,
-                    borderRadius: "4px",
-                    backgroundColor: "#f0f0f0",
-                    "& .MuiLinearProgress-bar": {
-                      backgroundColor: "rgb(13, 189, 243);",
-                    },
-                  }}
-                  value={getProgressPercentage()}
-                />
-
-                <h3>Documents</h3>
-
-                <div class="mb-3 file_div">
-                  <label for="driving_licence" class="form-label">
-                    A PDF Copy of a Current ID or Driver's License
-                  </label>
-                  {userData?.driving_licence && userData?.driving_licence.length > 0 ? (
-  userData.driving_licence.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.driving_licence_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('driving_licence', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="driving_licence"
-    className="form-control file"
-    id="driving_licence"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('driving_licence', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-            <FileInputComponent
-              inputName="driving_licence"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-          )}
-
-
-                            {uploadingFile === 'driving_licence' && (
-                <LinearProgressWithLabel value={uploadProgress.driving_licence} />
-                            )
-                            } 
-         
-                </div>
-                <div class="mb-3 file_div">
-                  <label for="schedule_pdf" class="form-label">
-                    A PDF Copy of your 2019 Form 1040 (Tax Return), including
-                    ALL schedules, if the 2019 Self-Employed Income is higher
-                    than 2020. We would prefer one PDF file.
-                  </label>
-
-                  {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
-  userData.schedule_pdf.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.schedule_pdf_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="schedule_pdf"
-    className="form-control file"
-    id="schedule_pdf"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('schedule_pdf', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-            <FileInputComponent
-              inputName="schedule_pdf"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-          )}
-
-
-                            {uploadingFile === 'schedule_pdf' && (
-                <LinearProgressWithLabel value={uploadProgress.schedule_pdf} />
-                            )} 
-                </div>
-                <div class="mb-3 file_div">
-                  <label for="Tax_Return_2020" class="form-label">
-                    {" "}
-                    A PDF Copy of your 2020 Form 1040 (Tax Return), including
-                    ALL schedules.{" "}
-                  </label>
-
-                  {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
-  userData.Tax_Return_2020.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.Tax_Return_2020_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="Tax_Return_2020"
-    className="form-control file"
-    id="Tax_Return_2020"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('Tax_Return_2020', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="Tax_Return_2020"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'Tax_Return_2020' && (
-                <LinearProgressWithLabel value={uploadProgress.Tax_Return_2020} />
-                            )} 
-                </div>
-                <div class="mb-3 file_div">
-                  <label for="Tax_Return_2021" class="form-label">
-                    A PDF Copy of your 2021 Form 1040 (Tax Return), including
-                    ALL schedules.{" "}
-                  </label>
-                  {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
-  userData.Tax_Return_2021.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.Tax_Return_2021_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="Tax_Return_2021"
-    className="form-control file"
-    id="Tax_Return_2021"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('Tax_Return_2021', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="Tax_Return_2021"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'Tax_Return_2021' && (
-                <LinearProgressWithLabel value={uploadProgress.Tax_Return_2021} />
-                            )} 
-                </div>
-              
-               {formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes"  && (
-
-                <div class="pdf-upload-extra">
-
-                  <div class="mb-3 file_div">
-                    <label
-                      for="supplemental_attachment_2020"
-                      class="form-label"
-                    >
-                      PDF Copy of All your 2020 Form W-2(s), including ANY
-                      Family First Coronavirus Response Act (FFCRA) supplemental
-                      attachment(s).*
-                    </label>
-                    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
-  userData.supplemental_attachment_2020.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.supplemental_attachment_2020_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="supplemental_attachment_2020"
-    className="form-control file"
-    id="supplemental_attachment_2020"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="supplemental_attachment_2020"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'supplemental_attachment_2020' && (
-                <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2020} />
-                            )} 
-                  </div>
-
-                  <div class="mb-3 file_div">
-                    <label
-                      for="2021_supplemental_attachment_2021"
-                      class="form-label"
-                    >
-                      PDF Copy of All your 2021 Form W-2(s), including ANY
-                      Family First Coronavirus Response Act (FFCRA) supplemental
-                      attachment(s).
-                    </label>
-                    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
-  userData.supplemental_attachment_2021.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.supplemental_attachment_2021_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="supplemental_attachment_2021"
-    className="form-control file"
-    id="supplemental_attachment_2021"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="supplemental_attachment_2021"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'supplemental_attachment_2021' && (
-                <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2021} />
-                            )} 
-                  </div>
-
-                  <div class="mb-3 file_div">
-                    <label for="FormA1099" class="form-label">
-                      PDF Copy of All your 2020 Form 1099-R(s), if any
-                    </label>
-
-                    {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
-  userData.FormA1099.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.FormA1099_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="FormA1099"
-    className="form-control file"
-    id="FormA1099"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('FormA1099', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.FormA1099 && userData?.FormA1099.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="FormA1099"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'FormA1099' && (
-                <LinearProgressWithLabel value={uploadProgress.FormA1099} />
-                            )} 
-                  </div>
-
-                  <div class="mb-3 file_div">
-                    <label for="FormB1099" class="form-label">
-                      PDF Copy of All your 2021 Form 1099-R(s), if any
-                    </label>
-                    
-                    {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
-  userData.FormB1099.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.FormB1099_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="FormB1099"
-    className="form-control file"
-    id="FormB1099"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('FormB1099', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.FormB1099 && userData?.FormB1099.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="FormB1099"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'FormB1099' && (
-                <LinearProgressWithLabel value={uploadProgress.FormB1099} />
-                            )} 
-                  </div>
-
-                  <div class="mb-3 file_div">
-                    <label for="ks2020" class="form-label">
-                      PDF Copy of All your 2020 K-1s, if any
-                    </label>
-                    {userData?.ks2020 && userData?.ks2020.length > 0 ? (
-  userData.ks2020.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.ks2020_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="ks2020"
-    className="form-control file"
-    id="ks2020"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('ks2020', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.ks2020 && userData?.ks2020.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="ks2020"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'ks2020' && (
-                <LinearProgressWithLabel value={uploadProgress.ks2020} />
-                            )} 
-                  </div>
-
-                  <div class="mb-3 file_div">
-                    <label for="ks22020" class="form-label">
-                      PDF Copy of All your 2020 K-1s, if any
-                    </label>
-                    {userData?.ks22020 && userData?.ks22020.length > 0 ? (
-  userData.ks22020.map((file, index) => (
-    <div key={index} className="containerr">
-      <div className="itemm">
-        <TaskAlt />
-        <span className="namee">{userData.ks22020_name[index]}</span>
-      </div>
-      <div className="itemm" style={{ padding: '0px 20px !important' }}>
-        <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
-          View
-        </div>
-        { showRemoveButton && (
-        <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
-          Remove
-        </div>
-        ) }
-      </div>
-    </div>
-  ))
-) : (
-  <input
-    style={{ marginTop: 20 }}
-    type="file"
-    name="ks22020"
-    className="form-control file"
-    id="ks22020"
-    accept=".pdf"
-    required
-    multiple  // Allow multiple file selection
-    onChange={(e) => handleFileChange('ks22020', e)}
-  />
-)}
-
-              {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-  <button >Add File</button>
-)} */}
-
-    {userData?.ks22020 && userData?.ks22020.length > 0 && (
-    
-     <button style={{    marginTop: '20px',
-      borderRadius: '6px',
-      border: '1px solid transparent',
-      fontWeight: 'bold',
-      color: 'white',
-      background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
-    
-      )} 
-         
-          {isAddingFile && ( 
-
-            <FileInputComponent
-              inputName="ks22020"
-              onRemove={handleRemoveInput} 
-              handleFileChange={handleFileChange} // Pass the file change handler
-            />
-
-          )}
-
-
-                            {uploadingFile === 'ks22020' && (
-                <LinearProgressWithLabel value={uploadProgress.ks22020} />
-                            )} 
-                  </div>
-
-                </div>
-
-                )} 
-                
-                <div class="data-p py-2 mb-2">
-                  <p>
-                   <input
-            className="form-check-input me-1"
-            type="checkbox"
-            value=""
-            id="flexCheckD"
-            onChange={handleCheckboxChange}
-          />
-                    By checking this box you attest that the answers and
-                    information provided are true and accurate to the best of
-                    your knowledge, and understand that once submitted your
-                    responses cannot be changed. You agree to our{" "}
-                    <a
-                      href=""
-                      data-bs-toggle="modal"
-                      data-bs-target="#term_condition"
-                    >
-                      {" "}
-                      terms & conditions
-                    </a>
-                    , and also agree to keep documentation on file that
-                    substantiates claims made in this application.
-                  </p>
-                </div>
-                <div class="d-flex justify-content-center flex-wrap">
-                  <button  onClick={handlePrevious} type="button" class=" prev-step mb-2">
-                    Previous
-                  </button>
-                  <button
-        type="button"
-        id="confirmSubmitModalLaterBtn"
-        data-bs-target="#confirmSubmitModalwithout"
-        className="btn btn-primary px-5 py-2 me-2 mb-2 next-step"
-        disabled={shouldDisableButtonLater()}
-        onClick={handleSubmitLater}
-      >
-        Submit Documents Later
-      </button>
-
-      <button
-        type="button"
-        className="btn btn-primary px-5 py-2 mb-2 next-step"
-        style={{ backgroundColor: '#29abe2' }}
-        data-bs-target="#confirmSubmitModalLater"
-        disabled={formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes" ? shouldDisableButtonsAdditional() : shouldDisableButtons()}
-        onClick={handleSubmiDocuments}
-      >
-        Submit Now
-      </button>
-
-                  <div
-                    class="modal fade"
-                    id="confirmSubmitModalLater"
-                    data-bs-backdrop="static"
-                    data-bs-keyboard="false"
-                    tabindex="-1"
-                    aria-labelledby="staticBackdropLabel"
-                    aria-hidden="true"
-                  >
-                    <div class="modal-dialog">
-                      <div class="modal-content confirm-modal">
+                  );
+                  case 19 :
+                    return (
+                     
+                      <div class="row justify-content-center step step-20">
+                      <div class="col-lg-8">
                         <div
-                          class="modal-header py-2"
-                          style={{ borderBottom: "none" }}
+                          class="step step-10 bg-white shadow px-3 py-5"
+                          style={{ borderRadius: "20px" }}
                         >
-                          <h5 class="modal-title" id="exampleModalLabel"></h5>
-
-                          <a href="#">
-                            <i
-                              class="fa-solid fa-xmark fs-3"
-                              data-bs-dismiss="modal"
-                              aria-label="Close"
-                            ></i>
-                          </a>
-                        </div>
-
-                        <div class="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
-                          <img
-                            src="./images/gif-submit.gif"
-                            style={{ width: "120px" }}
+                          {/* <div class="progress mb-4" style={{height: "15px"}}>
+                                <input type="hidden" name="record_id" id="record_id" value=""/>
+                                <div class="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div> */}
+                          <LinearProgress
+                            variant="determinate"
+                            sx={{
+                              height: "8px",
+                              marginBottom: 4,
+                              borderRadius: "4px",
+                              backgroundColor: "#f0f0f0",
+                              "& .MuiLinearProgress-bar": {
+                                backgroundColor: "rgb(13, 189, 243);",
+                              },
+                            }}
+                            value={getProgressPercentage()}
                           />
-                          <h5 class="text-center pb-4">
-                            <span class="text-success">Congratultion</span> Your
-                            application has been submitted!{" "}
-                          </h5>
-                          <h5 class="text-center">
-                            Our team will get back to you in 24-72 hours. Thank
-                            you.
-                          </h5>
-
-                          <a href="#" class="btn btn-primary px-5 go-on-btn">
-                            Go on
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+          
+                          <h3>Documents</h3>
+          
+                          <div class="mb-3 file_div">
+                            <label for="driving_licence" class="form-label">
+                              A PDF Copy of a Current ID or Driver's License
+                            </label>
+                            {userData?.driving_licence && userData?.driving_licence.length > 0 ? (
+            userData.driving_licence.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.driving_licence_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('driving_licence', index)} className="buttonn">
+                    View
                   </div>
-                  <div
-                    class="modal fade"
-                    id="confirmSubmitModalwithout"
-                    data-bs-backdrop="static"
-                    data-bs-keyboard="false"
-                    tabindex="-1"
-                    aria-labelledby="staticBackdropLabel"
-                    aria-hidden="true"
-                  >
-                    <div class="modal-dialog">
-                      <div class="modal-content confirm-modal2">
-                        <div
-                          class="modal-header py-2"
-                          style={{ borderBottom: "none" }}
-                        >
-                          <h5 class="modal-title" id="exampleModalLabel"></h5>
-
-                          <a href="">
-                            <i
-                              class="fa-solid fa-xmark fs-3"
-                              data-bs-dismiss="modal"
-                              aria-label="Close"
-                            ></i>
-                          </a>
-                        </div>
-
-                        <div class="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
-                          <img
-                            src="./images/gif-submit.gif"
-                            style={{ width: "120px" }}
-                          />
-                          <h5 class="text-center pb-4">
-                            <span class="text-success">Great</span>, your
-                            application has been submittd.We will send you a
-                            personalupload link for your documents.
-                          </h5>
-                          <a href="#" class="btn btn-primary px-5 go-on-btn2">
-                            Go on
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
+                    Remove
                   </div>
+                  ) }
                 </div>
               </div>
-            </div>
-          </div>
-        );
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="driving_licence"
+              className="form-control file"
+              id="driving_licence"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('driving_licence', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+                      <FileInputComponent
+                        inputName="driving_licence"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+                    )}
+          
+          
+                                      {uploadingFile === 'driving_licence' && (
+                          <LinearProgressWithLabel value={uploadProgress.driving_licence} />
+                                      )
+                                      } 
+                   
+                          </div>
+                          <div class="mb-3 file_div">
+                            <label for="schedule_pdf" class="form-label">
+                              A PDF Copy of your 2019 Form 1040 (Tax Return), including
+                              ALL schedules, if the 2019 Self-Employed Income is higher
+                              than 2020. We would prefer one PDF file.
+                            </label>
+          
+                            {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
+            userData.schedule_pdf.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.schedule_pdf_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="schedule_pdf"
+              className="form-control file"
+              id="schedule_pdf"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('schedule_pdf', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+                      <FileInputComponent
+                        inputName="schedule_pdf"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+                    )}
+          
+          
+                                      {uploadingFile === 'schedule_pdf' && (
+                          <LinearProgressWithLabel value={uploadProgress.schedule_pdf} />
+                                      )} 
+                          </div>
+                          <div class="mb-3 file_div">
+                            <label for="Tax_Return_2020" class="form-label">
+                              {" "}
+                              A PDF Copy of your 2020 Form 1040 (Tax Return), including
+                              ALL schedules.{" "}
+                            </label>
+          
+                            {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
+            userData.Tax_Return_2020.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.Tax_Return_2020_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="Tax_Return_2020"
+              className="form-control file"
+              id="Tax_Return_2020"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('Tax_Return_2020', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="Tax_Return_2020"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'Tax_Return_2020' && (
+                          <LinearProgressWithLabel value={uploadProgress.Tax_Return_2020} />
+                                      )} 
+                          </div>
+                          <div class="mb-3 file_div">
+                            <label for="Tax_Return_2021" class="form-label">
+                              A PDF Copy of your 2021 Form 1040 (Tax Return), including
+                              ALL schedules.{" "}
+                            </label>
+                            {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
+            userData.Tax_Return_2021.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.Tax_Return_2021_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="Tax_Return_2021"
+              className="form-control file"
+              id="Tax_Return_2021"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('Tax_Return_2021', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="Tax_Return_2021"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'Tax_Return_2021' && (
+                          <LinearProgressWithLabel value={uploadProgress.Tax_Return_2021} />
+                                      )} 
+                          </div>
+                        
+                         {formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes"  && (
+          
+                          <div class="pdf-upload-extra">
+          
+                            <div class="mb-3 file_div">
+                              <label
+                                for="supplemental_attachment_2020"
+                                class="form-label"
+                              >
+                                PDF Copy of All your 2020 Form W-2(s), including ANY
+                                Family First Coronavirus Response Act (FFCRA) supplemental
+                                attachment(s).*
+                              </label>
+                              {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
+            userData.supplemental_attachment_2020.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.supplemental_attachment_2020_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="supplemental_attachment_2020"
+              className="form-control file"
+              id="supplemental_attachment_2020"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="supplemental_attachment_2020"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'supplemental_attachment_2020' && (
+                          <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2020} />
+                                      )} 
+                            </div>
+          
+                            <div class="mb-3 file_div">
+                              <label
+                                for="2021_supplemental_attachment_2021"
+                                class="form-label"
+                              >
+                                PDF Copy of All your 2021 Form W-2(s), including ANY
+                                Family First Coronavirus Response Act (FFCRA) supplemental
+                                attachment(s).
+                              </label>
+                              {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
+            userData.supplemental_attachment_2021.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.supplemental_attachment_2021_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="supplemental_attachment_2021"
+              className="form-control file"
+              id="supplemental_attachment_2021"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="supplemental_attachment_2021"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'supplemental_attachment_2021' && (
+                          <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2021} />
+                                      )} 
+                            </div>
+          
+                            <div class="mb-3 file_div">
+                              <label for="FormA1099" class="form-label">
+                                PDF Copy of All your 2020 Form 1099-R(s), if any
+                              </label>
+          
+                              {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
+            userData.FormA1099.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.FormA1099_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="FormA1099"
+              className="form-control file"
+              id="FormA1099"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('FormA1099', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.FormA1099 && userData?.FormA1099.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="FormA1099"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'FormA1099' && (
+                          <LinearProgressWithLabel value={uploadProgress.FormA1099} />
+                                      )} 
+                            </div>
+          
+                            <div class="mb-3 file_div">
+                              <label for="FormB1099" class="form-label">
+                                PDF Copy of All your 2021 Form 1099-R(s), if any
+                              </label>
+                              
+                              {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
+            userData.FormB1099.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.FormB1099_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="FormB1099"
+              className="form-control file"
+              id="FormB1099"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('FormB1099', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.FormB1099 && userData?.FormB1099.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="FormB1099"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'FormB1099' && (
+                          <LinearProgressWithLabel value={uploadProgress.FormB1099} />
+                                      )} 
+                            </div>
+          
+                            <div class="mb-3 file_div">
+                              <label for="ks2020" class="form-label">
+                                PDF Copy of All your 2020 K-1s, if any
+                              </label>
+                              {userData?.ks2020 && userData?.ks2020.length > 0 ? (
+            userData.ks2020.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.ks2020_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="ks2020"
+              className="form-control file"
+              id="ks2020"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('ks2020', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.ks2020 && userData?.ks2020.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="ks2020"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'ks2020' && (
+                          <LinearProgressWithLabel value={uploadProgress.ks2020} />
+                                      )} 
+                            </div>
+          
+                            <div class="mb-3 file_div">
+                              <label for="ks22020" class="form-label">
+                                PDF Copy of All your 2020 K-1s, if any
+                              </label>
+                              {userData?.ks22020 && userData?.ks22020.length > 0 ? (
+            userData.ks22020.map((file, index) => (
+              <div key={index} className="containerr">
+                <div className="itemm">
+                  <TaskAlt />
+                  <span className="namee">{userData.ks22020_name[index]}</span>
+                </div>
+                <div className="itemm" style={{ padding: '0px 20px !important' }}>
+                  <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
+                    View
+                  </div>
+                  { showRemoveButton && (
+                  <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
+                    Remove
+                  </div>
+                  ) }
+                </div>
+              </div>
+            ))
+          ) : (
+            <input
+              style={{ marginTop: 20 }}
+              type="file"
+              name="ks22020"
+              className="form-control file"
+              id="ks22020"
+              accept=".pdf"
+              required
+              multiple  // Allow multiple file selection
+              onChange={(e) => handleFileChange('ks22020', e)}
+            />
+          )}
+          
+                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+            <button >Add File</button>
+          )} */}
+          
+              {userData?.ks22020 && userData?.ks22020.length > 0 && (
+              
+               <button style={{    marginTop: '20px',
+                borderRadius: '6px',
+                border: '1px solid transparent',
+                fontWeight: 'bold',
+                color: 'white',
+                background: '#3c4d77'}} 
+                onClick={handleAddFileClick}>Add File</button>
+              
+                )} 
+                   
+                    {isAddingFile && ( 
+          
+                      <FileInputComponent
+                        inputName="ks22020"
+                        onRemove={handleRemoveInput} 
+                        handleFileChange={handleFileChange} // Pass the file change handler
+                      />
+          
+                    )}
+          
+          
+                                      {uploadingFile === 'ks22020' && (
+                          <LinearProgressWithLabel value={uploadProgress.ks22020} />
+                                      )} 
+                            </div>
+          
+                          </div>
+          
+                          )} 
+                          
+                          <div class="data-p py-2 mb-2">
+                            <p>
+                             <input
+                      className="form-check-input me-1"
+                      type="checkbox"
+                      value=""
+                      id="flexCheckD"
+                      onChange={handleCheckboxChange}
+                    />
+                              By checking this box you attest that the answers and
+                              information provided are true and accurate to the best of
+                              your knowledge, and understand that once submitted your
+                              responses cannot be changed. You agree to our{" "}
+                              <a
+                                href=""
+                                data-bs-toggle="modal"
+                                data-bs-target="#term_condition"
+                              >
+                                {" "}
+                                terms & conditions
+                              </a>
+                              , and also agree to keep documentation on file that
+                              substantiates claims made in this application.
+                            </p>
+                          </div>
+                          <div class="d-flex justify-content-center flex-wrap">
+                            <button  onClick={handlePrevious} type="button" class=" prev-step mb-2">
+                              Previous
+                            </button>
+                            <button
+                  type="button"
+                  id="confirmSubmitModalLaterBtn"
+                  data-bs-target="#confirmSubmitModalwithout"
+                  className="btn btn-primary px-5 py-2 me-2 mb-2 next-step"
+                  disabled={shouldDisableButtonLater()}
+                  onClick={handleSubmitLater}
+                >
+                  Submit Documents Later
+                </button>
+          
+                <button
+                  type="button"
+                  className="btn btn-primary px-5 py-2 mb-2 next-step"
+                  style={{ backgroundColor: '#29abe2' }}
+                  data-bs-target="#confirmSubmitModalLater"
+                  disabled={formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes" ? shouldDisableButtonsAdditional() : shouldDisableButtons()}
+                  onClick={handleSubmiDocuments}
+                >
+                  Submit Now
+                </button>
+          
+                            <div
+                              class="modal fade"
+                              id="confirmSubmitModalLater"
+                              data-bs-backdrop="static"
+                              data-bs-keyboard="false"
+                              tabindex="-1"
+                              aria-labelledby="staticBackdropLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content confirm-modal">
+                                  <div
+                                    class="modal-header py-2"
+                                    style={{ borderBottom: "none" }}
+                                  >
+                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+          
+                                    <a href="#">
+                                      <i
+                                        class="fa-solid fa-xmark fs-3"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                      ></i>
+                                    </a>
+                                  </div>
+          
+                                  <div class="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
+                                    <img
+                                      src="./images/gif-submit.gif"
+                                      style={{ width: "120px" }}
+                                    />
+                                    <h5 class="text-center pb-4">
+                                      <span class="text-success">Congratultion</span> Your
+                                      application has been submitted!{" "}
+                                    </h5>
+                                    <h5 class="text-center">
+                                      Our team will get back to you in 24-72 hours. Thank
+                                      you.
+                                    </h5>
+          
+                                    <a href="#" class="btn btn-primary px-5 go-on-btn">
+                                      Go on
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="modal fade"
+                              id="confirmSubmitModalwithout"
+                              data-bs-backdrop="static"
+                              data-bs-keyboard="false"
+                              tabindex="-1"
+                              aria-labelledby="staticBackdropLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content confirm-modal2">
+                                  <div
+                                    class="modal-header py-2"
+                                    style={{ borderBottom: "none" }}
+                                  >
+                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+          
+                                    <a href="">
+                                      <i
+                                        class="fa-solid fa-xmark fs-3"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                      ></i>
+                                    </a>
+                                  </div>
+          
+                                  <div class="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
+                                    <img
+                                      src="./images/gif-submit.gif"
+                                      style={{ width: "120px" }}
+                                    />
+                                    <h5 class="text-center pb-4">
+                                      <span class="text-success">Great</span>, your
+                                      application has been submittd.We will send you a
+                                      personalupload link for your documents.
+                                    </h5>
+                                    <a href="#" class="btn btn-primary px-5 go-on-btn2">
+                                      Go on
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    );
       default:
         return "File is here";
     }
@@ -5177,18 +9129,19 @@ The next step is to upload your documents for our CPAs to calculate your exact c
     },
     [`&.${stepConnectorClasses.active}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        borderColor: '#784af4',
+        borderColor: '#00b6ff',
       },
     },
     [`&.${stepConnectorClasses.completed}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        borderColor: '#784af4',
+        borderColor: '#00b6ff',
       },
     },
     [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
-      borderTopWidth: 3,
+      borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : '#eaeaf0',
+      borderTopWidth: 5,
       borderRadius: 1,
+      
     },
   }));
   function QontoStepIcon(props) {
@@ -5198,21 +9151,67 @@ The next step is to upload your documents for our CPAs to calculate your exact c
       <>
       <QontoStepIconRoot className={`${className} ${active ? 'active' : ''} ${completed ? 'completed' : ''}`}>
         {completed ? (
-          <Check />
+            <Avatar
+            style={{
+              backgroundColor: '#00b6ff',
+              width: '30px', // Adjust size as needed
+              height: '30px', // Adjust size as needed
+            }}
+          >
+             <Check  style={{fontWeight: 'bold'}}/>
+            </Avatar>
+         
         ) : (
-          <div className="QontoStepIcon-circle" />
+          <Avatar
+          style={{
+            backgroundColor: '#00b6ff',
+            width: '30px', // Adjust size as needed
+            height: '30px', // Adjust size as needed
+          }}
+        >
+           <Check style={{color: '#00b6ff'}} />
+          </Avatar>
         )}
       </QontoStepIconRoot>
       </>
     );
   }
+
+
+
+  const CustomConnector = styled(StepConnector)(({ theme }) => ({
+    // Your connector styles here
+    '& .MuiStepConnector-line': {
+      borderColor: 'green', // Change the connector color
+    },
+  }));
+  
+  // Customized StepIcon with Check icon
+  const CustomStepIcon = styled('div')(({ theme, active, completed, isIndex7  }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30px',
+    height: '30px',
+    color:'green', // Change icon color for completed and active steps
+    backgroundColor: '#00b6ff',
+        borderRadius: '50%',
+   
+    borderColor: '#e0e0e0', // Change border color for completed and active steps
+    zIndex: 1,
+    fontSize: 14,
+    '& span': {
+      color: isIndex7 ? '#00b6ff' : 'white', // Change color of step number
+    },
+  }));
+
   return (
     <Box sx={{ width: "100%", marginTop: 10 , backgroundImage: ' linear-gradient(direction, color-stop1, color-stop2)' }}>
       {(activeStep !== 0 && activeStep !== 1) && (
         <>
-      {activeStep <= 6  && (
+      {activeStep <= 8  && (
        <Stepper activeStep={activeStep} alternativeLabel connector={<QontoConnector />}>
-        {activeStep <= 6 && steps1.map((label) =>  (
+        {activeStep <= 8 && steps1.map((label) =>  (
           <Step key={label}>
             {/* <StepLabel
               sx={{
@@ -5226,15 +9225,17 @@ The next step is to upload your documents for our CPAs to calculate your exact c
              <StepLabel 
               sx={{
                 '& .MuiStepLabel-label.Mui-completed': {
-                  color:'red', // Change label color based on active step
+                  color:'#00b6ff', // Change label color based on active step
+                  fontWeight: '300'
                 },
                 '& .MuiStepLabel-label.Mui-active': {
-                  color:'red', // Change label color based on active step
-                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'/* Offset X, Offset Y, Blur Radius, Shadow Color */
+                  color:'#00b6ff', // Change label color based on active step
+                  fontWeight: '300'
 
                 },
                 '& .MuiStepLabel-label': {
-                  color:'green', // Change label color based on active step
+                  color:'gray', // Change label color based on active step
+                  fontWeight: '300'
                 },
 
                 
@@ -5246,40 +9247,77 @@ The next step is to upload your documents for our CPAs to calculate your exact c
       )}
       </>
       )}
-       {activeStep > 6 && (
-       <Stepper activeStep={activeStep - 7} alternativeLabel connector={<QontoConnector />}>
+       {activeStep > 8 && activeStep !== 19 && (
+       <Stepper activeStep={activeStep - 9} alternativeLabel connector={<QontoConnector />}>
         {steps2.map((label, index) => (
-          <Step key={label}>
-            {/* <StepLabel
-              sx={{
-                '& .MuiStepLabel-label': {
-                  color: activeStep === index ? 'green' : 'gray', // Change label color based on active step
-                },
-              }}
-            >
-              {label}
-            </StepLabel> */}
-             <StepLabel 
-              sx={{
-                '& .MuiStepLabel-label.Mui-completed': {
-                  color:'orange', // Change label color based on active step
-                },
-                '& .MuiStepLabel-label.Mui-active': {
-                  color:'orange', // Change label color based on active step
-                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'/* Offset X, Offset Y, Blur Radius, Shadow Color */
+           <Step key={label}>
+           {/* <StepLabel
+             sx={{
+               '& .MuiStepLabel-label': {
+                 color: activeStep === index ? 'green' : 'gray', // Change label color based on active step
+               },
+             }}
+           >
+             {label}
+           </StepLabel> */}
+            <StepLabel 
+             sx={{
+               '& .MuiStepLabel-label.Mui-completed': {
+                 color:'#00b6ff', // Change label color based on active step
+                 fontWeight: '300'
+               },
+               '& .MuiStepLabel-label.Mui-active': {
+                 color:'#00b6ff', // Change label color based on active step
+                 fontWeight: '300'
 
-                },
-                '& .MuiStepLabel-label': {
-                  color:'black', // Change label color based on active step
-                },
+               },
+               '& .MuiStepLabel-label': {
+                 color:'gray', // Change label color based on active step
+                 fontWeight: '300'
+               },
 
-                
-              }}
-             StepIconComponent={QontoStepIcon}>{label}</StepLabel>
-          </Step>
+               
+             }}
+            StepIconComponent={QontoStepIcon}>{label}</StepLabel>
+         </Step>
         ))}
       </Stepper>
       )}
+      {activeStep === 19 && (
+             <Stepper activeStep={1} alternativeLabel connector={<CustomConnector />}>
+             {steps19.map((label, index) => (
+               <Step key={label}>
+                 <StepLabel 
+                 sx={{
+                  '& .MuiStepLabel-label': {
+                    color: index === 7 ? 'gray' : '#2196f3', // Change label color based on active step
+                    fontWeight: '300'
+                  },
+                  '& .MuiStepLabel-label.Mui-active': {
+                    color: '#00b6ff', // Change label color based on active step
+                    fontWeight: '300'
+                  },
+                 }}
+                 StepIconComponent={(props) => (
+                   <CustomStepIcon
+                     {...props}
+                     completed={index < 1} 
+                     active={index === 1}
+                     isIndex7={index === 7}  // Change based on the current active step
+                   >
+                     {index < 1 ? <Check style={{color: 'white'}}/> :  <span>{index + 1}</span>}
+                   </CustomStepIcon>
+                 )}>
+                   {label}
+                 </StepLabel>
+               </Step>
+             ))}
+           </Stepper>
+        
+            )}
+     
+
+
 
       {(userData?.applicationStatus !== true &&  userData?.applicationWithDocument !== true) &&  (
         <>
