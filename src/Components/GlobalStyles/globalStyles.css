@@ -29,18 +29,89 @@ body {
 
 /* Application Page  Progress Bar Ahmed*/
 .headng{
-  font-size: 1.375rem !important;
-
-  color: #000  !important;
-  margin-top: 20px;
-  text-align: justify;
-  font-family: Outfit;
-
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-size: 22px !important;
+  /* color: #00b6ff !important; */
+  color: black !important;
+  font-weight: 600;
+  width: 100%;
 
 }
+.form-check-input:checked{
+  background-color: #1bb9f3 !important;
+  /* border: none !important; */
+  box-shadow: none !important;
+
+}
+
+.first-stepper .css-n7tliy-MuiStep-root:nth-child(2) {
+  display: none;
+}
+.step_1_des{
+  background-color: #01B3E480;
+  width: 100%;
+  color: black !important;
+  /* border-radius: 20px; */
+  height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.step_1_de{
+  background-color: #1A2C57;
+  width: 100%;
+  color: white  !important;
+
+  /* border-radius: 20px; */
+  height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+
+
+@media screen and (max-width: 768px) {
+  /* Adjust the width of the stepper for smaller screens */
+  .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
+    font-size: 6px !important; /* Set the width you prefer for smaller screens */
+    
+    /* Other adjustments as needed */
+  }
+  /* .css-10mg1vw-MuiStepper-root{
+    padding: 0px 40px;
+  } */
+  
+  
+}
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
+    font-size: 10px !important; /* Set the width you prefer for smaller screens */
+  }
+}
+@media screen and (max-width: 768px) {
+.secondStepper .css-2s90m6-MuiAvatar-root{
+  width: 22px !important;
+  height: 22px !important;
+}
+}
+@media screen and (max-width: 768px) {
+.css-1hv8oq8-MuiStepLabel-label{
+  font-size: 7px !important;
+}
+}
+
+@media screen and (max-width: 768px) {
+  .nineteenStepper .css-123rdn{
+    width: 22px !important;
+    height: 22px !important;
+  }
+  }
+
+
+
+
 .midc{
   color: #E50300 !important;
 
@@ -160,6 +231,8 @@ div.MuiStepConnector-root:nth-child(2) {
 
 
 
+
+
 .optio {
   /* border: 1px solid #29abe2; */
   padding: 10px 10px;
@@ -191,7 +264,7 @@ input.error {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  border: 1px solid #dff5fc;
+  border: 1px solid transparent;
 }
 .img-applci>h1{
   color: rgb(245, 62, 62);
@@ -344,12 +417,38 @@ input.error{
   font-weight: 600;
 }
 
+.start-application .row {
+  margin-top: 18px !important;
+}
+
 .img-applic-content {
-  padding: 50px 20px;
-  /* border: 2px solid #dff5fc; */
+  /* padding: 50px 20px;
+
   height: 100%;
   color: #00b6ff !important;
-  /* text-align: center; */
+  text-align: center; */
+  padding: 50px 20px;
+    border:2px solid #b9e3f0;
+    height: 100%;
+    /* display: flex;
+    flex-direction: column; */
+    align-items: center !important;
+    border-radius: 12px;
+}
+.img-applic-content-congrts {
+  /* padding: 50px 20px;
+
+  height: 100%;
+  color: #00b6ff !important;
+  text-align: center; */
+  padding: 50px 20px;
+    border:2px solid #b9e3f0;
+    height: 100%;
+    /* display: flex;
+    flex-direction: column; */
+    align-items: center !important;
+    border-radius: 12px;
+    /* background-image: linear-gradient(45deg, #aad4ff, transparent) !important */
 }
 
 /* .img-applci {
