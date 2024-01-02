@@ -20,8 +20,13 @@ import taxSet from "./GlobalImages/Tax_set.png";
 import newImage from "./GlobalImages/Group 940.png";
 import framepng from "./GlobalImages/Frame.png";
 import qustMark from "./GlobalImages/Qust_mark.png";
+import congrats from "./GlobalImages/congratss.png";
+import Confetti from 'react-confetti';
+
 import {
+  CheckBoxSharp,
   CheckCircle,
+  CheckCircleOutline,
   DomainVerification,
   QuestionMark,
   TaskAlt,
@@ -96,35 +101,35 @@ const steps1 = [
 
 const steps2 = [
   "Begin Application",
-  "1 of 8",
-  "2 of 8",
-  "3 of 8",
-  "4 of 8",
-  "5 of 8",
-  "6 of 8",
-  "7 of 8",
-  "8 of 8",
+  "1 of 7",
+  "2 of 7",
+  "3 of 7",
+  "4 of 7",
+  "5 of 7",
+  "6 of 7",
+  "7 of 7",
+  // "8 of 8",
   "Estimate Calculator",
 ];
 
-const steps19 = [
-  "Portal",
-  "",
-  "",
-  "",
-  "",
-  "",
- 
-  "Calculation",
+const steps18 = [
+  "Begin application",
+  "Estimated Calculator",
   "Upload Documents",
 ];
 
 const MultiStepForm = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  const [finalCreditAmountStorage, setFinalCreditAmountStorage] =
-    useState(null);
+  const [finalCreditAmountStorage, setFinalCreditAmountStorage] = useState(null);
 
+  const [uploadCompleteTimes, setUploadCompleteTimes] = useState({
+    driving_licence: null,
+    schedule_pdf: null
+  });
+
+  console.log(uploadCompleteTimes.driving_licence, 'timewaqas');
+    
   const [finalIncomeValue, setFinalIncomeValue] = useState(null);
 
   const [activeErrorQualifyOne, setActiveErrorQualifyOne] = useState(false);
@@ -135,6 +140,8 @@ const MultiStepForm = () => {
   const [activeErrorQualifyThree, setActiveErrorQualifyThree] = useState(false);
   const [activeErrorQualifyFive, setActiveErrorQualifyFive] = useState(false);
   const [activeErrorQualifySix, setActiveErrorQualifySix] = useState(false);
+  const [activeErrorQualify17, setActiveErrorQualify17] = useState(false);
+  
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [userData, setUserData] = useState();
   const [selectedFiles, setSelectedFiles] = useState({
@@ -166,18 +173,88 @@ const MultiStepForm = () => {
   const [uploadingFile, setUploadingFile] = useState("");
 
   const [isAddingFile, setIsAddingFile] = useState(false);
+  const [addingFileType, setAddingFileType] = useState(null);
 
+  const width = 800; // Set your desired width here
+  const height = 600; // Set your desired height here
   const [showRemoveButton, setShowRemoveButton] = useState(true);
 
-  const handleAddFileClick = () => {
-    setIsAddingFile(true); // Set the state to allow adding more files
+  const handleAddFileClick = (type) => {
+    // setIsAddingFile(true); 
+   
+    setAddingFileType(type);
   };
 
+
+
+
+
+  const confettiStyle = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    pointerEvents: 'none',
+  };
+
+  const boxStyle = {
+    position: 'relative',
+    width: '100%', // Set your desired width for the box (adjust according to mobile responsiveness)
+    maxWidth: '1500px', // Set maximum width for larger screens
+   // Example border
+    boxShadow: '0 0 5px 5px rgb(60 125 147 / 30%)',
+    borderRadius: '8px',
+    margin: '0 auto', // Center the box horizontally
+    padding: '90px 20px',
+    display: 'block', // Initially visible
+  };
+  const boxSttyle = {
+    position: 'relative',
+    width: '100%', // Set your desired width for the box (adjust according to mobile responsiveness)
+    maxWidth: '1500px', // Set maximum width for larger screens
+   // Example border
+    // boxShadow: '0 0 1px 1px rgb(60 125 147 / 30%)',
+    borderRadius: '8px',
+    margin: '0 auto', // Center the box horizontally
+    padding: '189px 20px',
+    display: 'block', // Initially visible
+  };
+
+  const mobileBoxStyle = {
+    width: '100%', // Adjusted width for mobile screens
+    maxWidth: 'none', // Remove maximum width for smaller screens
+    display: 'none', // Initially hidden for mobile
+    padding: '30px 20px'
+  };
+
+  // Media query for mobile screens
+  const mediaQuery = '@media (max-width: 768px)';
+  
+  const styles = {
+    [mediaQuery]: {
+      '.desktop-box': {
+        display: 'block', // Show on desktop
+      },
+      '.mobile-box': {
+        display: 'none', // Hide on mobile
+      },
+    },
+  };
+
+
+
+
+
   const handleRemoveInput = () => {
-    setIsAddingFile(false);
+    setAddingFileType(null); // Reset the addingFileType state
+
   };
   const handleFileChange = (inputName, event) => {
     const selectedFiles = event.target.files;
+    const fileNames = Array.from(selectedFiles).map((file) => file.name); // Extract file names
+
     setSelectedFiles((prevSelectedFiles) => ({
       ...prevSelectedFiles,
       [inputName]: selectedFiles, // Assign an array of files
@@ -191,7 +268,7 @@ const MultiStepForm = () => {
     }
 
     // Call the upload function with the prepared formData
-    uploadFile(formData, inputName);
+    uploadFile(formData, inputName, fileNames);
   };
 
   // Function to upload the file
@@ -200,26 +277,27 @@ const MultiStepForm = () => {
     setCheckboxChecked(event.target.checked);
   };
 
+
   const allFilesSelected = () => {
     return (
-      selectedFiles?.driving_licence?.length > 0,
-      selectedFiles?.schedule_pdf?.length > 0,
-      selectedFiles?.Tax_Return_2020?.length > 0,
+      selectedFiles?.driving_licence?.length > 0 &&
+      selectedFiles?.schedule_pdf?.length > 0 &&
+      selectedFiles?.Tax_Return_2020?.length > 0 &&
       selectedFiles?.Tax_Return_2021?.length > 0
     );
   };
-
+  
   const allFilesSelectedAdditional = () => {
     return (
-      selectedFiles?.driving_licence?.length > 0,
-      selectedFiles?.schedule_pdf?.length > 0,
-      selectedFiles?.Tax_Return_2020?.length > 0,
-      selectedFiles?.Tax_Return_2021?.length > 0,
-      selectedFiles?.supplemental_attachment_2020?.length > 0,
-      selectedFiles?.supplemental_attachment_2021?.length > 0,
-      selectedFiles?.FormA1099?.length > 0,
-      selectedFiles?.FormB1099?.length > 0,
-      selectedFiles?.ks2020?.length > 0,
+      selectedFiles?.driving_licence?.length > 0 &&
+      selectedFiles?.schedule_pdf?.length > 0 &&
+      selectedFiles?.Tax_Return_2020?.length > 0 &&
+      selectedFiles?.Tax_Return_2021?.length > 0 &&
+      selectedFiles?.supplemental_attachment_2020?.length > 0 &&
+      selectedFiles?.supplemental_attachment_2021?.length > 0 &&
+      selectedFiles?.FormA1099?.length > 0 &&
+      selectedFiles?.FormB1099?.length > 0 &&
+      selectedFiles?.ks2020?.length > 0 &&
       selectedFiles?.ks22020?.length > 0
     );
   };
@@ -322,6 +400,8 @@ const MultiStepForm = () => {
     province: "",
     zipCode: "",
     knowAbout: "",
+    accounting_professional: "",
+    accounting_partnership: "",
     isChecked: false,
 
     selfEmployedFrom: "",
@@ -463,6 +543,7 @@ const MultiStepForm = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
+            step: step,
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
@@ -565,6 +646,7 @@ const MultiStepForm = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
+            step: step,
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
@@ -933,9 +1015,7 @@ const MultiStepForm = () => {
     if (!isValid) {
       return;
     }
-    if(activeStep === 10){
-      alert("hello")
-    }
+    
       // if (!emailValidated) {
       //   // Validate email before proceeding to the next step
       //   await checkEmailAvailability();
@@ -1022,38 +1102,36 @@ const MultiStepForm = () => {
       // if (activeStep === 9) {
       //   formDataUpdate(activeStep);
       // }
-      if (activeStep === 10) {
-        formDataUpdate(activeStep);
-      }
-       if (activeStep === 11) {
+      // if (activeStep === 10) {
+      //   formDataUpdate(activeStep);
+      // }
+       if (activeStep === 10) {
        
          formDataUpdateCalculation(activeStep);
+      }
+      if (activeStep === 11) {
+        formDataUpdateCalculation(activeStep);
       }
       if (activeStep === 12) {
         formDataUpdateCalculation(activeStep);
       }
+
       if (activeStep === 13) {
         formDataUpdateCalculation(activeStep);
       }
-
       if (activeStep === 14) {
         formDataUpdateCalculation(activeStep);
       }
       if (activeStep === 15) {
         formDataUpdateCalculation(activeStep);
       }
+
       if (activeStep === 16) {
         formDataUpdateCalculation(activeStep);
       }
+
       if (activeStep === 17) {
-        formDataUpdateCalculation(activeStep);
-      }
-
-      if (activeStep === 18) {
-        alert(activeStep)
-        // formDataUpdate(activeStep);
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        formDataUpdate(activeStep);
       }
 
     window.scrollTo(0, 0);
@@ -1084,7 +1162,7 @@ const MultiStepForm = () => {
       inputValue = value.replace(/\D/g, ""); // Remove non-digit characters
       inputValue = inputValue ? `$${Number(inputValue).toLocaleString()}` : "$"; // Format as currency with dollar sign
     }
-
+    
     if (type === "checkbox") {
       inputValue = event.target.checked;
     } else if (type === "date") {
@@ -1252,74 +1330,85 @@ const MultiStepForm = () => {
     let largerThan25KCount = 0;
     const token = localStorage.getItem("token");
 
-    // if (activeStep === 0) {
-    //   if (formData.firstName.trim() === "") {
-    //     errorsObj.firstName = "First name cannot be empty";
-    //     hasErrors = true;
-    //   }
+    if (activeStep === 0) {
+      if (formData.firstName.trim() === "") {
+        errorsObj.firstName = "First name cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.lastName.trim() === "") {
-    //     errorsObj.lastName = "Last name cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.lastName.trim() === "") {
+        errorsObj.lastName = "Last name cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.phone.trim() === "") {
-    //     errorsObj.phone = "Phone number cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.phone.trim() === "") {
+        errorsObj.phone = "Phone number cannot be empty";
+        hasErrors = true;
+      }
 
-    //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //   if (formData.email.trim() === "" || !emailRegex.test(formData.email)) {
-    //     errorsObj.email = "Invalid email format";
-    //     hasErrors = true;
-    //   }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (formData.email.trim() === "" || !emailRegex.test(formData.email)) {
+        errorsObj.email = "Invalid email format";
+        hasErrors = true;
+      }
 
-    //   if (!emailValidated && !token) {
-    //     errorsObj.email = "Email already in use!";
-    //     hasErrors = true;
-    //     window.scrollTo(0, 0);
-    //   }
+      if (!emailValidated && !token) {
+        errorsObj.email = "Email already in use!";
+        hasErrors = true;
+        window.scrollTo(0, 0);
+      }
 
-    //   if (formData.bussinessName.trim() === "") {
-    //     errorsObj.bussinessName = "Bussiness name cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.bussinessName.trim() === "") {
+        errorsObj.bussinessName = "Bussiness name cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.tradeName.trim() === "") {
-    //     errorsObj.tradeName = "Trade name cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.tradeName.trim() === "") {
+        errorsObj.tradeName = "Trade name cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.streetAddressOne.trim() === "") {
-    //     errorsObj.streetAddressOne = "Street address cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.streetAddressOne.trim() === "") {
+        errorsObj.streetAddressOne = "Street address cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.city.trim() === "") {
-    //     errorsObj.city = "City name cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.city.trim() === "") {
+        errorsObj.city = "City name cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.province.trim() === "") {
-    //     errorsObj.province = "Province name cannot be empty";
-    //     hasErrors = true;
-    //   }
+      if (formData.province.trim() === "") {
+        errorsObj.province = "Province name cannot be empty";
+        hasErrors = true;
+      }
 
-    //   if (formData.zipCode.trim() === "") {
-    //     errorsObj.zipCode = "Zip code cannot be null";
-    //     hasErrors = true;
-    //   }
+      if (formData.zipCode.trim() === "") {
+        errorsObj.zipCode = "Zip code cannot be null";
+        hasErrors = true;
+      }
 
-    //   if (formData?.knowAbout?.trim() === "") {
-    //     errorsObj.knowAbout = "Required field";
-    //     hasErrors = true;
-    //   }
+      if (formData?.knowAbout?.trim() === "") {
+        errorsObj.knowAbout = "Required field";
+        hasErrors = true;
+      }
 
-    //   if (!formData.isChecked) {
-    //     errorsObj.isChecked = "Please check the box";
-    //     hasErrors = true;
-    //   }
-    // }
+      if (!formData.accounting_professional) {
+        errorsObj.accounting_professional = "Please select an option";
+        hasErrors = true;
+      }
+
+      if (!formData.accounting_partnership && formData.accounting_professional === "Yes") {
+        errorsObj.accounting_partnership = "Please select an option";
+        hasErrors = true;
+      }
+
+
+      if (!formData.isChecked) {
+        errorsObj.isChecked = "Please check the box";
+        hasErrors = true;
+      }
+    }
 
     if (activeStep === 2) {
       if (!formData.selfEmployedFrom) {
@@ -1427,37 +1516,34 @@ const MultiStepForm = () => {
       }
     }
 
-      if (activeStep === 10) {
-      if (formData.mandatory_questions === "") {
-        alert("error")
-        errorsObj.mandatory_questions = 'Please select an option';
-        hasErrors = true;
-      }
+//       if (activeStep === 10) {
+//       if (formData.mandatory_questions === "") {
+//         alert("error")
+//         errorsObj.mandatory_questions = 'Please select an option';
+//         hasErrors = true;
+//       }
 
- if (
-        formData.mandatory_questions === "C-CorpandS-Corp" || formData.mandatory_questions === "W2" || formData.mandatory_questions === "None"
+//  if (
+//         formData.mandatory_questions === "C-CorpandS-Corp" || formData.mandatory_questions === "W2" || formData.mandatory_questions === "None"
         
-      ) {
-        setActiveErrorQualifyTen(true);
-        formDataUpdateWithoutNextStepTwo(activeStep);
-        hasErrors = true;
-      }
-      if (formData.mandatory_questions === "SoleProprietorship" || formData.mandatory_questions === "contractor" || formData.mandatory_questions === "partnership" || formData.mandatory_questions === "LimitedLiability" ) {
-        setActiveErrorQualifyTen(false);
-        hasErrors = false;
-      }
-
-
-    
+//       ) {
+//         setActiveErrorQualifyTen(true);
+//         formDataUpdateWithoutNextStepTwo(activeStep);
+//         hasErrors = true;
+//       }
+//       if (formData.mandatory_questions === "SoleProprietorship" || formData.mandatory_questions === "contractor" || formData.mandatory_questions === "partnership" || formData.mandatory_questions === "LimitedLiability" ) {
+//         setActiveErrorQualifyTen(false);
+//         hasErrors = false;
+//       }
      
-    }
-          if(activeStep === 9){
-            if (!formData.isCheckedStepNine) {
-              errorsObj.isCheckedStepNine = "Please check the box";
-              hasErrors = true;
-            }
-          }
-    if (activeStep === 17) {
+//     }
+          // if(activeStep === 9){
+          //   if (!formData.isCheckedStepNine) {
+          //     errorsObj.isCheckedStepNine = "Please check the box";
+          //     hasErrors = true;
+          //   }
+          // }
+    if (activeStep === 16) {
       if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
         errorsObj.netIncome2019 = "Please enter a value";
         hasErrors = true;
@@ -1487,6 +1573,11 @@ const MultiStepForm = () => {
 
       if (largerThan25KCount >= 2) {
         hasErrors = true;
+        setActiveErrorQualify17(true);
+      }
+      else {
+        hasErrors = false;
+        setActiveErrorQualify17(false);
       }
     }
 
@@ -1510,7 +1601,7 @@ const MultiStepForm = () => {
     //   }
 
     // }
-    if (activeStep === 11) {
+    if (activeStep === 10) {
       if (!formData.personallySick2020) {
         errorsObj.personallySick2020 = "Please select an option";
         hasErrors = true;
@@ -1540,7 +1631,7 @@ const MultiStepForm = () => {
       }
     }
 
-    if (activeStep === 12) {
+    if (activeStep === 11) {
       if (!formData.personallySick2021) {
         errorsObj.personallySick2021 = "Please select an option";
         hasErrors = true;
@@ -1569,7 +1660,7 @@ const MultiStepForm = () => {
       }
     }
 
-    if (activeStep === 13) {
+    if (activeStep === 12) {
       if (!formData.symptoms2020) {
         errorsObj.symptoms2020 = "Please select an option";
         hasErrors = true;
@@ -1599,7 +1690,7 @@ const MultiStepForm = () => {
       }
     }
 
-    if (activeStep === 14) {
+    if (activeStep === 13) {
       if (!formData.symptoms2021) {
         errorsObj.symptoms2021 = "Please select an option";
         hasErrors = true;
@@ -1629,7 +1720,7 @@ const MultiStepForm = () => {
       }
     }
 
-    if (activeStep === 15) {
+    if (activeStep === 14) {
       if (!formData.closure2020) {
         errorsObj.closure2020 = "Please select an option";
         hasErrors = true;
@@ -1659,7 +1750,7 @@ const MultiStepForm = () => {
       }
     }
 
-    if (activeStep === 16) {
+    if (activeStep === 15) {
       if (!formData.closure2021) {
         errorsObj.closure2021 = "Please select an option";
         hasErrors = true;
@@ -2064,11 +2155,21 @@ const MultiStepForm = () => {
     const apiUrl = "http://localhost:5000/user/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
+    
     const data = {
       properties: {
-        email: "rizwwtsddnsir@hubspot.com",
-        firstname: "weddddqi",
-        lastname: "ahmmdeddd",
+      email: userData?.email,
+      firstname: userData?.first_name,
+      lastname: userData?.last_name,
+      business_name: userData?.business_name,
+      address_line_1: userData?.address_line_1,
+      country:"",
+      phone_number: userData?.phone,
+      city: userData?.city,
+      state: userData?.state,
+      industry: userData?.trade_name,
+       files_folder: "files.com",
+           final_credit: userData?.final_credit_amount,    
       },
     };
 
@@ -2146,10 +2247,16 @@ const MultiStepForm = () => {
             // Call fetchData() upon successful response
             await fetchUserDataa();
 
-            setSelectedFiles((prevSelectedFiles) => ({
-              ...prevSelectedFiles,
-              [fileKey]: null,
-            }));
+            // setSelectedFiles((prevSelectedFiles) => ({
+            //   ...prevSelectedFiles,
+            //   [fileKey]: null,
+            // }));
+            setSelectedFiles((prevSelectedFiles) => {
+              const updatedFiles = { ...prevSelectedFiles };
+              // Remove the specific file from the array
+              updatedFiles[fileKey] = fileUrls.filter((_, i) => i !== index);
+              return updatedFiles;
+            });
 
             console.log("File removed successfully.");
           } else {
@@ -2162,7 +2269,7 @@ const MultiStepForm = () => {
     }
   };
 
-  const uploadFile = async (formData, inputName) => {
+  const uploadFile = async (formData, inputName, fileNames) => {
     const token = localStorage.getItem("token");
 
     if (formData) {
@@ -2192,7 +2299,42 @@ const MultiStepForm = () => {
           config
         );
 
-        console.log(`File uploaded successfully`, response.data.user);
+      
+        let lastFileName = '';
+
+        if (inputName === 'driving_licence') {
+          const lastDrivingLicenceIndex = response.data.user.driving_licence_name.length - 1;
+          lastFileName = response.data.user.driving_licence_name[lastDrivingLicenceIndex];
+        } else if (inputName === 'schedule_pdf') {
+          const lastScheduleIndex = response.data.user.schedule_pdf_name.length - 1;
+          lastFileName = response.data.user.schedule_pdf_name[lastScheduleIndex];
+        } else if (inputName === 'Tax_Return_2020') {
+          const lastScheduleIndex = response.data.user.Tax_Return_2020_name.length - 1;
+          lastFileName = response.data.user.Tax_Return_2020_name[lastScheduleIndex];
+        } else if (inputName === 'Tax_Return_2021') {
+          const lastScheduleIndex = response.data.user.Tax_Return_2021_name.length - 1;
+          lastFileName = response.data.user.Tax_Return_2021_name[lastScheduleIndex];
+        } else if (inputName === 'supplemental_attachment_2020') {
+          const lastScheduleIndex = response.data.user.supplemental_attachment_2020_name.length - 1;
+          lastFileName = response.data.user.supplemental_attachment_2020_name[lastScheduleIndex];
+        } else if (inputName === 'supplemental_attachment_2021') {
+          const lastScheduleIndex = response.data.user.supplemental_attachment_2021_name.length - 1;
+          lastFileName = response.data.user.supplemental_attachment_2021_name[lastScheduleIndex];
+        } else if (inputName === 'FormA1099') {
+          const lastScheduleIndex = response.data.user.FormA1099_name.length - 1;
+          lastFileName = response.data.user.FormA1099_name[lastScheduleIndex];
+        } else if (inputName === 'FormB1099') {
+          const lastScheduleIndex = response.data.user.FormB1099_name.length - 1;
+          lastFileName = response.data.user.FormB1099_name[lastScheduleIndex];
+        } else if (inputName === 'ks2020') {
+          const lastScheduleIndex = response.data.user.ks2020_name.length - 1;
+          lastFileName = response.data.user.ks2020_name[lastScheduleIndex];
+        } else if (inputName === 'ks22020') {
+          const lastScheduleIndex = response.data.user.ks22020_name.length - 1;
+          lastFileName = response.data.user.ks22020_name[lastScheduleIndex];
+        }
+        
+        await handleSuccessfulUpload(inputName, lastFileName);
         await fetchUserDataa();
 
         setIsAddingFile(false);
@@ -2207,6 +2349,64 @@ const MultiStepForm = () => {
       }
     }
   };
+
+  // Function to handle successful file upload
+  // const handleSuccessfulUpload = (inputName) => {
+  //   const currentTime = Date.now(); // Get the current time in milliseconds
+  //   setUploadCompleteTimes((prevUploadTimes) => ({
+  //     ...prevUploadTimes,
+  //     [inputName]: currentTime,
+  //   }));
+  
+  //   // Save upload completion time as a string to localStorage
+  //   localStorage.setItem(inputName, currentTime.toString());
+  // };
+  const handleSuccessfulUpload = (inputName, fileName) => {
+    const currentTime = Date.now(); // Get the current time in milliseconds
+    setUploadCompleteTimes((prevUploadTimes) => ({
+      ...prevUploadTimes,
+      [inputName]: currentTime,
+    }));
+  
+    // Save upload completion time as a string to localStorage
+    localStorage.setItem(fileName, currentTime.toString());
+  };
+
+// Check if 30 seconds have passed since upload completion
+const isThirtySecondsPassed = (fileName) => {
+  const storedTime = localStorage.getItem(fileName);
+  if (storedTime) {
+    const uploadTime = parseInt(storedTime, 10); // Parse stored string to a number
+    const currentTime = Date.now();
+    return currentTime - uploadTime >= 30000; // Check if 30 seconds have passed
+  }
+  return false;
+};
+// Function to retrieve upload completion times from localStorage on component mount
+useEffect(() => {
+  const storedUploadTimes = {
+    driving_licence: localStorage.getItem('driving_licence'),
+    schedule_pdf: localStorage.getItem('schedule_pdf'),
+    Tax_Return_2020: localStorage.getItem('Tax_Return_2020'),
+    Tax_Return_2021: localStorage.getItem('Tax_Return_2021'),
+    supplemental_attachment_2020: localStorage.getItem('supplemental_attachment_2020'),
+    supplemental_attachment_2021: localStorage.getItem('supplemental_attachment_2021'),
+    FormA1099: localStorage.getItem('FormA1099'),
+    FormB1099: localStorage.getItem('FormB1099'),
+    ks2020: localStorage.getItem('ks2020'),
+    ks22020: localStorage.getItem('ks22020'),
+  };
+
+  // Convert stored timestamps back to numbers before setting state
+  const parsedUploadTimes = Object.keys(storedUploadTimes).reduce((acc, key) => {
+    acc[key] = storedUploadTimes[key] ? parseInt(storedUploadTimes[key], 10) : null;
+    return acc;
+  }, {});
+
+  setUploadCompleteTimes(parsedUploadTimes);
+}, []);
+
+
 
   const getStepContent = () => {
     switch (activeStep) {
@@ -2223,7 +2423,7 @@ const MultiStepForm = () => {
             helperText={errors.firstName}
           /> */}
             <div className="row justify-content-center pb-3">
-              <div className="col-lg-8">
+              <div className="col-lg-8 col-md-8 col-sm-12">
                 <div
                   className="step step-1 bg-white shadow  pb-5"
                   style={{ borderRadius: "20px" }}
@@ -2413,6 +2613,7 @@ const MultiStepForm = () => {
                         )}
                       </div>
                       <div className="col-sm-6">
+                     
                         <input
                           type="text"
                           value={formData.employees}
@@ -2639,6 +2840,119 @@ const MultiStepForm = () => {
                         )}
                       </div>
                     </div>
+
+
+                    
+
+
+
+
+                     <div className="mb-2 mt-3">
+                      
+                            <label
+                              for="accounting_professional"
+                              className="form-label requiredField "
+                              style={{ fontWeight: "600" }}
+                            >
+                              Are you an accounting professional? (Bookkeeper, CPA, Accountant, Payroll Specialists)? 
+
+                            </label>
+
+                            <div className="optio mb-2">
+                              <p style={{padding: '7px 10px',  border: '1px solid lightgray'}}>
+                                <input
+                                  className="form-check-input"
+                                  class={`form-check-input ${
+                                    errors.accounting_professional ? "border-danger" : ""
+                                  }`}
+                                  type="radio"
+                                  name="accounting_professional"
+                                  checked={formData.accounting_professional === "Yes"}
+                                  value="Yes"
+                                  // id="self_employed_from_yes"
+                                  onChange={handleInputChange}
+                                />
+                                Yes
+                              </p>
+                            </div>
+                            <div className="optio">
+                              <p style={{padding: '7px 10px',  border: '1px solid lightgray'}}>
+                                <input
+                                  className="form-check-input"
+                                  class={`form-check-input ${
+                                    errors.accounting_professional ? "border-danger" : ""
+                                  }`}
+                                  type="radio"
+                                  name="accounting_professional"
+                                  checked={formData.accounting_professional === "No"}
+                                  value="No"
+                                  // id="self_employed_from_yes"
+                                  onChange={handleInputChange}
+                                />
+                                No
+                              </p>
+                            </div>
+                            {formData.accounting_professional === "Yes" && (
+                              <>
+                                <div id="additional">
+                                  <label
+                                    for="accounting_partnership"
+                                    // className="form-label bg-light py-3 px-1 fs-5"
+                                    className="form-label requiredField"
+                                    
+                                  >
+                                    Are you interested in our accounting partnership that would allow you to purchase the downloadable calculation? 
+
+                                  </label>
+                                  <div className="optio mb-2">
+                                    <p style={{padding: '7px 10px', border: '1px solid lightgray'}}>
+                                      <input
+                                        className="form-check-input"
+                                        class={`form-check-input ${
+                                          errors.accounting_partnership
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        type="radio"
+                                        name="accounting_partnership"
+                                        checked={formData.accounting_partnership === "Yes"}
+                                        value="Yes"
+                                        // id="self_employed_from_yes"
+                                        onChange={handleInputChange}
+                                      />
+                                      Yes
+                                    </p>
+                                  </div>
+                                  <div className="optio">
+                                    <p style={{padding: '7px 10px',  border: '1px solid lightgray'}}>
+                                      <input
+                                        className="form-check-input"
+                                        class={`form-check-input ${
+                                          errors.accounting_partnership
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        type="radio"
+                                        name="accounting_partnership"
+                                        checked={formData.accounting_partnership === "No"}
+                                        value="No"
+                                        // id="self_employed_from_yes"
+                                        onChange={handleInputChange}
+                                      />
+                                      No
+                                    </p>
+                                  </div>
+                                </div>
+                              
+                              </>
+                            )}
+
+                            
+                          
+                          </div>
+
+
+
                     <div className="impot mt-3">
                       <p>
                         The address you provide above will be used as the
@@ -2651,10 +2965,10 @@ const MultiStepForm = () => {
                         delivery to the correct address.
                       </p>
                     </div>
-                    <div className="d-flex" style={{ alignItems: "center " }}>
+                    <div className="d-flex mt-3" style={{ alignItems: "start " }}>
                       <input
                         checked={formData.isChecked}
-                        class={`checkBoxStepOne form-check-input me-1 ${
+                        class={`checkBoxStepOne form-check-input me-1 mt-1 ${
                           errors.isChecked ? "border-danger" : ""
                         }`}
                         type="checkbox"
@@ -2669,7 +2983,7 @@ const MultiStepForm = () => {
                  </div>
                 )} */}
 
-                      <p>
+                      <p class="mb-3 mt-0">
                         By checking the box, you agree to our{" "}
                         <a
                           href=""
@@ -2714,245 +3028,113 @@ const MultiStepForm = () => {
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div className="row roww">
+                    <div className="row roww" style={{marginTop: '0px !important'}}>
                       <div className="col-lg-12 col-md-12 col-sm-12">
-                        <div className="img-applic-content">
-                          <div
-                            className="step2_content w-100 pb-5"
-                            style={{
-                              background: "#e8faff",
-                              borderTopLeftRadius: "20px",
-                              borderTopRightRadius: "20px",
-                            }}
-                          >
-                            <div className="step_1_de">
-                              <h1 style={{ color: "white" }}>
-                                How does this application work?
-                              </h1>
-                            </div>
-                            <div className="row justify-content-center">
-                              <div className="col-lg-10">
-                                <div className="row align-items-center">
-                                  <div className="col-lg-7 col-md-12">
-                                    <div className="">
-                                      <div className="d-flex align-items-center">
-                                        {/* <div className="rect"></div> */}
-                                        <CheckCircle
-                                          style={{ color: "#021b58" }}
-                                        />
-                                        <h5 className="step2_h5">
-                                          Answer 6 questions to determine
-                                          eligibility
-                                        </h5>
-                                      </div>
-                                      <div className="d-flex align-items-center">
-                                        {/* <div className="rect"></div> */}
-                                        <CheckCircle
-                                          style={{ color: "#021b58" }}
-                                        />
-                                        <h5 className="step2_h5">
-                                          See if you are pre-qualified for up to{" "}
-                                          <span
-                                            style={{
-                                              color: "rgba(229, 3, 0, 1)",
-                                            }}
-                                          >
-                                            $32,220.00
-                                          </span>
-                                        </h5>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  {/* <div className="col-lg-5">
-                                    <div className="step_immg">
-                                      <img src={framepng} alt="Frame" />
-                                    </div>
-                                  </div> */}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="step2_content mt-5 w-100">
-                          <div className="step_1_de">
-                              <h1 style={{ color: "white" }}>
-                              What if I am pre-qualified?
-
-                              </h1>
-                            </div>
-                            <div className="row justify-content-center mt-md-5 mt-sm-3">
-                              <div className="col-lg-10">
-                                <div className="row align-items-center">
-                                  <div className="col-lg-7" style={{display: 'flex', justifyContent: 'center'}}>
-                                    <div className="">
-                                      <div className="d-flex align-items-center w-100">
-                                        {/* <div className="rect" style={{color: 'rgba(229, 3, 0, 1)', borderColor: "rgba(229, 3, 0, 1)"}}></div> */}
-                                        <CheckCircle
-                                          style={{
-                                            color: "#021b58",
-                                          }}
-                                        />
-                                        <h5 className="step2_h5">
-                                          Continue the application by answering
-                                          7 additional questions.
-                                        </h5>
-                                      </div>
-                                      <div className="d-flex align-items-center w-100">
-                                        {/* <div className="rect" style={{
-  color: "rgba(229, 3, 0, 1)",
-  borderColor: "rgba(229, 3, 0, 1)"
-}}
-></div> */}
-                                        <CheckCircle
-                                          style={{
-                                            color: "#021b58",
-                                          }}
-                                        />
-                                        <h5 className="step2_h5">
-                                          Upload necesary documents
-                                        </h5>
-                                      </div>
-                                      <div className="d-flex align-items-center w-100">
-                                        {/* <div className="rect" style={{
-  color: "rgba(229, 3, 0, 1)",
-  borderColor: "rgba(229, 3, 0, 1)"
-}}
-></div> */}
-                                        <CheckCircle
-                                          style={{
-                                            color: "#021b58",
-                                          }}
-                                        />
-                                        <h5 className="step2_h5">
-                                          receive a calculated refund amount
-                                        </h5>
-                                      </div>
-                                      <div className="d-flex align-items-center w-100">
-                                        {/* <div className="rect" style={{
-  color: "rgba(229, 3, 0, 1)",
-  borderColor: "rgba(229, 3, 0, 1)"
-}}
-></div> */}
-                                        <CheckCircle
-                                          style={{
-                                            color: "#021b58",
-                                          }}
-                                        />
-                                        <h5 className="step2_h5">
-                                          Our professinal Team will process and
-                                          file your return
-                                        </h5>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  {/* <div className="col-lg-5">
-                                    <div className="step_immg">
-                                      <img src={qustMark} alt="Qust_mark" />
-                                    </div>
-                                  </div> */}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            className="step2_content my-5 pb-5"
-                            style={{
-                              background: "#e8faff",
-                              borderTopLeftRadius: "20px",
-                              borderTopRightRadius: "20px",
-                            }}
-                          >
-                           <div className="step_1_de">
-                              <h1 style={{ color: "white" }}>
-What documents will be needed?
-
-                              </h1>
-                            </div>
-                            <div className="row justify-content-center">
-                              <div className="col-lg-10">
-                                <div>
-                                  <p
-                                    className="mb-3 pp3"
-                                    style={{ width: "100%", margin: "auto" }}
-                                  >
-                                    No Documents will be needed for the
-                                    pre-qualification questionaire. If you are
-                                    pre-qualified and decide to move forward to
-                                    determine calculation, you will need the
-                                    following documents:
-                                  </p>
-                                </div>
-                                <div className="row align-items-center">
-                                  <div className="col-lg-7">
-                                    <div className="d-flex align-items-center w-100 mt-3">
-                                      {/* <div className="rect"></div> */}
-                                      <CheckCircle
-                                        style={{ color: "#021b58" }}
-                                      />
-                                      <p className="p2">
-                                        2019 Schedule C (Form 1040){" "}
-                                        {/* <span style={{ color: "red" }} onClick={handlePdfStepTwo}>
-                                          Click For Example
-                                        </span> */}
-                                     
-                                     <span style={{ color: 'red', cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2019, '_blank')}>
-                                     Click For Example
-    </span>
+                       
 
 
-                                      </p>
-                                    </div>
-                                    <div className="d-flex align-items-center w-100 mt-3">
-                                      {/* <div className="rect"></div> */}
-                                      <CheckCircle
-                                        style={{ color: "#021b58" }}
-                                      />
-                                      <p className="p2">
-                                        2020 Schedule C (Form 1040){" "}
-                                        <span style={{ color: 'red', cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2020, '_blank')}>
 
-                                          Click For Example
-                                        </span>
-                                      </p>
-                                    </div>
-                                    <div className="d-flex align-items-center w-100 mt-3">
-                                      {/* <div className="rect"></div> */}
-                                      <CheckCircle
-                                        style={{ color: "#021b58" }}
-                                      />
-                                      <p className="p2">
-                                        2021 Schedule C (Form 1040){" "}
-                                        <span style={{ color: 'red', cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2021, '_blank')}>
-                                        Click For Example
-                                        </span>
-                                      </p>
-                                    </div>
-                                  </div>
-                                  {/* <div className="col-lg-5">
-                                    <div className="step_immg">
-                                      <img src={taxSet} alt="Tax_set" />
-                                    </div>
-                                  </div> */}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex justify-content-center mt-3 w-100">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              className="btn btn-primary prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              className="btn btn-primary next-step step2_next"
-                            >
-                              Pre-Qualification Questionaire
-                            </button>
-                          </div>
-                        </div>
+
+                      
+                      <div class="img-applic-content border-0">
+                                                          <div class="step2_content w-100 pb-2" >
+                                                             <div class="step_1_de">
+                                                             <h1  style={{color: '#1A2C57', fontSize: 'clamp(22px, 4vw, 42px) !important' , width:'70%', margin:'auto'}}>How Does The Pre-Qualification Application Work?</h1>
+                                                             </div>
+                                                             <div class="row justify-content-center">
+                                                              <div class="col-lg-12">
+                                                                <div class="row align-items-center eret pb-3">
+                                                                  <div class="col-lg-12 col-md-12 d-flex justify-content-center">
+                                                                    <div class="">
+                                                                      <div class="st_2_we d-flex align-items-start my-2">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                           <h5 class="step2_h5" style={{color: "#00b6ff", marginLeft: 2}}> Answer 6 questions to determine
+                                                                            Pre-qualifications for upto:</h5>
+                                                                       </div>
+                                                                      <div class="d-flex align-items-start justify-content-center">
+                                                                       
+                                                                      <h2 class="tep2_h5 text-center" style={{color: "#00b6ff",fontWeight: 'bold', fontSize: "clamp(30px, 4vw, 42px) !important"}}> $32,220.00</h2>
+                                                                      </div> 
+                                                                      
+                                                                   </div>
+                                                                  </div>               
+                                                               </div>
+                                                              </div>
+                                                             </div>
+                                                                
+                                                          </div>
+                                                          <div class="step2_content mt-4 w-100">
+                                                            <div class="text-center d-flex justify-content-center">
+                                                              <h1 class="mb-3 text-center" style={{width: "fit-content", fontSize: "clamp(22px, 4vw, 42px) !important", color: "#1A2C57"}}>What if I am pre-qualified?</h1>
+                                                            </div>
+                                                            <div class="row justify-content-center mt-md-4 mt-sm-3">
+                                                              <div class="col-lg-12">
+                                                                <div class="row align-items-center">
+                                                                  <div class="col-lg-12 d-flex justify-content-center">
+                                                                 
+                                                                      <div class="d-flex flex-column gap-2">
+                                                                      
+                                                                        <div class=" st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                          <h5 class="step2_h5" style={{color: "#00b6ff"}}>
+                                                                              Continue the application by
+                                                                                answering 7 additional questions.
+                                                                          </h5>
+                                                                        </div>
+
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Upload necesary documents</h5>
+                                                                        </div>
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                                                                                               </div>      
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Receive a calculated refund amount
+                                                                              </h5>
+                                                                        </div>
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>
+                                                                                Our professinal Team will process
+                                                                                and file your return
+                                                                              </h5>
+                                                                        </div>
+                                                                
+                                                                      </div>
+                                                                  </div>
+                                                                  
+                                                                </div>
+                                                              </div>
+                                                            </div>    
+                                                          </div>
+                                                              
+                                                                
+                                                        
+                                                             
+
+                                                          <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
+                                                          <button
+                    onClick={handlePrevious}
+                    type="button"
+                    className="px-3 py-3 prev-step"
+                  >
+                    Previous
+                  </button>
+                                                              <button   onClick={handleNext} type="button" class="btn btn-primary next-step step2_next mx-1">
+                                                                Let's Get Started!
+                                                              </button>
+                                                          </div>
+                                                      </div>
+                      
                       </div>
                     </div>
                   </div>
@@ -2963,154 +3145,363 @@ What documents will be needed?
         );
       case 2:
         return (
-          <div className="step step-3">
-            <div className="container ">
-              <div className="row justify-content-center">
-                <div className="col-lg-10">
-                  <div className="start-application">
-                    <div className="row ROWW">
-                      <div className="col-lg-12 col-md-12 col-sm-12">
-                        <div className="img-applic-content">
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Are you eligible?
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            Question 1 of 6
-                          </h3>
-                          <div style={{ marginTop: 40 }}>
-                            <label
-                              for="self_employed_from"
-                              className="form-label headng "
-                              style={{ fontWeight: "600" }}
-                            >
-                              Were you self-employed from 4/1/2020-9/30/2021?
-                            </label>
-                            <div className="optio mb-2">
-                              <label for="self_employed_from_yes">
-                                <p
-                                  style={{
-                                    backgroundColor:
-                                      formData.selfEmployedFrom === "Yes"
-                                        ? "lightblue"
-                                        : "initial",
-                                  }}
-                                >
-                                  <input
-                                    className="form-check-input"
-                                    class={`form-check-input ${
-                                      errors.selfEmployedFrom
-                                        ? "border-danger"
-                                        : ""
-                                    }`}
-                                    type="radio"
-                                    name="selfEmployedFrom"
-                                    checked={
-                                      formData.selfEmployedFrom === "Yes"
-                                    }
-                                    value="Yes"
-                                    id="self_employed_from_yes"
-                                    onChange={handleInputChange}
-                                  />
-                                  Yes
-                                </p>
-                              </label>
-                            </div>
+          // <div className="step step-3">
+          //   <div className="container ">
+          //     <div className="row justify-content-center">
+          //       <div className="col-lg-10">
+          //         <div className="start-application">
+          //           <div className="row ROWW">
+          //             <div className="col-lg-12 col-md-12 col-sm-12">
+          //               <div className="img-applic-content">
+          //                 <h1
+          //                   className="text-center"
+          //                   style={{ color: "rgb(13, 189, 243)" }}
+          //                 >
+          //                   Are you eligible?
+          //                 </h1>
+          //                 <h3
+          //                   style={{
+          //                     fontWeight: 300,
+          //                     lineHeight: 0.2,
+          //                     color: "rgb(13, 189, 243)",
+          //                   }}
+          //                   className="text-center"
+          //                 >
+          //                   Question 1 of 6
+          //                 </h3>
+          //                 <div style={{ marginTop: 40 }}>
+          //                   <label
+          //                     for="self_employed_from"
+          //                     className="form-label headng "
+          //                     style={{ fontWeight: "600" }}
+          //                   >
+          //                     Were you self-employed from 4/1/2020-9/30/2021?
+          //                   </label>
+          //                   <div className="optio mb-2">
+          //                     <label for="self_employed_from_yes">
+          //                       <p
+          //                         style={{
+          //                           backgroundColor:
+          //                             formData.selfEmployedFrom === "Yes"
+          //                               ? "lightblue"
+          //                               : "initial",
+          //                         }}
+          //                       >
+          //                         <input
+          //                           className="form-check-input"
+          //                           class={`form-check-input ${
+          //                             errors.selfEmployedFrom
+          //                               ? "border-danger"
+          //                               : ""
+          //                           }`}
+          //                           type="radio"
+          //                           name="selfEmployedFrom"
+          //                           checked={
+          //                             formData.selfEmployedFrom === "Yes"
+          //                           }
+          //                           value="Yes"
+          //                           id="self_employed_from_yes"
+          //                           onChange={handleInputChange}
+          //                         />
+          //                         Yes
+          //                       </p>
+          //                     </label>
+          //                   </div>
 
-                            <div className="optio">
-                              <label for="self_employed_from_no">
-                                <p
-                                  style={{
-                                    backgroundColor:
-                                      formData.selfEmployedFrom === "No"
-                                        ? "lightblue"
-                                        : "initial",
-                                  }}
-                                >
-                                  <input
-                                    class={`form-check-input ${
-                                      errors.selfEmployedFrom
-                                        ? "border-danger"
-                                        : ""
-                                    }`}
-                                    type="radio"
-                                    name="selfEmployedFrom"
-                                    value="No"
-                                    checked={formData.selfEmployedFrom === "No"}
-                                    id="self_employed_from_no"
-                                    onChange={handleInputChange}
-                                  />
-                                  No
-                                </p>
-                              </label>
-                            </div>
+          //                   <div className="optio">
+          //                     <label for="self_employed_from_no">
+          //                       <p
+          //                         style={{
+          //                           backgroundColor:
+          //                             formData.selfEmployedFrom === "No"
+          //                               ? "lightblue"
+          //                               : "initial",
+          //                         }}
+          //                       >
+          //                         <input
+          //                           class={`form-check-input ${
+          //                             errors.selfEmployedFrom
+          //                               ? "border-danger"
+          //                               : ""
+          //                           }`}
+          //                           type="radio"
+          //                           name="selfEmployedFrom"
+          //                           value="No"
+          //                           checked={formData.selfEmployedFrom === "No"}
+          //                           id="self_employed_from_no"
+          //                           onChange={handleInputChange}
+          //                         />
+          //                         No
+          //                       </p>
+          //                     </label>
+          //                   </div>
 
-                            {/* <div className="data-p py-2 mb-2">
-                              <p>
-                                <input
-                                  checked={formData.isCheckedStepThree}
-                                  class={` form-check-input me-1 ${
-                                    errors.isCheckedStepThree
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  type="checkbox"
-                                  id="flexCheckDefault1"
-                                  name="isCheckedStepThree"
-                                  onChange={handleInputChange}
-                                />{" "}
-                                evaluate and answer the questions as they relate
-                                to my self-employed business qualifications for
-                                the Self-Employed Tax Credit (SETC) Program.
-                              </p>
-                            </div> */}
+          //                   {/* <div className="data-p py-2 mb-2">
+          //                     <p>
+          //                       <input
+          //                         checked={formData.isCheckedStepThree}
+          //                         class={` form-check-input me-1 ${
+          //                           errors.isCheckedStepThree
+          //                             ? "border-danger"
+          //                             : ""
+          //                         }`}
+          //                         type="checkbox"
+          //                         id="flexCheckDefault1"
+          //                         name="isCheckedStepThree"
+          //                         onChange={handleInputChange}
+          //                       />{" "}
+          //                       evaluate and answer the questions as they relate
+          //                       to my self-employed business qualifications for
+          //                       the Self-Employed Tax Credit (SETC) Program.
+          //                     </p>
+          //                   </div> */}
 
-                            {formData.selfEmployedFrom === "No" &&
-                              activeErrorQualifyOne && (
-                                <div>
-                                  <h4 style={{ color: "#e62e2d" }}>
-                                  Were Sorry. By answering “No” to the above question, you will
-                                  not be eligible for the SETC program.
-                                  </h4>
-                                </div>
-                              )}
+          //                   {formData.selfEmployedFrom === "No" &&
+          //                     activeErrorQualifyOne && (
+          //                       <div>
+          //                         <h4 style={{ color: "#e62e2d" }}>
+          //                         Were Sorry. By answering “No” to the above question, you will
+          //                         not be eligible for the SETC program.
+          //                         </h4>
+          //                       </div>
+          //                     )}
 
-                            <div className="d-flex justify-content-end mt-3">
-                              <button
-                                onClick={handlePrevious}
-                                type="button"
-                                className="px-3 py-2 prev-step"
-                              >
-                                Previous
-                              </button>
-                              <button
-                                onClick={handleNext}
-                                type="button"
-                                className="px-3 py-2 next-step"
-                              >
-                                {activeStep === steps.length - 1
-                                  ? "Submit"
-                                  : "Next"}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+          //                   <div className="d-flex justify-content-end mt-3">
+          //                     <button
+          //                       onClick={handlePrevious}
+          //                       type="button"
+          //                       className="px-3 py-2 prev-step"
+          //                     >
+          //                       Previous
+          //                     </button>
+          //                     <button
+          //                       onClick={handleNext}
+          //                       type="button"
+          //                       className="px-3 py-2 next-step"
+          //                     >
+          //                       {activeStep === steps.length - 1
+          //                         ? "Submit"
+          //                         : "Next"}
+          //                     </button>
+          //                   </div>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+//           <div class="step step-3">
+   
+//     <div class="container-fluid ">
+//         <div class="row justify-content-center">
+//             <div class="col-lg-12">
+//                 <div class="start-application">
+                  
+//                     <div class="row roww justify-content-center">
+                       
+//                         <div class="col-lg-6 col-md-6 col-sm-12 ">
+//                             <div class="img-applic-content">
+//                                 <label for="self_employed_from" class="form-label headng"> Were you self-employed from 4/1/2020-9/30/2021?</label>
+
+//                                 <div class="optio mb-2">
+//                                     <p>
+//                                         <input class="form-check-input" type="radio" name="self_employed_from" value="Yes" id="self_employed_from" />Yes
+//                                     </p>
+//                                 </div>
+//                                 <div class="optio">
+//                                     <p><input class="form-check-input" type="radio" name="self_employed_from" value="No" id="self_employed_fromNo"  />No</p>
+//                                 </div>
+
+//                                 <div class="data-p d-flex mb-2 gap-1">
+//                                     <input class="form-check-input me-1" type="checkbox" value="" id="flexCheckDefaultt" />
+//                                     <p>
+//                                         I certify that I am in a position to properly evaluate and answer the questions as they relate to my self-employed business qualifications for the Self-Employed Tax Credit (SETC) Program.
+//                                     </p>
+//                                 </div>
+
+//                                 <div id="qualifyForm">
+//                                     <h4 style={{color: "#e62e2d"}}>You will not be eligible for the SETC program.</h4>
+//                                 </div>
+
+                               
+
+//                                 <div class="d-flex justify-content-center mt-3 w-100">
+//                                 <button
+//                                 onClick={handlePrevious}
+//                                 type="button"
+//                                 className="px-3 py-2 prev-step"
+//                               >
+//                                 Previous
+//                               </button>
+//                               <button
+//                                 onClick={handleNext}
+//                                 type="button"
+//                                 className="px-3 py-2 next-step"
+//                               >
+//                                 {activeStep === steps.length - 1
+//                                   ? "Submit"
+//                                   : "Next"}
+//                               </button>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     </div>
+// </div>
+<div className="step step-3">
+<div className="container ">
+  <div className="row justify-content-center">
+    <div className="col-lg-10">
+      <div className="start-application">
+        <div className="row ROWW">
+          <div className="col-lg-8 col-md-8 col-sm-12">
+            <div className="img-applic-content">
+              <h1
+                className="text-center"
+                style={{ color: "rgb(13, 189, 243)" }}
+              >
+                Are you eligible?
+              </h1>
+              <h3
+                style={{
+                  fontWeight: 300,
+                  lineHeight: 0.2,
+                  color: "rgb(13, 189, 243)",
+                }}
+                className="text-center"
+              >
+                Question 1 of 6
+              </h3>
+              <div style={{ marginTop: 40 }}>
+                <label
+                  for="self_employed_from"
+                  className="form-label headng "
+                  style={{ fontWeight: "600" }}
+                >
+                  Were you self-employed from 4/1/2020-9/30/2021?
+                </label>
+                <div className="optio mb-2">
+                  <label for="self_employed_from_yes">
+                    <p
+                      style={{
+                        backgroundColor:
+                          formData.selfEmployedFrom === "Yes"
+                            ? "lightblue"
+                            : "initial",
+                      }}
+                    >
+                      <input
+                        className="form-check-input"
+                        class={`form-check-input ${
+                          errors.selfEmployedFrom
+                            ? "border-danger"
+                            : ""
+                        }`}
+                        type="radio"
+                        name="selfEmployedFrom"
+                        checked={
+                          formData.selfEmployedFrom === "Yes"
+                        }
+                        value="Yes"
+                        id="self_employed_from_yes"
+                        onChange={handleInputChange}
+                      />
+                      Yes
+                    </p>
+                  </label>
+                </div>
+
+                <div className="optio">
+                  <label for="self_employed_from_no">
+                    <p
+                      style={{
+                        backgroundColor:
+                          formData.selfEmployedFrom === "No"
+                            ? "lightblue"
+                            : "initial",
+                      }}
+                    >
+                      <input
+                        class={`form-check-input ${
+                          errors.selfEmployedFrom
+                            ? "border-danger"
+                            : ""
+                        }`}
+                        type="radio"
+                        name="selfEmployedFrom"
+                        value="No"
+                        checked={formData.selfEmployedFrom === "No"}
+                        id="self_employed_from_no"
+                        onChange={handleInputChange}
+                      />
+                      No
+                    </p>
+                  </label>
+                </div>
+
+                {/* <div className="data-p py-2 mb-2">
+                  <p>
+                    <input
+                      checked={formData.isCheckedStepThree}
+                      class={` form-check-input me-1 ${
+                        errors.isCheckedStepThree
+                          ? "border-danger"
+                          : ""
+                      }`}
+                      type="checkbox"
+                      id="flexCheckDefault1"
+                      name="isCheckedStepThree"
+                      onChange={handleInputChange}
+                    />{" "}
+                    evaluate and answer the questions as they relate
+                    to my self-employed business qualifications for
+                    the Self-Employed Tax Credit (SETC) Program.
+                  </p>
+                </div> */}
+
+                {formData.selfEmployedFrom === "No" &&
+                  activeErrorQualifyOne && (
+                    <div>
+                      <h4 style={{ color: "#e62e2d" }}>
+                      Were Sorry. By answering “No” to the above question, you will
+                      not be eligible for the SETC program.
+                      </h4>
                     </div>
-                  </div>
+                  )}
+
+                <div className="d-flex justify-content-end mt-3">
+                  <button
+                    onClick={handlePrevious}
+                    type="button"
+                    className="px-3 py-2 prev-step"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    type="button"
+                    className="px-3 py-2 next-step"
+                  >
+                    {activeStep === steps.length - 1
+                      ? "Submit"
+                      : "Next"}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
         );
       case 3:
         return (
@@ -3148,7 +3539,7 @@ What documents will be needed?
                         <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                       </div>
                     </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                           variant="determinate"
@@ -3183,7 +3574,7 @@ What documents will be needed?
                             <h1
                               style={{
                                 fontSize: "24px",
-                                color: "black",
+                                color: "rgb(13, 189, 243)",
                               }}
                             >
                               Did you file your schedule SE (Self-Employment
@@ -3335,7 +3726,7 @@ What documents will be needed?
                         <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                       </div>
                     </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                           variant="determinate"
@@ -3484,7 +3875,7 @@ What documents will be needed?
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           <h1
                             className="text-center"
@@ -3734,7 +4125,7 @@ What documents will be needed?
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           <h1
                             className="text-center"
@@ -3869,7 +4260,7 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           <h1
                             className="text-center"
@@ -4053,49 +4444,70 @@ not be eligible for the SETC program.
               <div className="row justify-content-center">
                 <div className="col-lg-10">
                   <div className="start-application">
-                    <div className="row ROWW">
-                      <div className="col-lg-12 col-md-12 col-sm-12">
-                        <div className="img-applic-content-congrts" >
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Congratulations!
-                          </h1>
-                          <h1
-                            style={{
-                              fontWeight: 300,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            Your Pre-Qualified for up to $32,220.00!!!
-                          </h1>
-                          <div style={{ marginTop: 40 }}>
-                            {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
-                                                                        (Self-Employment
-                                                                        Tax) for the years of 2020 or 2021?</h1> */}
-                            <label
-                              for="congrats"
-                              className="form-label headng "
-                              style={{ fontWeight: "500", textAlign: 'center !important' }}
-                            >
-                              Based on the information you submitted you are
-                              prequalified to receive the Self Employed Tax
-                              Credit. Click below to continue your application!
-                            </label>
-
-                            <div className="d-flex justify-content-center mt-3">
-                              <button
-                                type="button"
-                                onClick={handleNext}
-                                className="btn btn-primary next-step step2_next"
-                              >
-                                Continue Application
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                    <div className="row ROWW" >
+                      <div className="col-lg-8 col-md-8 col-sm-12">
+                       <div className="img-applic-content-congrts border-0" >
+      <div style={boxStyle} className="desktop-box" css={styles[mediaQuery]}>
+        <Confetti
+          width={width}
+          height={height}
+          style={confettiStyle}
+        />
+        <div style={{ textAlign: 'center' }}>
+          <h1>Congratulations!</h1>
+          <p style={{color: 'green', fontSize: 25, fontWeight: 600, fontStyle: 'Outfitt'}}>Your Pre-Qualified for up to $32,220.00!!!</p>
+          <label
+          htmlFor="congrats"
+          className="form-label headng text-center mt-3"
+          style={{ fontWeight: "500", textAlign: 'center !important' }}
+        >
+          Based on the information you submitted, you are prequalified to receive the Self Employed Tax Credit.
+        </label>
+        </div>
+      </div>
+      <div style={{ ...boxStyle, ...mobileBoxStyle }} className="mobile-box" css={styles[mediaQuery]}>
+        <Confetti
+          width={width * 0.6} // Adjusted width for mobile screens
+          height={height * 0.6} // Adjusted height for mobile screens
+          style={confettiStyle}
+        />
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{fontSize: '22px !important'}}>Congratulations!</h1>
+          <p style={{fontSize: '14px !important'}}>Your Pre-Qualified for up to $32,220.00!!!</p>
+          <label
+          htmlFor="congrats"
+          className="form-label headng text-center"
+          style={{ fontWeight: "600", textAlign: 'center !important', fontSize: '13px !important' }}
+        >
+          Based on the information you submitted, you are prequalified to receive the Self Employed Tax Credit.
+        </label>
+        <p>
+        Click below to continue your application!
+        </p>
+        </div>
+      </div>
+      <div style={{ marginTop: 40 }}>
+        {/* <label
+          htmlFor="congrats"
+          className="form-label headng text-center"
+          style={{ fontWeight: "500", textAlign: 'center !important' }}
+        >
+          Click below to continue your application!
+        </label> */}
+         <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
+                                                          <button
+                    onClick={handlePrevious}
+                    type="button"
+                    className="px-3 py-3 prev-step"
+                  >
+                    Previous
+                  </button>
+                                                              <button   onClick={handleNext} type="button" class="btn btn-primary next-step step2_next mx-1">
+                                                                Continue Application
+                                                              </button>
+                                                          </div>
+      </div>
+    </div>
                       </div>
                     </div>
                   </div>
@@ -4111,139 +4523,172 @@ not be eligible for the SETC program.
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div className="row roww">
-                      <div className="col-lg-12 col-md-12 col-sm-12 ">
-                        <div className="img-applic-content">
-                          <div className="step2_content">
-                            <h1>Welcome To Your SETC Application!</h1>
+                    <div className="row ROWW" style={{marginTop: '0px !important'}}>
+                      <div className="col-lg-8 col-md-8 col-sm-12 ">
+                        <div className="img-applic-content border-0">
+                          <div className="step2_content" style={{marginTop: '8px !important'}}>
+                            <h2 style={{color: '#DC3545'}}>Welcome To the SETC Eligibility Application!</h2>
                             <h1>How does this work?</h1>
-                            <div className="d-flex justify-content-center align-items-center gap-3" style={{marginTop: 3}}>
-                              <ul>
-                                <li>Answer 8 questions of the questionaire</li>
-                                <li>Get a calculated estimate amount</li>
-                                <li>Upload your documents</li>
-                                <li>
-                                  Receive your exact calculation from our CPA
-                                  firm
-                                </li>
-                                <li>
-                                  Our CPA firm will process and file your return
-                                </li>
-                              </ul>
-                            </div>
+                           {/* <div className="d-flex justify-content-center align-items-center gap-3" style={{ marginTop: 3 }}>
+                           <ul style={{ listStyleType: 'none', padding: 0 }}>
+
+                             <li>
+                               <CheckCircle style={{color: 'red'}} /> Answer 7 Eligibility Questions
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} /> Receive an estimated refund amount
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} /> Upload your documents
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} /> Receive your Exact calculation
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} /> Upload your documents
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} /> Our CPA Team will Process and file your return
+                             </li>
+
+                           </ul>
+                         </div> */}
+                          <div class="step2_content mt-0 w-100">
+                                                           
+                                                            <div class="row justify-content-center mt-md-4 mt-sm-3">
+                                                              <div class="col-lg-12" style={{marginTop: '-20px'}}>
+                                                                <div class="row align-items-center">
+                                                                  <div class="col-lg-12 d-flex justify-content-center">
+                                                                 
+                                                                      <div class="d-flex flex-column">
+                                                                      
+                                                                        <div class=" st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                          <h5 class="step2_h5" style={{color: "#00b6ff"}}>
+                                                                          Answer 7 Eligibility Questions
+                                                                          </h5>
+                                                                        </div>
+
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Receive an estimated refund amount</h5>
+                                                                        </div>
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                                                                                               </div>      
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Upload your documents
+                                                                              </h5>
+                                                                        </div>
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>
+                                                                              Receive your Exact calculation
+                                                                              </h5>
+                                                                        </div>
+                                                                       
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>
+                                                                              Our CPA Team will Process and file your return
+                                                                              </h5>
+                                                                        </div>
+                                                                      </div>
+                                                                  </div>
+                                                                  
+                                                                </div>
+                                                              </div>
+                                                            </div>    
+                                                          </div>
                           </div>
 
-                          <div className="step2_content my-5">
+                          {/* <div className="step2_content my-5">
                             <h1>What documents will be needed?</h1>
 
-                            <div className="d-flex align-items-center justify-content-center" style={{marginTop: 3}}>
-                              <DomainVerification
-                                style={{
-                                  color: "blueviolet",
-                                  width: "25px",
-                                  height: "25px",
-                                  marginTop: 2,
-                                }}
-                              />
+                            <div className="d-flex justify-content-center align-items-center gap-3" style={{ marginTop: 3 }}>
+                           <ul style={{ listStyleType: 'none', padding: 0 }}>
 
-                              <p className="p2">
-                                2019 Schedule C (Form 1040)
-                                <span style={{ color: 'red', cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2019, '_blank')}>
-                                     Click For Example
-    </span>
-                              </p>
-                            </div>
-                            <div className="d-flex align-items-center justify-content-center">
-                              <DomainVerification
-                                style={{
-                                  color: "blueviolet",
-                                  width: "25px",
-                                  height: "25px",
-                                  marginTop: 2,
-                                }}
-                              />{" "}
-                              {/* </div> */}
-                              <p className="p2">
-                                2020 Schedule C (Form 1040)
-                                <span style={{ color: 'red', cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2020, '_blank')}>
-                                     Click For Example
-    </span>
-                              </p>
-                            </div>
-                            <div className="d-flex align-items-center justify-content-center">
-                              <DomainVerification
-                                style={{
-                                  color: "blueviolet",
-                                  width: "25px",
-                                  height: "25px",
-                                  marginTop: 2,
-                                }}
-                              />{" "}
-                              {/* </div> */}
-                              <p className="p2">
-                                2019 Schedule C (Form 1040)
-                               
-                                <span style={{ color: 'red', cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2021, '_blank')}>
-                                     Click For Example
-    </span>
-                              </p>
-                            </div>
-                          </div>
-                          <div
-                            className="d-flex"
-                            style={{
-                              alignItems: "center ",
-                              padding: "20px 30px",
-                              background: "#cceffa",
-                              borderRadius: "10px",
-                            }}
-                          >
+                             <li>
+                               <CheckCircle style={{color: 'red'}} /> 2019 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2019, '_blank')}> Click For Example</span>
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} />  2020 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2020, '_blank')}> Click For Example</span>
+                             </li>
+                             <li>
+                             <CheckCircle style={{color: 'red'}} />2021 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2021, '_blank')}> Click For Example</span>
+                             </li>
+
+                             </ul>
+                             </div>
+
+
+
+
                            
-                              <label for="flexCheckDefault9">
-                              <p>
-                              {/* <input
-                                className="form-check-input me-1"
-                                type="checkbox"
-                                value=""
-                                id="flexCheckDefault"
-                              /> */}
-                              <input
-                                  checked={formData.isCheckedStepNine}
-                                  class={` form-check-input me-1 ${
-                                    errors.isCheckedStepNine
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  type="checkbox"
-                                  id="flexCheckDefault9"
-                                  name="isCheckedStepNine"
-                                  onChange={handleInputChange}
-                                />{" "}
-                              I certify that I am in a position to properly
-                              evaluate and answer the questions as they relate
-                              to my self-employed business qualifications for
-                              the Self-Employed Tax Credit (SETC) Program.
-                            </p>
-                            </label>
-                          </div>
-                          <div className="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              className="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              className="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
-                          </div>
+                          </div> */}
+                           <div class="step2_content mt-4 w-100">
+                                                            <div class="text-center d-flex justify-content-center">
+                                                              <h1 class="mb-3 text-center" style={{width: "fit-content", fontSize: "clamp(22px, 4vw, 42px) !important", color: "#1A2C57"}}>What if I am pre-qualified?</h1>
+                                                            </div>
+                                                            <div class="row justify-content-center mt-md-4 mt-sm-3">
+                                                              <div class="col-lg-12">
+                                                                <div class="row align-items-center">
+                                                                  <div class="col-lg-12 d-flex justify-content-center">
+                                                                 
+                                                                      <div class="d-flex flex-column ">
+                                                                      
+                                                                        <div class=" st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                          <h5 class="step2_h5" style={{color: "#00b6ff"}}>
+                                                                          2019 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2019, '_blank')}> Click For Example</span>
+                                                                          </h5>
+                                                                        </div>
+
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                        </div>
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>2020 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2020, '_blank')}> Click For Example</span></h5>
+                                                                        </div>
+                                                                        <div class="st_2_we d-flex align-items-start w-100">
+                                                                        <div style={{marginTop: '18.5px'}}>
+                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
+                                                                                                                                               </div>      
+                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>2021 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2021, '_blank')}> Click For Example</span>
+                                                                              </h5>
+                                                                        </div>
+                                                                       
+                                                                
+                                                                      </div>
+                                                                  </div>
+                                                                  
+                                                                </div>
+                                                              </div>
+                                                            </div>    
+                                                          </div>
+                          
+                                                          <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
+                                                          <button
+                    onClick={handlePrevious}
+                    type="button"
+                    className="px-3 py-3 prev-step"
+                  >
+                    Previous
+                  </button>
+                                                              <button   onClick={handleNext} type="button" class="btn btn-primary next-step step2_next mx-1">
+                                                                Let's Get Started
+                                                              </button>
+                                                          </div>
                         </div>
                       </div>
                     </div>
@@ -4253,1236 +4698,10 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 10:
+
+        case 10:
         return (
-          //           <div className="row justify-content-center step step-10">
-          //             <div className="col-lg-8">
-          //               <div
-          //                 className="step step-10 bg-white shadow px-3 py-5"
-          //                 style={{ borderRadius: "20px" }}
-          //               >
-          //                 {/* <div className="progress mb-4" style={{height: "15px"}}>
-          //                       <input type="hidden" name="record_id" id="record_id" value=""/>
-          //                       <div className="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-          //                     </div> */}
-          //                 <LinearProgress
-          //                   variant="determinate"
-          //                   sx={{
-          //                     height: "8px",
-          //                     marginBottom: 4,
-          //                     borderRadius: "4px",
-          //                     backgroundColor: "#f0f0f0",
-          //                     "& .MuiLinearProgress-bar": {
-          //                       backgroundColor: "rgb(13, 189, 243);",
-          //                     },
-          //                   }}
-          //                   value={getProgressPercentage()}
-          //                 />
-
-          //                 <h3>Documents</h3>
-
-          //                 <div className="mb-3 file_div">
-          //                   <label for="driving_licence" className="form-label">
-          //                     A PDF Copy of a Current ID or Driver's License
-          //                   </label>
-          //                   {userData?.driving_licence && userData?.driving_licence.length > 0 ? (
-          //   userData.driving_licence.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.driving_licence_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('driving_licence', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="driving_licence"
-          //     className="form-control file"
-          //     id="driving_licence"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('driving_licence', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-          //             <FileInputComponent
-          //               inputName="driving_licence"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-          //           )}
-
-          //                             {uploadingFile === 'driving_licence' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.driving_licence} />
-          //                             )
-          //                             }
-
-          //                 </div>
-          //                 <div className="mb-3 file_div">
-          //                   <label for="schedule_pdf" className="form-label">
-          //                     A PDF Copy of your 2019 Form 1040 (Tax Return), including
-          //                     ALL schedules, if the 2019 Self-Employed Income is higher
-          //                     than 2020. We would prefer one PDF file.
-          //                   </label>
-
-          //                   {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
-          //   userData.schedule_pdf.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.schedule_pdf_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="schedule_pdf"
-          //     className="form-control file"
-          //     id="schedule_pdf"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('schedule_pdf', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-          //             <FileInputComponent
-          //               inputName="schedule_pdf"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-          //           )}
-
-          //                             {uploadingFile === 'schedule_pdf' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.schedule_pdf} />
-          //                             )}
-          //                 </div>
-          //                 <div className="mb-3 file_div">
-          //                   <label for="Tax_Return_2020" className="form-label">
-          //                     {" "}
-          //                     A PDF Copy of your 2020 Form 1040 (Tax Return), including
-          //                     ALL schedules.{" "}
-          //                   </label>
-
-          //                   {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
-          //   userData.Tax_Return_2020.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.Tax_Return_2020_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="Tax_Return_2020"
-          //     className="form-control file"
-          //     id="Tax_Return_2020"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('Tax_Return_2020', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="Tax_Return_2020"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'Tax_Return_2020' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.Tax_Return_2020} />
-          //                             )}
-          //                 </div>
-          //                 <div className="mb-3 file_div">
-          //                   <label for="Tax_Return_2021" className="form-label">
-          //                     A PDF Copy of your 2021 Form 1040 (Tax Return), including
-          //                     ALL schedules.{" "}
-          //                   </label>
-          //                   {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
-          //   userData.Tax_Return_2021.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.Tax_Return_2021_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="Tax_Return_2021"
-          //     className="form-control file"
-          //     id="Tax_Return_2021"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('Tax_Return_2021', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="Tax_Return_2021"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'Tax_Return_2021' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.Tax_Return_2021} />
-          //                             )}
-          //                 </div>
-
-          //                {formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes"  && (
-
-          //                 <div className="pdf-upload-extra">
-
-          //                   <div className="mb-3 file_div">
-          //                     <label
-          //                       for="supplemental_attachment_2020"
-          //                       className="form-label"
-          //                     >
-          //                       PDF Copy of All your 2020 Form W-2(s), including ANY
-          //                       Family First Coronavirus Response Act (FFCRA) supplemental
-          //                       attachment(s).*
-          //                     </label>
-          //                     {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
-          //   userData.supplemental_attachment_2020.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.supplemental_attachment_2020_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="supplemental_attachment_2020"
-          //     className="form-control file"
-          //     id="supplemental_attachment_2020"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('supplemental_attachment_2020', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="supplemental_attachment_2020"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'supplemental_attachment_2020' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2020} />
-          //                             )}
-          //                   </div>
-
-          //                   <div className="mb-3 file_div">
-          //                     <label
-          //                       for="2021_supplemental_attachment_2021"
-          //                       className="form-label"
-          //                     >
-          //                       PDF Copy of All your 2021 Form W-2(s), including ANY
-          //                       Family First Coronavirus Response Act (FFCRA) supplemental
-          //                       attachment(s).
-          //                     </label>
-          //                     {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
-          //   userData.supplemental_attachment_2021.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.supplemental_attachment_2021_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="supplemental_attachment_2021"
-          //     className="form-control file"
-          //     id="supplemental_attachment_2021"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('supplemental_attachment_2021', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="supplemental_attachment_2021"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'supplemental_attachment_2021' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.supplemental_attachment_2021} />
-          //                             )}
-          //                   </div>
-
-          //                   <div className="mb-3 file_div">
-          //                     <label for="FormA1099" className="form-label">
-          //                       PDF Copy of All your 2020 Form 1099-R(s), if any
-          //                     </label>
-
-          //                     {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
-          //   userData.FormA1099.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.FormA1099_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="FormA1099"
-          //     className="form-control file"
-          //     id="FormA1099"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('FormA1099', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.FormA1099 && userData?.FormA1099.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="FormA1099"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'FormA1099' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.FormA1099} />
-          //                             )}
-          //                   </div>
-
-          //                   <div className="mb-3 file_div">
-          //                     <label for="FormB1099" className="form-label">
-          //                       PDF Copy of All your 2021 Form 1099-R(s), if any
-          //                     </label>
-
-          //                     {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
-          //   userData.FormB1099.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.FormB1099_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="FormB1099"
-          //     className="form-control file"
-          //     id="FormB1099"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('FormB1099', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.FormB1099 && userData?.FormB1099.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="FormB1099"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'FormB1099' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.FormB1099} />
-          //                             )}
-          //                   </div>
-
-          //                   <div className="mb-3 file_div">
-          //                     <label for="ks2020" className="form-label">
-          //                       PDF Copy of All your 2020 K-1s, if any
-          //                     </label>
-          //                     {userData?.ks2020 && userData?.ks2020.length > 0 ? (
-          //   userData.ks2020.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.ks2020_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="ks2020"
-          //     className="form-control file"
-          //     id="ks2020"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('ks2020', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.ks2020 && userData?.ks2020.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="ks2020"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'ks2020' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.ks2020} />
-          //                             )}
-          //                   </div>
-
-          //                   <div className="mb-3 file_div">
-          //                     <label for="ks22020" className="form-label">
-          //                       PDF Copy of All your 2020 K-1s, if any
-          //                     </label>
-          //                     {userData?.ks22020 && userData?.ks22020.length > 0 ? (
-          //   userData.ks22020.map((file, index) => (
-          //     <div key={index} className="containerr">
-          //       <div className="itemm">
-          //         <TaskAlt />
-          //         <span className="namee">{userData.ks22020_name[index]}</span>
-          //       </div>
-          //       <div className="itemm" style={{ padding: '0px 20px !important' }}>
-          //         <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
-          //           View
-          //         </div>
-          //         { showRemoveButton && (
-          //         <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
-          //           Remove
-          //         </div>
-          //         ) }
-          //       </div>
-          //     </div>
-          //   ))
-          // ) : (
-          //   <input
-          //     style={{ marginTop: 20 }}
-          //     type="file"
-          //     name="ks22020"
-          //     className="form-control file"
-          //     id="ks22020"
-          //     accept=".pdf"
-          //     required
-          //     multiple  // Allow multiple file selection
-          //     onChange={(e) => handleFileChange('ks22020', e)}
-          //   />
-          // )}
-
-          //               {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-          //   <button >Add File</button>
-          // )} */}
-
-          //     {userData?.ks22020 && userData?.ks22020.length > 0 && (
-
-          //      <button style={{    marginTop: '20px',
-          //       borderRadius: '6px',
-          //       border: '1px solid transparent',
-          //       fontWeight: 'bold',
-          //       color: 'white',
-          //       background: '#3c4d77'}}
-          //       onClick={handleAddFileClick}>Add File</button>
-
-          //       )}
-
-          //           {isAddingFile && (
-
-          //             <FileInputComponent
-          //               inputName="ks22020"
-          //               onRemove={handleRemoveInput}
-          //               handleFileChange={handleFileChange} // Pass the file change handler
-          //             />
-
-          //           )}
-
-          //                             {uploadingFile === 'ks22020' && (
-          //                 <LinearProgressWithLabel value={uploadProgress.ks22020} />
-          //                             )}
-          //                   </div>
-
-          //                 </div>
-
-          //                 )}
-
-          //                 <div className="data-p py-2 mb-2">
-          //                   <p>
-          //                    <input
-          //             className="form-check-input me-1"
-          //             type="checkbox"
-          //             value=""
-          //             id="flexCheckD"
-          //             onChange={handleCheckboxChange}
-          //           />
-          //                     By checking this box you attest that the answers and
-          //                     information provided are true and accurate to the best of
-          //                     your knowledge, and understand that once submitted your
-          //                     responses cannot be changed. You agree to our{" "}
-          //                     <a
-          //                       href=""
-          //                       data-bs-toggle="modal"
-          //                       data-bs-target="#term_condition"
-          //                     >
-          //                       {" "}
-          //                       terms & conditions
-          //                     </a>
-          //                     , and also agree to keep documentation on file that
-          //                     substantiates claims made in this application.
-          //                   </p>
-          //                 </div>
-          //                 <div className="d-flex justify-content-center flex-wrap">
-          //                   <button  onClick={handlePrevious} type="button" className=" prev-step mb-2">
-          //                     Previous
-          //                   </button>
-          //                   <button
-          //         type="button"
-          //         id="confirmSubmitModalLaterBtn"
-          //         data-bs-target="#confirmSubmitModalwithout"
-          //         className="btn btn-primary px-5 py-2 me-2 mb-2 next-step"
-          //         disabled={shouldDisableButtonLater()}
-          //         onClick={handleSubmitLater}
-          //       >
-          //         Submit Documents Later
-          //       </button>
-
-          //       <button
-          //         type="button"
-          //         className="btn btn-primary px-5 py-2 mb-2 next-step"
-          //         style={{ backgroundColor: '#29abe2' }}
-          //         data-bs-target="#confirmSubmitModalLater"
-          //         disabled={formData.family_sick === "Yes" && formData.employed_as_W2 === "Yes" ? shouldDisableButtonsAdditional() : shouldDisableButtons()}
-          //         onClick={handleSubmiDocuments}
-          //       >
-          //         Submit Now
-          //       </button>
-
-          //                   <div
-          //                     className="modal fade"
-          //                     id="confirmSubmitModalLater"
-          //                     data-bs-backdrop="static"
-          //                     data-bs-keyboard="false"
-          //                     tabindex="-1"
-          //                     aria-labelledby="staticBackdropLabel"
-          //                     aria-hidden="true"
-          //                   >
-          //                     <div className="modal-dialog">
-          //                       <div className="modal-content confirm-modal">
-          //                         <div
-          //                           className="modal-header py-2"
-          //                           style={{ borderBottom: "none" }}
-          //                         >
-          //                           <h5 className="modal-title" id="exampleModalLabel"></h5>
-
-          //                           <a href="#">
-          //                             <i
-          //                               className="fa-solid fa-xmark fs-3"
-          //                               data-bs-dismiss="modal"
-          //                               aria-label="Close"
-          //                             ></i>
-          //                           </a>
-          //                         </div>
-
-          //                         <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
-          //                           <img
-          //                             src="./images/gif-submit.gif"
-          //                             style={{ width: "120px" }}
-          //                           />
-          //                           <h5 className="text-center pb-4">
-          //                             <span className="text-success">Congratultion</span> Your
-          //                             application has been submitted!{" "}
-          //                           </h5>
-          //                           <h5 className="text-center">
-          //                             Our team will get back to you in 24-72 hours. Thank
-          //                             you.
-          //                           </h5>
-
-          //                           <a href="#" className="btn btn-primary px-5 go-on-btn">
-          //                             Go on
-          //                           </a>
-          //                         </div>
-          //                       </div>
-          //                     </div>
-          //                   </div>
-          //                   <div
-          //                     className="modal fade"
-          //                     id="confirmSubmitModalwithout"
-          //                     data-bs-backdrop="static"
-          //                     data-bs-keyboard="false"
-          //                     tabindex="-1"
-          //                     aria-labelledby="staticBackdropLabel"
-          //                     aria-hidden="true"
-          //                   >
-          //                     <div className="modal-dialog">
-          //                       <div className="modal-content confirm-modal2">
-          //                         <div
-          //                           className="modal-header py-2"
-          //                           style={{ borderBottom: "none" }}
-          //                         >
-          //                           <h5 className="modal-title" id="exampleModalLabel"></h5>
-
-          //                           <a href="">
-          //                             <i
-          //                               className="fa-solid fa-xmark fs-3"
-          //                               data-bs-dismiss="modal"
-          //                               aria-label="Close"
-          //                             ></i>
-          //                           </a>
-          //                         </div>
-
-          //                         <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
-          //                           <img
-          //                             src="./images/gif-submit.gif"
-          //                             style={{ width: "120px" }}
-          //                           />
-          //                           <h5 className="text-center pb-4">
-          //                             <span className="text-success">Great</span>, your
-          //                             application has been submittd.We will send you a
-          //                             personalupload link for your documents.
-          //                           </h5>
-          //                           <a href="#" className="btn btn-primary px-5 go-on-btn2">
-          //                             Go on
-          //                           </a>
-          //                         </div>
-          //                       </div>
-          //                     </div>
-          //                   </div>
-          //                 </div>
-          //               </div>
-          //             </div>
-          //           </div>
           <div className="step step-11">
-            <div className="container ">
-              <div className="row justify-content-center">
-                <div className="col-lg-10">
-                  <div className="start-application">
-                    <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-            <div className="img-applci h-100 align-items-start">
-              <input
-                type="hidden"
-                name="record_id"
-                id="record_id"
-                value=""
-              />
-              <p className="mb-0">
-                If you were self-employed in 2020 and/or 2021, you
-                could be eligible for the SETC. This includes sole
-                proprietors who run businesses with employees, 1099
-                subcontractors, and single-member LLCs. This unique
-                tax credit is exclusively available to business
-                owners who filed a “Schedule C” or a Partnership
-                (1065) on their federal tax returns for 2020 and/or
-                2021.
-              </p>
-              <h6 className="mt-3 warn">Important Note:</h6>
-              <p>
-                Sub S or True S Corps/C Corps are not eligible for
-                the SETC.
-              </p>
-              <h6 className="warn">Required Documents:</h6>
-              <p>-Driver’s License</p>
-              <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-            </div>
-          </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
-                        <div className="img-applic-content">
-                          {/* <LinearProgress
-                variant="determinate"
-                sx={{
-                  height: "8px",
-                  marginBottom: 4,
-                  borderRadius: "4px",
-                  backgroundColor: "#f0f0f0",
-                  "& .MuiLinearProgress-bar": {
-                    backgroundColor: "rgb(13, 189, 243);",
-                  },
-                }}
-                value={getProgressPercentage()}
-              /> */}
-                          <label
-                            for="self_employed_from"
-                            className="form-label headng "
-                            style={{ fontWeight: "600" }}
-                          >
-                            What type of business entity did you have in 2020
-                            and 2021?
-                          </label>
-
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            1 of 8
-                          </h3>
-                          <div style={{ marginTop: 40 }}>
-                            {/* <Sole Proprie */}
-                            <div className="row col-xs-12">
-                              <div className="col-md-12">
-                                <div className="optio">
-                                  {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="SoleProprietorship"
-                                      id="sole_partnership"
-                                    />
-                                    Sole Proprietorship
-                                  </p> */}
-
-                   <label for="sole_partnership">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'SoleProprietorship' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="SoleProprietorship"
-                  id="sole_partnership"
-                  checked={formData.mandatory_questions === 'SoleProprietorship'}
-                  onChange={handleInputChange}
-                />
-                Sole Proprietorship
-              </p>
-            </label>
-                                </div>
-                                 <div className="optio">
-                                 {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="contractor"
-                                      id="contractor"
-                                    />
-                                    1099 Contractor
-                                  </p> */}
-                               
-                                 <label for="contractor">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'contractor' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="contractor"
-                  id="contractor"
-                  checked={formData.mandatory_questions === 'contractor'}
-                  onChange={handleInputChange}
-                />
-                 1099 Contractor
-              </p>
-            </label>
-            </div> 
-                                <div className="optio">
-                                  {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="partnership"
-                                      id="partnership"
-                                    />
-                                    Partnership
-                                  </p> */}
-                                  <label for="partnership">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'partnership' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="partnership"
-                  id="partnership"
-                  checked={formData.mandatory_questions === 'partnership'}
-                  onChange={handleInputChange}
-                />
-                 Partnership
-              </p>
-            </label>
-                                </div>
-                              </div>
-                              <div className="col-md-12">
-                                <div className="optio">
-                                  {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="LimitedLiability"
-                                      id="limited_liability"
-                                    />
-                                    Limited Liability(LLC)
-                                  </p> */}
-                                    <label for="LimitedLiability">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'LimitedLiability' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="LimitedLiability"
-                  id="LimitedLiability"
-                  checked={formData.mandatory_questions === 'LimitedLiability'}
-                  onChange={handleInputChange}
-                />
-               Limited Liability(LLC)
-              </p>
-            </label>
-                                </div>
-                                <div className="optio">
-                                  {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="C-CorpandS-Corp"
-                                      id="c_corp"
-                                    />
-                                    Corporation (C-Corp and S-Corp)
-                                  </p> */}
-                                     <label for="C-CorpandS-Corp">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'C-CorpandS-Corp' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="C-CorpandS-Corp"
-                  id="C-CorpandS-Corp"
-                  checked={formData.mandatory_questions === 'C-CorpandS-Corp'}
-                  onChange={handleInputChange}
-                />
-              Corporation (C-Corp and S-Corp)
-              </p>
-            </label>
-                                </div>
-                                <div className="optio">
-                                  {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="W2"
-                                      id="w2"
-                                    />
-                                    W2
-                                  </p> */}
-                                  <label for="W2">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'W2' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="W2"
-                  id="W2"
-                  checked={formData.mandatory_questions === 'W2'}
-                  onChange={handleInputChange}
-                />
-              W2
-              </p>
-            </label>
-                                </div>
-                                <div className="optio">
-                                  {/* <p className="w-100">
-                                    <input
-                                      className="form-check-input"
-                                      type="radio"
-                                      name="mandatory_questions"
-                                      value="None"
-                                      id="none_above"
-                                    />
-                                    None of the above
-                                  </p> */}
-                                     <label for="none_above">
-                          <p className="w-100"
-                          style={{
-                            backgroundColor: formData.mandatory_questions === 'None' ? 'lightblue' : 'initial',
-                          }}
-                          >
-                         <input
-                         class={`form-check-input ${
-                          errors.mandatory_questions ? "border-danger" : ""
-                        }`}
-                 
-                  type="radio"
-                  name="mandatory_questions"
-                  value="None"
-                  id="none_above"
-                  checked={formData.mandatory_questions === 'None'}
-                  onChange={handleInputChange}
-                />
-             None of the above
-              </p>
-            </label>
-                                </div>
-                              </div>
-                            </div>
-
-                            {(formData.mandatory_questions === "C-CorpandS-Corp" || formData.mandatory_questions === "W2" || formData.mandatory_questions === "None") &&
-                              activeErrorQualifyTen && (
-                                <div>
-                                  <h4 style={{ color: "#e62e2d" }}>
-                                    You are ineligible! Plz select another option ..
-                                  </h4>
-                                </div>
-                              )}
-                            <div className="d-flex justify-content-end mt-3">
-                              <button
-                                onClick={handlePrevious}
-                                type="button"
-                                className="px-3 py-2 prev-step"
-                              >
-                                Previous
-                              </button>
-                              <button
-                                onClick={handleNext}
-                                type="button"
-                                className="px-3 py-2 next-step"
-                              >
-                                {activeStep === steps.length - 1
-                                  ? "Submit"
-                                  : "Next"}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      case 11:
-        return (
-          <div className="step step-12">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
@@ -5516,7 +4735,7 @@ not be eligible for the SETC program.
                         <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                       </div>
                     </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                           variant="determinate"
@@ -5531,10 +4750,28 @@ not be eligible for the SETC program.
                           }}
                           value={getProgressPercentage()}
                         /> */}
-
+                        {/* <div className="justify-content-center mb-4 "> */}
+                 <h1
+                            className=""
+                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                              textAlign: 'center '
+                            }}
+                            className=" mb-4"
+                          >
+                            Question 1 of 7
+                          </h3>
+                          {/* </div> */}
                           <label
                             for="self_employed_from"
-                            className="form-label headng text-center"
+                            className="form-label headng"
                             style={{ fontWeight: "600" }}
                           >
                             Were you personally sick with Covid, experienced
@@ -5542,24 +4779,9 @@ not be eligible for the SETC program.
                             testing, were unable to perform services including
                             tele-work and took time off in 2020?
                           </label>
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            2 of 8
-                          </h3>
+                        
 
-                          <div style={{ marginTop: 40 }}>
+                          <div >
                             <div
                               style={{
                                 display: "flex",
@@ -5724,9 +4946,9 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 12:
+      case 11:
         return (
-          <div className="step step-13">
+          <div className="step step-12">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
@@ -5760,7 +4982,7 @@ not be eligible for the SETC program.
                         <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                       </div>
                     </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                           variant="determinate"
@@ -5775,10 +4997,26 @@ not be eligible for the SETC program.
                           }}
                           value={getProgressPercentage()}
                         /> */}
-
+  <h1
+                            className=""
+                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                              textAlign: 'center '
+                            }}
+                            className=" mb-4"
+                          >
+                            Question 2 of 7
+                          </h3>
                           <label
                             for="self_employed_from"
-                            className="form-label headng text-center"
+                            className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
                             Were you personally sick with Covid, experienced
@@ -5786,24 +5024,9 @@ not be eligible for the SETC program.
                             testing, were unable to perform services including
                             tele-work and took time off in 2021?
                           </label>
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            3 of 8
-                          </h3>
+                         
 
-                          <div style={{ marginTop: 40 }}>
+                          <div >
                             <div
                               style={{
                                 display: "flex",
@@ -5974,9 +5197,9 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 13:
+      case 12:
         return (
-          <div className="step step-14">
+          <div className="step step-13">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
@@ -6010,7 +5233,7 @@ not be eligible for the SETC program.
                           <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                         </div>
                       </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                             variant="determinate"
@@ -6025,10 +5248,26 @@ not be eligible for the SETC program.
                             }}
                             value={getProgressPercentage()}
                           /> */}
-
+  <h1
+                            className=""
+                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                              textAlign: 'center '
+                            }}
+                            className=" mb-4"
+                          >
+                            Question 3 of 7
+                          </h3>
                           <label
                             for="self_employed_from"
-                            className="form-label headng text-center"
+                            className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
                             Did you care for someone else who was affected by
@@ -6036,24 +5275,9 @@ not be eligible for the SETC program.
                             quarantine, underwent testing, and took time off in
                             2020?
                           </label>
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            4 of 8
-                          </h3>
+                         
 
-                          <div style={{ marginTop: 40 }}>
+                          <div >
                             <div
                               style={{
                                 display: "flex",
@@ -6225,9 +5449,9 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 14:
+      case 13:
         return (
-          <div className="step step-15">
+          <div className="step step-14">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
@@ -6261,7 +5485,7 @@ not be eligible for the SETC program.
                             <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                           </div>
                         </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                               variant="determinate"
@@ -6276,10 +5500,26 @@ not be eligible for the SETC program.
                               }}
                               value={getProgressPercentage()}
                             /> */}
-
+  <h1
+                            className=""
+                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                              textAlign: 'center '
+                            }}
+                            className=" mb-4"
+                          >
+                            Question 4 of 7
+                          </h3>
                           <label
                             for="self_employed_from"
-                            className="form-label headng text-center"
+                            className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
                             Did you care for someone else who was affected by
@@ -6287,24 +5527,9 @@ not be eligible for the SETC program.
                             quarantine, underwent testing, and took time off in
                             2021?
                           </label>
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            5 of 8
-                          </h3>
+                         
 
-                          <div style={{ marginTop: 40 }}>
+                          <div >
                             <div
                               style={{
                                 display: "flex",
@@ -6492,9 +5717,9 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 15:
+      case 14:
         return (
-          <div className="step step-16">
+          <div className="step step-15">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
@@ -6528,7 +5753,7 @@ not be eligible for the SETC program.
                               <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                             </div>
                           </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                                 variant="determinate"
@@ -6543,10 +5768,26 @@ not be eligible for the SETC program.
                                 }}
                                 value={getProgressPercentage()}
                               /> */}
-
+  <h1
+                            className=""
+                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                              textAlign: 'center '
+                            }}
+                            className=" mb-4"
+                          >
+                            Question 5 of 7
+                          </h3>
                           <label
                             for="self_employed_from"
-                            className="form-label headng text-center"
+                            className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
                             Were you affected by the closure of your child's
@@ -6554,24 +5795,8 @@ not be eligible for the SETC program.
                             many days did you care for your minor child who was
                             affected by COVID, which impacted your work in 2020?
                           </label>
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            6 of 8
-                          </h3>
-
-                          <div style={{ marginTop: 40 }}>
+                        
+                          <div >
                             <div
                               style={{
                                 display: "flex",
@@ -6756,7 +5981,7 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 16:
+      case 15:
         return (
           <div className="step step-16">
             <div className="container ">
@@ -6792,7 +6017,7 @@ not be eligible for the SETC program.
                                 <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                               </div>
                             </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                                   variant="determinate"
@@ -6807,10 +6032,26 @@ not be eligible for the SETC program.
                                   }}
                                   value={getProgressPercentage()}
                                 /> */}
-
+  <h1
+                            className=""
+                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                              textAlign: 'center '
+                            }}
+                            className=" mb-4"
+                          >
+                            Question 6 of 7
+                          </h3>
                           <label
                             for="self_employed_from"
-                            className="form-label headng text-center"
+                            className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
                             Were you affected by the closure of your child's
@@ -6818,24 +6059,8 @@ not be eligible for the SETC program.
                             many days did you care for your minor child who was
                             affected by COVID, which impacted your work in 2021?
                           </label>
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Question
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            7 of 8
-                          </h3>
-
-                          <div style={{ marginTop: 40 }}>
+                          
+                          <div >
                             <div
                               style={{
                                 display: "flex",
@@ -6997,7 +6222,7 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 17:
+      case 16:
         return (
           // <div className="step step-18">
           // <div className="container ">
@@ -7136,7 +6361,7 @@ not be eligible for the SETC program.
           //     </div>
           //   </div>
           // </div>
-          <div className="step step-18">
+          <div className="step step-17">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
@@ -7170,7 +6395,7 @@ not be eligible for the SETC program.
                                   <p>-1040 with schedule C for 2019, 2020, and 2021</p>
                                 </div>
                               </div> */}
-                      <div className="col-lg-12 col-md-12 col-sm-12">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
                           {/* <LinearProgress
                                     variant="determinate"
@@ -7186,45 +6411,9 @@ not be eligible for the SETC program.
                                     value={getProgressPercentage()}
                                   /> */}
 
-                          <h1
-                            style={{
-                              textAlign: "center",
-                              fontSize: "26px",
-                              fontWeight: 600,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                          >
-                            What was my Net Income for the years 2019,2020 and
-                            2021?
-                          </h1>
-                          <p
-                            style={{
-                              color: "red",
-                              lineHeight: 0.9,
-                              fontWeight: "600",
-                              textAlign: "center",
-                            }}
-                          >
-                            Located on line 6 of your Schedule C (Form 1040)
-                          </p>
-                          <p style={{ textAlign: "center" }}>
-                            <span style={{ color: "red", fontWeight: "700" }}>
-                              Note:
-                            </span>
-                            Must be greater than $25,000.00 for 2 of the three
-                            years
-                          </p>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            Question 8 of 8
-                          </h3>
-                          <div style={{ marginTop: 43 }}>
+                         
+                        
+                          <div >
                             {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
                                                                                   (Self-Employment
                                                                                   Tax) for the years of 2020 or 2021?</h1> */}
@@ -7232,6 +6421,7 @@ not be eligible for the SETC program.
                             <label
                               for="net_income_2019"
                               className="form-label fs-5"
+                              style={{color: '#00B6FF'}}
                             >
                               Total NET Income For 2019?
                             </label>
@@ -7239,7 +6429,7 @@ not be eligible for the SETC program.
                               <input
                                 type="text"
                                 value={formData.netIncome2019}
-                                class={` for ${
+                                class={` full-width for ${
                                   errors.netIncome2019 ? "border-danger" : ""
                                 }`}
                                 name="netIncome2019"
@@ -7251,6 +6441,7 @@ not be eligible for the SETC program.
                             <label
                               for="net_income_2020"
                               className="form-label fs-5"
+                              style={{color: '#00B6FF'}}
                             >
                               Total NET Income For 2020?
                             </label>
@@ -7259,7 +6450,7 @@ not be eligible for the SETC program.
                                 type="text"
                                 value={formData.netIncome2020}
                                 name="netIncome2020"
-                                class={` for ${
+                                class={` full-width for ${
                                   errors.netIncome2020 ? "border-danger" : ""
                                 }`}
                                 placeholder="$"
@@ -7270,6 +6461,7 @@ not be eligible for the SETC program.
                             <label
                               for="net_income_2021"
                               className="form-label fs-5"
+                              style={{color: '#00B6FF'}}
                             >
                               Total NET Income For 2021?
                             </label>
@@ -7278,7 +6470,7 @@ not be eligible for the SETC program.
                                 type="text"
                                 value={formData.netIncome2021}
                                 name="netIncome2021"
-                                class={` for ${
+                                class={`full-width for ${
                                   errors.netIncome2021 ? "border-danger" : ""
                                 }`}
                                 placeholder="$"
@@ -7286,6 +6478,14 @@ not be eligible for the SETC program.
                                 id="net_income_2021"
                               />
                             </div>
+                            {
+                              activeErrorQualify17 && (
+                                <div>
+                                  <h4 style={{ color: "#e62e2d" }}>
+                                  Value must be more or equal to 25k for two input fileds.
+                                  </h4>
+                                </div>
+                              )}
 
                             <div className="d-flex justify-content-end mt-3">
                               <button
@@ -7315,40 +6515,52 @@ not be eligible for the SETC program.
             </div>
           </div>
         );
-      case 18:
+      case 17:
         return (
-          <div className="step step-19">
+          <div className="step step-18">
             <input type="hidden" name="record_id" id="record_id" value="" />
             <div className="container">
               <div className="row justify-content-center">
                 {/* <canvas id="confetti"></canvas> */}
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div className="row">
+                    <div className="customRow">
                       <div
-                        className="col-lg-6 col-md-6 col-sm-12 pe-0"
+                        className="col-lg-6 col-md-6 col-sm-12 pe-0 backGround"
                         style={{
-                          backgroundImage:
-                            "linear-gradient(#dff5fc, #dff5fc), b",
+                          backgroundImage: 'linear-gradient(#dff5fc, #dff5fc)',
+                          borderRadius: '12px'
+
                         }}
                       >
                         <div
                           className="img-applci sd h-100"
-                          style={{ backgroundImage: "none !important" }}
+                          style={{ backgroundImage: "none " }}
                         >
                           <div className="col-lg-12">
-                            <div className="step-9-congrats">
+                            {/* <div className="step-9-congrats">
                               <div className="step_9_con border-0 d-flex justify-content-center">
                                 <h3 className="text-success text-center fs-1 mb-3">
                                   Congratulations!
                                 </h3>
                               </div>
-                            </div>
+                            </div> */}
+                              <div style={boxSttyle} className="desktop-box" css={styles[mediaQuery]}>
+        <Confetti
+          width={width}
+          height={height}
+          style={confettiStyle}
+        />
+        <div style={{ textAlign: 'center' }}>
+          <h1>Congratulations!</h1>
+          </div>
+          </div>
                           </div>
+                          
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6 col-sm-12 ">
-                        <div className="img-applic-content d-flex align-items-center">
+                        <div className="img-applic-content d-flex align-items-center" style={{padding: '14px'}}>
                           <div className="row justify-content-center align-items-center">
                             <div className="col-lg-12">
                               <div className="h-100 d-flex align-items-center flex-column">
@@ -7412,11 +6624,75 @@ not be eligible for the SETC program.
               </div>
             </div>
           </div>
+//           <div style={{
+//             margin: '0',
+//             display: 'flex',
+//             justifyContent: 'center',
+//             alignItems: 'center',
+//             height: '100vh'
+          
+//           }}>
+//           <div class="ROWW" style={{
+//              maxWidth: '80%',
+//              backgroundColor: 'white',
+//              borderRadius: '10px',
+//              border: '4px solid #00B6FF',
+//              padding: '20px',
+           
+//              textAlign: 'center'
+//           }}>  
+//             <img src={congrats} alt="Your Image" class="responsive-image"/>
+
+//         <div style={{background: 'linear-gradient(45deg, rgb(176 233 255), transparent) rgb(240, 240, 240)'
+
+// }}>
+//          <Typography sx={{color: 'var(--ds-text, var(--ds-text, #172B4D))', marginTop: 2, fontSize:{xs: 16,sm: 14, md:20, lg:20}, fontStyle: 'italic' }}>
+//                                     Based on the information you provided, we’ve
+//                                     estimated that you might be eligible for up
+//                                     to
+//                                     <span
+//                                       className="text-success text-success text-center h3 fs-1 mb-3"
+//                                       id="final_amount"
+//                                     >
+//                                       {" "}
+//                                       {finalIncomeValue ||
+//                                         finalCreditAmountStorage}
+//                                     </span>
+//                                     <br />
+//                                   </Typography>
+//                                   <Typography sx={{color: '#4f4545', fontSize:{xs: 13,sm: 13, md:16, lg:16}, fontStyle: 'italic', marginTop: 3 }}>
+
+//                                     The next step is to upload your documents
+//                                     for our CPAs to calculate your exact credit
+//                                     amount.
+//                                   </Typography>
+                                 
+//                                 </div>
+//                                 <div className="d-flex justify-content-center mt-3">
+//                                   <button
+//                                     onClick={handlePrevious}
+//                                     type="button"
+//                                     className="px-3 py-2 prev-step"
+//                                   >
+//                                     Previous
+//                                   </button>
+//                                   <button
+//                                     onClick={handleNext}
+//                                     type="button"
+//                                     className="px-3 py-2 next-step"
+//                                   >
+//                                     {activeStep === steps.length - 1
+//                                       ? "Submit"
+//                                       : "Next"}
+//                                   </button>
+//                                 </div>
+//         </div>
+//         </div>
         );
-      case 19:
+      case 18:
         return (
-          <div className="row justify-content-center step step-20">
-            <div className="col-lg-8">
+          <div className="row justify-content-center step step-19">
+            <div className="col-lg-8" style={{marginTop: '32px'}}>
               <div
                 className="step step-10 bg-white shadow px-3 py-5"
                 style={{ borderRadius: "20px" }}
@@ -7438,53 +6714,64 @@ not be eligible for the SETC program.
                   }}
                   value={getProgressPercentage()}
                 /> */}
-
-                <h3>Documents</h3>
+<div>
+                                                 <p style = {{
+  fontSize: '13.5px',
+  color: 'gray',
+  background: 'linear-gradient(45deg, transparent, #c1ebf4, transparent)',
+  fontStyle: 'italic',
+}}>
+                                                  <span style={{color: '#e62e2d', fontWeight: 'bold'}}>Notice: </span> Kindly make sure that each document is uploaded before selecting the "submit now" button to prevent any loss of data.
+                                                  If you don't have all the paperwork completed and would like to submit them again at a later time. Please submit any papers that are accessible, then click "Submit Documents Later". We will provide you a link to submit the remaining files after we get the ones you have already uploaded.
+                                                 </p>
+                                            </div>
+                <h3 style={{fontWeight: 'bold'}}>Documents</h3>
 
                 <div className="mb-3 file_div">
                   <label for="driving_licence" className="form-label">
                     A PDF Copy of a Current ID or Driver's License
                   </label>
                   {userData?.driving_licence &&
-                  userData?.driving_licence.length > 0 ? (
-                    userData.driving_licence.map((file, index) => (
-                      <div key={index} className="containerr">
-                        <div className="itemm">
-                          <TaskAlt />
-                          <span className="namee">
-                            {userData.driving_licence_name[index]}
-                          </span>
-                        </div>
-                        <div
-                          className="itemm"
-                          style={{ padding: "0px 20px !important" }}
-                        >
-                          <div
-                            onClick={() =>
-                              openFileInNewTab("driving_licence", index)
-                            }
-                            className="buttonn"
-                          >
-                            View
-                          </div>
-                          {showRemoveButton && (
-                            <div
-                              onClick={() =>
-                                removeFile(
-                                  "driving_licence",
-                                  index,
-                                  userData.driving_licence_name[index]
-                                )
-                              }
-                              className="buttonn"
-                            >
-                              Remove
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
+  userData?.driving_licence.length > 0 ? (
+    userData.driving_licence.map((file, index) => {
+      const fileName = userData.driving_licence_name[index];
+      const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+
+      return (
+        <div key={index} className="containerr">
+        <div className="itemm">
+          <TaskAlt />
+          <span className="namee">
+            {userData.driving_licence_name[index]}
+          </span>
+        </div>
+        <div
+          className="itemm"
+          style={{ padding: "0px 20px !important" }}
+        >
+          <div
+            onClick={() =>
+              openFileInNewTab("driving_licence", index)
+            }
+            className="buttonn"
+          >
+            View
+          </div>
+            {/* {!shouldHideRemoveButton && ( */}
+              <div
+                onClick={() =>
+                  removeFile('driving_licence', index, fileName)
+                }
+                className="buttonn"
+              >
+                Remove
+              </div>
+            {/* )} */}
+          </div>
+        </div>
+      );
+    })
+  ): (
                     <input
                       style={{ marginTop: 20 }}
                       type="file"
@@ -7513,13 +6800,14 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={handleAddFileClick}
+                        onClick={() => handleAddFileClick('driving_licence')}
                       >
                         Add File
                       </button>
                     )}
 
-                  {isAddingFile && (
+          {addingFileType === 'driving_licence' && (
+
                     <FileInputComponent
                       inputName="driving_licence"
                       onRemove={handleRemoveInput}
@@ -7533,6 +6821,7 @@ not be eligible for the SETC program.
                     />
                   )}
                 </div>
+                
                 <div className="mb-3 file_div">
                   <label for="schedule_pdf" className="form-label">
                     A PDF Copy of your 2019 Form 1040 (Tax Return), including
@@ -7542,7 +6831,11 @@ not be eligible for the SETC program.
 
                   {userData?.schedule_pdf &&
                   userData?.schedule_pdf.length > 0 ? (
-                    userData.schedule_pdf.map((file, index) => (
+                    userData.schedule_pdf.map((file, index) => {
+                      const fileName = userData.schedule_pdf_name[index];
+                      const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+
+                  return  (
                       <div key={index} className="containerr">
                         <div className="itemm">
                           <TaskAlt />
@@ -7562,7 +6855,7 @@ not be eligible for the SETC program.
                           >
                             View
                           </div>
-                          {showRemoveButton && (
+                          {!shouldHideRemoveButton && (
                             <div
                               onClick={() =>
                                 removeFile(
@@ -7578,7 +6871,8 @@ not be eligible for the SETC program.
                           )}
                         </div>
                       </div>
-                    ))
+                    )
+                            })
                   ) : (
                     <input
                       style={{ marginTop: 20 }}
@@ -7608,13 +6902,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={handleAddFileClick}
+                        onClick={() => handleAddFileClick('schedule_pdf')}
                       >
                         Add File
                       </button>
                     )}
 
-                  {isAddingFile && (
+             {addingFileType === 'schedule_pdf'  && (
                     <FileInputComponent
                       inputName="schedule_pdf"
                       onRemove={handleRemoveInput}
@@ -7628,6 +6922,13 @@ not be eligible for the SETC program.
                     />
                   )}
                 </div>
+
+
+
+
+
+
+
                 <div className="mb-3 file_div">
                   <label for="Tax_Return_2020" className="form-label">
                     {" "}
@@ -7703,13 +7004,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={handleAddFileClick}
+                        onClick={() => handleAddFileClick('Tax_Return_2020')}
                       >
                         Add File
                       </button>
                     )}
 
-                  {isAddingFile && (
+{addingFileType === 'Tax_Return_2020'  && (
                     <FileInputComponent
                       inputName="Tax_Return_2020"
                       onRemove={handleRemoveInput}
@@ -7796,13 +7097,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={handleAddFileClick}
+                        onClick={() => handleAddFileClick('Tax_Return_2021')}
                       >
                         Add File
                       </button>
                     )}
 
-                  {isAddingFile && (
+{addingFileType === 'Tax_Return_2021'  && (
                     <FileInputComponent
                       inputName="Tax_Return_2021"
                       onRemove={handleRemoveInput}
@@ -7915,13 +7216,13 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={handleAddFileClick}
+                              onClick={() => handleAddFileClick('supplemental_attachment_2020')}
                             >
                               Add File
                             </button>
                           )}
 
-                        {isAddingFile && (
+{addingFileType === 'supplemental_attachment_2020'  && (
                           <FileInputComponent
                             inputName="supplemental_attachment_2020"
                             onRemove={handleRemoveInput}
@@ -8031,13 +7332,13 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={handleAddFileClick}
+                              onClick={() => handleAddFileClick('supplemental_attachment_2021')}
                             >
                               Add File
                             </button>
                           )}
 
-                        {isAddingFile && (
+{addingFileType === 'supplemental_attachment_2021'  && (
                           <FileInputComponent
                             inputName="supplemental_attachment_2021"
                             onRemove={handleRemoveInput}
@@ -8125,13 +7426,13 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={handleAddFileClick}
+                              onClick={() => handleAddFileClick('FormA1099')}
                             >
                               Add File
                             </button>
                           )}
 
-                        {isAddingFile && (
+{addingFileType === 'FormA1099'  && (
                           <FileInputComponent
                             inputName="FormA1099"
                             onRemove={handleRemoveInput}
@@ -8219,13 +7520,13 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={handleAddFileClick}
+                              onClick={() => handleAddFileClick('FormB1099')}
                             >
                               Add File
                             </button>
                           )}
 
-                        {isAddingFile && (
+{addingFileType === 'FormB1099'  && (
                           <FileInputComponent
                             inputName="FormB1099"
                             onRemove={handleRemoveInput}
@@ -8310,13 +7611,13 @@ not be eligible for the SETC program.
                               color: "white",
                               background: "#3c4d77",
                             }}
-                            onClick={handleAddFileClick}
+                            onClick={() => handleAddFileClick('ks2020')}
                           >
                             Add File
                           </button>
                         )}
 
-                        {isAddingFile && (
+{addingFileType === 'ks2020'  && (
                           <FileInputComponent
                             inputName="ks2020"
                             onRemove={handleRemoveInput}
@@ -8401,13 +7702,13 @@ not be eligible for the SETC program.
                               color: "white",
                               background: "#3c4d77",
                             }}
-                            onClick={handleAddFileClick}
+                            onClick={() => handleAddFileClick('ks22020')}
                           >
                             Add File
                           </button>
                         )}
 
-                        {isAddingFile && (
+{addingFileType === 'ks22020'  && (
                           <FileInputComponent
                             inputName="ks22020"
                             onRemove={handleRemoveInput}
@@ -8633,7 +7934,7 @@ not be eligible for the SETC program.
     [`& .${stepConnectorClasses.line}`]: {
       borderColor:
         theme.palette.mode === "dark" ? theme.palette.grey[900] : "#eaeaf0",
-      borderTopWidth: 5,
+      borderTopWidth: 7,
       borderRadius: 1,
     },
   }));
@@ -8655,7 +7956,7 @@ not be eligible for the SETC program.
                 height: "30px", // Adjust size as needed
               }}
             >
-              <Check style={{ fontWeight: "bold" }} />
+              <Check sx={{ fontSize: {sm: 12, xs: 12, md: 20, lg: 20} ,fontWeight: "bold" }} />
             </Avatar>
           ) : (
             <Avatar
@@ -8678,7 +7979,7 @@ not be eligible for the SETC program.
     "& .MuiStepConnector-line": {
       borderColor: "green", // Change the connector color
       borderColor: "#00b6ff",
-      borderTopWidth: 5,
+      borderTopWidth: 7,
       borderRadius: 1,
     },
   }));
@@ -8698,9 +7999,9 @@ not be eligible for the SETC program.
       borderColor: "#e0e0e0", // Change border color for completed and active steps
       zIndex: 1,
       fontSize: 14,
-      "& span": {
-        color: isIndex7 ? "#00b6ff" : "white", // Change color of step number
-      },
+      // "& span": {
+      //   color: isIndex7 ? "#00b6ff" : "white", // Change color of step number
+      // },
     })
   );
 
@@ -8708,12 +8009,17 @@ not be eligible for the SETC program.
     <Box
       sx={{
         width: "100%",
-        marginTop: 10,
+        marginTop: 15,
         backgroundImage:
           " linear-gradient(direction, color-stop1, color-stop2)",
       }}
     >
-      {activeStep !== 0 && activeStep !== 1 && (
+      {
+        activeStep !== 0 &&
+        activeStep !== 1 &&
+        userData?.applicationWithDocument !== true &&
+        userData?.applicationStatus !== true && 
+       (
         <>
           {activeStep <= 8 && (
             <Stepper
@@ -8739,14 +8045,17 @@ not be eligible for the SETC program.
                         "& .MuiStepLabel-label.Mui-completed": {
                           color: "#00b6ff", // Change label color based on active step
                           fontWeight: "300",
+                          fontSize: 16
                         },
                         "& .MuiStepLabel-label.Mui-active": {
                           color: "#00b6ff", // Change label color based on active step
                           fontWeight: "300",
+                          fontSize: 16
                         },
                         "& .MuiStepLabel-label": {
                           color: "gray", // Change label color based on active step
                           fontWeight: "300",
+                          fontSize: 16
                         },
                       }}
                       StepIconComponent={QontoStepIcon}
@@ -8759,7 +8068,11 @@ not be eligible for the SETC program.
           )}
         </>
       )}
-      {activeStep > 8 && activeStep !== 19 && (
+      {activeStep > 8 && activeStep !== 18 && 
+       userData?.applicationWithDocument !== true &&
+       userData?.applicationStatus !== true && 
+      
+      (
         <Stepper
           className="container secondStepper" style={{width: '40px !important'}}
           activeStep={activeStep - 9}
@@ -8780,16 +8093,19 @@ not be eligible for the SETC program.
               <StepLabel
                 sx={{
                   "& .MuiStepLabel-label.Mui-completed": {
-                    color: "#00b6ff", // Change label color based on active step
+                    color:  index === 8 ? "red" : "#00b6ff", // Change label color based on active step
                     fontWeight: "300",
+                    fontSize: 16
                   },
                   "& .MuiStepLabel-label.Mui-active": {
-                    color: "#00b6ff", // Change label color based on active step
+                    color:  index === 8 ? "red" : "#00b6ff", // Change label color based on active step
                     fontWeight: "300",
+                    fontSize: 16
                   },
                   "& .MuiStepLabel-label": {
-                    color: "gray", // Change label color based on active step
+                    color: index === 8 ? "red" : "gray", // Change label color based on active step
                     fontWeight: "300",
+                    fontSize: 16
                   },
                 }}
                 StepIconComponent={QontoStepIcon}
@@ -8800,38 +8116,39 @@ not be eligible for the SETC program.
           ))}
         </Stepper>
       )}
-      {activeStep === 19 && (
+      {activeStep === 18 &&
+       userData?.applicationWithDocument !== true &&
+       userData?.applicationStatus !== true && 
+      (
         <Stepper
           className="nineteenStepper container"
           activeStep={1}
           alternativeLabel
           connector={<CustomConnector />}
         >
-          {steps19.map((label, index) => (
+          {steps18.map((label, index) => (
             <Step key={label}>
               <StepLabel
                 sx={{
-                  // '& .MuiStepLabel-label': {
-                  //   color: index === 7 ? 'gray' : '#00b6ff', // Change label color based on active step
-                  //   fontWeight: '300'
-                  // },
+                 
                   "& .MuiStepLabel-alternativeLabel": {
-                    color:
-                      index === 7 ? "gray !important" : "#00b6ff !important", // Change label color based on active step
-                    fontWeight: "300",
+                    color: index === 2 ? "gray !important" : index === 1 ? "red !important" : "#00b6ff !important",
+                    fontWeight: "500",
+                    fontSize: 17
                   },
+              
                 }}
                 StepIconComponent={(props) => (
                   <CustomStepIcon
                     {...props}
                     completed={index < 1}
                     active={index === 1}
-                    isIndex7={index === 7} // Change based on the current active step
+                    // isIndex7={index === 7} // Change based on the current active step
                   >
-                    {index < 1 ? (
-                      <Check style={{ color: "white" }} />
+                    { index === 2 ? (
+                      <Check style={{ color: "#00b6ff" }} />
                     ) : (
-                      <span>{index + 1}</span>
+                      <Check style={{ color: "white" }} />
                     )}
                   </CustomStepIcon>
                 )}

@@ -29,7 +29,7 @@ import './ApplicationStatus.css';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
 import { useState, useEffect } from 'react';
-import { TaskAlt } from '@mui/icons-material';
+import { Check, CheckCircle, TaskAlt } from '@mui/icons-material';
 import axios from 'axios';
 import FileInputComponent from '../../Components/FileInputComponent';
 
@@ -59,13 +59,31 @@ export default function ApplicationStatus({  }) {
   const [activeTab, setActiveTab] = useState('status_tab'); // Default to 'status_tab' or last selected tab
   
   const [isAddingFile, setIsAddingFile] = useState(false);
-  
-  const [showRemoveButton, setShowRemoveButton] = useState(true);
+  const [addingFileType, setAddingFileType] = useState(null);
+
+  const [uploadCompleteTimes, setUploadCompleteTimes] = useState({
+    driving_licence: null,
+    schedule_pdf: null,
+    Tax_Return_2020: null,
+    Tax_Return_2021: null,
+    supplemental_attachment_2020: null,
+    supplemental_attachment_2021: null,
+    FormA1099: null,
+    FormB1099: null,
+    ks2020: null,
+    ks22020: null,
+  });
+
+
 
 
   
-  const handleAddFileClick = () => {
-    setIsAddingFile(true); // Set the state to allow adding more files
+  const handleAddFileClick = (type) => {
+    // setIsAddingFile(true); 
+
+    setAddingFileType(type);
+
+
   };
 
 
@@ -84,30 +102,27 @@ export default function ApplicationStatus({  }) {
 
   const allFilesSelected = () => {
     return (
-      selectedFiles?.driving_licence?.length > 0,
-      selectedFiles?.schedule_pdf?.length > 0,
-      selectedFiles?.Tax_Return_2020?.length > 0,
+      selectedFiles?.driving_licence?.length > 0 &&
+      selectedFiles?.schedule_pdf?.length > 0 &&
+      selectedFiles?.Tax_Return_2020?.length > 0 &&
       selectedFiles?.Tax_Return_2021?.length > 0
     );
   };
-
+  
   const allFilesSelectedAdditional = () => {
     return (
-      selectedFiles?.driving_licence?.length > 0,
-      selectedFiles?.schedule_pdf?.length > 0,
-      selectedFiles?.Tax_Return_2020?.length > 0,
-      selectedFiles?.Tax_Return_2021?.length > 0,
-     
-      selectedFiles?.supplemental_attachment_2020?.length > 0,
-      selectedFiles?.supplemental_attachment_2021?.length > 0,
-      selectedFiles?.FormA1099?.length > 0,
-      selectedFiles?.FormB1099?.length > 0,
-      selectedFiles?.ks2020?.length > 0,
+      selectedFiles?.driving_licence?.length > 0 &&
+      selectedFiles?.schedule_pdf?.length > 0 &&
+      selectedFiles?.Tax_Return_2020?.length > 0 &&
+      selectedFiles?.Tax_Return_2021?.length > 0 &&
+      selectedFiles?.supplemental_attachment_2020?.length > 0 &&
+      selectedFiles?.supplemental_attachment_2021?.length > 0 &&
+      selectedFiles?.FormA1099?.length > 0 &&
+      selectedFiles?.FormB1099?.length > 0 &&
+      selectedFiles?.ks2020?.length > 0 &&
       selectedFiles?.ks22020?.length > 0
-      
     );
   };
-
   const [uploadProgress, setUploadProgress] = useState({
     driving_licence: 0,
     schedule_pdf: 0,
@@ -140,7 +155,7 @@ export default function ApplicationStatus({  }) {
   uploadFile(formData, inputName);
   };
   const handleRemoveInput = () => {
-    setIsAddingFile(false);
+    setAddingFileType(null); // Reset the addingFileType state
   };
   
 
@@ -195,6 +210,41 @@ export default function ApplicationStatus({  }) {
   
         console.log(`File uploaded successfully`, response.data.user);
         await fetchUserDataa();
+        let lastFileName = '';
+
+        if (inputName === 'driving_licence') {
+          const lastDrivingLicenceIndex = response.data.user.driving_licence_name.length - 1;
+          lastFileName = response.data.user.driving_licence_name[lastDrivingLicenceIndex];
+        } else if (inputName === 'schedule_pdf') {
+          const lastScheduleIndex = response.data.user.schedule_pdf_name.length - 1;
+          lastFileName = response.data.user.schedule_pdf_name[lastScheduleIndex];
+        } else if (inputName === 'Tax_Return_2020') {
+          const lastScheduleIndex = response.data.user.Tax_Return_2020_name.length - 1;
+          lastFileName = response.data.user.Tax_Return_2020_name[lastScheduleIndex];
+        } else if (inputName === 'Tax_Return_2021') {
+          const lastScheduleIndex = response.data.user.Tax_Return_2021_name.length - 1;
+          lastFileName = response.data.user.Tax_Return_2021_name[lastScheduleIndex];
+        } else if (inputName === 'supplemental_attachment_2020') {
+          const lastScheduleIndex = response.data.user.supplemental_attachment_2020_name.length - 1;
+          lastFileName = response.data.user.supplemental_attachment_2020_name[lastScheduleIndex];
+        } else if (inputName === 'supplemental_attachment_2021') {
+          const lastScheduleIndex = response.data.user.supplemental_attachment_2021_name.length - 1;
+          lastFileName = response.data.user.supplemental_attachment_2021_name[lastScheduleIndex];
+        } else if (inputName === 'FormA1099') {
+          const lastScheduleIndex = response.data.user.FormA1099_name.length - 1;
+          lastFileName = response.data.user.FormA1099_name[lastScheduleIndex];
+        } else if (inputName === 'FormB1099') {
+          const lastScheduleIndex = response.data.user.FormB1099_name.length - 1;
+          lastFileName = response.data.user.FormB1099_name[lastScheduleIndex];
+        } else if (inputName === 'ks2020') {
+          const lastScheduleIndex = response.data.user.ks2020_name.length - 1;
+          lastFileName = response.data.user.ks2020_name[lastScheduleIndex];
+        } else if (inputName === 'ks22020') {
+          const lastScheduleIndex = response.data.user.ks22020_name.length - 1;
+          lastFileName = response.data.user.ks22020_name[lastScheduleIndex];
+        }
+          
+          await handleSuccessfulUpload(inputName, lastFileName);
 
         setIsAddingFile(false)
        
@@ -211,6 +261,73 @@ export default function ApplicationStatus({  }) {
       }
     }
   };
+
+  const handleSuccessfulUpload = (inputName, fileName) => {
+    const currentTime = Date.now(); // Get the current time in milliseconds
+    setUploadCompleteTimes((prevUploadTimes) => ({
+      ...prevUploadTimes,
+      [inputName]: currentTime,
+    }));
+  
+    // Save upload completion time as a string to localStorage
+    localStorage.setItem(fileName, currentTime.toString());
+  };
+
+// Check if 30 seconds have passed since upload completion
+const isThirtySecondsPassed = (fileName) => {
+  const storedTime = localStorage.getItem(fileName);
+  if (storedTime) {
+    const uploadTime = parseInt(storedTime, 10); // Parse stored string to a number
+    const currentTime = Date.now();
+    return currentTime - uploadTime >= 30000; // Check if 30 seconds have passed
+  }
+  return false;
+};
+// Function to retrieve upload completion times from localStorage on component mount
+useEffect(() => {
+  const storedUploadTimes = {
+    driving_licence: localStorage.getItem('driving_licence'),
+    schedule_pdf: localStorage.getItem('schedule_pdf'),
+    Tax_Return_2020: localStorage.getItem('Tax_Return_2020'),
+    Tax_Return_2021: localStorage.getItem('Tax_Return_2021'),
+    supplemental_attachment_2020: localStorage.getItem('supplemental_attachment_2020'),
+    supplemental_attachment_2021: localStorage.getItem('supplemental_attachment_2021'),
+    FormA1099: localStorage.getItem('FormA1099'),
+    FormB1099: localStorage.getItem('FormB1099'),
+    ks2020: localStorage.getItem('ks2020'),
+    ks22020: localStorage.getItem('ks22020'),
+  };
+
+  // Convert stored timestamps back to numbers before setting state
+  const parsedUploadTimes = Object.keys(storedUploadTimes).reduce((acc, key) => {
+    acc[key] = storedUploadTimes[key] ? parseInt(storedUploadTimes[key], 10) : null;
+    return acc;
+  }, {});
+
+  setUploadCompleteTimes(parsedUploadTimes);
+}, []);
+
+
+const checkAndUpdateRemoveButtonVisibility = () => {
+  const updatedUploadTimes = { ...uploadCompleteTimes };
+
+  Object.keys(uploadCompleteTimes).forEach((inputName) => {
+    const fileName = uploadCompleteTimes[inputName];
+    if (fileName && isThirtySecondsPassed(fileName)) {
+      updatedUploadTimes[inputName] = null; // Reset the upload time
+    }
+  });
+
+  setUploadCompleteTimes(updatedUploadTimes);
+};
+
+// Use useEffect to periodically check and update the remove button visibility
+useEffect(() => {
+  const intervalId = setInterval(checkAndUpdateRemoveButtonVisibility, 1000); // Check every second
+
+  // Cleanup the interval on component unmount
+  return () => clearInterval(intervalId);
+}, [uploadCompleteTimes]);
   
  
 
@@ -235,65 +352,55 @@ export default function ApplicationStatus({  }) {
   
 
   const removeFile = async (fileKey, index, originalFileName) => {
-   
     const token = localStorage.getItem("token");
-
-    // // Check if both token and fileKey are present
+  
     if (!token || !fileKey) {
-        console.error('Token and fileKey are required.');
-        return;
+      console.error('Token and fileKey are required.');
+      return;
     }
+  
     if (fileKey && userData) {
-      const fileUrls = userData[fileKey]; 
+      const fileUrls = userData[fileKey];
+      
       if (fileUrls && fileUrls[index]) {
-        
-        alert('Are you sure to remove file')
-
-        // alert(fileKey)
-        // alert(fileUrls[index])
-        // alert(`${fileKey}_name`)
-        // alert(originalFileName)
-     
-        // window.open(`http://localhost:5000/${fileUrls[index]}`, '_blank');
-     
-
-    try {
-        const url = 'http://localhost:5000/user/deleteFile';
-        const payload = {
+        try {
+          const url = 'http://localhost:5000/user/deleteFile';
+          const payload = {
             fieldName: fileKey,
             fileName: fileUrls[index],
             originalFieldName: `${fileKey}_name`,
             originalName: originalFileName
-        };
-
-        const response = await fetch(url, {
-            method: 'DELETE', // Change the method to DELETE
-            headers: { 
-                Authorization: `Bearer ${token}`, // Add the token to the headers
-                'Content-Type': 'application/json'
+          };
+  
+          const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-            // Call fetchData() upon successful response
+          });
+  
+          if (response.ok) {
             await fetchUserDataa();
-
-            setSelectedFiles((prevSelectedFiles) => ({
-              ...prevSelectedFiles,
-              [fileKey]: null, 
-            }));
-           
+  
+            setSelectedFiles((prevSelectedFiles) => {
+              const updatedFiles = { ...prevSelectedFiles };
+              updatedFiles[fileKey] = fileUrls.filter((_, i) => i !== index);
+              return updatedFiles;
+            });
+  
             console.log('File removed successfully.');
-        } else {
+          } else {
             console.error('Failed to remove file.');
+          }
+        } catch (error) {
+          console.error('Error removing file:', error);
         }
-    } catch (error) {
-        console.error('Error removing file:', error);
+      }
     }
-  } 
-}
-};
+  };
+  
   
   const [steps, setSteps] = useState([
     {
@@ -329,12 +436,12 @@ export default function ApplicationStatus({  }) {
     },
   ])
 
-  useEffect(() => {
-    const storedTab = localStorage.getItem('activeTab');
-    if (storedTab) {
-      setActiveTab(storedTab);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedTab = localStorage.getItem('activeTab');
+  //   if (storedTab) {
+  //     setActiveTab(storedTab);
+  //   }
+  // }, []);
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     localStorage.setItem('activeTab', tabId);
@@ -388,53 +495,52 @@ export default function ApplicationStatus({  }) {
   }, []);
   
 
-  useEffect(() => {
-    let timer;
-    if ((userData?.applicationStatus === false || userData?.applicationWithDocument === false) && showRemoveButton) {
-      timer = setTimeout(() => {
-        setShowRemoveButton(false);
-      }, 1800000); 
-    // }, 3000); 
-    }
-  
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [userData, showRemoveButton]);
+
   
 
   const updateDocumentUploadedStatus = () => {
-    
     let isCompleted = false;
-
-    if (
-      userData?.Family_Sick_Leave === 'Yes' 
-    ) {
-     
+  
+    if (userData?.Family_Sick_Leave === 'Yes') {
       if (allFilesSelectedAdditional()) {
-    
         isCompleted = true;
       }
     } else {
-     
       if (allFilesSelected()) {
-       
         isCompleted = true;
       }
     }
-
+  
     // Update 'isCompleted' status for 'Documents Uploaded' step
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
         step.title === 'Documents Uploaded' ? { ...step, isCompleted } : step
       )
     );
+  
+    // Alert lengths
+    console.log('All Files Selected Length:', {
+      allFilesSelected: {
+        driving_licence: selectedFiles?.driving_licence?.length,
+        schedule_pdf: selectedFiles?.schedule_pdf?.length,
+        Tax_Return_2020: selectedFiles?.Tax_Return_2020?.length,
+        Tax_Return_2021: selectedFiles?.Tax_Return_2021?.length,
+      },
+      allFilesSelectedAdditional: {
+        // Add other file lengths here...
+      },
+    });
   };
-
+  
+  
   useEffect(() => {
     updateDocumentUploadedStatus();
-    // Add dependencies if needed
-  }, [userData, selectedFiles]); 
+    // Alert lengths after updateDocumentUploadedStatus
+ 
+  }, [userData, selectedFiles]);
+
+
+
 
 
   return (
@@ -627,7 +733,10 @@ export default function ApplicationStatus({  }) {
 
               {(userData?.applicationStatus === true || userData?.applicationWithDocument === true)  && ( 
 
-                        <div className={`tab-pane fade ${activeTab === 'document_tab' ? 'show active' : ''}`} id="document_tab">
+                       <div className={`tab-pane fade ${activeTab === 'document_tab' ? 'show active' : ''}`} id="document_tab">
+                         
+                         
+                         
                           <div class="file_div">
                             <h4>
                               A PDF Copy of a Current ID or Driver's License
@@ -635,7 +744,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.driving_licence && userData?.driving_licence.length > 0 ? (
-  userData.driving_licence.map((file, index) => (
+  userData.driving_licence.map((file, index) =>{ 
+    const fileName = userData.driving_licence_name[index];
+      const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+    return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -645,14 +757,14 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('driving_licence', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        {!shouldHideRemoveButton && (
         <div onClick={() => removeFile('driving_licence', index, userData.driving_licence_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )})
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -671,7 +783,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.driving_licence && userData?.driving_licence.length > 0 && (
+    {userData?.driving_licence && userData?.driving_licence.length > 0  &&(
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -679,11 +791,13 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('driving_licence')}
+      
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'driving_licence' && (
             <FileInputComponent
               inputName="driving_licence"
               onRemove={handleRemoveInput} 
@@ -708,7 +822,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 ? (
-  userData.schedule_pdf.map((file, index) => (
+  userData.schedule_pdf.map((file, index) => {
+    const fileName = userData.schedule_pdf_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+   return  (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -718,14 +835,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('schedule_pdf', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('schedule_pdf', index, userData.schedule_pdf_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+})
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -744,7 +862,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 && (
+    {userData?.schedule_pdf && userData?.schedule_pdf.length > 0 &&(
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -752,11 +870,13 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+     
+      onClick={() => handleAddFileClick('schedule_pdf')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'schedule_pdf'  && (
             <FileInputComponent
               inputName="schedule_pdf"
               onRemove={handleRemoveInput} 
@@ -780,7 +900,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 ? (
-  userData.Tax_Return_2020.map((file, index) => (
+  userData.Tax_Return_2020.map((file, index) => {
+    const fileName = userData.Tax_Return_2020_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+  return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -790,14 +913,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('Tax_Return_2020', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('Tax_Return_2020', index, userData.Tax_Return_2020_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -816,7 +940,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0 && (
+    {userData?.Tax_Return_2020 && userData?.Tax_Return_2020.length > 0  &&(
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -824,11 +948,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('Tax_Return_2020')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'Tax_Return_2020'  && (
 
             <FileInputComponent
               inputName="Tax_Return_2020"
@@ -854,7 +979,11 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 ? (
-  userData.Tax_Return_2021.map((file, index) => (
+  userData.Tax_Return_2021.map((file, index) => {
+    const fileName = userData.Tax_Return_2021_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+
+  return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -864,14 +993,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('Tax_Return_2021', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('Tax_Return_2021', index, userData.Tax_Return_2021_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -890,7 +1020,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0 && (
+    {userData?.Tax_Return_2021 && userData?.Tax_Return_2021.length > 0  &&(
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -898,11 +1028,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('Tax_Return_2021')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'Tax_Return_2021'  && (
 
             <FileInputComponent
               inputName="Tax_Return_2021"
@@ -930,7 +1061,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 ? (
-  userData.supplemental_attachment_2020.map((file, index) => (
+  userData.supplemental_attachment_2020.map((file, index) =>{
+    const fileName = userData.supplemental_attachment_2020_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+    (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -940,14 +1074,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('supplemental_attachment_2020', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('supplemental_attachment_2020', index, userData.supplemental_attachment_2020_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -966,7 +1101,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0 && (
+    {userData?.supplemental_attachment_2020 && userData?.supplemental_attachment_2020.length > 0  &&(
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -974,11 +1109,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('supplemental_attachment_2020')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'supplemental_attachment_2020'  && (
 
             <FileInputComponent
               inputName="supplemental_attachment_2020"
@@ -1004,7 +1140,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 ? (
-  userData.supplemental_attachment_2021.map((file, index) => (
+  userData.supplemental_attachment_2021.map((file, index) => {
+    const fileName = userData.supplemental_attachment_2021_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+    return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -1014,14 +1153,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('supplemental_attachment_2021', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('supplemental_attachment_2021', index, userData.supplemental_attachment_2021_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -1040,7 +1180,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0 && (
+    {userData?.supplemental_attachment_2021 && userData?.supplemental_attachment_2021.length > 0  && (
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -1048,11 +1188,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('supplemental_attachment_2021')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'supplemental_attachment_2021'  && (
 
             <FileInputComponent
               inputName="supplemental_attachment_2021"
@@ -1077,7 +1218,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.FormA1099 && userData?.FormA1099.length > 0 ? (
-  userData.FormA1099.map((file, index) => (
+  userData.FormA1099.map((file, index) => {
+    const fileName = userData.FormA1099_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+  return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -1087,14 +1231,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('FormA1099', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('FormA1099', index, userData.FormA1099_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -1121,11 +1266,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('FormA1099')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'FormA1099'  && (
 
             <FileInputComponent
               inputName="FormA1099"
@@ -1149,7 +1295,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.FormB1099 && userData?.FormB1099.length > 0 ? (
-  userData.FormB1099.map((file, index) => (
+  userData.FormB1099.map((file, index) => {
+    const fileName = userData.FormB1099_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+    return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -1159,14 +1308,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('FormB1099', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('FormB1099', index, userData.FormB1099_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -1193,11 +1343,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('FormB1099')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'FormB1099'  && (
 
             <FileInputComponent
               inputName="FormB1099"
@@ -1221,7 +1372,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.ks2020 && userData?.ks2020.length > 0 ? (
-  userData.ks2020.map((file, index) => (
+  userData.ks2020.map((file, index) => {
+    const fileName = userData.ks2020_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+   return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -1231,14 +1385,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('ks2020', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('ks2020', index, userData.ks2020_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -1257,7 +1412,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.ks2020 && userData?.ks2020.length > 0 && (
+    {userData?.ks2020 && userData?.ks2020.length > 0  &&(
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -1265,11 +1420,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('ks2020')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'ks2020'  && (
 
             <FileInputComponent
               inputName="ks2020"
@@ -1293,7 +1449,10 @@ export default function ApplicationStatus({  }) {
                             </h4>
                             
                             {userData?.ks22020 && userData?.ks22020.length > 0 ? (
-  userData.ks22020.map((file, index) => (
+  userData.ks22020.map((file, index) => {
+    const fileName = userData.ks22020_name[index];
+    const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+    return (
     <div key={index} className="containerr">
       <div className="itemm">
         <TaskAlt />
@@ -1303,14 +1462,15 @@ export default function ApplicationStatus({  }) {
         <div onClick={() => openFileInNewTab('ks22020', index)} className="buttonn">
           View
         </div>
-        { showRemoveButton && (
+        { !shouldHideRemoveButton && (
         <div onClick={() => removeFile('ks22020', index, userData.ks22020_name[index])} className="buttonn">
           Remove
         </div>
         ) }
       </div>
     </div>
-  ))
+  )
+        })
 ) : (
   <input
     style={{ marginTop: 20 }}
@@ -1329,7 +1489,7 @@ export default function ApplicationStatus({  }) {
   <button >Add File</button>
 )} */}
 
-    {userData?.ks22020 && userData?.ks22020.length > 0 && (
+    {userData?.ks22020 && userData?.ks22020.length > 0  && (
     
      <button style={{    marginTop: '20px',
       borderRadius: '6px',
@@ -1337,11 +1497,12 @@ export default function ApplicationStatus({  }) {
       fontWeight: 'bold',
       color: 'white',
       background: '#3c4d77'}} 
-      onClick={handleAddFileClick}>Add File</button>
+      onClick={() => handleAddFileClick('ks22020')}
+      >Add File</button>
     
       )} 
          
-          {isAddingFile && ( 
+         {addingFileType === 'ks22020'  && (
 
             <FileInputComponent
               inputName="ks22020"
@@ -1364,6 +1525,7 @@ export default function ApplicationStatus({  }) {
                           
                         
                         </div>
+                       
               ) }
 
                       </div>
@@ -1375,26 +1537,28 @@ export default function ApplicationStatus({  }) {
           </div>
 
           <div class="col-lg-5 px-0" style={{backgroundColor: '#1a2c57'}}>
-            <div class="status-progress">
+            <div class="status-progress" style={{margin: 0, marginTop: '28px'}}>
             
       
-       {steps.map((step, index) => (
-        <Timeline>
-         <TimelineItem key={index}>
-           <TimelineSeparator>
+        {steps.map((step, index) => (
+          <Timeline>
+          <TimelineItem key={index}>
+            <TimelineSeparator>
+            
+            {/* <TimelineDot style={{ width: '20px', height: '20px', backgroundColor: step.isCompleted ? 'rgb(29 215 46)' : 'white' }} /> */}
           
-          <TimelineDot style={{ backgroundColor: step.isCompleted ? 'rgb(29 215 46)' : 'white' }} />
-           
-            {index !== steps.length - 1 && <TimelineConnector />}
-           
-           </TimelineSeparator>
-           <TimelineContent>
-           <h4 style={{ color: step.isCompleted ? 'rgb(29 215 46)' : 'white' }}>{step.title}</h4>
-             {step.description && <p>{step.description}</p>}
-           </TimelineContent>
-         </TimelineItem>
-         </Timeline>
-       ))}
+            <Check style={{ width: '35px', height: '35px', padding: 5, backgroundColor: step.isCompleted ? 'rgb(1, 179, 228)' : 'white', borderRadius: '35px', color:  'white' }} />
+
+              {index !== steps.length - 1 && <TimelineConnector  style={{minHeight: '80px', minWidth: '6px', background:  step.isCompleted ? 'rgb(1, 179, 228)' : 'white'}}/>}
+            
+            </TimelineSeparator>
+            <TimelineContent>
+            <h4 style={{ color: step.isCompleted ? 'rgb(1, 179, 228)' : 'white' }}>{step.title}</h4>
+              {step.description && <p>{step.description}</p>}
+            </TimelineContent>
+          </TimelineItem>
+          </Timeline>
+        ))}
     
      
    

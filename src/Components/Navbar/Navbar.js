@@ -1,6 +1,7 @@
 import React from 'react';
 import '../GlobalStyles/globalStyles.css';
 import logoSite from '../GlobalImages/logo-set.png';
+import menuImage from '../GlobalImages/menu.png';
 import profilePic from '../GlobalImages/desin.png';
 import Menuu from '@mui/icons-material/Menu';
 import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
@@ -116,9 +117,8 @@ useEffect(() => {
           <img className="logo-set" src={logoSite} alt="" />
         </NavLink>
 
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu"
-              aria-controls="offcanvasMenu" aria-expanded="false" aria-label="Toggle navigation">
-              <Menuu/>
+          <button style={{marginRight: '16px'}} class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <img src={menuImage} style={{width:"20px" , height:"20px"}} />
           </button>
 
           <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu"
@@ -176,9 +176,13 @@ useEffect(() => {
   {/* Dashboard */}
   <span
     style={{
-      color: isHovered ? '#1a2c57' : 'var(--bs-nav-link-color)',
-      fontWeight: 650,
+      color: isHovered ? '#192c57' : '#192c57',
+      fontWeight: 400,
       textTransform: 'capitalize',
+      textDecoration: 'none',
+      fontWeight: '400',
+      fontSize: '18px',
+    
     }}
   >
     {firstName} {lastName}
@@ -223,9 +227,9 @@ useEffect(() => {
             <img class="logo-set" src={logoSite} alt="" />
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu"
+            <button style={{marginRight: '16px'}} class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu"
                 aria-controls="offcanvasMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <Menu/>
+          <img src={menuImage} style={{width:"20px" , height:"20px"}} />
             </button>
 
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu"
@@ -244,13 +248,19 @@ useEffect(() => {
                 <div class="offcanvas-body justify-content-end">
                     <ul class="navbar-nav">
                         <li class="about nav-item active me-1" onClick={handleLogin}>
-                            <a class="nav-link cool-link active" href="" style={{marginTop: 4}}>
-                               Login</a>
+                            {/* <a class="nav-link cool-link active" href="" style={{marginTop: 4}}>
+                               Login</a> */}
+                                <NavLink className="nav-link cool-link" to="/login" activeClassName="active" style={{ marginTop: 4 }}>
+                                Login
+            </NavLink>
                         </li>
 
                         <li class="about nav-item active me-1" onClick={handleNewApp}>
-                            <a class="nav-link cool-link active"  href="">
-                                Start a new application</a>
+                            {/* <a class="nav-link cool-link active"  href="">
+                                Start a new application</a> */}
+                                  <NavLink className="nav-link cool-link" to="/application-form" activeClassName="active" style={{ marginTop: 4 }}>
+                                  Start a new application
+            </NavLink>
                         </li>
 
                         <li class="about nav-item active"></li>

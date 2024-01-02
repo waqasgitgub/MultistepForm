@@ -5,7 +5,9 @@
   .status-heading.nav-link {
     color: grey; /* Your desired color */
   }
-
+  .MuiTimeline-root.MuiTimeline-positionRight.css-55vwbm-MuiTimeline-root {
+    margin-top: -31px !important;
+  }
   
   
   @media (max-width: 768px) {

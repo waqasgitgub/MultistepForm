@@ -9,7 +9,7 @@ const ApplicationForm = () => {
     <div>
       <Navbar/>
       <MultiStepForm/>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   )
 }
