@@ -15,7 +15,7 @@ body {
   width: 303.5px;
 }
 
-.border-success{
+.border-success {
   border: 1px solid rgb(170, 225, 170);
 }
 
@@ -28,26 +28,24 @@ body {
 }
 
 /* Application Page  Progress Bar Ahmed*/
-.headng{
+.headng {
   font-size: 22px !important;
   color: #00b6ff !important;
   /* color: black !important; */
   font-weight: 600;
   width: 100%;
-
 }
-.form-check-input:checked{
+.form-check-input:checked {
   background-color: #1bb9f3 !important;
   /* border: none !important; */
   box-shadow: none !important;
-
 }
 
 .first-stepper .css-n7tliy-MuiStep-root:nth-child(2) {
   display: none;
 }
-.step_1_des{
-  background-color: #01B3E480;
+.step_1_des {
+  background-color: #01b3e480;
   width: 50%;
   color: rgb(224, 30, 30) !important;
   /* border-radius: 20px; */
@@ -57,33 +55,29 @@ body {
   justify-content: center;
   margin-bottom: 30px;
 }
-.step_1_de{
-   /* background-color: #1A2C57; */
-   width: 100%;
-   color: white !important;
-   border-top-left-radius: 12px;
-   border-top-right-radius: 12px;
-   /* height: 85px; */
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin-bottom: 0px;
+.step_1_de {
+  /* background-color: #1A2C57; */
+  width: 100%;
+  color: white !important;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  /* height: 85px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
 }
-
-
 
 @media screen and (max-width: 768px) {
   /* Adjust the width of the stepper for smaller screens */
   .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
     font-size: 6px !important; /* Set the width you prefer for smaller screens */
-    
+
     /* Other adjustments as needed */
   }
   /* .css-10mg1vw-MuiStepper-root{
     padding: 0px 40px;
   } */
-  
-  
 }
 @media screen and (min-width: 769px) and (max-width: 992px) {
   .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
@@ -91,87 +85,81 @@ body {
   }
 }
 @media screen and (max-width: 768px) {
-.secondStepper .css-2s90m6-MuiAvatar-root{
-  width: 22px !important;
-  height: 22px !important;
-}
+  .secondStepper .css-2s90m6-MuiAvatar-root {
+    width: 22px !important;
+    height: 22px !important;
+  }
 }
 @media screen and (max-width: 768px) {
   .MuiStepConnector-line.MuiStepConnector-lineHorizontal.css-z7uhs0-MuiStepConnector-line {
-   border-top-width: 4px !important;
-   
+    border-top-width: 4px !important;
   }
-  }
+}
 @media screen and (max-width: 768px) {
- .css-2s90m6-MuiAvatar-root{
+  .css-2s90m6-MuiAvatar-root {
     width: 22px !important;
     height: 22px !important;
   }
-  }
-  @media screen and (max-width: 575px) {
-     /* .css-2s90m6-MuiAvatar-root{
+}
+@media screen and (max-width: 575px) {
+  /* .css-2s90m6-MuiAvatar-root{
      
     } */
-    }
-@media screen and (max-width: 768px) {
-.css-1hv8oq8-MuiStepLabel-label{
-  font-size: 7px !important;
 }
+@media screen and (max-width: 768px) {
+  .css-1hv8oq8-MuiStepLabel-label {
+    font-size: 7px !important;
+  }
 }
 
 @media screen and (max-width: 768px) {
-  .nineteenStepper .css-123rdn{
+  .nineteenStepper .css-123rdn {
     width: 22px !important;
     height: 22px !important;
   }
-  }
+}
 
+.midc {
+  color: #e50300 !important;
 
-
-
-.midc{
-  color: #E50300 !important;
-
-text-align: center !important;
-font-family: Outfit !important;
-font-size: 1.375rem !important;
-font-style: normal !important;
-font-weight: 400 !important;
-line-height: normal !important;
+  text-align: center !important;
+  font-family: Outfit !important;
+  font-size: 1.375rem !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: normal !important;
 }
 
 .responsive-image {
   max-width: 100%; /* Ensures image doesn't exceed its container */
   height: auto; /* Maintains aspect ratio */
 }
-.step2_content{
-  color: #11B4E6;
+.step2_content {
+  color: #11b4e6;
   text-align: justify;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
-.step2_content h1{
+.step2_content h1 {
   text-align: center;
 }
-.step2_content p{
+.step2_content p {
   margin-bottom: 0px;
   font-weight: 600;
   font-size: 22px;
-  color: #11B4E6;
+  color: #11b4e6;
   text-align: center;
 }
 
-
-
-.step2_content ul{
+.step2_content ul {
   list-style: auto;
   margin-bottom: 0px;
   font-weight: 600;
   font-size: 22px;
   color: #00b6ff;
 }
-.step2_content .numb{
-  border: 1px solid #11B4E6;
+.step2_content .numb {
+  border: 1px solid #11b4e6;
   width: 25px;
   height: 25px;
   display: flex;
@@ -180,7 +168,7 @@ line-height: normal !important;
   border-radius: 50%;
   font-weight: 600;
 }
-.step2_content .rect{
+.step2_content .rect {
   font-size: 20px;
   align-items: center;
   width: 25px;
@@ -193,7 +181,7 @@ line-height: normal !important;
   justify-content: end;
   align-items: center;
 }
-.step2_content .p2{
+.step2_content .p2 {
   font-weight: 500;
 }
 .step2_h5 {
@@ -205,28 +193,28 @@ line-height: normal !important;
   letter-spacing: 0em;
   margin-bottom: 0px;
 }
-.step2_next{
-  background-color: #00b6ff!important;
+.step2_next {
+  background-color: #00b6ff !important;
   padding: 16px 20px !important;
   border-color: #00b6ff !important;
-  color:#1e30a8 !important;
+  color: #1e30a8 !important;
   font-size: 20px;
   font-weight: bold !important;
 }
-.step2_next:hover{
+.step2_next:hover {
   color: #1e30a8 !important;
   background-color: transparent !important;
 }
 
-.app_baar{
+.app_baar {
   position: relative;
   height: 120px;
   margin-bottom: 50px;
 }
-.app_bar2 .progres_man_div{
+.app_bar2 .progres_man_div {
   align-items: baseline;
 }
-.progres_man_div{
+.progres_man_div {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -235,25 +223,6 @@ line-height: normal !important;
   top: -15px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .myClas {
   display: none;
 }
@@ -261,10 +230,6 @@ line-height: normal !important;
 div.MuiStepConnector-root:nth-child(2) {
   display: none;
 }
-
-
-
-
 
 .optio {
   /* border: 1px solid #29abe2; */
@@ -299,7 +264,7 @@ input.error {
   flex-direction: column;
   border: 1px solid transparent;
 }
-.img-applci>h1{
+.img-applci > h1 {
   color: rgb(245, 62, 62);
 }
 .containerr {
@@ -329,28 +294,20 @@ input.error {
   /* Additional name styling */
 }
 
-.buttonn{
+.buttonn {
   background: none;
   /* margin-right: 30px; */
-   padding-right: 20px ;
+  padding-right: 20px;
   border: none;
-  padding: '0px';
+  padding: "0px";
   text-decoration: underline;
-  color: #E92941;
+  color: #e92941;
   cursor: pointer;
   color: #2e8a5f;
   font-size: inherit;
   font-weight: 600;
   font-family: inherit;
 }
-
-
-
-
-
-
-
-
 
 .optio.error {
   border-color: #ff3860;
@@ -402,8 +359,6 @@ input.error{
 .accordion-button:focus {
   box-shadow: none;
 }
-
-
 
 .accordion-body {
   background-color: #29abe2;
@@ -467,14 +422,14 @@ input.error{
   color: #00b6ff !important;
   text-align: center; */
   padding: 40px;
-    border:4px solid #00B6FF;
-    height: 100%;
-    /* display: flex;
+  border: 4px solid #00b6ff;
+  height: 100%;
+  /* display: flex;
     flex-direction: column; */
-    align-items: center !important;
-    border-radius: 12px;
+  align-items: center !important;
+  border-radius: 12px;
 }
-.MuiBox-root label{
+.MuiBox-root label {
   font-weight: 700;
   color: #192c57;
 }
@@ -485,12 +440,12 @@ input.error{
   color: #00b6ff !important;
   text-align: center; */
   padding: 50px 20px;
-  
-    height: 100%;
-    /* display: flex;
+
+  height: 100%;
+  /* display: flex;
     flex-direction: column; */
-    align-items: center !important;
-    border-radius: 12px;
+  align-items: center !important;
+  border-radius: 12px;
 }
 .img-applic-content-congrts {
   /* padding: 50px 20px;
@@ -499,22 +454,13 @@ input.error{
   color: #00b6ff !important;
   text-align: center; */
   padding: 10px 40px;
-    border:4px solid #00B6FF;
-    height: 100%;
-    /* display: flex;
+  border: 4px solid #00b6ff;
+  height: 100%;
+  /* display: flex;
     flex-direction: column; */
-    align-items: center !important;
-    border-radius: 12px;
+  align-items: center !important;
+  border-radius: 12px;
 }
-
-/* .img-applci {
-  background-color: #dff5fc;
-  display: flex;
-  padding: 0px 30px;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-} */
 
 .img-applic-content h2 {
   color: #000;
@@ -655,8 +601,6 @@ h3.plain {
   max-width: 700px;
 }
 
-
-
 .step-container {
   position: relative;
   text-align: center;
@@ -759,8 +703,6 @@ h3.plain {
   padding: 10px 10px;
   width: 100%;
   border-radius: 4px;
-
-
 }
 
 .optio .for {
@@ -908,21 +850,11 @@ h3.plain {
   width: 100%;
 }
 
-
-
-
-
-
-
 .nav-link.active {
   /* Styling for the active link */
   color: blue; /* Change the color for the active link */
   font-weight: 600;
-  
 }
-
-
-
 
 .status-progress {
   width: 100%;
@@ -1132,15 +1064,15 @@ h3.plain {
   flex: unset !important;
 }
 
-.checkBoxStepOne{
+.checkBoxStepOne {
   margin-bottom: 18px;
 }
 
 @media (max-width: 767px) {
-  .desktop-box{
+  .desktop-box {
     padding: 110px 20px !important;
   }
-  .backGround{
+  .backGround {
     height: 32vh !important;
   }
   .start-application .customRow {
@@ -1149,20 +1081,17 @@ h3.plain {
     margin-top: 18px !important;
   }
   .img-applic-content-congrts {
-  padding: 3px 2px !important;
+    padding: 3px 2px !important;
   }
-  .step2_next{
-   
+  .step2_next {
     padding: 10px 16px !important;
-   
-   
+
     font-size: 15px !important;
-    
   }
-  .step2_content{
+  .step2_content {
     text-align: start;
   }
-  #know_about_us{
+  #know_about_us {
     margin-top: 15px !important;
   }
   /* .checkBoxStepOne{
@@ -1179,23 +1108,23 @@ h3.plain {
   }
   .step_1_de {
     height: 60px;
+  }
+  .step_1_de h1 {
+    width: 95% !important;
+  }
 }
-.step_1_de h1{
-width: 95% !important;
-}
-}
-.ROWW{
+.ROWW {
   justify-content: center;
 }
-.step2_content h1{
+.step2_content h1 {
   font-size: clamp(22px, 4vw, 42px);
-  }
+}
 @media (max-width: 990px) {
   .status-page {
     flex-direction: column;
   }
-  .step2_content h1{
-  width: 100%;
+  .step2_content h1 {
+    width: 100%;
   }
   .status-progress {
     width: 80%;

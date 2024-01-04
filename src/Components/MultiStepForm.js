@@ -5,13 +5,14 @@ import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import frameFluid from "./GlobalImages/Frame1.png";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./GlobalStyles/globalStyles.css";
-import Pdf2019 from '../../src/Pdf/2019Step2.pdf';
-import Pdf2020 from '../../src/Pdf/2020Step2.pdf';
-import Pdf2021 from '../../src/Pdf/2021Step2.pdf';
-import PdfNetEarning from '../../src/Pdf/netEarn.pdf';
+import Pdf2019 from "../../src/Pdf/2019Step2.pdf";
+import Pdf2020 from "../../src/Pdf/2020Step2.pdf";
+import Pdf2021 from "../../src/Pdf/2021Step2.pdf";
+import PdfNetEarning from "../../src/Pdf/netEarn.pdf";
 import { setToken } from "../Redux/Slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -21,7 +22,7 @@ import newImage from "./GlobalImages/Group 940.png";
 import framepng from "./GlobalImages/Frame.png";
 import qustMark from "./GlobalImages/Qust_mark.png";
 import congrats from "./GlobalImages/congratss.png";
-import Confetti from 'react-confetti';
+import Confetti from "react-confetti";
 
 import {
   CheckBoxSharp,
@@ -43,6 +44,7 @@ import StepConnector, {
 import Check from "@mui/icons-material/Check";
 import { styled } from "@mui/system";
 import { Avatar } from "@mui/material";
+import LoadingScreen from "./LoadingScreen";
 function LinearProgressWithLabel(props) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", marginTop: 5 }}>
@@ -119,29 +121,33 @@ const steps18 = [
 ];
 
 const MultiStepForm = () => {
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
   const [activeStep, setActiveStep] = useState(0);
 
-  const [finalCreditAmountStorage, setFinalCreditAmountStorage] = useState(null);
+  const [finalCreditAmountStorage, setFinalCreditAmountStorage] =
+    useState(null);
 
   const [uploadCompleteTimes, setUploadCompleteTimes] = useState({
     driving_licence: null,
-    schedule_pdf: null
+    schedule_pdf: null,
   });
 
-  console.log(uploadCompleteTimes.driving_licence, 'timewaqas');
-    
+  console.log(uploadCompleteTimes.driving_licence, "timewaqas");
+
   const [finalIncomeValue, setFinalIncomeValue] = useState(null);
 
   const [activeErrorQualifyOne, setActiveErrorQualifyOne] = useState(false);
-  
+
   const [activeErrorQualifyTwoo, setActiveErrorQualifyTwoo] = useState(false);
   const [activeErrorQualifyTen, setActiveErrorQualifyTen] = useState(false);
-  
+
   const [activeErrorQualifyThree, setActiveErrorQualifyThree] = useState(false);
   const [activeErrorQualifyFive, setActiveErrorQualifyFive] = useState(false);
   const [activeErrorQualifySix, setActiveErrorQualifySix] = useState(false);
   const [activeErrorQualify17, setActiveErrorQualify17] = useState(false);
-  
+
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [userData, setUserData] = useState();
   const [selectedFiles, setSelectedFiles] = useState({
@@ -172,7 +178,6 @@ const MultiStepForm = () => {
 
   const [uploadingFile, setUploadingFile] = useState("");
 
-  const [isAddingFile, setIsAddingFile] = useState(false);
   const [addingFileType, setAddingFileType] = useState(null);
 
   const width = 800; // Set your desired width here
@@ -180,77 +185,74 @@ const MultiStepForm = () => {
   const [showRemoveButton, setShowRemoveButton] = useState(true);
 
   const handleAddFileClick = (type) => {
-    // setIsAddingFile(true); 
-   
+
     setAddingFileType(type);
   };
 
-
-
-
-
   const confettiStyle = {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-    pointerEvents: 'none',
+    width: "100%",
+    height: "100%",
+    overflow: "hidden",
+    pointerEvents: "none",
   };
 
   const boxStyle = {
-    position: 'relative',
-    width: '100%', // Set your desired width for the box (adjust according to mobile responsiveness)
-    maxWidth: '1500px', // Set maximum width for larger screens
-   // Example border
-    boxShadow: '0 0 5px 5px rgb(60 125 147 / 30%)',
-    borderRadius: '8px',
-    margin: '0 auto', // Center the box horizontally
-    padding: '90px 20px',
-    display: 'block', // Initially visible
+    position: "relative",
+    width: "100%",
+    maxWidth: "1500px",
+    boxShadow: "0 0 5px 5px rgb(60 125 147 / 30%)",
+    borderRadius: "8px",
+    margin: "0 auto",
+    padding: "90px 20px",
+    display: "block",
   };
   const boxSttyle = {
-    position: 'relative',
-    width: '100%', // Set your desired width for the box (adjust according to mobile responsiveness)
-    maxWidth: '1500px', // Set maximum width for larger screens
-   // Example border
+    position: "relative",
+    width: "100%",
+    maxWidth: "1500px",
     // boxShadow: '0 0 1px 1px rgb(60 125 147 / 30%)',
-    borderRadius: '8px',
-    margin: '0 auto', // Center the box horizontally
-    padding: '189px 20px',
-    display: 'block', // Initially visible
+    borderRadius: "8px",
+    margin: "0 auto",
+    padding: "189px 20px",
+    display: "block",
   };
 
   const mobileBoxStyle = {
-    width: '100%', // Adjusted width for mobile screens
-    maxWidth: 'none', // Remove maximum width for smaller screens
-    display: 'none', // Initially hidden for mobile
-    padding: '30px 20px'
+    width: "100%",
+    maxWidth: "none",
+    display: "none",
+    padding: "30px 20px",
   };
 
   // Media query for mobile screens
-  const mediaQuery = '@media (max-width: 768px)';
-  
+  const mediaQuery = "@media (max-width: 768px)";
+
   const styles = {
     [mediaQuery]: {
-      '.desktop-box': {
-        display: 'block', // Show on desktop
+      ".desktop-box": {
+        display: "block",
       },
-      '.mobile-box': {
-        display: 'none', // Hide on mobile
+      ".mobile-box": {
+        display: "none",
       },
     },
   };
 
-
-
-
-
   const handleRemoveInput = () => {
-    setAddingFileType(null); // Reset the addingFileType state
-
+    setAddingFileType(null);
   };
+
+  const handleGo = () => {
+    history.push("/status")
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
+  
+  
   const handleFileChange = (inputName, event) => {
     const selectedFiles = event.target.files;
     const fileNames = Array.from(selectedFiles).map((file) => file.name); // Extract file names
@@ -277,6 +279,7 @@ const MultiStepForm = () => {
     setCheckboxChecked(event.target.checked);
   };
 
+ 
 
   const allFilesSelected = () => {
     return (
@@ -286,7 +289,7 @@ const MultiStepForm = () => {
       selectedFiles?.Tax_Return_2021?.length > 0
     );
   };
-  
+
   const allFilesSelectedAdditional = () => {
     return (
       selectedFiles?.driving_licence?.length > 0 &&
@@ -326,6 +329,8 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
 
     try {
+      setLoading(true); // Set loading to true to display the loader
+
       const response = await axios.put(
         "http://localhost:5000/user/updateApplication",
         {}, // You might need to pass data here if required by the API
@@ -347,13 +352,46 @@ const MultiStepForm = () => {
     } catch (error) {
       console.error(`Error uploading files:`, error);
       // Handle error
-    }
+    } finally {
+    setLoading(false); // Hide the loader when the request is completed (either success or failure)
+  }
   };
 
+  // const handleSubmiDocuments = async () => {
+  //   const token = localStorage.getItem("token");
+
+  //   try {
+  //     const response = await axios.put(
+  //       "http://localhost:5000/user/updateDocumentStatus",
+  //       {}, // You might need to pass data here if required by the API
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json", // Change content type if not sending multipart/form-data
+  //         },
+  //         onUploadProgress: (progressEvent) => {
+  //           // Update progress for each file
+  //           // Handle progress tracking for multiple files as needed
+  //         },
+  //       }
+  //     );
+  //     alert("Complete Application");
+  //     console.log(`Files uploaded successfully`, response.data);
+  //     await fetchUserDataa();
+
+  //     await submitHubspotForm();
+  //     // Handle success response
+  //   } catch (error) {
+  //     console.error(`Error uploading files:`, error);
+  //     // Handle error
+  //   }
+  // };
   const handleSubmiDocuments = async () => {
     const token = localStorage.getItem("token");
 
     try {
+      setLoading(true); // Set loading to true to display the loader
+
       const response = await axios.put(
         "http://localhost:5000/user/updateDocumentStatus",
         {}, // You might need to pass data here if required by the API
@@ -371,15 +409,15 @@ const MultiStepForm = () => {
       alert("Complete Application");
       console.log(`Files uploaded successfully`, response.data);
       await fetchUserDataa();
-
       await submitHubspotForm();
       // Handle success response
     } catch (error) {
       console.error(`Error uploading files:`, error);
       // Handle error
+    } finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
-
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.user);
@@ -406,7 +444,6 @@ const MultiStepForm = () => {
 
     selfEmployedFrom: "",
     isCheckedStepThree: false,
-    
 
     scheduleSelfEmployement: "",
     positive_net_earning: "",
@@ -414,7 +451,6 @@ const MultiStepForm = () => {
     setc_program: "",
     isCheckedStepNine: false,
     mandatory_questions: "",
-   
 
     netIncome2019: "",
     netIncome2020: "",
@@ -480,6 +516,7 @@ const MultiStepForm = () => {
 
   const formDataPreparing = async (step) => {
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:5000/user/create", {
         method: "POST",
         headers: {
@@ -519,11 +556,15 @@ const MultiStepForm = () => {
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
-    }
+    } finally {
+    // Reset loading to false after the API call is completed or errored
+    setLoading(false);
+  }
   };
 
   const formDataUpdate = async (step) => {
     try {
+      setLoading(true);
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -592,13 +633,11 @@ const MultiStepForm = () => {
             amount2020: formData.amount2020,
             amount2021: formData.amount2021,
 
-
-
             your_file_schedule: formData.scheduleSelfEmployement,
             mandatory_questions: formData.mandatory_questions,
             if_you_have_positive_earning: formData.positive_net_earning,
             did_you_miss_SEWDTC: formData.covid_related_issues,
-            have_you_filed_already_for_setc: formData.setc_program
+            have_you_filed_already_for_setc: formData.setc_program,
           }),
         }
       );
@@ -623,10 +662,15 @@ const MultiStepForm = () => {
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
+    } finally {
+      // Reset loading to false after the API call is completed or errored
+      setLoading(false);
     }
   };
+  
   const formDataUpdateCalculation = async (step) => {
     try {
+      setLoading(true)
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -665,8 +709,6 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            
-
             personal_startdate2020: formData.personal_startdate2020,
             personal_enddate2020: formData.personal_enddate2020,
             onedays: formData.numberOfDays,
@@ -696,7 +738,6 @@ const MultiStepForm = () => {
 
             amount2020: formData.amount2020,
             amount2021: formData.amount2021,
-
 
             your_file_schedule: formData.scheduleSelfEmployement,
             mandatory_questions: formData.mandatory_questions,
@@ -727,10 +768,14 @@ const MultiStepForm = () => {
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
+    } finally {
+      // Reset loading to false after the API call is completed or errored
+      setLoading(false);
     }
   };
 
   const callSetcformData = async (token, formData) => {
+    setLoading(true)
     try {
       const response = await fetch("http://localhost:5000/user/setcformData", {
         method: "POST",
@@ -769,6 +814,9 @@ const MultiStepForm = () => {
       }
     } catch (error) {
       console.error("Network error", error);
+    } finally {
+      // Reset loading to false after the API call is completed or errored
+      setLoading(false);
     }
   };
 
@@ -899,7 +947,7 @@ const MultiStepForm = () => {
 
             if_you_have_positive_earning: formData.positive_net_earning,
             did_you_miss_SEWDTC: formData.covid_related_issues,
-            have_you_filed_already_for_setc: formData.setc_program
+            have_you_filed_already_for_setc: formData.setc_program,
           }),
         }
       );
@@ -974,6 +1022,7 @@ const MultiStepForm = () => {
 
   const checkEmailAvailability = async () => {
     try {
+      setLoading(true)
       const response = await axios.post(
         "http://localhost:5000/user/checkMail",
         {
@@ -1006,6 +1055,9 @@ const MultiStepForm = () => {
         ...prevErrors,
         email: "Email already in use!",
       }));
+    } finally {
+      // Reset loading to false after the API call is completed or errored
+      setLoading(false);
     }
   };
 
@@ -1015,124 +1067,117 @@ const MultiStepForm = () => {
     if (!isValid) {
       return;
     }
-    
-      // if (!emailValidated) {
-      //   // Validate email before proceeding to the next step
-      //   await checkEmailAvailability();
-      const token = localStorage.getItem('token');
 
-      // }
+    // if (!emailValidated) {
+    //   // Validate email before proceeding to the next step
+    //   await checkEmailAvailability();
+    const token = localStorage.getItem("token");
 
-      if (token) {
-        if (activeStep === 0) {
-          formDataUpdate(activeStep);
+    // }
 
-        }
-      }
-      else {
-
-        if (activeStep === 0) {
-          formDataPreparing(activeStep);
-        }
-
-      }
-
-      if (activeStep === 1) {
-        // await submitHubspotForm();
-        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (token) {
+      if (activeStep === 0) {
         formDataUpdate(activeStep);
       }
-
-      if (activeStep === 2) {
-        formDataUpdate(activeStep);
-        // formDataUpdateStepTwo(activeStep);
+    } else {
+      if (activeStep === 0) {
+        formDataPreparing(activeStep);
       }
+    }
 
-      // if (activeStep === 3) {
+    if (activeStep === 1) {
+      // await submitHubspotForm();
+      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      formDataUpdate(activeStep);
+    }
 
-      //   alert(formData.netIncome2019);
+    if (activeStep === 2) {
+      formDataUpdate(activeStep);
+      // formDataUpdateStepTwo(activeStep);
+    }
 
-      //   formDataUpdateCalculation(activeStep);
+    // if (activeStep === 3) {
 
-      // }
-      if (activeStep === 3) {
-        formDataUpdate(activeStep);
-      }
+    //   alert(formData.netIncome2019);
 
-      // if (activeStep === 4) {
-      //   formDataUpdate(activeStep);
-      // }
-      if(activeStep === 4){
-        formDataUpdate(activeStep);
+    //   formDataUpdateCalculation(activeStep);
 
-      }
+    // }
+    if (activeStep === 3) {
+      formDataUpdate(activeStep);
+    }
 
-      // if (activeStep === 5) {
-      //   formDataUpdateCalculation(activeStep);
-      // }
-      if(activeStep === 5){
-        formDataUpdate(activeStep);
+    // if (activeStep === 4) {
+    //   formDataUpdate(activeStep);
+    // }
+    if (activeStep === 4) {
+      formDataUpdate(activeStep);
+    }
 
-      }
+    // if (activeStep === 5) {
+    //   formDataUpdateCalculation(activeStep);
+    // }
+    if (activeStep === 5) {
+      formDataUpdate(activeStep);
+    }
 
-      // if (activeStep === 6) {
-      //   formDataUpdateCalculation(activeStep);
-      // }
-      if (activeStep === 6) {
-        formDataUpdate(activeStep);
-      }
+    // if (activeStep === 6) {
+    //   formDataUpdateCalculation(activeStep);
+    // }
+    if (activeStep === 6) {
+      formDataUpdate(activeStep);
+    }
 
-      // if (activeStep === 7) {
-      //   formDataUpdateCalculation(activeStep);
-      // }
-       if (activeStep === 7) {
-        formDataUpdate(activeStep);
-      }
+    // if (activeStep === 7) {
+    //   formDataUpdateCalculation(activeStep);
+    // }
+    if (activeStep === 7) {
+      formDataUpdate(activeStep);
+    }
 
-      // if (activeStep === 8) {
-      //   formDataUpdate(activeStep);
-      // }
+    // if (activeStep === 8) {
+    //   formDataUpdate(activeStep);
+    // }
     if (activeStep === 8) {
       formDataUpdate(activeStep);
     }
-      if (activeStep === 9) {
-        formDataUpdate(activeStep);
-      }
+    if (activeStep === 9) {
+      formDataUpdate(activeStep);
+    }
 
-      // if (activeStep === 9) {
-      //   formDataUpdate(activeStep);
-      // }
-      // if (activeStep === 10) {
-      //   formDataUpdate(activeStep);
-      // }
-       if (activeStep === 10) {
-       
-         formDataUpdateCalculation(activeStep);
-      }
-      if (activeStep === 11) {
-        formDataUpdateCalculation(activeStep);
-      }
-      if (activeStep === 12) {
-        formDataUpdateCalculation(activeStep);
-      }
+    // if (activeStep === 9) {
+    //   formDataUpdate(activeStep);
+    // }
+    // if (activeStep === 10) {
+    //   formDataUpdate(activeStep);
+    // }
+    if (activeStep === 10) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 11) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 12) {
+      formDataUpdateCalculation(activeStep);
+    }
 
-      if (activeStep === 13) {
-        formDataUpdateCalculation(activeStep);
-      }
-      if (activeStep === 14) {
-        formDataUpdateCalculation(activeStep);
-      }
-      if (activeStep === 15) {
-        formDataUpdateCalculation(activeStep);
-      }
+    if (activeStep === 13) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 14) {
+      formDataUpdateCalculation(activeStep);
+    }
+    if (activeStep === 15) {
+      formDataUpdateCalculation(activeStep);
+    }
 
-      if (activeStep === 16) {
-        formDataUpdateCalculation(activeStep);
-      }
+    if (activeStep === 16) {
+      formDataUpdateCalculation(activeStep);
+    }
 
-      if (activeStep === 17) {
-        formDataUpdate(activeStep);
-      }
+    if (activeStep === 17) {
+      formDataUpdate(activeStep);
+    }
 
     window.scrollTo(0, 0);
     // setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -1143,17 +1188,6 @@ const MultiStepForm = () => {
     window.scrollTo(0, 0);
   };
 
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   let formattedValue = value.replace(/\D/g, ''); // Remove non-digit characters
-  //   formattedValue = formattedValue ? `$${Number(formattedValue).toLocaleString()}` : '$'; // Format as currency with dollar sign
-
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [name]: formattedValue,
-  //   }));
-  // };
-
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
     let inputValue = value;
@@ -1162,7 +1196,7 @@ const MultiStepForm = () => {
       inputValue = value.replace(/\D/g, ""); // Remove non-digit characters
       inputValue = inputValue ? `$${Number(inputValue).toLocaleString()}` : "$"; // Format as currency with dollar sign
     }
-    
+
     if (type === "checkbox") {
       inputValue = event.target.checked;
     } else if (type === "date") {
@@ -1398,11 +1432,13 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      if (!formData.accounting_partnership && formData.accounting_professional === "Yes") {
+      if (
+        !formData.accounting_partnership &&
+        formData.accounting_professional === "Yes"
+      ) {
         errorsObj.accounting_partnership = "Please select an option";
         hasErrors = true;
       }
-
 
       if (!formData.isChecked) {
         errorsObj.isChecked = "Please check the box";
@@ -1418,28 +1454,16 @@ const MultiStepForm = () => {
 
       if (
         formData.selfEmployedFrom === "No" &&
-       
         formData.selfEmployedFrom !== "Yes"
       ) {
         setActiveErrorQualifyOne(true);
         // formDataUpdateWithoutNextStepTwo(activeStep);
         hasErrors = true;
       }
-      if (formData.selfEmployedFrom === "Yes"
-   
-       ) {
+      if (formData.selfEmployedFrom === "Yes") {
         setActiveErrorQualifyOne(false);
         hasErrors = false;
       }
-
-      // if (!formData.isCheckedStepThree) {
-      //   errorsObj.isCheckedStepThree = "Please check the box";
-      //   hasErrors = true;
-      // }
-
-      // if (hasErrors) {
-      //   formDataUpdate(activeStep); // Call formDataUpdate here
-      // }
     }
 
     if (activeStep === 3) {
@@ -1455,7 +1479,7 @@ const MultiStepForm = () => {
         // formDataUpdateWithoutNextStepTwo(activeStep);
         hasErrors = true;
       }
-      if (formData.scheduleSelfEmployement === "Yes" ) {
+      if (formData.scheduleSelfEmployement === "Yes") {
         setActiveErrorQualifyTwoo(false);
         hasErrors = false;
       }
@@ -1474,7 +1498,7 @@ const MultiStepForm = () => {
         // formDataUpdateWithoutNextStepTwo(activeStep);
         hasErrors = true;
       }
-      if (formData.positive_net_earning === "Yes" ) {
+      if (formData.positive_net_earning === "Yes") {
         setActiveErrorQualifyThree(false);
         hasErrors = false;
       }
@@ -1492,7 +1516,7 @@ const MultiStepForm = () => {
         // formDataUpdateWithoutNextStepTwo(activeStep);
         hasErrors = true;
       }
-      if (formData.covid_related_issues === "Yes" ) {
+      if (formData.covid_related_issues === "Yes") {
         setActiveErrorQualifyFive(false);
         hasErrors = false;
       }
@@ -1502,47 +1526,17 @@ const MultiStepForm = () => {
         errorsObj.setc_program = "Please select an option";
         hasErrors = true;
       }
-      if (
-        formData.setc_program === "Yes" &&
-        formData.setc_program !== "No"
-      ) {
+      if (formData.setc_program === "Yes" && formData.setc_program !== "No") {
         setActiveErrorQualifySix(true);
         // formDataUpdateWithoutNextStepTwo(activeStep);
         hasErrors = true;
       }
-      if (formData.setc_program === "No" ) {
+      if (formData.setc_program === "No") {
         setActiveErrorQualifySix(false);
         hasErrors = false;
       }
     }
 
-//       if (activeStep === 10) {
-//       if (formData.mandatory_questions === "") {
-//         alert("error")
-//         errorsObj.mandatory_questions = 'Please select an option';
-//         hasErrors = true;
-//       }
-
-//  if (
-//         formData.mandatory_questions === "C-CorpandS-Corp" || formData.mandatory_questions === "W2" || formData.mandatory_questions === "None"
-        
-//       ) {
-//         setActiveErrorQualifyTen(true);
-//         formDataUpdateWithoutNextStepTwo(activeStep);
-//         hasErrors = true;
-//       }
-//       if (formData.mandatory_questions === "SoleProprietorship" || formData.mandatory_questions === "contractor" || formData.mandatory_questions === "partnership" || formData.mandatory_questions === "LimitedLiability" ) {
-//         setActiveErrorQualifyTen(false);
-//         hasErrors = false;
-//       }
-     
-//     }
-          // if(activeStep === 9){
-          //   if (!formData.isCheckedStepNine) {
-          //     errorsObj.isCheckedStepNine = "Please check the box";
-          //     hasErrors = true;
-          //   }
-          // }
     if (activeStep === 16) {
       if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
         errorsObj.netIncome2019 = "Please enter a value";
@@ -1574,33 +1568,12 @@ const MultiStepForm = () => {
       if (largerThan25KCount >= 2) {
         hasErrors = true;
         setActiveErrorQualify17(true);
-      }
-      else {
+      } else {
         hasErrors = false;
         setActiveErrorQualify17(false);
       }
     }
 
-    // if(activeStep === 4) {
-    //   if (!formData.bussinessNegatively) {
-    //     errorsObj.bussinessNegatively = "Please select an option";
-    //     hasErrors = true;
-    //   }
-
-    //   if (
-    //     formData.bussinessNegatively === "No" &&
-    //     formData.bussinessNegatively !== "Yes"
-    //   ) {
-    //     setActiveErrorQualifyTwo(true);
-    //     hasErrors = true;
-    //     formDataUpdateWithoutNextStep(activeStep);
-    //   }
-    //   if (formData.bussinessNegatively === "Yes" ) {
-    //     setActiveErrorQualifyTwo(false);
-    //     hasErrors = false;
-    //   }
-
-    // }
     if (activeStep === 10) {
       if (!formData.personallySick2020) {
         errorsObj.personallySick2020 = "Please select an option";
@@ -1780,134 +1753,6 @@ const MultiStepForm = () => {
       }
     }
 
-    // if (activeStep === 5) {
-
-    //   if (!formData.personallySick2020) {
-    //     errorsObj.personallySick2020 = "Please select an option";
-    //     hasErrors = true;
-    //   }
-
-    //     if (!formData.personal_startdate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
-    //       errorsObj.personal_startdate2020 = "Please select date";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.personal_enddate2020 && formData.numberOfDays !== "0" && formData.personallySick2020 === 'Yes') {
-    //       errorsObj.personal_enddate2020 = "Please select date";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.numberOfDays && formData.personallySick2020 === 'Yes') {
-    //       errorsObj.numberOfDays = "Please select number";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.personallySick2021) {
-    //       errorsObj.personallySick2021 = "Please select an option";
-    //       hasErrors = true;
-    //     }
-
-    //   if (!formData.personal_startdate2021 && formData.numberOfDays2021 !== "0" && formData.personallySick2021 === 'Yes') {
-    //     errorsObj.personal_startdate2021 = "Please select date";
-    //     hasErrors = true;
-    //   }
-
-    //   if (!formData.personal_enddate2021 && formData.numberOfDays2021 !== "0" && formData.personallySick2021 === 'Yes') {
-    //     errorsObj.personal_enddate2021 = "Please select date";
-    //     hasErrors = true;
-    //   }
-    //   if (!formData.numberOfDays2021 && formData.personallySick2021 === 'Yes') {
-    //     errorsObj.numberOfDays2021 = "Please select number";
-    //     hasErrors = true;
-    //   }
-    // }
-
-    // if (activeStep === 6) {
-
-    //   if (!formData.symptoms2020) {
-    //     errorsObj.symptoms2020 = "Please select an option";
-    //     hasErrors = true;
-    //   }
-
-    //     if (!formData.cared_startdate2020 && formData.symptomsdays2020 !== "0" && formData.symptoms2020 === 'Yes') {
-    //       errorsObj.cared_startdate2020 = "Please select date";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.cared_enddate2020 && formData.symptomsdays2020 !== "0" && formData.symptoms2020 === 'Yes') {
-    //       errorsObj.cared_enddate2020 = "Please select date";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.symptomsdays2020 && formData.symptoms2020 === 'Yes') {
-    //       errorsObj.symptomsdays2020 = "Please select number";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.symptoms2021) {
-    //       errorsObj.symptoms2021 = "Please select an option";
-    //       hasErrors = true;
-    //     }
-
-    //       if (!formData.cared_startdate2021 && formData.symptomsdays2021 !== "0" && formData.symptoms2021 === 'Yes') {
-    //         errorsObj.cared_startdate2021 = "Please select date";
-    //         hasErrors = true;
-    //       }
-
-    //       if (!formData.cared_enddate2021 && formData.symptomsdays2021 !== "0" && formData.symptoms2021 === 'Yes') {
-    //         errorsObj.cared_enddate2021 = "Please select date";
-    //         hasErrors = true;
-    //       }
-
-    //       if (!formData.symptomsdays2021 && formData.symptoms2021 === 'Yes') {
-    //         errorsObj.symptomsdays2021 = "Please select number";
-    //         hasErrors = true;
-    //       }
-    //   }
-
-    // if (activeStep === 7) {
-
-    //   if (!formData.closure2020) {
-    //     errorsObj.closure2020 = "Please select an option";
-    //     hasErrors = true;
-    //   }
-
-    //     if (!formData.minor_startdate2020 && formData.minordays2020 !== "0" && formData.closure2020 === 'Yes') {
-    //       errorsObj.minor_startdate2020 = "Please select date";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.minor_enddate2020 && formData.minordays2020 !== "0" && formData.closure2020 === 'Yes') {
-    //       errorsObj.minor_enddate2020 = "Please select date";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.minordays2020 && formData.closure2020 === 'Yes') {
-    //       errorsObj.minordays2020 = "Please select number";
-    //       hasErrors = true;
-    //     }
-
-    //     if (!formData.closure2021) {
-    //       errorsObj.closure2021 = "Please select an option";
-    //       hasErrors = true;
-    //     }
-
-    //       if (!formData.minor_startdate2021 && formData.minordays2021 !== "0" && formData.closure2021 === 'Yes') {
-    //         errorsObj.minor_startdate2021 = "Please select date";
-    //         hasErrors = true;
-    //       }
-
-    //       if (!formData.minor_enddate2021 && formData.minordays2021 !== "0" && formData.closure2021 === 'Yes') {
-    //         errorsObj.minor_enddate2021 = "Please select date";
-    //         hasErrors = true;
-    //       }
-
-    //       if (!formData.minordays2021 && formData.closure2021 === 'Yes') {
-    //         errorsObj.minordays2021 = "Please select number";
-    //         hasErrors = true;
-    //       }
-    //   }
-
     if (activeStep === 7) {
       if (!formData.employed_as_W2) {
         errorsObj.employed_as_W2 = "Please select an option";
@@ -1936,31 +1781,6 @@ const MultiStepForm = () => {
         // errorsObj.amount2021 = "Please select an option";
         hasErrors = true;
       }
-
-      // if (formData.employed_as_W2 === "Yes" &&  formData.employed_as_W2 !== 'No' ) {
-
-      //   hasErrors = true;
-      // }
-
-      // if (!formData.family_sick && formData.employed_as_W2 === "Yes") {
-      //   errorsObj.family_sick = "Please select an option";
-      //   hasErrors = true;
-      // }
-
-      // if (!formData.minor_startdate2020 && formData.minordays2020 !== "0" && formData.closure2020 === 'Yes') {
-      //   errorsObj.minor_startdate2020 = "Please select date";
-      //   hasErrors = true;
-      // }
-
-      // if (!formData.minor_enddate2020 && formData.minordays2020 !== "0" && formData.closure2020 === 'Yes') {
-      //   errorsObj.minor_enddate2020 = "Please select date";
-      //   hasErrors = true;
-      // }
-
-      // if (!formData.minordays2020 && formData.closure2020 === 'Yes') {
-      //   errorsObj.minordays2020 = "Please select number";
-      //   hasErrors = true;
-      // }
     }
     // Add more validations for other steps if needed
 
@@ -2086,17 +1906,8 @@ const MultiStepForm = () => {
               scheduleSelfEmployement: userData.your_file_schedule || "",
               mandatory_questions: userData.mandatory_questions || "",
               positive_net_earning: userData.if_you_have_positive_earning || "",
-              covid_related_issues: userData. did_you_miss_SEWDTC || "",
-              setc_program: userData.have_you_filed_already_for_setc || ""
-
-              // your_file_schedule: formData.scheduleSelfEmployement,
-              // if_you_have_positive_earning: formData.positive_net_earning,
-              // did_you_miss_SEWDTC: formData.covid_related_issues,
-              // have_you_filed_already_for_setc: formData.setc_program,
-
-
-
-
+              covid_related_issues: userData.did_you_miss_SEWDTC || "",
+              setc_program: userData.have_you_filed_already_for_setc || "",
             }));
             setSelectedFiles((prevSelectedFiles) => ({
               ...prevSelectedFiles,
@@ -2155,21 +1966,20 @@ const MultiStepForm = () => {
     const apiUrl = "http://localhost:5000/user/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
-    
     const data = {
       properties: {
-      email: userData?.email,
-      firstname: userData?.first_name,
-      lastname: userData?.last_name,
-      business_name: userData?.business_name,
-      address_line_1: userData?.address_line_1,
-      country:"",
-      phone_number: userData?.phone,
-      city: userData?.city,
-      state: userData?.state,
-      industry: userData?.trade_name,
-       files_folder: "files.com",
-           final_credit: userData?.final_credit_amount,    
+        email: userData?.email,
+        firstname: userData?.first_name,
+        lastname: userData?.last_name,
+        business_name: userData?.business_name,
+        address_line_1: userData?.address_line_1,
+        country: "",
+        phone_number: userData?.phone,
+        city: userData?.city,
+        state: userData?.state,
+        industry: userData?.trade_name,
+        files_folder: "files.com",
+        final_credit: userData?.final_credit_amount,
       },
     };
 
@@ -2218,19 +2028,17 @@ const MultiStepForm = () => {
       if (fileUrls && fileUrls[index]) {
         alert("Are you sure to remove file");
 
-        // alert(fileKey)
-        // alert(fileUrls[index])
-        // alert(`${fileKey}_name`)
-        // alert(originalFileName)
-
-        // window.open(`http://localhost:5000/${fileUrls[index]}`, '_blank');
-
         try {
           const url = "http://localhost:5000/user/deleteFile";
           const payload = {
-            fieldName: fileKey,
-            fileName: fileUrls[index],
-            originalFieldName: `${fileKey}_name`,
+            // fieldName: fileKey,
+            // fileName: fileUrls[index],
+            // originalFieldName: `${fileKey}_name`,
+            // originalName: originalFileName,
+  
+            fieldName: `${fileKey}_name` ,
+            fileName: fileKey ,
+            originalFieldName: fileUrls[index],
             originalName: originalFileName,
           };
 
@@ -2299,45 +2107,62 @@ const MultiStepForm = () => {
           config
         );
 
-      
-        let lastFileName = '';
+        let lastFileName = "";
 
-        if (inputName === 'driving_licence') {
-          const lastDrivingLicenceIndex = response.data.user.driving_licence_name.length - 1;
-          lastFileName = response.data.user.driving_licence_name[lastDrivingLicenceIndex];
-        } else if (inputName === 'schedule_pdf') {
-          const lastScheduleIndex = response.data.user.schedule_pdf_name.length - 1;
-          lastFileName = response.data.user.schedule_pdf_name[lastScheduleIndex];
-        } else if (inputName === 'Tax_Return_2020') {
-          const lastScheduleIndex = response.data.user.Tax_Return_2020_name.length - 1;
-          lastFileName = response.data.user.Tax_Return_2020_name[lastScheduleIndex];
-        } else if (inputName === 'Tax_Return_2021') {
-          const lastScheduleIndex = response.data.user.Tax_Return_2021_name.length - 1;
-          lastFileName = response.data.user.Tax_Return_2021_name[lastScheduleIndex];
-        } else if (inputName === 'supplemental_attachment_2020') {
-          const lastScheduleIndex = response.data.user.supplemental_attachment_2020_name.length - 1;
-          lastFileName = response.data.user.supplemental_attachment_2020_name[lastScheduleIndex];
-        } else if (inputName === 'supplemental_attachment_2021') {
-          const lastScheduleIndex = response.data.user.supplemental_attachment_2021_name.length - 1;
-          lastFileName = response.data.user.supplemental_attachment_2021_name[lastScheduleIndex];
-        } else if (inputName === 'FormA1099') {
-          const lastScheduleIndex = response.data.user.FormA1099_name.length - 1;
+        if (inputName === "driving_licence") {
+          const lastDrivingLicenceIndex =
+            response.data.user.driving_licence_name.length - 1;
+          lastFileName =
+            response.data.user.driving_licence_name[lastDrivingLicenceIndex];
+        } else if (inputName === "schedule_pdf") {
+          const lastScheduleIndex =
+            response.data.user.schedule_pdf_name.length - 1;
+          lastFileName =
+            response.data.user.schedule_pdf_name[lastScheduleIndex];
+        } else if (inputName === "Tax_Return_2020") {
+          const lastScheduleIndex =
+            response.data.user.Tax_Return_2020_name.length - 1;
+          lastFileName =
+            response.data.user.Tax_Return_2020_name[lastScheduleIndex];
+        } else if (inputName === "Tax_Return_2021") {
+          const lastScheduleIndex =
+            response.data.user.Tax_Return_2021_name.length - 1;
+          lastFileName =
+            response.data.user.Tax_Return_2021_name[lastScheduleIndex];
+        } else if (inputName === "supplemental_attachment_2020") {
+          const lastScheduleIndex =
+            response.data.user.supplemental_attachment_2020_name.length - 1;
+          lastFileName =
+            response.data.user.supplemental_attachment_2020_name[
+              lastScheduleIndex
+            ];
+        } else if (inputName === "supplemental_attachment_2021") {
+          const lastScheduleIndex =
+            response.data.user.supplemental_attachment_2021_name.length - 1;
+          lastFileName =
+            response.data.user.supplemental_attachment_2021_name[
+              lastScheduleIndex
+            ];
+        } else if (inputName === "FormA1099") {
+          const lastScheduleIndex =
+            response.data.user.FormA1099_name.length - 1;
           lastFileName = response.data.user.FormA1099_name[lastScheduleIndex];
-        } else if (inputName === 'FormB1099') {
-          const lastScheduleIndex = response.data.user.FormB1099_name.length - 1;
+        } else if (inputName === "FormB1099") {
+          const lastScheduleIndex =
+            response.data.user.FormB1099_name.length - 1;
           lastFileName = response.data.user.FormB1099_name[lastScheduleIndex];
-        } else if (inputName === 'ks2020') {
+        } else if (inputName === "ks2020") {
           const lastScheduleIndex = response.data.user.ks2020_name.length - 1;
           lastFileName = response.data.user.ks2020_name[lastScheduleIndex];
-        } else if (inputName === 'ks22020') {
+        } else if (inputName === "ks22020") {
           const lastScheduleIndex = response.data.user.ks22020_name.length - 1;
           lastFileName = response.data.user.ks22020_name[lastScheduleIndex];
         }
-        
+
         await handleSuccessfulUpload(inputName, lastFileName);
         await fetchUserDataa();
 
-        setIsAddingFile(false);
+        // setAddingFileType(null);
       } catch (error) {
         console.error(`Error uploading file:`, error);
       } finally {
@@ -2350,78 +2175,65 @@ const MultiStepForm = () => {
     }
   };
 
-  // Function to handle successful file upload
-  // const handleSuccessfulUpload = (inputName) => {
-  //   const currentTime = Date.now(); // Get the current time in milliseconds
-  //   setUploadCompleteTimes((prevUploadTimes) => ({
-  //     ...prevUploadTimes,
-  //     [inputName]: currentTime,
-  //   }));
-  
-  //   // Save upload completion time as a string to localStorage
-  //   localStorage.setItem(inputName, currentTime.toString());
-  // };
   const handleSuccessfulUpload = (inputName, fileName) => {
     const currentTime = Date.now(); // Get the current time in milliseconds
     setUploadCompleteTimes((prevUploadTimes) => ({
       ...prevUploadTimes,
       [inputName]: currentTime,
     }));
-  
+
     // Save upload completion time as a string to localStorage
     localStorage.setItem(fileName, currentTime.toString());
   };
 
-// Check if 30 seconds have passed since upload completion
-const isThirtySecondsPassed = (fileName) => {
-  const storedTime = localStorage.getItem(fileName);
-  if (storedTime) {
-    const uploadTime = parseInt(storedTime, 10); // Parse stored string to a number
-    const currentTime = Date.now();
-    return currentTime - uploadTime >= 30000; // Check if 30 seconds have passed
-  }
-  return false;
-};
-// Function to retrieve upload completion times from localStorage on component mount
-useEffect(() => {
-  const storedUploadTimes = {
-    driving_licence: localStorage.getItem('driving_licence'),
-    schedule_pdf: localStorage.getItem('schedule_pdf'),
-    Tax_Return_2020: localStorage.getItem('Tax_Return_2020'),
-    Tax_Return_2021: localStorage.getItem('Tax_Return_2021'),
-    supplemental_attachment_2020: localStorage.getItem('supplemental_attachment_2020'),
-    supplemental_attachment_2021: localStorage.getItem('supplemental_attachment_2021'),
-    FormA1099: localStorage.getItem('FormA1099'),
-    FormB1099: localStorage.getItem('FormB1099'),
-    ks2020: localStorage.getItem('ks2020'),
-    ks22020: localStorage.getItem('ks22020'),
+  // Check if 30 seconds have passed since upload completion
+  const isThirtySecondsPassed = (fileName) => {
+    const storedTime = localStorage.getItem(fileName);
+    if (storedTime) {
+      const uploadTime = parseInt(storedTime, 10); // Parse stored string to a number
+      const currentTime = Date.now();
+      return currentTime - uploadTime >= 30000; // Check if 30 seconds have passed
+    }
+    return false;
   };
+  // Function to retrieve upload completion times from localStorage on component mount
+  useEffect(() => {
+    const storedUploadTimes = {
+      driving_licence: localStorage.getItem("driving_licence"),
+      schedule_pdf: localStorage.getItem("schedule_pdf"),
+      Tax_Return_2020: localStorage.getItem("Tax_Return_2020"),
+      Tax_Return_2021: localStorage.getItem("Tax_Return_2021"),
+      supplemental_attachment_2020: localStorage.getItem(
+        "supplemental_attachment_2020"
+      ),
+      supplemental_attachment_2021: localStorage.getItem(
+        "supplemental_attachment_2021"
+      ),
+      FormA1099: localStorage.getItem("FormA1099"),
+      FormB1099: localStorage.getItem("FormB1099"),
+      ks2020: localStorage.getItem("ks2020"),
+      ks22020: localStorage.getItem("ks22020"),
+    };
 
-  // Convert stored timestamps back to numbers before setting state
-  const parsedUploadTimes = Object.keys(storedUploadTimes).reduce((acc, key) => {
-    acc[key] = storedUploadTimes[key] ? parseInt(storedUploadTimes[key], 10) : null;
-    return acc;
-  }, {});
+    // Convert stored timestamps back to numbers before setting state
+    const parsedUploadTimes = Object.keys(storedUploadTimes).reduce(
+      (acc, key) => {
+        acc[key] = storedUploadTimes[key]
+          ? parseInt(storedUploadTimes[key], 10)
+          : null;
+        return acc;
+      },
+      {}
+    );
 
-  setUploadCompleteTimes(parsedUploadTimes);
-}, []);
-
-
+    setUploadCompleteTimes(parsedUploadTimes);
+  }, []);
 
   const getStepContent = () => {
     switch (activeStep) {
       case 0:
         return (
           <>
-            {/* <TextField
-            label="Campaign Settings"
-            value={firstName}
-            onChange={handleInputChange}
-            name="firstName"
-            fullWidth
-            error={!!errors.firstName}
-            helperText={errors.firstName}
-          /> */}
             <div className="row justify-content-center pb-3">
               <div className="col-lg-8 col-md-8 col-sm-12">
                 <div
@@ -2438,21 +2250,6 @@ useEffect(() => {
                     Getting Started
                   </h3>
                   <div className="px-3">
-                    {/* <div className="progress mb-4" style={{height: "15px"}}>
-                  <div className="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div> */}
-                    {/* <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "8px",
-                        borderRadius: "4px",
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={getProgressPercentage()}
-                    /> */}
                     <input
                       type="hidden"
                       name="record_id"
@@ -2546,7 +2343,10 @@ useEffect(() => {
                         )}
                       </div>
                       <div id="div_id_email" className="col-sm-6 mb-3">
-                        <label for="id_email" className="form-label requiredField">
+                        <label
+                          for="id_email"
+                          className="form-label requiredField"
+                        >
                           Email
                         </label>
                         <input
@@ -2613,7 +2413,6 @@ useEffect(() => {
                         )}
                       </div>
                       <div className="col-sm-6">
-                     
                         <input
                           type="text"
                           value={formData.employees}
@@ -2638,35 +2437,7 @@ useEffect(() => {
                         <div className="invalid-feedback emailError"></div>
                       </div>
                     </div>
-                    {/* <div className="mb-2">
-                      <div className="col-sm-6">
-                        <label for="Business-Legal-Name" className="form-label">
-                          Business Legal Name
-                        </label>
 
-                        <input
-                          type="text"
-                          value={formData.bussinessName}
-                          class={` form-control ${
-                            errors.bussinessName ? "border-danger" : ""
-                          }`}
-                          id="Business-Legal-Name"
-                          placeholder=""
-                          name="bussinessName"
-                          onChange={handleInputChange}
-                          required
-                        />
-                        {errors.bussinessName && (
-                          <div
-                            className="text-danger"
-                            style={{ fontSize: "14px" }}
-                          >
-                            {errors.bussinessName}
-                          </div>
-                        )}
-                        <div className="invalid-feedback phoneError"></div>
-                      </div>
-                    </div> */}
                     <div className="mb-2">
                       <div className="col-sm-6">
                         <label for="Trade-Name" className="form-label">
@@ -2788,7 +2559,10 @@ useEffect(() => {
                         )}
                       </div>
                       <div id="div_id_last_name" className="col-sm-6 ">
-                        <label for="zipcode" className="form-label requiredField">
+                        <label
+                          for="zipcode"
+                          className="form-label requiredField"
+                        >
                           Postal / Zip Code
                         </label>
                         <input
@@ -2841,117 +2615,144 @@ useEffect(() => {
                       </div>
                     </div>
 
+                    <div className="mb-2 mt-3">
+                      <label
+                        for="accounting_professional"
+                        className="form-label requiredField "
+                        style={{ fontWeight: "600" }}
+                      >
+                        Are you an accounting professional? (Bookkeeper, CPA,
+                        Accountant, Payroll Specialists)?
+                      </label>
 
-                    
-
-
-
-
-                     <div className="mb-2 mt-3">
-                      
+                      <div className="optio mb-2">
+                      <label for="accounting_professional_yes">
+                        <p
+                          style={{
+                            padding: "7px 10px",
+                            border: "1px solid lightgray",
+                            backgroundColor: formData.accounting_professional === "Yes" ? "lightblue" : "initial" 
+                          }}
+                        >
+                          <input
+                            className="form-check-input"
+                            class={`form-check-input ${
+                              errors.accounting_professional
+                                ? "border-danger"
+                                : ""
+                            }`}
+                            type="radio"
+                            name="accounting_professional"
+                            checked={formData.accounting_professional === "Yes"}
+                            value="Yes"
+                            id="accounting_professional_yes"
+                            onChange={handleInputChange}
+                          />
+                          Yes
+                        </p>
+                        </label>
+                      </div>
+                      <div className="optio">
+                      <label for="accounting_professional_no">
+                        <p
+                          style={{
+                            padding: "7px 10px",
+                            border: "1px solid lightgray",
+                            backgroundColor: formData.accounting_professional === "No" ? "lightblue" : "initial" 
+                          }}
+                        >
+                          <input
+                            className="form-check-input"
+                            class={`form-check-input ${
+                              errors.accounting_professional
+                                ? "border-danger"
+                                : ""
+                            }`}
+                            type="radio"
+                            name="accounting_professional"
+                            checked={formData.accounting_professional === "No"}
+                            value="No"
+                            id="accounting_professional_no"
+                            onChange={handleInputChange}
+                          />
+                          No
+                        </p>
+                        </label>
+                      </div>
+                      {formData.accounting_professional === "Yes" && (
+                        <>
+                          <div id="additional">
                             <label
-                              for="accounting_professional"
-                              className="form-label requiredField "
-                              style={{ fontWeight: "600" }}
+                              for="accounting_partnership"
+                              // className="form-label bg-light py-3 px-1 fs-5"
+                              className="form-label requiredField"
                             >
-                              Are you an accounting professional? (Bookkeeper, CPA, Accountant, Payroll Specialists)? 
-
+                              Are you interested in our accounting partnership
+                              that would allow you to purchase the downloadable
+                              calculation?
                             </label>
-
                             <div className="optio mb-2">
-                              <p style={{padding: '7px 10px',  border: '1px solid lightgray'}}>
+                            <label for="accounting_partnership_yes">
+                              <p
+                                style={{
+                                  padding: "7px 10px",
+                                  border: "1px solid lightgray",
+                                  backgroundColor: formData.accounting_partnership === "Yes" ? "lightblue" : "initial"
+                                }}
+                              >
                                 <input
                                   className="form-check-input"
                                   class={`form-check-input ${
-                                    errors.accounting_professional ? "border-danger" : ""
+                                    errors.accounting_partnership
+                                      ? "border-danger"
+                                      : ""
                                   }`}
                                   type="radio"
-                                  name="accounting_professional"
-                                  checked={formData.accounting_professional === "Yes"}
+                                  name="accounting_partnership"
+                                  checked={
+                                    formData.accounting_partnership === "Yes"
+                                  }
                                   value="Yes"
-                                  // id="self_employed_from_yes"
+                                  id="accounting_partnership_yes"
                                   onChange={handleInputChange}
                                 />
                                 Yes
                               </p>
+                              </label>
                             </div>
                             <div className="optio">
-                              <p style={{padding: '7px 10px',  border: '1px solid lightgray'}}>
+                            <label for="accounting_partnership_no">
+                              <p
+                                style={{
+                                  padding: "7px 10px",
+                                  border: "1px solid lightgray",
+                                  backgroundColor: formData.accounting_partnership === "No" ? "lightblue" : "initial"
+                                }}
+                              >
                                 <input
                                   className="form-check-input"
                                   class={`form-check-input ${
-                                    errors.accounting_professional ? "border-danger" : ""
+                                    errors.accounting_partnership
+                                      ? "border-danger"
+                                      : ""
                                   }`}
                                   type="radio"
-                                  name="accounting_professional"
-                                  checked={formData.accounting_professional === "No"}
+                                  name="accounting_partnership"
+                                  checked={
+                                    formData.accounting_partnership === "No"
+                                  }
                                   value="No"
-                                  // id="self_employed_from_yes"
+                                  id="accounting_partnership_no"
                                   onChange={handleInputChange}
                                 />
                                 No
                               </p>
+                              </label>
                             </div>
-                            {formData.accounting_professional === "Yes" && (
-                              <>
-                                <div id="additional">
-                                  <label
-                                    for="accounting_partnership"
-                                    // className="form-label bg-light py-3 px-1 fs-5"
-                                    className="form-label requiredField"
-                                    
-                                  >
-                                    Are you interested in our accounting partnership that would allow you to purchase the downloadable calculation? 
-
-                                  </label>
-                                  <div className="optio mb-2">
-                                    <p style={{padding: '7px 10px', border: '1px solid lightgray'}}>
-                                      <input
-                                        className="form-check-input"
-                                        class={`form-check-input ${
-                                          errors.accounting_partnership
-                                            ? "border-danger"
-                                            : ""
-                                        }`}
-                                        type="radio"
-                                        name="accounting_partnership"
-                                        checked={formData.accounting_partnership === "Yes"}
-                                        value="Yes"
-                                        // id="self_employed_from_yes"
-                                        onChange={handleInputChange}
-                                      />
-                                      Yes
-                                    </p>
-                                  </div>
-                                  <div className="optio">
-                                    <p style={{padding: '7px 10px',  border: '1px solid lightgray'}}>
-                                      <input
-                                        className="form-check-input"
-                                        class={`form-check-input ${
-                                          errors.accounting_partnership
-                                            ? "border-danger"
-                                            : ""
-                                        }`}
-                                        type="radio"
-                                        name="accounting_partnership"
-                                        checked={formData.accounting_partnership === "No"}
-                                        value="No"
-                                        // id="self_employed_from_yes"
-                                        onChange={handleInputChange}
-                                      />
-                                      No
-                                    </p>
-                                  </div>
-                                </div>
-                              
-                              </>
-                            )}
-
-                            
-                          
                           </div>
-
-
+                        </>
+                      )}
+                    </div>
 
                     <div className="impot mt-3">
                       <p>
@@ -2965,7 +2766,10 @@ useEffect(() => {
                         delivery to the correct address.
                       </p>
                     </div>
-                    <div className="d-flex mt-3" style={{ alignItems: "start " }}>
+                    <div
+                      className="d-flex mt-3"
+                      style={{ alignItems: "start " }}
+                    >
                       <input
                         checked={formData.isChecked}
                         class={`checkBoxStepOne form-check-input me-1 mt-1 ${
@@ -2976,12 +2780,6 @@ useEffect(() => {
                         name="isChecked"
                         onChange={handleInputChange}
                       />
-                      {/* {errors.isChecked && (
-                <div className="text-danger" 
-                 style={{ fontSize: '14px' }}>
-                  {errors.isChecked}
-                 </div>
-                )} */}
 
                       <p class="mb-3 mt-0">
                         By checking the box, you agree to our{" "}
@@ -3016,125 +2814,200 @@ useEffect(() => {
         );
       case 1:
         return (
-          // <TextField
-          //   label="Ad Group Details"
-          //   value={adGroupDetails}
-          //   onChange={handleInputChange}
-          //   name="adGroupDetails"
-          //   fullWidth
-          // />
           <div className="step step-2 ">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div className="row roww" style={{marginTop: '0px !important'}}>
+                    <div
+                      className="row roww"
+                      style={{ marginTop: "0px !important" }}
+                    >
                       <div className="col-lg-12 col-md-12 col-sm-12">
-                       
+                        <div class="img-applic-content border-0">
+                          <div class="step2_content w-100 pb-2">
+                            <div class="step_1_de">
+                              <h1
+                                style={{
+                                  color: "#1A2C57",
+                                  fontSize: "clamp(22px, 4vw, 42px) !important",
+                                  width: "70%",
+                                  margin: "auto",
+                                }}
+                              >
+                                How Does The Pre-Qualification Application Work?
+                              </h1>
+                            </div>
+                            <div class="row justify-content-center">
+                              <div class="col-lg-12">
+                                <div class="row align-items-center eret pb-3">
+                                  <div class="col-lg-12 col-md-12 d-flex justify-content-center">
+                                    <div class="">
+                                      <div class="st_2_we d-flex align-items-start my-2">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{
+                                            color: "#00b6ff",
+                                            marginLeft: 2,
+                                          }}
+                                        >
+                                          {" "}
+                                          Answer 6 questions to determine
+                                          Pre-qualifications for upto:
+                                        </h5>
+                                      </div>
+                                      <div class="d-flex align-items-start justify-content-center">
+                                        <h2
+                                          class="tep2_h5 text-center"
+                                          style={{
+                                            color: "#00b6ff",
+                                            fontWeight: "bold",
+                                            fontSize:
+                                              "clamp(30px, 4vw, 42px) !important",
+                                          }}
+                                        >
+                                          {" "}
+                                          $32,220.00
+                                        </h2>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="step2_content mt-4 w-100">
+                            <div class="text-center d-flex justify-content-center">
+                              <h1
+                                class="mb-3 text-center"
+                                style={{
+                                  width: "fit-content",
+                                  fontSize: "clamp(22px, 4vw, 42px) !important",
+                                  color: "#1A2C57",
+                                }}
+                              >
+                                What if I am pre-qualified?
+                              </h1>
+                            </div>
+                            <div class="row justify-content-center mt-md-4 mt-sm-3">
+                              <div class="col-lg-12">
+                                <div class="row align-items-center">
+                                  <div class="col-lg-12 d-flex justify-content-center">
+                                    <div class="d-flex flex-column gap-2">
+                                      <div class=" st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          Continue the application by answering
+                                          7 additional questions.
+                                        </h5>
+                                      </div>
 
+                                      <div class="st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          Upload necesary documents
+                                        </h5>
+                                      </div>
+                                      <div class="st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          Receive a calculated refund amount
+                                        </h5>
+                                      </div>
+                                      <div class="st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          Our professinal Team will process and
+                                          file your return
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-
-
-                      
-                      <div class="img-applic-content border-0">
-                                                          <div class="step2_content w-100 pb-2" >
-                                                             <div class="step_1_de">
-                                                             <h1  style={{color: '#1A2C57', fontSize: 'clamp(22px, 4vw, 42px) !important' , width:'70%', margin:'auto'}}>How Does The Pre-Qualification Application Work?</h1>
-                                                             </div>
-                                                             <div class="row justify-content-center">
-                                                              <div class="col-lg-12">
-                                                                <div class="row align-items-center eret pb-3">
-                                                                  <div class="col-lg-12 col-md-12 d-flex justify-content-center">
-                                                                    <div class="">
-                                                                      <div class="st_2_we d-flex align-items-start my-2">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                           <h5 class="step2_h5" style={{color: "#00b6ff", marginLeft: 2}}> Answer 6 questions to determine
-                                                                            Pre-qualifications for upto:</h5>
-                                                                       </div>
-                                                                      <div class="d-flex align-items-start justify-content-center">
-                                                                       
-                                                                      <h2 class="tep2_h5 text-center" style={{color: "#00b6ff",fontWeight: 'bold', fontSize: "clamp(30px, 4vw, 42px) !important"}}> $32,220.00</h2>
-                                                                      </div> 
-                                                                      
-                                                                   </div>
-                                                                  </div>               
-                                                               </div>
-                                                              </div>
-                                                             </div>
-                                                                
-                                                          </div>
-                                                          <div class="step2_content mt-4 w-100">
-                                                            <div class="text-center d-flex justify-content-center">
-                                                              <h1 class="mb-3 text-center" style={{width: "fit-content", fontSize: "clamp(22px, 4vw, 42px) !important", color: "#1A2C57"}}>What if I am pre-qualified?</h1>
-                                                            </div>
-                                                            <div class="row justify-content-center mt-md-4 mt-sm-3">
-                                                              <div class="col-lg-12">
-                                                                <div class="row align-items-center">
-                                                                  <div class="col-lg-12 d-flex justify-content-center">
-                                                                 
-                                                                      <div class="d-flex flex-column gap-2">
-                                                                      
-                                                                        <div class=" st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                          <h5 class="step2_h5" style={{color: "#00b6ff"}}>
-                                                                              Continue the application by
-                                                                                answering 7 additional questions.
-                                                                          </h5>
-                                                                        </div>
-
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Upload necesary documents</h5>
-                                                                        </div>
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                                                                                               </div>      
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Receive a calculated refund amount
-                                                                              </h5>
-                                                                        </div>
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>
-                                                                                Our professinal Team will process
-                                                                                and file your return
-                                                                              </h5>
-                                                                        </div>
-                                                                
-                                                                      </div>
-                                                                  </div>
-                                                                  
-                                                                </div>
-                                                              </div>
-                                                            </div>    
-                                                          </div>
-                                                              
-                                                                
-                                                        
-                                                             
-
-                                                          <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
-                                                          <button
-                    onClick={handlePrevious}
-                    type="button"
-                    className="px-3 py-3 prev-step"
-                  >
-                    Previous
-                  </button>
-                                                              <button   onClick={handleNext} type="button" class="btn btn-primary next-step step2_next mx-1">
-                                                                Let's Get Started!
-                                                              </button>
-                                                          </div>
-                                                      </div>
-                      
+                          <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
+                            <button
+                              onClick={handlePrevious}
+                              type="button"
+                              className="px-3 py-3 prev-step"
+                            >
+                              Previous
+                            </button>
+                            <button
+                              onClick={handleNext}
+                              type="button"
+                              class="btn btn-primary next-step step2_next mx-1"
+                            >
+                              Let's Get Started!
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -3145,363 +3018,135 @@ useEffect(() => {
         );
       case 2:
         return (
-          // <div className="step step-3">
-          //   <div className="container ">
-          //     <div className="row justify-content-center">
-          //       <div className="col-lg-10">
-          //         <div className="start-application">
-          //           <div className="row ROWW">
-          //             <div className="col-lg-12 col-md-12 col-sm-12">
-          //               <div className="img-applic-content">
-          //                 <h1
-          //                   className="text-center"
-          //                   style={{ color: "rgb(13, 189, 243)" }}
-          //                 >
-          //                   Are you eligible?
-          //                 </h1>
-          //                 <h3
-          //                   style={{
-          //                     fontWeight: 300,
-          //                     lineHeight: 0.2,
-          //                     color: "rgb(13, 189, 243)",
-          //                   }}
-          //                   className="text-center"
-          //                 >
-          //                   Question 1 of 6
-          //                 </h3>
-          //                 <div style={{ marginTop: 40 }}>
-          //                   <label
-          //                     for="self_employed_from"
-          //                     className="form-label headng "
-          //                     style={{ fontWeight: "600" }}
-          //                   >
-          //                     Were you self-employed from 4/1/2020-9/30/2021?
-          //                   </label>
-          //                   <div className="optio mb-2">
-          //                     <label for="self_employed_from_yes">
-          //                       <p
-          //                         style={{
-          //                           backgroundColor:
-          //                             formData.selfEmployedFrom === "Yes"
-          //                               ? "lightblue"
-          //                               : "initial",
-          //                         }}
-          //                       >
-          //                         <input
-          //                           className="form-check-input"
-          //                           class={`form-check-input ${
-          //                             errors.selfEmployedFrom
-          //                               ? "border-danger"
-          //                               : ""
-          //                           }`}
-          //                           type="radio"
-          //                           name="selfEmployedFrom"
-          //                           checked={
-          //                             formData.selfEmployedFrom === "Yes"
-          //                           }
-          //                           value="Yes"
-          //                           id="self_employed_from_yes"
-          //                           onChange={handleInputChange}
-          //                         />
-          //                         Yes
-          //                       </p>
-          //                     </label>
-          //                   </div>
+          <div className="step step-3">
+            <div className="container ">
+              <div className="row justify-content-center">
+                <div className="col-lg-10">
+                  <div className="start-application">
+                    <div className="row ROWW">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
+                        <div className="img-applic-content">
+                          <h1
+                            className="text-center"
+                            style={{ color: "rgb(13, 189, 243)" }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                            }}
+                            className="text-center"
+                          >
+                            Question 1 of 6
+                          </h3>
+                          <div style={{ marginTop: 40 }}>
+                            <label
+                              for="self_employed_from"
+                              className="form-label headng "
+                              style={{ fontWeight: "600" }}
+                            >
+                              Were you self-employed from 4/1/2020-9/30/2021?
+                            </label>
+                            <div className="optio mb-2">
+                              <label for="self_employed_from_yes">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.selfEmployedFrom === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className="form-check-input"
+                                    class={`form-check-input ${
+                                      errors.selfEmployedFrom
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="selfEmployedFrom"
+                                    checked={
+                                      formData.selfEmployedFrom === "Yes"
+                                    }
+                                    value="Yes"
+                                    id="self_employed_from_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
+                            </div>
 
-          //                   <div className="optio">
-          //                     <label for="self_employed_from_no">
-          //                       <p
-          //                         style={{
-          //                           backgroundColor:
-          //                             formData.selfEmployedFrom === "No"
-          //                               ? "lightblue"
-          //                               : "initial",
-          //                         }}
-          //                       >
-          //                         <input
-          //                           class={`form-check-input ${
-          //                             errors.selfEmployedFrom
-          //                               ? "border-danger"
-          //                               : ""
-          //                           }`}
-          //                           type="radio"
-          //                           name="selfEmployedFrom"
-          //                           value="No"
-          //                           checked={formData.selfEmployedFrom === "No"}
-          //                           id="self_employed_from_no"
-          //                           onChange={handleInputChange}
-          //                         />
-          //                         No
-          //                       </p>
-          //                     </label>
-          //                   </div>
+                            <div className="optio">
+                              <label for="self_employed_from_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.selfEmployedFrom === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    class={`form-check-input ${
+                                      errors.selfEmployedFrom
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="selfEmployedFrom"
+                                    value="No"
+                                    checked={formData.selfEmployedFrom === "No"}
+                                    id="self_employed_from_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
+                            </div>
 
-          //                   {/* <div className="data-p py-2 mb-2">
-          //                     <p>
-          //                       <input
-          //                         checked={formData.isCheckedStepThree}
-          //                         class={` form-check-input me-1 ${
-          //                           errors.isCheckedStepThree
-          //                             ? "border-danger"
-          //                             : ""
-          //                         }`}
-          //                         type="checkbox"
-          //                         id="flexCheckDefault1"
-          //                         name="isCheckedStepThree"
-          //                         onChange={handleInputChange}
-          //                       />{" "}
-          //                       evaluate and answer the questions as they relate
-          //                       to my self-employed business qualifications for
-          //                       the Self-Employed Tax Credit (SETC) Program.
-          //                     </p>
-          //                   </div> */}
+                            {formData.selfEmployedFrom === "No" &&
+                              activeErrorQualifyOne && (
+                                <div>
+                                  <h4 style={{ color: "#e62e2d" }}>
+                                    Were Sorry. By answering “No” to the above
+                                    question, you will not be eligible for the
+                                    SETC program.
+                                  </h4>
+                                </div>
+                              )}
 
-          //                   {formData.selfEmployedFrom === "No" &&
-          //                     activeErrorQualifyOne && (
-          //                       <div>
-          //                         <h4 style={{ color: "#e62e2d" }}>
-          //                         Were Sorry. By answering “No” to the above question, you will
-          //                         not be eligible for the SETC program.
-          //                         </h4>
-          //                       </div>
-          //                     )}
-
-          //                   <div className="d-flex justify-content-end mt-3">
-          //                     <button
-          //                       onClick={handlePrevious}
-          //                       type="button"
-          //                       className="px-3 py-2 prev-step"
-          //                     >
-          //                       Previous
-          //                     </button>
-          //                     <button
-          //                       onClick={handleNext}
-          //                       type="button"
-          //                       className="px-3 py-2 next-step"
-          //                     >
-          //                       {activeStep === steps.length - 1
-          //                         ? "Submit"
-          //                         : "Next"}
-          //                     </button>
-          //                   </div>
-          //                 </div>
-          //               </div>
-          //             </div>
-          //           </div>
-          //         </div>
-          //       </div>
-          //     </div>
-          //   </div>
-          // </div>
-//           <div class="step step-3">
-   
-//     <div class="container-fluid ">
-//         <div class="row justify-content-center">
-//             <div class="col-lg-12">
-//                 <div class="start-application">
-                  
-//                     <div class="row roww justify-content-center">
-                       
-//                         <div class="col-lg-6 col-md-6 col-sm-12 ">
-//                             <div class="img-applic-content">
-//                                 <label for="self_employed_from" class="form-label headng"> Were you self-employed from 4/1/2020-9/30/2021?</label>
-
-//                                 <div class="optio mb-2">
-//                                     <p>
-//                                         <input class="form-check-input" type="radio" name="self_employed_from" value="Yes" id="self_employed_from" />Yes
-//                                     </p>
-//                                 </div>
-//                                 <div class="optio">
-//                                     <p><input class="form-check-input" type="radio" name="self_employed_from" value="No" id="self_employed_fromNo"  />No</p>
-//                                 </div>
-
-//                                 <div class="data-p d-flex mb-2 gap-1">
-//                                     <input class="form-check-input me-1" type="checkbox" value="" id="flexCheckDefaultt" />
-//                                     <p>
-//                                         I certify that I am in a position to properly evaluate and answer the questions as they relate to my self-employed business qualifications for the Self-Employed Tax Credit (SETC) Program.
-//                                     </p>
-//                                 </div>
-
-//                                 <div id="qualifyForm">
-//                                     <h4 style={{color: "#e62e2d"}}>You will not be eligible for the SETC program.</h4>
-//                                 </div>
-
-                               
-
-//                                 <div class="d-flex justify-content-center mt-3 w-100">
-//                                 <button
-//                                 onClick={handlePrevious}
-//                                 type="button"
-//                                 className="px-3 py-2 prev-step"
-//                               >
-//                                 Previous
-//                               </button>
-//                               <button
-//                                 onClick={handleNext}
-//                                 type="button"
-//                                 className="px-3 py-2 next-step"
-//                               >
-//                                 {activeStep === steps.length - 1
-//                                   ? "Submit"
-//                                   : "Next"}
-//                               </button>
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-// </div>
-<div className="step step-3">
-<div className="container ">
-  <div className="row justify-content-center">
-    <div className="col-lg-10">
-      <div className="start-application">
-        <div className="row ROWW">
-          <div className="col-lg-8 col-md-8 col-sm-12">
-            <div className="img-applic-content">
-              <h1
-                className="text-center"
-                style={{ color: "rgb(13, 189, 243)" }}
-              >
-                Are you eligible?
-              </h1>
-              <h3
-                style={{
-                  fontWeight: 300,
-                  lineHeight: 0.2,
-                  color: "rgb(13, 189, 243)",
-                }}
-                className="text-center"
-              >
-                Question 1 of 6
-              </h3>
-              <div style={{ marginTop: 40 }}>
-                <label
-                  for="self_employed_from"
-                  className="form-label headng "
-                  style={{ fontWeight: "600" }}
-                >
-                  Were you self-employed from 4/1/2020-9/30/2021?
-                </label>
-                <div className="optio mb-2">
-                  <label for="self_employed_from_yes">
-                    <p
-                      style={{
-                        backgroundColor:
-                          formData.selfEmployedFrom === "Yes"
-                            ? "lightblue"
-                            : "initial",
-                      }}
-                    >
-                      <input
-                        className="form-check-input"
-                        class={`form-check-input ${
-                          errors.selfEmployedFrom
-                            ? "border-danger"
-                            : ""
-                        }`}
-                        type="radio"
-                        name="selfEmployedFrom"
-                        checked={
-                          formData.selfEmployedFrom === "Yes"
-                        }
-                        value="Yes"
-                        id="self_employed_from_yes"
-                        onChange={handleInputChange}
-                      />
-                      Yes
-                    </p>
-                  </label>
-                </div>
-
-                <div className="optio">
-                  <label for="self_employed_from_no">
-                    <p
-                      style={{
-                        backgroundColor:
-                          formData.selfEmployedFrom === "No"
-                            ? "lightblue"
-                            : "initial",
-                      }}
-                    >
-                      <input
-                        class={`form-check-input ${
-                          errors.selfEmployedFrom
-                            ? "border-danger"
-                            : ""
-                        }`}
-                        type="radio"
-                        name="selfEmployedFrom"
-                        value="No"
-                        checked={formData.selfEmployedFrom === "No"}
-                        id="self_employed_from_no"
-                        onChange={handleInputChange}
-                      />
-                      No
-                    </p>
-                  </label>
-                </div>
-
-                {/* <div className="data-p py-2 mb-2">
-                  <p>
-                    <input
-                      checked={formData.isCheckedStepThree}
-                      class={` form-check-input me-1 ${
-                        errors.isCheckedStepThree
-                          ? "border-danger"
-                          : ""
-                      }`}
-                      type="checkbox"
-                      id="flexCheckDefault1"
-                      name="isCheckedStepThree"
-                      onChange={handleInputChange}
-                    />{" "}
-                    evaluate and answer the questions as they relate
-                    to my self-employed business qualifications for
-                    the Self-Employed Tax Credit (SETC) Program.
-                  </p>
-                </div> */}
-
-                {formData.selfEmployedFrom === "No" &&
-                  activeErrorQualifyOne && (
-                    <div>
-                      <h4 style={{ color: "#e62e2d" }}>
-                      Were Sorry. By answering “No” to the above question, you will
-                      not be eligible for the SETC program.
-                      </h4>
+                            <div className="d-flex justify-content-end mt-3">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                className="px-3 py-2 prev-step"
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                className="px-3 py-2 next-step"
+                              >
+                                {activeStep === steps.length - 1
+                                  ? "Submit"
+                                  : "Next"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  )}
-
-                <div className="d-flex justify-content-end mt-3">
-                  <button
-                    onClick={handlePrevious}
-                    type="button"
-                    className="px-3 py-2 prev-step"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    type="button"
-                    className="px-3 py-2 next-step"
-                  >
-                    {activeStep === steps.length - 1
-                      ? "Submit"
-                      : "Next"}
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
         );
       case 3:
         return (
@@ -3511,49 +3156,8 @@ useEffect(() => {
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                      <div className="img-applci h-100 align-items-start">
-                        <input
-                          type="hidden"
-                          name="record_id"
-                          id="record_id"
-                          value=""
-                        />
-                        <p className="mb-0">
-                          If you were self-employed in 2020 and/or 2021, you
-                          could be eligible for the SETC. This includes sole
-                          proprietors who run businesses with employees, 1099
-                          subcontractors, and single-member LLCs. This unique
-                          tax credit is exclusively available to business
-                          owners who filed a “Schedule C” or a Partnership
-                          (1065) on their federal tax returns for 2020 and/or
-                          2021.
-                        </p>
-                        <h6 className="mt-3 warn">Important Note:</h6>
-                        <p>
-                          Sub S or True S Corps/C Corps are not eligible for
-                          the SETC.
-                        </p>
-                        <h6 className="warn">Required Documents:</h6>
-                        <p>-Driver’s License</p>
-                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                      </div>
-                    </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                          variant="determinate"
-                          sx={{
-                            height: "8px",
-                            marginBottom: 4,
-                            borderRadius: "4px",
-                            backgroundColor: "#f0f0f0",
-                            "& .MuiLinearProgress-bar": {
-                              backgroundColor: "rgb(13, 189, 243);",
-                            },
-                          }}
-                          value={getProgressPercentage()}
-                        /> */}
                           <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -3580,17 +3184,7 @@ useEffect(() => {
                               Did you file your schedule SE (Self-Employment
                               Tax) for the years of 2020 or 2021?
                             </h1>
-                            {/* <label for="self_employed_from"
-                                                                      className="form-label headng " style={{ fontWeight: '600'}}>
-                                                               Were you self-employed from
-                                                                        4/1/2020-9/30/2021?
-                                                                  </label> */}
-                            {/* <p
-                              className="text-center"
-                              style={{ fontWeight: "600", color: "red" }}
-                            >
-                              Click here on how to find it
-                            </p> */}
+
                             <div className="optio mb-2">
                               <label for="self_employment_from_yes">
                                 <p
@@ -3650,17 +3244,17 @@ useEffect(() => {
                                 </p>
                               </label>
                             </div>
-                             
+
                             {formData.scheduleSelfEmployement === "No" &&
                               activeErrorQualifyTwoo && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                  Were Sorry. By answering “No” to the above question, you will
-                                  not be eligible for the SETC program.
+                                    Were Sorry. By answering “No” to the above
+                                    question, you will not be eligible for the
+                                    SETC program.
                                   </h4>
                                 </div>
                               )}
-
 
                             <div className="d-flex justify-content-end mt-3">
                               <button
@@ -3698,49 +3292,8 @@ useEffect(() => {
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                      <div className="img-applci h-100 align-items-start">
-                        <input
-                          type="hidden"
-                          name="record_id"
-                          id="record_id"
-                          value=""
-                        />
-                        <p className="mb-0">
-                          If you were self-employed in 2020 and/or 2021, you
-                          could be eligible for the SETC. This includes sole
-                          proprietors who run businesses with employees, 1099
-                          subcontractors, and single-member LLCs. This unique
-                          tax credit is exclusively available to business
-                          owners who filed a “Schedule C” or a Partnership
-                          (1065) on their federal tax returns for 2020 and/or
-                          2021.
-                        </p>
-                        <h6 className="mt-3 warn">Important Note:</h6>
-                        <p>
-                          Sub S or True S Corps/C Corps are not eligible for
-                          the SETC.
-                        </p>
-                        <h6 className="warn">Required Documents:</h6>
-                        <p>-Driver’s License</p>
-                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                      </div>
-                    </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                          variant="determinate"
-                          sx={{
-                            height: "8px",
-                            marginBottom: 4,
-                            borderRadius: "4px",
-                            backgroundColor: "#f0f0f0",
-                            "& .MuiLinearProgress-bar": {
-                              backgroundColor: "rgb(13, 189, 243);",
-                            },
-                          }}
-                          value={getProgressPercentage()}
-                        /> */}
                           <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -3758,9 +3311,6 @@ useEffect(() => {
                             Question 3 of 6
                           </h3>
                           <div style={{ marginTop: 40 }}>
-                            {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
-                                                                        (Self-Employment
-                                                                        Tax) for the years of 2020 or 2021?</h1> */}
                             <label
                               for="positive_net_earning"
                               className="form-label headng "
@@ -3768,73 +3318,87 @@ useEffect(() => {
                             >
                               Did you have positive net earnings for the years
                               of 2020 or 2021? This can be found in{" "}
-                              
-                              <span  style={{
+                              <span
+                                style={{
                                   color: "red",
-                                  cursor: 'pointer',
+                                  cursor: "pointer",
                                   fontSize: 23,
                                   textDecoration: "underline",
-                                }}  onClick={()=>window.open(PdfNetEarning, '_blank')}>
-                              line 6 of your schedule SE
-    </span>
-
-
+                                }}
+                                onClick={() =>
+                                  window.open(PdfNetEarning, "_blank")
+                                }
+                              >
+                                line 6 of your schedule SE
+                              </span>
                               . (If this line is blank or negative, select No.)
                             </label>
 
                             <div className="optio mb-2">
-                            
                               <label for="positive_net_earning_yes">
-    <p  style={{
-        backgroundColor: formData.positive_net_earning === 'Yes' ? 'lightblue' : 'initial',
-      }}>
-      <input
-      
-      className={`form-check-input ${
-          errors.positive_net_earning ? "border-danger" : ""
-        }`}
-        type="radio"
-        name="positive_net_earning"
-        checked={formData.positive_net_earning === "Yes"}
-        value="Yes"
-        id="positive_net_earning_yes"
-        onChange={handleInputChange}
-      />
-         Yes
-    </p>
-  </label>
-
-
-
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.positive_net_earning === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.positive_net_earning
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="positive_net_earning"
+                                    checked={
+                                      formData.positive_net_earning === "Yes"
+                                    }
+                                    value="Yes"
+                                    id="positive_net_earning_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
                             </div>
                             <div className="optio">
-                            
-                               <label for="positive_net_earning_no">
-    <p  style={{
-        backgroundColor: formData.positive_net_earning === 'No' ? 'lightblue' : 'initial',
-      }}>
-      <input
-      
-        class={`form-check-input ${
-          errors.positive_net_earning ? "border-danger" : ""
-        }`}
-        type="radio"
-        name="positive_net_earning"
-        checked={formData.positive_net_earning === "No"}
-        value="No"
-        id="positive_net_earning_no"
-        onChange={handleInputChange}
-      />
-         No
-    </p>
-  </label>
+                              <label for="positive_net_earning_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.positive_net_earning === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    class={`form-check-input ${
+                                      errors.positive_net_earning
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="positive_net_earning"
+                                    checked={
+                                      formData.positive_net_earning === "No"
+                                    }
+                                    value="No"
+                                    id="positive_net_earning_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
                             </div>
                             {formData.positive_net_earning === "No" &&
                               activeErrorQualifyThree && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                  Were Sorry. By answering “No” to the above question, you will
-                                  not be eligible for the SETC program.
+                                    Were Sorry. By answering “No” to the above
+                                    question, you will not be eligible for the
+                                    SETC program.
                                   </h4>
                                 </div>
                               )}
@@ -3902,105 +3466,90 @@ useEffect(() => {
                               Did you miss any self employment work in 2020 or
                               2021 due to Covid-19 related issues.{" "}
                               <span>
-                              
-                                {/* <a
-                                  href=""
-                                  style={{
-                                    color: "red",
-                                    fontSize: 23,
-                                    textDecoration: "underline",
-                                  }}
+                                <a
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#exampleModal_step_6"
+                                  className="d-none d-md-inline"
+                                  style={{ color: "red" }}
                                 >
                                   Click here for examples
-                                </a> */}
- <a
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal_step_6"
-        className="d-none d-md-inline"
-        style={{ color: 'red' }}
-      >
-        Click here for examples
-      </a>                                
-      <a
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModalS_step_6"
-        className="d-inline d-md-none"
-        style={{ color: 'red' }}
-      >
-        Click here for examples
-      </a>
+                                </a>
+                                <a
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#exampleModalS_step_6"
+                                  className="d-inline d-md-none"
+                                  style={{ color: "red" }}
+                                >
+                                  Click here for examples
+                                </a>
                               </span>
                             </label>
 
                             <div className="optio mb-2">
-                              {/* <p>
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="covid_related_issues"
-                                  value="Yes"
-                                />
-                                Yes
-                              </p> */}
-                               <label for="covid_related_issues_yes">
-    <p  style={{
-        backgroundColor: formData.covid_related_issues === 'Yes' ? 'lightblue' : 'initial',
-      }}>
-      <input
-      
-        class={`form-check-input ${
-          errors.covid_related_issues ? "border-danger" : ""
-        }`}
-        type="radio"
-        name="covid_related_issues"
-        checked={formData.covid_related_issues === "Yes"}
-        value="Yes"
-        id="covid_related_issues_yes"
-        onChange={handleInputChange}
-      />
-         Yes
-    </p>
-  </label>
+                              <label for="covid_related_issues_yes">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.covid_related_issues === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    class={`form-check-input ${
+                                      errors.covid_related_issues
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="covid_related_issues"
+                                    checked={
+                                      formData.covid_related_issues === "Yes"
+                                    }
+                                    value="Yes"
+                                    id="covid_related_issues_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
                             </div>
                             <div className="optio">
-                              {/* <p>
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="covid_related_issues"
-                                  value="No"
-                                />
-                                No
-                              </p> */}
-                             
-                             <label for="covid_related_issues_no">
-    <p  style={{
-        backgroundColor: formData.covid_related_issues === 'No' ? 'lightblue' : 'initial',
-      }}>
-      <input
-      
-        class={`form-check-input ${
-          errors.covid_related_issues ? "border-danger" : ""
-        }`}
-        type="radio"
-        name="covid_related_issues"
-        checked={formData.covid_related_issues === "No"}
-        value="No"
-        id="covid_related_issues_no"
-        onChange={handleInputChange}
-      />
-         No
-    </p>
-  </label>
-
-
+                              <label for="covid_related_issues_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.covid_related_issues === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    class={`form-check-input ${
+                                      errors.covid_related_issues
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="covid_related_issues"
+                                    checked={
+                                      formData.covid_related_issues === "No"
+                                    }
+                                    value="No"
+                                    id="covid_related_issues_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
                             </div>
                             {formData.covid_related_issues === "No" &&
                               activeErrorQualifyFive && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                  Were Sorry. By answering “No” to the above question, you will
-                                not be eligible for the SETC program.
+                                    Were Sorry. By answering “No” to the above
+                                    question, you will not be eligible for the
+                                    SETC program.
                                   </h4>
                                 </div>
                               )}
@@ -4022,91 +3571,232 @@ useEffect(() => {
                                   : "Next"}
                               </button>
                             </div>
-                            
-                            <div className="modal fade" id="exampleModal_step_6" tabindex="-1" aria-labelledby="exampleModalLabel" style={{display: "none", padding: "0px 40px 20px 40px"}} aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered " style={{maxWidth: "800px"}}>
-          <div className="modal-content" style={{height: "auto"}}>
-            <div className="modal-header" style={{borderBottom: "none"}}>
-              <h1 className="modal-title fs-5" id="exampleModalLabel"></h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body" style={{padding: "0px 40px"}}>
-            <div style={{padding: "20px 30px"}}>
-               <div className="text-center">
-                   <h2 style={{color: "#0cc0df", fontsize: "clamp(16px, 2vw, 24px)"}}>Am I eligible for SETC Tax Credits?</h2>
-               </div>
-              
-               <div>
-                    <p>During 2020 and 2021 millions of small businesses were negatively impacted by
-                    covid-19. If you were unable to work or your business experienced any of the
-                    following issues during 2020 and 2021 due to covid-19 you may be eligible for
-                    the SETC program:</p>
-                    <ul>
-                        <li>You took time off of work in 2020 or 2021 due to covid-19 or to care for
-                    someone with covid-19 during the same period.</li>
-                        <li>You took time off of work in 2020 or 2021 to care for a child under 18 years
-                    old due to school or daycare closures.</li>
-                        <li>You took time off in 2020 or 2021 due to covid-19 to care for a loved one
-                    such as a spouse, parents, etc.</li>
-                        <li>A government order imposed a quarantine or isolation.</li>
-                        <li>You were having symptoms related to Covid-19 while also waiting for an
-                    appointment with your doctor.</li>
-                    <li>You were waiting for test results related to COVID-19.</li>
-                    <li>You were getting a Covid-19 Vaccination</li>
-                    <li>You were experiencing side effects from the COVID-19 vaccine</li>
-                    <li>Your doctor recommended you self-quarantine</li>
-                    </ul>
-               </div>
-            </div>
-              
-            </div>
 
-          </div>
-        </div>
-       
-      </div>
-    
+                            <div
+                              className="modal fade"
+                              id="exampleModal_step_6"
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              style={{
+                                display: "none",
+                                padding: "0px 40px 20px 40px",
+                              }}
+                              aria-hidden="true"
+                            >
+                              <div
+                                className="modal-dialog modal-dialog-centered "
+                                style={{ maxWidth: "800px" }}
+                              >
+                                <div
+                                  className="modal-content"
+                                  style={{ height: "auto" }}
+                                >
+                                  <div
+                                    className="modal-header"
+                                    style={{ borderBottom: "none" }}
+                                  >
+                                    <h1
+                                      className="modal-title fs-5"
+                                      id="exampleModalLabel"
+                                    ></h1>
+                                    <button
+                                      type="button"
+                                      className="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div
+                                    className="modal-body"
+                                    style={{ padding: "0px 40px" }}
+                                  >
+                                    <div style={{ padding: "20px 30px" }}>
+                                      <div className="text-center">
+                                        <h2
+                                          style={{
+                                            color: "#0cc0df",
+                                            fontsize: "clamp(16px, 2vw, 24px)",
+                                          }}
+                                        >
+                                          Am I eligible for SETC Tax Credits?
+                                        </h2>
+                                      </div>
 
-      
-                            <div className="modal fade" id="exampleModalS_step_6" tabIndex="-1" aria-labelledby="exampleModalLabel" style={{ display: "none" }} aria-hidden="true">
-  <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "100%", margin: "0", width: "100%" }}>
-    <div className="modal-content" style={{ minHeight: "100vh", maxHeight: "100vh", overflowY: "auto" }}>
-      <div className="modal-header" style={{ borderBottom: "none" }}>
-        <h1 className="modal-title fs-5" id="exampleModalLabel"></h1>
-        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div className="modal-body" style={{ padding: "20px", fontSize: "clamp(16px, 2vw, 24px)" }}>
-        <div style={{ padding: "20px 0" }}>
-          <div className="text-center">
-            <h2 style={{ color: "#0cc0df" }}>Am I eligible for SETC Tax Credits?</h2>
-          </div>
-          
-          <div>
-            <p>During 2020 and 2021, millions of small businesses were negatively impacted by COVID-19. If you were unable to work or your business experienced any of the following issues during 2020 and 2021 due to COVID-19, you may be eligible for the SETC program:</p>
-            <ul style={{ paddingLeft: "20px" }}>
-              <li>You took time off of work in 2020 or 2021 due to COVID-19 or to care for someone with COVID-19 during the same period.</li>
-              <li>You took time off of work in 2020 or 2021 to care for a child under 18 years old due to school or daycare closures.</li>
-              <li>You took time off in 2020 or 2021 due to COVID-19 to care for a loved one such as a spouse, parent, etc.</li>
-              <li>A government order imposed a quarantine or isolation.</li>
-              <li>You were having symptoms related to COVID-19 while also waiting for an appointment with your doctor.</li>
-              <li>You were waiting for test results related to COVID-19.</li>
-              <li>You were getting a COVID-19 vaccination.</li>
-              <li>You were experiencing side effects from the COVID-19 vaccine.</li>
-              <li>Your doctor recommended you self-quarantine.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-</div>
+                                      <div>
+                                        <p>
+                                          During 2020 and 2021 millions of small
+                                          businesses were negatively impacted by
+                                          covid-19. If you were unable to work
+                                          or your business experienced any of
+                                          the following issues during 2020 and
+                                          2021 due to covid-19 you may be
+                                          eligible for the SETC program:
+                                        </p>
+                                        <ul>
+                                          <li>
+                                            You took time off of work in 2020 or
+                                            2021 due to covid-19 or to care for
+                                            someone with covid-19 during the
+                                            same period.
+                                          </li>
+                                          <li>
+                                            You took time off of work in 2020 or
+                                            2021 to care for a child under 18
+                                            years old due to school or daycare
+                                            closures.
+                                          </li>
+                                          <li>
+                                            You took time off in 2020 or 2021
+                                            due to covid-19 to care for a loved
+                                            one such as a spouse, parents, etc.
+                                          </li>
+                                          <li>
+                                            A government order imposed a
+                                            quarantine or isolation.
+                                          </li>
+                                          <li>
+                                            You were having symptoms related to
+                                            Covid-19 while also waiting for an
+                                            appointment with your doctor.
+                                          </li>
+                                          <li>
+                                            You were waiting for test results
+                                            related to COVID-19.
+                                          </li>
+                                          <li>
+                                            You were getting a Covid-19
+                                            Vaccination
+                                          </li>
+                                          <li>
+                                            You were experiencing side effects
+                                            from the COVID-19 vaccine
+                                          </li>
+                                          <li>
+                                            Your doctor recommended you
+                                            self-quarantine
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
+                            <div
+                              className="modal fade"
+                              id="exampleModalS_step_6"
+                              tabIndex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              style={{ display: "none" }}
+                              aria-hidden="true"
+                            >
+                              <div
+                                className="modal-dialog modal-dialog-centered"
+                                style={{
+                                  maxWidth: "100%",
+                                  margin: "0",
+                                  width: "100%",
+                                }}
+                              >
+                                <div
+                                  className="modal-content"
+                                  style={{
+                                    minHeight: "100vh",
+                                    maxHeight: "100vh",
+                                    overflowY: "auto",
+                                  }}
+                                >
+                                  <div
+                                    className="modal-header"
+                                    style={{ borderBottom: "none" }}
+                                  >
+                                    <h1
+                                      className="modal-title fs-5"
+                                      id="exampleModalLabel"
+                                    ></h1>
+                                    <button
+                                      type="button"
+                                      className="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div
+                                    className="modal-body"
+                                    style={{
+                                      padding: "20px",
+                                      fontSize: "clamp(16px, 2vw, 24px)",
+                                    }}
+                                  >
+                                    <div style={{ padding: "20px 0" }}>
+                                      <div className="text-center">
+                                        <h2 style={{ color: "#0cc0df" }}>
+                                          Am I eligible for SETC Tax Credits?
+                                        </h2>
+                                      </div>
 
-
-
-
-
+                                      <div>
+                                        <p>
+                                          During 2020 and 2021, millions of
+                                          small businesses were negatively
+                                          impacted by COVID-19. If you were
+                                          unable to work or your business
+                                          experienced any of the following
+                                          issues during 2020 and 2021 due to
+                                          COVID-19, you may be eligible for the
+                                          SETC program:
+                                        </p>
+                                        <ul style={{ paddingLeft: "20px" }}>
+                                          <li>
+                                            You took time off of work in 2020 or
+                                            2021 due to COVID-19 or to care for
+                                            someone with COVID-19 during the
+                                            same period.
+                                          </li>
+                                          <li>
+                                            You took time off of work in 2020 or
+                                            2021 to care for a child under 18
+                                            years old due to school or daycare
+                                            closures.
+                                          </li>
+                                          <li>
+                                            You took time off in 2020 or 2021
+                                            due to COVID-19 to care for a loved
+                                            one such as a spouse, parent, etc.
+                                          </li>
+                                          <li>
+                                            A government order imposed a
+                                            quarantine or isolation.
+                                          </li>
+                                          <li>
+                                            You were having symptoms related to
+                                            COVID-19 while also waiting for an
+                                            appointment with your doctor.
+                                          </li>
+                                          <li>
+                                            You were waiting for test results
+                                            related to COVID-19.
+                                          </li>
+                                          <li>
+                                            You were getting a COVID-19
+                                            vaccination.
+                                          </li>
+                                          <li>
+                                            You were experiencing side effects
+                                            from the COVID-19 vaccine.
+                                          </li>
+                                          <li>
+                                            Your doctor recommended you
+                                            self-quarantine.
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -4154,72 +3844,63 @@ useEffect(() => {
                             </label>
 
                             <div className="optio mb-2">
-                              {/* <p>
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="setc_program"
-                                  value="Yes"
-                                />
-                                Yes
-                              </p> */}
                               <label for="setc_program_yes">
-    <p  style={{
-        backgroundColor: formData.setc_program === 'Yes' ? 'lightblue' : 'initial',
-      }}>
-      <input
-      
-        class={`form-check-input ${
-          errors.setc_program ? "border-danger" : ""
-        }`}
-        type="radio"
-        name="setc_program"
-        checked={formData.setc_program === "Yes"}
-        value="Yes"
-        id="setc_program_yes"
-        onChange={handleInputChange}
-      />
-         Yes
-    </p>
-  </label>
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.setc_program === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.setc_program ? "border-danger" : ""
+                                    }`}
+                                    type="radio"
+                                    name="setc_program"
+                                    checked={formData.setc_program === "Yes"}
+                                    value="Yes"
+                                    id="setc_program_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
                             </div>
                             <div className="optio">
-                              {/* <p>
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="setc_program"
-                                  value="No"
-                                />
-                                No
-                              </p> */}
-                               <label for="setc_program_no">
-    <p  style={{
-        backgroundColor: formData.setc_program === 'No' ? 'lightblue' : 'initial',
-      }}>
-      <input
-      
-        class={`form-check-input ${
-          errors.setc_program ? "border-danger" : ""
-        }`}
-        type="radio"
-        name="setc_program"
-        checked={formData.setc_program === "No"}
-        value="No"
-        id="setc_program_no"
-        onChange={handleInputChange}
-      />
-         No
-    </p>
-  </label>
+                              <label for="setc_program_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.setc_program === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.setc_program ? "border-danger" : ""
+                                    }`}
+                                    type="radio"
+                                    name="setc_program"
+                                    checked={formData.setc_program === "No"}
+                                    value="No"
+                                    id="setc_program_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
                             </div>
 
                             {formData.setc_program === "Yes" &&
                               activeErrorQualifySix && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                  Were Sorry. By answering “YES” to the above question, you will
-not be eligible for the SETC program.
+                                    Were Sorry. By answering “YES” to the above
+                                    question, you will not be eligible for the
+                                    SETC program.
                                   </h4>
                                 </div>
                               )}
@@ -4289,7 +3970,13 @@ not be eligible for the SETC program.
                             </label>
 
                             <div className="optio mb-2">
-                              <p>
+                            <label for="self_employed_from_yes">
+                              <p  style={{
+                                    backgroundColor:
+                                      formData.employed_as_W2 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                 <input
                                   className="form-check-input"
                                   class={`form-check-input ${
@@ -4299,14 +3986,22 @@ not be eligible for the SETC program.
                                   name="employed_as_W2"
                                   checked={formData.employed_as_W2 === "Yes"}
                                   value="Yes"
-                                  // id="self_employed_from_yes"
+                                  id="self_employed_from_yes"
                                   onChange={handleInputChange}
                                 />
                                 Yes
                               </p>
+                              </label>
                             </div>
                             <div className="optio">
-                              <p>
+                            <label for="self_employed_from_no">
+                             
+                              <p style={{
+                                    backgroundColor:
+                                      formData.employed_as_W2 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                 <input
                                   className="form-check-input"
                                   class={`form-check-input ${
@@ -4316,11 +4011,12 @@ not be eligible for the SETC program.
                                   name="employed_as_W2"
                                   checked={formData.employed_as_W2 === "No"}
                                   value="No"
-                                  // id="self_employed_from_yes"
+                                  id="self_employed_from_no"
                                   onChange={handleInputChange}
                                 />
                                 No
                               </p>
+                              </label>
                             </div>
                             {formData.employed_as_W2 === "Yes" && (
                               <>
@@ -4333,7 +4029,13 @@ not be eligible for the SETC program.
                                     Leave during Covid, and what amount?
                                   </label>
                                   <div className="optio mb-2">
-                                    <p>
+                                  <label for="family_sick_yes">
+                                    <p style={{
+                                    backgroundColor:
+                                      formData.family_sick === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                       <input
                                         className="form-check-input"
                                         class={`form-check-input ${
@@ -4345,14 +4047,21 @@ not be eligible for the SETC program.
                                         name="family_sick"
                                         checked={formData.family_sick === "Yes"}
                                         value="Yes"
-                                        // id="self_employed_from_yes"
+                                        id="family_sick_yes"
                                         onChange={handleInputChange}
                                       />
                                       Yes
                                     </p>
+                                    </label>
                                   </div>
                                   <div className="optio">
-                                    <p>
+                                  <label for="family_sick_no">
+                                    <p style={{
+                                    backgroundColor:
+                                      formData.family_sick === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                       <input
                                         className="form-check-input"
                                         class={`form-check-input ${
@@ -4364,11 +4073,12 @@ not be eligible for the SETC program.
                                         name="family_sick"
                                         checked={formData.family_sick === "No"}
                                         value="No"
-                                        // id="self_employed_from_yes"
+                                        id="family_sick_no"
                                         onChange={handleInputChange}
                                       />
                                       No
                                     </p>
+                                    </label>
                                   </div>
                                 </div>
                                 {formData.family_sick === "Yes" && (
@@ -4378,6 +4088,7 @@ not be eligible for the SETC program.
                                   >
                                     <div className="optio mb-2">
                                       <input
+                                      style={{width: '100%'}}
                                         type="text"
                                         value={formData.amount2020}
                                         name="amount2020"
@@ -4392,6 +4103,7 @@ not be eligible for the SETC program.
                                       />
 
                                       <input
+                                         style={{width: '100%'}}
                                         type="text"
                                         value={formData.amount2021}
                                         name="amount2021"
@@ -4444,70 +4156,97 @@ not be eligible for the SETC program.
               <div className="row justify-content-center">
                 <div className="col-lg-10">
                   <div className="start-application">
-                    <div className="row ROWW" >
+                    <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
-                       <div className="img-applic-content-congrts border-0" >
-      <div style={boxStyle} className="desktop-box" css={styles[mediaQuery]}>
-        <Confetti
-          width={width}
-          height={height}
-          style={confettiStyle}
-        />
-        <div style={{ textAlign: 'center' }}>
-          <h1>Congratulations!</h1>
-          <p style={{color: 'green', fontSize: 25, fontWeight: 600, fontStyle: 'Outfitt'}}>Your Pre-Qualified for up to $32,220.00!!!</p>
-          <label
-          htmlFor="congrats"
-          className="form-label headng text-center mt-3"
-          style={{ fontWeight: "500", textAlign: 'center !important' }}
-        >
-          Based on the information you submitted, you are prequalified to receive the Self Employed Tax Credit.
-        </label>
-        </div>
-      </div>
-      <div style={{ ...boxStyle, ...mobileBoxStyle }} className="mobile-box" css={styles[mediaQuery]}>
-        <Confetti
-          width={width * 0.6} // Adjusted width for mobile screens
-          height={height * 0.6} // Adjusted height for mobile screens
-          style={confettiStyle}
-        />
-        <div style={{ textAlign: 'center' }}>
-          <h1 style={{fontSize: '22px !important'}}>Congratulations!</h1>
-          <p style={{fontSize: '14px !important'}}>Your Pre-Qualified for up to $32,220.00!!!</p>
-          <label
-          htmlFor="congrats"
-          className="form-label headng text-center"
-          style={{ fontWeight: "600", textAlign: 'center !important', fontSize: '13px !important' }}
-        >
-          Based on the information you submitted, you are prequalified to receive the Self Employed Tax Credit.
-        </label>
-        <p>
-        Click below to continue your application!
-        </p>
-        </div>
-      </div>
-      <div style={{ marginTop: 40 }}>
-        {/* <label
-          htmlFor="congrats"
-          className="form-label headng text-center"
-          style={{ fontWeight: "500", textAlign: 'center !important' }}
-        >
-          Click below to continue your application!
-        </label> */}
-         <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
-                                                          <button
-                    onClick={handlePrevious}
-                    type="button"
-                    className="px-3 py-3 prev-step"
-                  >
-                    Previous
-                  </button>
-                                                              <button   onClick={handleNext} type="button" class="btn btn-primary next-step step2_next mx-1">
-                                                                Continue Application
-                                                              </button>
-                                                          </div>
-      </div>
-    </div>
+                        <div className="img-applic-content-congrts border-0">
+                          <div
+                            style={boxStyle}
+                            className="desktop-box"
+                            css={styles[mediaQuery]}
+                          >
+                            <Confetti
+                              width={width}
+                              height={height}
+                              style={confettiStyle}
+                            />
+                            <div style={{ textAlign: "center" }}>
+                              <h1>Congratulations!</h1>
+                              <p
+                                style={{
+                                  color: "green",
+                                  fontSize: 25,
+                                  fontWeight: 600,
+                                  fontStyle: "Outfitt",
+                                }}
+                              >
+                                Your Pre-Qualified for up to $32,220.00!!!
+                              </p>
+                              <label
+                                htmlFor="congrats"
+                                className="form-label headng text-center mt-3"
+                                style={{
+                                  fontWeight: "500",
+                                  textAlign: "center !important",
+                                }}
+                              >
+                                Based on the information you submitted, you are
+                                prequalified to receive the Self Employed Tax
+                                Credit.
+                              </label>
+                            </div>
+                          </div>
+                          <div
+                            style={{ ...boxStyle, ...mobileBoxStyle }}
+                            className="mobile-box"
+                            css={styles[mediaQuery]}
+                          >
+                            <Confetti
+                              width={width * 0.6} // Adjusted width for mobile screens
+                              height={height * 0.6} // Adjusted height for mobile screens
+                              style={confettiStyle}
+                            />
+                            <div style={{ textAlign: "center" }}>
+                              <h1 style={{ fontSize: "22px !important" }}>
+                                Congratulations!
+                              </h1>
+                              <p style={{ fontSize: "14px !important" }}>
+                                Your Pre-Qualified for up to $32,220.00!!!
+                              </p>
+                              <label
+                                htmlFor="congrats"
+                                className="form-label headng text-center"
+                                style={{
+                                  fontWeight: "600",
+                                  textAlign: "center !important",
+                                  fontSize: "13px !important",
+                                }}
+                              >
+                                Based on the information you submitted, you are
+                                prequalified to receive the Self Employed Tax
+                                Credit.
+                              </label>
+                              <p>Click below to continue your application!</p>
+                            </div>
+                          </div>
+                          <div style={{ marginTop: 40 }}>
+                            <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                className="px-3 py-3 prev-step"
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                class="btn btn-primary next-step step2_next mx-1"
+                              >
+                                Continue Application
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -4523,172 +4262,280 @@ not be eligible for the SETC program.
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div className="row ROWW" style={{marginTop: '0px !important'}}>
+                    <div
+                      className="row ROWW"
+                      style={{ marginTop: "0px !important" }}
+                    >
                       <div className="col-lg-8 col-md-8 col-sm-12 ">
                         <div className="img-applic-content border-0">
-                          <div className="step2_content" style={{marginTop: '8px !important'}}>
-                            <h2 style={{color: '#DC3545'}}>Welcome To the SETC Eligibility Application!</h2>
+                          <div
+                            className="step2_content"
+                            style={{ marginTop: "8px !important" }}
+                          >
+                            <h2 style={{ color: "#DC3545" }}>
+                              Welcome To the SETC Eligibility Application!
+                            </h2>
                             <h1>How does this work?</h1>
-                           {/* <div className="d-flex justify-content-center align-items-center gap-3" style={{ marginTop: 3 }}>
-                           <ul style={{ listStyleType: 'none', padding: 0 }}>
 
-                             <li>
-                               <CheckCircle style={{color: 'red'}} /> Answer 7 Eligibility Questions
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} /> Receive an estimated refund amount
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} /> Upload your documents
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} /> Receive your Exact calculation
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} /> Upload your documents
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} /> Our CPA Team will Process and file your return
-                             </li>
+                            <div class="step2_content mt-0 w-100">
+                              <div class="row justify-content-center mt-md-4 mt-sm-3">
+                                <div
+                                  class="col-lg-12"
+                                  style={{ marginTop: "-20px" }}
+                                >
+                                  <div class="row align-items-center">
+                                    <div class="col-lg-12 d-flex justify-content-center">
+                                      <div class="d-flex flex-column">
+                                        <div class=" st_2_we d-flex align-items-start w-100">
+                                          <div style={{ marginTop: "18.5px" }}>
+                                            <span class="text-white">
+                                              <CheckCircle
+                                                style={{
+                                                  color: "#DC3545",
+                                                  width: "30px",
+                                                  height: "30px",
+                                                }}
+                                              />
+                                            </span>
+                                          </div>
+                                          <h5
+                                            class="step2_h5"
+                                            style={{ color: "#00b6ff" }}
+                                          >
+                                            Answer 7 Eligibility Questions
+                                          </h5>
+                                        </div>
 
-                           </ul>
-                         </div> */}
-                          <div class="step2_content mt-0 w-100">
-                                                           
-                                                            <div class="row justify-content-center mt-md-4 mt-sm-3">
-                                                              <div class="col-lg-12" style={{marginTop: '-20px'}}>
-                                                                <div class="row align-items-center">
-                                                                  <div class="col-lg-12 d-flex justify-content-center">
-                                                                 
-                                                                      <div class="d-flex flex-column">
-                                                                      
-                                                                        <div class=" st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                          <h5 class="step2_h5" style={{color: "#00b6ff"}}>
-                                                                          Answer 7 Eligibility Questions
-                                                                          </h5>
-                                                                        </div>
+                                        <div class="st_2_we d-flex align-items-start w-100">
+                                          <div style={{ marginTop: "18.5px" }}>
+                                            <span class="text-white">
+                                              <CheckCircle
+                                                style={{
+                                                  color: "#DC3545",
+                                                  width: "30px",
+                                                  height: "30px",
+                                                }}
+                                              />
+                                            </span>
+                                          </div>
+                                          <h5
+                                            class="step2_h5"
+                                            style={{ color: "#00b6ff" }}
+                                          >
+                                            Receive an estimated refund amount
+                                          </h5>
+                                        </div>
+                                        <div class="st_2_we d-flex align-items-start w-100">
+                                          <div style={{ marginTop: "18.5px" }}>
+                                            <span class="text-white">
+                                              <CheckCircle
+                                                style={{
+                                                  color: "#DC3545",
+                                                  width: "30px",
+                                                  height: "30px",
+                                                }}
+                                              />
+                                            </span>
+                                          </div>
+                                          <h5
+                                            class="step2_h5"
+                                            style={{ color: "#00b6ff" }}
+                                          >
+                                            Upload your documents
+                                          </h5>
+                                        </div>
+                                        <div class="st_2_we d-flex align-items-start w-100">
+                                          <div style={{ marginTop: "18.5px" }}>
+                                            <span class="text-white">
+                                              <CheckCircle
+                                                style={{
+                                                  color: "#DC3545",
+                                                  width: "30px",
+                                                  height: "30px",
+                                                }}
+                                              />
+                                            </span>
+                                          </div>
+                                          <h5
+                                            class="step2_h5"
+                                            style={{ color: "#00b6ff" }}
+                                          >
+                                            Receive your Exact calculation
+                                          </h5>
+                                        </div>
 
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Receive an estimated refund amount</h5>
-                                                                        </div>
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                                                                                               </div>      
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>Upload your documents
-                                                                              </h5>
-                                                                        </div>
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>
-                                                                              Receive your Exact calculation
-                                                                              </h5>
-                                                                        </div>
-                                                                       
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>
-                                                                              Our CPA Team will Process and file your return
-                                                                              </h5>
-                                                                        </div>
-                                                                      </div>
-                                                                  </div>
-                                                                  
-                                                                </div>
-                                                              </div>
-                                                            </div>    
-                                                          </div>
+                                        <div class="st_2_we d-flex align-items-start w-100">
+                                          <div style={{ marginTop: "18.5px" }}>
+                                            <span class="text-white">
+                                              <CheckCircle
+                                                style={{
+                                                  color: "#DC3545",
+                                                  width: "30px",
+                                                  height: "30px",
+                                                }}
+                                              />
+                                            </span>
+                                          </div>
+                                          <h5
+                                            class="step2_h5"
+                                            style={{ color: "#00b6ff" }}
+                                          >
+                                            Our CPA Team will Process and file
+                                            your return
+                                          </h5>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
 
-                          {/* <div className="step2_content my-5">
-                            <h1>What documents will be needed?</h1>
+                          <div class="step2_content mt-4 w-100">
+                            <div class="text-center d-flex justify-content-center">
+                              <h1
+                                class="mb-3 text-center"
+                                style={{
+                                  width: "fit-content",
+                                  fontSize: "clamp(22px, 4vw, 42px) !important",
+                                  color: "#1A2C57",
+                                }}
+                              >
+                                What if I am pre-qualified?
+                              </h1>
+                            </div>
+                            <div class="row justify-content-center mt-md-4 mt-sm-3">
+                              <div class="col-lg-12">
+                                <div class="row align-items-center">
+                                  <div class="col-lg-12 d-flex justify-content-center">
+                                    <div class="d-flex flex-column ">
+                                      <div class=" st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          2019 Schedule C (Form 1040){" "}
+                                          <span
+                                            style={{
+                                              color: "red",
+                                              marginTop: 1,
+                                              fontWeight: "600",
+                                              cursor: "pointer",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() =>
+                                              window.open(Pdf2019, "_blank")
+                                            }
+                                          >
+                                            {" "}
+                                            Click For Example
+                                          </span>
+                                        </h5>
+                                      </div>
 
-                            <div className="d-flex justify-content-center align-items-center gap-3" style={{ marginTop: 3 }}>
-                           <ul style={{ listStyleType: 'none', padding: 0 }}>
+                                      <div class="st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          2020 Schedule C (Form 1040){" "}
+                                          <span
+                                            style={{
+                                              color: "red",
+                                              marginTop: 1,
+                                              fontWeight: "600",
+                                              cursor: "pointer",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() =>
+                                              window.open(Pdf2020, "_blank")
+                                            }
+                                          >
+                                            {" "}
+                                            Click For Example
+                                          </span>
+                                        </h5>
+                                      </div>
+                                      <div class="st_2_we d-flex align-items-start w-100">
+                                        <div style={{ marginTop: "18.5px" }}>
+                                          <span class="text-white">
+                                            <CheckCircle
+                                              style={{
+                                                color: "#DC3545",
+                                                width: "30px",
+                                                height: "30px",
+                                              }}
+                                            />
+                                          </span>
+                                        </div>
+                                        <h5
+                                          class="step2_h5"
+                                          style={{ color: "#00b6ff" }}
+                                        >
+                                          2021 Schedule C (Form 1040){" "}
+                                          <span
+                                            style={{
+                                              color: "red",
+                                              marginTop: 1,
+                                              fontWeight: "600",
+                                              cursor: "pointer",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() =>
+                                              window.open(Pdf2021, "_blank")
+                                            }
+                                          >
+                                            {" "}
+                                            Click For Example
+                                          </span>
+                                        </h5>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-                             <li>
-                               <CheckCircle style={{color: 'red'}} /> 2019 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2019, '_blank')}> Click For Example</span>
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} />  2020 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2020, '_blank')}> Click For Example</span>
-                             </li>
-                             <li>
-                             <CheckCircle style={{color: 'red'}} />2021 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2021, '_blank')}> Click For Example</span>
-                             </li>
-
-                             </ul>
-                             </div>
-
-
-
-
-                           
-                          </div> */}
-                           <div class="step2_content mt-4 w-100">
-                                                            <div class="text-center d-flex justify-content-center">
-                                                              <h1 class="mb-3 text-center" style={{width: "fit-content", fontSize: "clamp(22px, 4vw, 42px) !important", color: "#1A2C57"}}>What if I am pre-qualified?</h1>
-                                                            </div>
-                                                            <div class="row justify-content-center mt-md-4 mt-sm-3">
-                                                              <div class="col-lg-12">
-                                                                <div class="row align-items-center">
-                                                                  <div class="col-lg-12 d-flex justify-content-center">
-                                                                 
-                                                                      <div class="d-flex flex-column ">
-                                                                      
-                                                                        <div class=" st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                          <h5 class="step2_h5" style={{color: "#00b6ff"}}>
-                                                                          2019 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2019, '_blank')}> Click For Example</span>
-                                                                          </h5>
-                                                                        </div>
-
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                        </div>
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>2020 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2020, '_blank')}> Click For Example</span></h5>
-                                                                        </div>
-                                                                        <div class="st_2_we d-flex align-items-start w-100">
-                                                                        <div style={{marginTop: '18.5px'}}>
-                                                                           <span class="text-white"><CheckCircle style={{color: '#DC3545', width: '30px',height: '30px'}}/></span>
-                                                                                                                                               </div>      
-                                                                              <h5 class="step2_h5" style={{color: "#00b6ff"}}>2021 Schedule C (Form 1040) <span style={{ color: 'red',marginTop: 1,fontWeight: '600',  cursor: 'pointer', textDecoration: 'underline' }} onClick={()=>window.open(Pdf2021, '_blank')}> Click For Example</span>
-                                                                              </h5>
-                                                                        </div>
-                                                                       
-                                                                
-                                                                      </div>
-                                                                  </div>
-                                                                  
-                                                                </div>
-                                                              </div>
-                                                            </div>    
-                                                          </div>
-                          
-                                                          <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
-                                                          <button
-                    onClick={handlePrevious}
-                    type="button"
-                    className="px-3 py-3 prev-step"
-                  >
-                    Previous
-                  </button>
-                                                              <button   onClick={handleNext} type="button" class="btn btn-primary next-step step2_next mx-1">
-                                                                Let's Get Started
-                                                              </button>
-                                                          </div>
+                          <div class="d-flex justify-content-center  mt-5 mb-5 w-100">
+                            <button
+                              onClick={handlePrevious}
+                              type="button"
+                              className="px-3 py-3 prev-step"
+                            >
+                              Previous
+                            </button>
+                            <button
+                              onClick={handleNext}
+                              type="button"
+                              class="btn btn-primary next-step step2_next mx-1"
+                            >
+                              Let's Get Started
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -4699,7 +4546,7 @@ not be eligible for the SETC program.
           </div>
         );
 
-        case 10:
+      case 10:
         return (
           <div className="step step-11">
             <div className="container ">
@@ -4707,53 +4554,14 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                      <div className="img-applci h-100 align-items-start">
-                        <input
-                          type="hidden"
-                          name="record_id"
-                          id="record_id"
-                          value=""
-                        />
-                        <p className="mb-0">
-                          If you were self-employed in 2020 and/or 2021, you
-                          could be eligible for the SETC. This includes sole
-                          proprietors who run businesses with employees, 1099
-                          subcontractors, and single-member LLCs. This unique
-                          tax credit is exclusively available to business
-                          owners who filed a “Schedule C” or a Partnership
-                          (1065) on their federal tax returns for 2020 and/or
-                          2021.
-                        </p>
-                        <h6 className="mt-3 warn">Important Note:</h6>
-                        <p>
-                          Sub S or True S Corps/C Corps are not eligible for
-                          the SETC.
-                        </p>
-                        <h6 className="warn">Required Documents:</h6>
-                        <p>-Driver’s License</p>
-                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                      </div>
-                    </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                          variant="determinate"
-                          sx={{
-                            height: "8px",
-                            marginBottom: 4,
-                            borderRadius: "4px",
-                            backgroundColor: "#f0f0f0",
-                            "& .MuiLinearProgress-bar": {
-                              backgroundColor: "rgb(13, 189, 243);",
-                            },
-                          }}
-                          value={getProgressPercentage()}
-                        /> */}
-                        {/* <div className="justify-content-center mb-4 "> */}
-                 <h1
+                          <h1
                             className=""
-                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                            style={{
+                              color: "rgb(13, 189, 243)",
+                              textAlign: "center ",
+                            }}
                           >
                             Are you eligible?
                           </h1>
@@ -4762,7 +4570,7 @@ not be eligible for the SETC program.
                               fontWeight: 300,
                               lineHeight: 0.2,
                               color: "rgb(13, 189, 243)",
-                              textAlign: 'center '
+                              textAlign: "center ",
                             }}
                             className=" mb-4"
                           >
@@ -4779,9 +4587,8 @@ not be eligible for the SETC program.
                             testing, were unable to perform services including
                             tele-work and took time off in 2020?
                           </label>
-                        
 
-                          <div >
+                          <div>
                             <div
                               style={{
                                 display: "flex",
@@ -4789,7 +4596,13 @@ not be eligible for the SETC program.
                               }}
                             >
                               <div className="optio mb-2">
-                                <p>
+                              <label for="personallySick2020_yes">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.personallySick2020 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     className="form-check-input"
                                     class={`form-check-input ${
@@ -4803,14 +4616,21 @@ not be eligible for the SETC program.
                                       formData.personallySick2020 === "Yes"
                                     }
                                     value="Yes"
-                                    // id="self_employed_from_yes"
+                                    id="personallySick2020_yes"
                                     onChange={handleInputChange}
                                   />
                                   Yes
                                 </p>
+                                </label>
                               </div>
                               <div className="optio">
-                                <p>
+                              <label for="personallySick2020_no">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.personallySick2020 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     class={`form-check-input ${
                                       errors.personallySick2020
@@ -4823,11 +4643,12 @@ not be eligible for the SETC program.
                                     checked={
                                       formData.personallySick2020 === "No"
                                     }
-                                    // id="self_employed_from_no"
+                                    id="personallySick2020_no"
                                     onChange={handleInputChange}
                                   />
                                   No
                                 </p>
+                                </label>
                               </div>
                             </div>
 
@@ -4898,7 +4719,10 @@ not be eligible for the SETC program.
                                 )}
                                 <div className="col-lg-6">
                                   <div className="optio mb-2">
-                                    <label for="1days" className="form-label fs-6">
+                                    <label
+                                      for="1days"
+                                      className="form-label fs-6"
+                                    >
                                       Number of days:
                                     </label>
                                     <input
@@ -4954,52 +4778,14 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                      <div className="img-applci h-100 align-items-start">
-                        <input
-                          type="hidden"
-                          name="record_id"
-                          id="record_id"
-                          value=""
-                        />
-                        <p className="mb-0">
-                          If you were self-employed in 2020 and/or 2021, you
-                          could be eligible for the SETC. This includes sole
-                          proprietors who run businesses with employees, 1099
-                          subcontractors, and single-member LLCs. This unique
-                          tax credit is exclusively available to business
-                          owners who filed a “Schedule C” or a Partnership
-                          (1065) on their federal tax returns for 2020 and/or
-                          2021.
-                        </p>
-                        <h6 className="mt-3 warn">Important Note:</h6>
-                        <p>
-                          Sub S or True S Corps/C Corps are not eligible for
-                          the SETC.
-                        </p>
-                        <h6 className="warn">Required Documents:</h6>
-                        <p>-Driver’s License</p>
-                        <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                      </div>
-                    </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                          variant="determinate"
-                          sx={{
-                            height: "8px",
-                            marginBottom: 4,
-                            borderRadius: "4px",
-                            backgroundColor: "#f0f0f0",
-                            "& .MuiLinearProgress-bar": {
-                              backgroundColor: "rgb(13, 189, 243);",
-                            },
-                          }}
-                          value={getProgressPercentage()}
-                        /> */}
-  <h1
+                          <h1
                             className=""
-                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                            style={{
+                              color: "rgb(13, 189, 243)",
+                              textAlign: "center ",
+                            }}
                           >
                             Are you eligible?
                           </h1>
@@ -5008,7 +4794,7 @@ not be eligible for the SETC program.
                               fontWeight: 300,
                               lineHeight: 0.2,
                               color: "rgb(13, 189, 243)",
-                              textAlign: 'center '
+                              textAlign: "center ",
                             }}
                             className=" mb-4"
                           >
@@ -5024,9 +4810,8 @@ not be eligible for the SETC program.
                             testing, were unable to perform services including
                             tele-work and took time off in 2021?
                           </label>
-                         
 
-                          <div >
+                          <div>
                             <div
                               style={{
                                 display: "flex",
@@ -5034,7 +4819,13 @@ not be eligible for the SETC program.
                               }}
                             >
                               <div className="optio mb-2">
-                                <p>
+                              <label for="personallySick2021_yes">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.personallySick2021 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     className="form-check-input"
                                     class={`form-check-input ${
@@ -5048,14 +4839,21 @@ not be eligible for the SETC program.
                                       formData.personallySick2021 === "Yes"
                                     }
                                     value="Yes"
-                                    // id="self_employed_from_yes"
+                                    id="personallySick2021_yes"
                                     onChange={handleInputChange}
                                   />
                                   Yes
                                 </p>
+                                </label>
                               </div>
                               <div className="optio">
-                                <p>
+                              <label for="personallySick2021_no">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.personallySick2021 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     class={`form-check-input ${
                                       errors.personallySick2021
@@ -5068,11 +4866,12 @@ not be eligible for the SETC program.
                                     checked={
                                       formData.personallySick2021 === "No"
                                     }
-                                    // id="self_employed_from_no"
+                                    id="personallySick2021_no"
                                     onChange={handleInputChange}
                                   />
                                   No
                                 </p>
+                                </label>
                               </div>
                             </div>
 
@@ -5148,7 +4947,10 @@ not be eligible for the SETC program.
                                 )}
                                 <div className="col-lg-6">
                                   <div className="optio mb-2">
-                                    <label for="2days" className="form-label fs-6">
+                                    <label
+                                      for="2days"
+                                      className="form-label fs-6"
+                                    >
                                       Number of days:
                                     </label>
 
@@ -5205,52 +5007,14 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                        <div className="img-applci h-100 align-items-start">
-                          <input
-                            type="hidden"
-                            name="record_id"
-                            id="record_id"
-                            value=""
-                          />
-                          <p className="mb-0">
-                            If you were self-employed in 2020 and/or 2021, you
-                            could be eligible for the SETC. This includes sole
-                            proprietors who run businesses with employees, 1099
-                            subcontractors, and single-member LLCs. This unique
-                            tax credit is exclusively available to business
-                            owners who filed a “Schedule C” or a Partnership
-                            (1065) on their federal tax returns for 2020 and/or
-                            2021.
-                          </p>
-                          <h6 className="mt-3 warn">Important Note:</h6>
-                          <p>
-                            Sub S or True S Corps/C Corps are not eligible for
-                            the SETC.
-                          </p>
-                          <h6 className="warn">Required Documents:</h6>
-                          <p>-Driver’s License</p>
-                          <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                        </div>
-                      </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                            variant="determinate"
-                            sx={{
-                              height: "8px",
-                              marginBottom: 4,
-                              borderRadius: "4px",
-                              backgroundColor: "#f0f0f0",
-                              "& .MuiLinearProgress-bar": {
-                                backgroundColor: "rgb(13, 189, 243);",
-                              },
-                            }}
-                            value={getProgressPercentage()}
-                          /> */}
-  <h1
+                          <h1
                             className=""
-                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                            style={{
+                              color: "rgb(13, 189, 243)",
+                              textAlign: "center ",
+                            }}
                           >
                             Are you eligible?
                           </h1>
@@ -5259,7 +5023,7 @@ not be eligible for the SETC program.
                               fontWeight: 300,
                               lineHeight: 0.2,
                               color: "rgb(13, 189, 243)",
-                              textAlign: 'center '
+                              textAlign: "center ",
                             }}
                             className=" mb-4"
                           >
@@ -5275,9 +5039,8 @@ not be eligible for the SETC program.
                             quarantine, underwent testing, and took time off in
                             2020?
                           </label>
-                         
 
-                          <div >
+                          <div>
                             <div
                               style={{
                                 display: "flex",
@@ -5285,7 +5048,13 @@ not be eligible for the SETC program.
                               }}
                             >
                               <div className="optio mb-2">
-                                <p>
+                              <label for="symptoms2020_yes">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.symptoms2020 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     className="form-check-input"
                                     class={`form-check-input ${
@@ -5295,14 +5064,21 @@ not be eligible for the SETC program.
                                     name="symptoms2020"
                                     checked={formData.symptoms2020 === "Yes"}
                                     value="Yes"
-                                    // id="self_employed_from_yes"
+                                    id="symptoms2020_yes"
                                     onChange={handleInputChange}
                                   />
                                   Yes
                                 </p>
+                                </label>
                               </div>
                               <div className="optio">
-                                <p>
+                              <label for="symptoms2020_no">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.symptoms2020 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     class={`form-check-input ${
                                       errors.symptoms2020 ? "border-danger" : ""
@@ -5311,11 +5087,12 @@ not be eligible for the SETC program.
                                     name="symptoms2020"
                                     value="No"
                                     checked={formData.symptoms2020 === "No"}
-                                    // id="self_employed_from_no"
+                                    id="symptoms2020_no"
                                     onChange={handleInputChange}
                                   />
                                   No
                                 </p>
+                                </label>
                               </div>
                             </div>
 
@@ -5329,15 +5106,6 @@ not be eligible for the SETC program.
                                     >
                                       Start
                                     </label>
-                                    {/* <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  className="date-picker"
-                                  id="cared_startdate2020"
-                                  name="cared_startdate2020"
-                                />
-                              </div> */}
                                     <input
                                       type="date"
                                       min="2020-04-01"
@@ -5400,7 +5168,10 @@ not be eligible for the SETC program.
                                 )}
                                 <div className="col-lg-6">
                                   <div className="optio mb-2">
-                                    <label for="3days" className="form-label fs-6">
+                                    <label
+                                      for="3days"
+                                      className="form-label fs-6"
+                                    >
                                       Number of days:
                                     </label>
 
@@ -5457,52 +5228,14 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                          <div className="img-applci h-100 align-items-start">
-                            <input
-                              type="hidden"
-                              name="record_id"
-                              id="record_id"
-                              value=""
-                            />
-                            <p className="mb-0">
-                              If you were self-employed in 2020 and/or 2021, you
-                              could be eligible for the SETC. This includes sole
-                              proprietors who run businesses with employees, 1099
-                              subcontractors, and single-member LLCs. This unique
-                              tax credit is exclusively available to business
-                              owners who filed a “Schedule C” or a Partnership
-                              (1065) on their federal tax returns for 2020 and/or
-                              2021.
-                            </p>
-                            <h6 className="mt-3 warn">Important Note:</h6>
-                            <p>
-                              Sub S or True S Corps/C Corps are not eligible for
-                              the SETC.
-                            </p>
-                            <h6 className="warn">Required Documents:</h6>
-                            <p>-Driver’s License</p>
-                            <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                          </div>
-                        </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                              variant="determinate"
-                              sx={{
-                                height: "8px",
-                                marginBottom: 4,
-                                borderRadius: "4px",
-                                backgroundColor: "#f0f0f0",
-                                "& .MuiLinearProgress-bar": {
-                                  backgroundColor: "rgb(13, 189, 243);",
-                                },
-                              }}
-                              value={getProgressPercentage()}
-                            /> */}
-  <h1
+                          <h1
                             className=""
-                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                            style={{
+                              color: "rgb(13, 189, 243)",
+                              textAlign: "center ",
+                            }}
                           >
                             Are you eligible?
                           </h1>
@@ -5511,7 +5244,7 @@ not be eligible for the SETC program.
                               fontWeight: 300,
                               lineHeight: 0.2,
                               color: "rgb(13, 189, 243)",
-                              textAlign: 'center '
+                              textAlign: "center ",
                             }}
                             className=" mb-4"
                           >
@@ -5527,9 +5260,8 @@ not be eligible for the SETC program.
                             quarantine, underwent testing, and took time off in
                             2021?
                           </label>
-                         
 
-                          <div >
+                          <div>
                             <div
                               style={{
                                 display: "flex",
@@ -5537,7 +5269,13 @@ not be eligible for the SETC program.
                               }}
                             >
                               <div className="optio mb-2">
-                                <p>
+                              <label for="symptoms2021_yes">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.symptoms2021 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     className="form-check-input"
                                     class={`form-check-input ${
@@ -5547,14 +5285,21 @@ not be eligible for the SETC program.
                                     name="symptoms2021"
                                     checked={formData.symptoms2021 === "Yes"}
                                     value="Yes"
-                                    // id="self_employed_from_yes"
+                                    id="symptoms2021_yes"
                                     onChange={handleInputChange}
                                   />
                                   Yes
                                 </p>
+                                </label>
                               </div>
                               <div className="optio">
-                                <p>
+                              <label for="symptoms2021_no">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.symptoms2021 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     class={`form-check-input ${
                                       errors.symptoms2021 ? "border-danger" : ""
@@ -5563,11 +5308,12 @@ not be eligible for the SETC program.
                                     name="symptoms2021"
                                     value="No"
                                     checked={formData.symptoms2021 === "No"}
-                                    // id="self_employed_from_no"
+                                    id="symptoms2021_no"
                                     onChange={handleInputChange}
                                   />
                                   No
                                 </p>
+                                </label>
                               </div>
                             </div>
 
@@ -5581,14 +5327,6 @@ not be eligible for the SETC program.
                                     >
                                       Start
                                     </label>
-                                    {/* <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  className="date-picker"
-                                  id="cared_startdate2021"
-                                  name="cared_startdate2021"
-                                /> */}
                                     <input
                                       type="date"
                                       min="2021-01-01"
@@ -5618,14 +5356,6 @@ not be eligible for the SETC program.
                                     >
                                       End
                                     </label>
-                                    {/* <input
-                                  type="date"
-                                  min="2021-01-01"
-                                  max="2021-09-30"
-                                  className="date-picker"
-                                  id="cared_enddate2021"
-                                  name="cared_enddate2021"
-                                /> */}
                                     <input
                                       type="date"
                                       min="2021-01-01"
@@ -5663,15 +5393,13 @@ not be eligible for the SETC program.
 
                                 <div className="col-lg-6">
                                   <div className="optio mb-2">
-                                    <label for="4days" className="form-label fs-6">
+                                    <label
+                                      for="4days"
+                                      className="form-label fs-6"
+                                    >
                                       Number of days:
                                     </label>
-                                    {/* <input
-                                  type="number"
-                                  className="date-picker"
-                                  id="4days"
-                                  name="4days"
-                                /> */}
+
                                     <input
                                       type="number"
                                       className={` date-picker ${
@@ -5725,52 +5453,14 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                            <div className="img-applci h-100 align-items-start">
-                              <input
-                                type="hidden"
-                                name="record_id"
-                                id="record_id"
-                                value=""
-                              />
-                              <p className="mb-0">
-                                If you were self-employed in 2020 and/or 2021, you
-                                could be eligible for the SETC. This includes sole
-                                proprietors who run businesses with employees, 1099
-                                subcontractors, and single-member LLCs. This unique
-                                tax credit is exclusively available to business
-                                owners who filed a “Schedule C” or a Partnership
-                                (1065) on their federal tax returns for 2020 and/or
-                                2021.
-                              </p>
-                              <h6 className="mt-3 warn">Important Note:</h6>
-                              <p>
-                                Sub S or True S Corps/C Corps are not eligible for
-                                the SETC.
-                              </p>
-                              <h6 className="warn">Required Documents:</h6>
-                              <p>-Driver’s License</p>
-                              <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                            </div>
-                          </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                                variant="determinate"
-                                sx={{
-                                  height: "8px",
-                                  marginBottom: 4,
-                                  borderRadius: "4px",
-                                  backgroundColor: "#f0f0f0",
-                                  "& .MuiLinearProgress-bar": {
-                                    backgroundColor: "rgb(13, 189, 243);",
-                                  },
-                                }}
-                                value={getProgressPercentage()}
-                              /> */}
-  <h1
+                          <h1
                             className=""
-                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                            style={{
+                              color: "rgb(13, 189, 243)",
+                              textAlign: "center ",
+                            }}
                           >
                             Are you eligible?
                           </h1>
@@ -5779,7 +5469,7 @@ not be eligible for the SETC program.
                               fontWeight: 300,
                               lineHeight: 0.2,
                               color: "rgb(13, 189, 243)",
-                              textAlign: 'center '
+                              textAlign: "center ",
                             }}
                             className=" mb-4"
                           >
@@ -5795,8 +5485,8 @@ not be eligible for the SETC program.
                             many days did you care for your minor child who was
                             affected by COVID, which impacted your work in 2020?
                           </label>
-                        
-                          <div >
+
+                          <div>
                             <div
                               style={{
                                 display: "flex",
@@ -5804,7 +5494,13 @@ not be eligible for the SETC program.
                               }}
                             >
                               <div className="optio mb-2">
-                                <p>
+                              <label for="closure2020_yes">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.closure2020 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     className="form-check-input"
                                     class={`form-check-input ${
@@ -5814,14 +5510,21 @@ not be eligible for the SETC program.
                                     name="closure2020"
                                     checked={formData.closure2020 === "Yes"}
                                     value="Yes"
-                                    // id="self_employed_from_yes"
+                                    id="closure2020_yes"
                                     onChange={handleInputChange}
                                   />
                                   Yes
                                 </p>
+                                </label>
                               </div>
                               <div className="optio">
-                                <p>
+                              <label for="closure2020_no">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.closure2020 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     class={`form-check-input ${
                                       errors.closure2020 ? "border-danger" : ""
@@ -5830,11 +5533,12 @@ not be eligible for the SETC program.
                                     name="closure2020"
                                     value="No"
                                     checked={formData.closure2020 === "No"}
-                                    // id="self_employed_from_no"
+                                    id="closure2020_no"
                                     onChange={handleInputChange}
                                   />
                                   No
                                 </p>
+                                </label>
                               </div>
                             </div>
 
@@ -5848,14 +5552,6 @@ not be eligible for the SETC program.
                                     >
                                       Start
                                     </label>
-                                    {/* <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  className="date-picker"
-                                  id="minor_startdate2020"
-                                  name="minor_startdate2020"
-                                /> */}
                                     <input
                                       type="date"
                                       min="2020-04-01"
@@ -5882,15 +5578,6 @@ not be eligible for the SETC program.
                                     >
                                       End
                                     </label>
-                                    {/* <input
-                                  type="date"
-                                  min="2020-04-01"
-                                  max="2020-12-31"
-                                  className="date-picker"
-                                  id="minor_enddate2020"
-                                  name="minor_enddate2020"
-                                />
-                                 */}
                                     <input
                                       type="date"
                                       min="2020-04-01"
@@ -5925,16 +5612,13 @@ not be eligible for the SETC program.
 
                                 <div className="col-lg-6">
                                   <div className="optio mb-2">
-                                    <label for="5days" className="form-label fs-6">
+                                    <label
+                                      for="5days"
+                                      className="form-label fs-6"
+                                    >
                                       Number of days:
                                     </label>
-                                    {/* <input
-                                  type="number"
-                                  placeholder="(50 days max)"
-                                  className="date-picker"
-                                  id="5days"
-                                  name="5days"
-                                /> */}
+
                                     <input
                                       type="number"
                                       placeholder="(50 days max)"
@@ -5989,52 +5673,14 @@ not be eligible for the SETC program.
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                              <div className="img-applci h-100 align-items-start">
-                                <input
-                                  type="hidden"
-                                  name="record_id"
-                                  id="record_id"
-                                  value=""
-                                />
-                                <p className="mb-0">
-                                  If you were self-employed in 2020 and/or 2021, you
-                                  could be eligible for the SETC. This includes sole
-                                  proprietors who run businesses with employees, 1099
-                                  subcontractors, and single-member LLCs. This unique
-                                  tax credit is exclusively available to business
-                                  owners who filed a “Schedule C” or a Partnership
-                                  (1065) on their federal tax returns for 2020 and/or
-                                  2021.
-                                </p>
-                                <h6 className="mt-3 warn">Important Note:</h6>
-                                <p>
-                                  Sub S or True S Corps/C Corps are not eligible for
-                                  the SETC.
-                                </p>
-                                <h6 className="warn">Required Documents:</h6>
-                                <p>-Driver’s License</p>
-                                <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                              </div>
-                            </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                                  variant="determinate"
-                                  sx={{
-                                    height: "8px",
-                                    marginBottom: 4,
-                                    borderRadius: "4px",
-                                    backgroundColor: "#f0f0f0",
-                                    "& .MuiLinearProgress-bar": {
-                                      backgroundColor: "rgb(13, 189, 243);",
-                                    },
-                                  }}
-                                  value={getProgressPercentage()}
-                                /> */}
-  <h1
+                          <h1
                             className=""
-                            style={{ color: "rgb(13, 189, 243)", textAlign: 'center ' }}
+                            style={{
+                              color: "rgb(13, 189, 243)",
+                              textAlign: "center ",
+                            }}
                           >
                             Are you eligible?
                           </h1>
@@ -6043,7 +5689,7 @@ not be eligible for the SETC program.
                               fontWeight: 300,
                               lineHeight: 0.2,
                               color: "rgb(13, 189, 243)",
-                              textAlign: 'center '
+                              textAlign: "center ",
                             }}
                             className=" mb-4"
                           >
@@ -6059,8 +5705,8 @@ not be eligible for the SETC program.
                             many days did you care for your minor child who was
                             affected by COVID, which impacted your work in 2021?
                           </label>
-                          
-                          <div >
+
+                          <div>
                             <div
                               style={{
                                 display: "flex",
@@ -6068,7 +5714,13 @@ not be eligible for the SETC program.
                               }}
                             >
                               <div className="optio mb-2">
-                                <p>
+                              <label for="closure2021_yes">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.closure2021 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     className="form-check-input"
                                     class={`form-check-input ${
@@ -6078,14 +5730,21 @@ not be eligible for the SETC program.
                                     name="closure2021"
                                     checked={formData.closure2021 === "Yes"}
                                     value="Yes"
-                                    // id="self_employed_from_yes"
+                                    id="closure2021_yes"
                                     onChange={handleInputChange}
                                   />
                                   Yes
                                 </p>
+                                </label>
                               </div>
                               <div className="optio">
-                                <p>
+                              <label for="closure2021_no">
+                                <p style={{
+                                    backgroundColor:
+                                      formData.closure2021 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}>
                                   <input
                                     class={`form-check-input ${
                                       errors.closure2021 ? "border-danger" : ""
@@ -6094,11 +5753,12 @@ not be eligible for the SETC program.
                                     name="closure2021"
                                     value="No"
                                     checked={formData.closure2021 === "No"}
-                                    // id="self_employed_from_no"
+                                    id="closure2021_no"
                                     onChange={handleInputChange}
                                   />
                                   No
                                 </p>
+                                </label>
                               </div>
                             </div>
 
@@ -6172,7 +5832,10 @@ not be eligible for the SETC program.
 
                                 <div className="col-lg-6">
                                   <div className="optio mb-2">
-                                    <label for="6days" className="form-label fs-6">
+                                    <label
+                                      for="6days"
+                                      className="form-label fs-6"
+                                    >
                                       Number of days:
                                     </label>
 
@@ -6224,204 +5887,19 @@ not be eligible for the SETC program.
         );
       case 16:
         return (
-          // <div className="step step-18">
-          // <div className="container ">
-          //   <div className="row justify-content-center">
-          //     <div className="col-lg-10">
-          //       <div className="start-application">
-          //         <div className="row ROWW">
-          //           {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-          //             <div className="img-applci h-100 align-items-start">
-          //               <input
-          //                 type="hidden"
-          //                 name="record_id"
-          //                 id="record_id"
-          //                 value=""
-          //               />
-          //               <p className="mb-0">
-          //                 If you were self-employed in 2020 and/or 2021, you
-          //                 could be eligible for the SETC. This includes sole
-          //                 proprietors who run businesses with employees, 1099
-          //                 subcontractors, and single-member LLCs. This unique
-          //                 tax credit is exclusively available to business
-          //                 owners who filed a “Schedule C” or a Partnership
-          //                 (1065) on their federal tax returns for 2020 and/or
-          //                 2021.
-          //               </p>
-          //               <h6 className="mt-3 warn">Important Note:</h6>
-          //               <p>
-          //                 Sub S or True S Corps/C Corps are not eligible for
-          //                 the SETC.
-          //               </p>
-          //               <h6 className="warn">Required Documents:</h6>
-          //               <p>-Driver’s License</p>
-          //               <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-          //             </div>
-          //           </div> */}
-          //           <div className="col-lg-12 col-md-12 col-sm-12">
-          //             <div className="img-applic-content">
-          //               {/* <LinearProgress
-          //                 variant="determinate"
-          //                 sx={{
-          //                   height: "8px",
-          //                   marginBottom: 4,
-          //                   borderRadius: "4px",
-          //                   backgroundColor: "#f0f0f0",
-          //                   "& .MuiLinearProgress-bar": {
-          //                     backgroundColor: "rgb(13, 189, 243);",
-          //                   },
-          //                 }}
-          //                 value={getProgressPercentage()}
-          //               /> */}
-          //             <h1 className="text-center">What was my Net Income for
-          //                                                     the years 2019,2020 and 2021?</h1>
-          //                                                     <h2 style="color: red;">Located on line 6 of your Schedule C (Form 1040)</h2>
-          //                                                 <h5 className="text-center">8 of 8</h5>
-          //                                                 <p><span style="color: red;">Note:</span>Must be greater than $25,000.00
-          //                                                     for 2 of the three years</p>
-          //                                                         {/* <label for="self_employed_from"
-          //                                                             className="form-label headng " style={{ fontWeight: '600'}}>
-          //                                                      Were you self-employed from
-          //                                                               4/1/2020-9/30/2021?
-          //                                                         </label> */}
-
-          //                                                         <label for="net_income_2019" className="form-label fs-5">
-          //         Total NET Income For 2019?
-          //       </label>
-          //       <div className="optio mb-2">
-          //         <input
-          //           type="text"
-          //           value={formData.netIncome2019}
-          //           class={` for ${
-          //             errors.netIncome2019 ? "border-danger" : ""
-          //           }`}
-          //           name="netIncome2019"
-          //           onChange={handleInputChange}
-          //           placeholder="$"
-          //           id="net_income_2019"
-          //         />
-          //       </div>
-          //       <label for="net_income_2020" className="form-label fs-5">
-          //         Total NET Income For 2020?
-          //       </label>
-          //       <div className="optio mb-2">
-          //         <input
-          //           type="text"
-          //           value={formData.netIncome2020}
-          //           name="netIncome2020"
-          //           class={` for ${
-          //             errors.netIncome2020 ? "border-danger" : ""
-          //           }`}
-          //           placeholder="$"
-          //           onChange={handleInputChange}
-          //           id="net_income_2020"
-          //         />
-          //       </div>
-          //       <label for="net_income_2021" className="form-label fs-5">
-          //         Total NET Income For 2021?
-          //       </label>
-          //       <div className="optio mb-2">
-          //         <input
-          //           type="text"
-          //           value={formData.netIncome2021}
-          //           name="netIncome2021"
-          //           class={` for ${
-          //             errors.netIncome2021 ? "border-danger" : ""
-          //           }`}
-          //           placeholder="$"
-          //           onChange={handleInputChange}
-          //           id="net_income_2021"
-          //         />
-          //       </div>
-
-          //               <div className="d-flex justify-content-end mt-3">
-          //                 <button
-          //                   onClick={handlePrevious}
-          //                   type="button"
-          //                   className="px-3 py-2 prev-step"
-          //                 >
-          //                   Previous
-          //                 </button>
-          //                 <button
-          //                   onClick={handleNext}
-          //                   type="button"
-          //                   className="px-3 py-2 next-step"
-          //                 >
-          //                   {activeStep === steps.length - 1
-          //                     ? "Submit"
-          //                     : "Next"}
-          //                 </button>
-          //               </div>
-          //               </div>
-
-          //             </div>
-          //           </div>
-          //         </div>
-          //       </div>
-          //     </div>
-          //   </div>
-          // </div>
           <div className="step step-17">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
                   <div className="start-application">
                     <div className="row ROWW">
-                      {/* <div className="col-lg-6 col-md-6 col-sm-12 pe-0">
-                                <div className="img-applci h-100 align-items-start">
-                                  <input
-                                    type="hidden"
-                                    name="record_id"
-                                    id="record_id"
-                                    value=""
-                                  />
-                                  <p className="mb-0">
-                                    If you were self-employed in 2020 and/or 2021, you
-                                    could be eligible for the SETC. This includes sole
-                                    proprietors who run businesses with employees, 1099
-                                    subcontractors, and single-member LLCs. This unique
-                                    tax credit is exclusively available to business
-                                    owners who filed a “Schedule C” or a Partnership
-                                    (1065) on their federal tax returns for 2020 and/or
-                                    2021.
-                                  </p>
-                                  <h6 className="mt-3 warn">Important Note:</h6>
-                                  <p>
-                                    Sub S or True S Corps/C Corps are not eligible for
-                                    the SETC.
-                                  </p>
-                                  <h6 className="warn">Required Documents:</h6>
-                                  <p>-Driver’s License</p>
-                                  <p>-1040 with schedule C for 2019, 2020, and 2021</p>
-                                </div>
-                              </div> */}
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-                          {/* <LinearProgress
-                                    variant="determinate"
-                                    sx={{
-                                      height: "8px",
-                                      marginBottom: 4,
-                                      borderRadius: "4px",
-                                      backgroundColor: "#f0f0f0",
-                                      "& .MuiLinearProgress-bar": {
-                                        backgroundColor: "rgb(13, 189, 243);",
-                                      },
-                                    }}
-                                    value={getProgressPercentage()}
-                                  /> */}
-
-                         
-                        
-                          <div >
-                            {/* <h1 style={{  color: 'rgb(13, 189, 243)'}} >Did you file your schedule SE
-                                                                                  (Self-Employment
-                                                                                  Tax) for the years of 2020 or 2021?</h1> */}
-
+                          <div>
                             <label
                               for="net_income_2019"
                               className="form-label fs-5"
-                              style={{color: '#00B6FF'}}
+                              style={{ color: "#00B6FF" }}
                             >
                               Total NET Income For 2019?
                             </label>
@@ -6441,7 +5919,7 @@ not be eligible for the SETC program.
                             <label
                               for="net_income_2020"
                               className="form-label fs-5"
-                              style={{color: '#00B6FF'}}
+                              style={{ color: "#00B6FF" }}
                             >
                               Total NET Income For 2020?
                             </label>
@@ -6461,7 +5939,7 @@ not be eligible for the SETC program.
                             <label
                               for="net_income_2021"
                               className="form-label fs-5"
-                              style={{color: '#00B6FF'}}
+                              style={{ color: "#00B6FF" }}
                             >
                               Total NET Income For 2021?
                             </label>
@@ -6478,14 +5956,14 @@ not be eligible for the SETC program.
                                 id="net_income_2021"
                               />
                             </div>
-                            {
-                              activeErrorQualify17 && (
-                                <div>
-                                  <h4 style={{ color: "#e62e2d" }}>
-                                  Value must be more or equal to 25k for two input fileds.
-                                  </h4>
-                                </div>
-                              )}
+                            {activeErrorQualify17 && (
+                              <div>
+                                <h4 style={{ color: "#e62e2d" }}>
+                                  Value must be more or equal to 25k for two
+                                  input fileds.
+                                </h4>
+                              </div>
+                            )}
 
                             <div className="d-flex justify-content-end mt-3">
                               <button
@@ -6528,9 +6006,8 @@ not be eligible for the SETC program.
                       <div
                         className="col-lg-6 col-md-6 col-sm-12 pe-0 backGround"
                         style={{
-                          backgroundImage: 'linear-gradient(#dff5fc, #dff5fc)',
-                          borderRadius: '12px'
-
+                          backgroundImage: "linear-gradient(#dff5fc, #dff5fc)",
+                          borderRadius: "12px",
                         }}
                       >
                         <div
@@ -6538,29 +6015,28 @@ not be eligible for the SETC program.
                           style={{ backgroundImage: "none " }}
                         >
                           <div className="col-lg-12">
-                            {/* <div className="step-9-congrats">
-                              <div className="step_9_con border-0 d-flex justify-content-center">
-                                <h3 className="text-success text-center fs-1 mb-3">
-                                  Congratulations!
-                                </h3>
+                            <div
+                              style={boxSttyle}
+                              className="desktop-box"
+                              css={styles[mediaQuery]}
+                            >
+                              <Confetti
+                                width={width}
+                                height={height}
+                                style={confettiStyle}
+                              />
+                              <div style={{ textAlign: "center" }}>
+                                <h1>Congratulations!</h1>
                               </div>
-                            </div> */}
-                              <div style={boxSttyle} className="desktop-box" css={styles[mediaQuery]}>
-        <Confetti
-          width={width}
-          height={height}
-          style={confettiStyle}
-        />
-        <div style={{ textAlign: 'center' }}>
-          <h1>Congratulations!</h1>
-          </div>
-          </div>
+                            </div>
                           </div>
-                          
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6 col-sm-12 ">
-                        <div className="img-applic-content d-flex align-items-center" style={{padding: '14px'}}>
+                        <div
+                          className="img-applic-content d-flex align-items-center"
+                          style={{ padding: "14px" }}
+                        >
                           <div className="row justify-content-center align-items-center">
                             <div className="col-lg-12">
                               <div className="h-100 d-flex align-items-center flex-column">
@@ -6568,12 +6044,7 @@ not be eligible for the SETC program.
                                   <h3 className="text-success text-center fs-1 mb-3">
                                     Hurray!
                                   </h3>
-                                  {/* <h6 className="fs-4">
-                                    You may be eligible for
-                                    <span className="text-success">{finalIncomeValue || finalCreditAmountStorage}</span>. We
-                                    encourage you to complete the application
-                                    and get paid. 🤩
-                                  </h6> */}
+
                                   <h3 className="fs-4">
                                     Based on the information you provided, we’ve
                                     estimated that you might be eligible for up
@@ -6624,154 +6095,86 @@ not be eligible for the SETC program.
               </div>
             </div>
           </div>
-//           <div style={{
-//             margin: '0',
-//             display: 'flex',
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//             height: '100vh'
-          
-//           }}>
-//           <div class="ROWW" style={{
-//              maxWidth: '80%',
-//              backgroundColor: 'white',
-//              borderRadius: '10px',
-//              border: '4px solid #00B6FF',
-//              padding: '20px',
-           
-//              textAlign: 'center'
-//           }}>  
-//             <img src={congrats} alt="Your Image" class="responsive-image"/>
-
-//         <div style={{background: 'linear-gradient(45deg, rgb(176 233 255), transparent) rgb(240, 240, 240)'
-
-// }}>
-//          <Typography sx={{color: 'var(--ds-text, var(--ds-text, #172B4D))', marginTop: 2, fontSize:{xs: 16,sm: 14, md:20, lg:20}, fontStyle: 'italic' }}>
-//                                     Based on the information you provided, we’ve
-//                                     estimated that you might be eligible for up
-//                                     to
-//                                     <span
-//                                       className="text-success text-success text-center h3 fs-1 mb-3"
-//                                       id="final_amount"
-//                                     >
-//                                       {" "}
-//                                       {finalIncomeValue ||
-//                                         finalCreditAmountStorage}
-//                                     </span>
-//                                     <br />
-//                                   </Typography>
-//                                   <Typography sx={{color: '#4f4545', fontSize:{xs: 13,sm: 13, md:16, lg:16}, fontStyle: 'italic', marginTop: 3 }}>
-
-//                                     The next step is to upload your documents
-//                                     for our CPAs to calculate your exact credit
-//                                     amount.
-//                                   </Typography>
-                                 
-//                                 </div>
-//                                 <div className="d-flex justify-content-center mt-3">
-//                                   <button
-//                                     onClick={handlePrevious}
-//                                     type="button"
-//                                     className="px-3 py-2 prev-step"
-//                                   >
-//                                     Previous
-//                                   </button>
-//                                   <button
-//                                     onClick={handleNext}
-//                                     type="button"
-//                                     className="px-3 py-2 next-step"
-//                                   >
-//                                     {activeStep === steps.length - 1
-//                                       ? "Submit"
-//                                       : "Next"}
-//                                   </button>
-//                                 </div>
-//         </div>
-//         </div>
         );
       case 18:
         return (
           <div className="row justify-content-center step step-19">
-            <div className="col-lg-8" style={{marginTop: '32px'}}>
+            <div className="col-lg-8" style={{ marginTop: "32px" }}>
               <div
                 className="step step-10 bg-white shadow px-3 py-5"
                 style={{ borderRadius: "20px" }}
               >
-                {/* <div className="progress mb-4" style={{height: "15px"}}>
-                                <input type="hidden" name="record_id" id="record_id" value=""/>
-                                <div className="progress-bar" role="progressbar" style={{width: "0%"}} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div> */}
-                {/* <LinearProgress
-                  variant="determinate"
-                  sx={{
-                    height: "8px",
-                    marginBottom: 4,
-                    borderRadius: "4px",
-                    backgroundColor: "#f0f0f0",
-                    "& .MuiLinearProgress-bar": {
-                      backgroundColor: "rgb(13, 189, 243);",
-                    },
-                  }}
-                  value={getProgressPercentage()}
-                /> */}
-<div>
-                                                 <p style = {{
-  fontSize: '13.5px',
-  color: 'gray',
-  background: 'linear-gradient(45deg, transparent, #c1ebf4, transparent)',
-  fontStyle: 'italic',
-}}>
-                                                  <span style={{color: '#e62e2d', fontWeight: 'bold'}}>Notice: </span> Kindly make sure that each document is uploaded before selecting the "submit now" button to prevent any loss of data.
-                                                  If you don't have all the paperwork completed and would like to submit them again at a later time. Please submit any papers that are accessible, then click "Submit Documents Later". We will provide you a link to submit the remaining files after we get the ones you have already uploaded.
-                                                 </p>
-                                            </div>
-                <h3 style={{fontWeight: 'bold'}}>Documents</h3>
+                <div>
+                  <p
+                    style={{
+                      fontSize: "13.5px",
+                      color: "gray",
+                      background:
+                        "linear-gradient(45deg, transparent, #c1ebf4, transparent)",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    <span style={{ color: "#e62e2d", fontWeight: "bold" }}>
+                      Notice:{" "}
+                    </span>{" "}
+                    Kindly make sure that each document is uploaded before
+                    selecting the "submit now" button to prevent any loss of
+                    data. If you don't have all the paperwork completed and
+                    would like to submit them again at a later time. Please
+                    submit any papers that are accessible, then click "Submit
+                    Documents Later". We will provide you a link to submit the
+                    remaining files after we get the ones you have already
+                    uploaded.
+                  </p>
+                </div>
+                <h3 style={{ fontWeight: "bold" }}>Documents</h3>
 
                 <div className="mb-3 file_div">
                   <label for="driving_licence" className="form-label">
                     A PDF Copy of a Current ID or Driver's License
                   </label>
                   {userData?.driving_licence &&
-  userData?.driving_licence.length > 0 ? (
-    userData.driving_licence.map((file, index) => {
-      const fileName = userData.driving_licence_name[index];
-      const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+                  userData?.driving_licence.length > 0 ? (
+                    userData.driving_licence.map((file, index) => {
+                      const fileName = userData.driving_licence_name[index];
+                      const shouldHideRemoveButton =
+                        isThirtySecondsPassed(fileName);
 
-      return (
-        <div key={index} className="containerr">
-        <div className="itemm">
-          <TaskAlt />
-          <span className="namee">
-            {userData.driving_licence_name[index]}
-          </span>
-        </div>
-        <div
-          className="itemm"
-          style={{ padding: "0px 20px !important" }}
-        >
-          <div
-            onClick={() =>
-              openFileInNewTab("driving_licence", index)
-            }
-            className="buttonn"
-          >
-            View
-          </div>
-            {/* {!shouldHideRemoveButton && ( */}
-              <div
-                onClick={() =>
-                  removeFile('driving_licence', index, fileName)
-                }
-                className="buttonn"
-              >
-                Remove
-              </div>
-            {/* )} */}
-          </div>
-        </div>
-      );
-    })
-  ): (
+                      return (
+                        <div key={index} className="containerr">
+                          <div className="itemm">
+                            <TaskAlt />
+                            <span className="namee">
+                              {userData.driving_licence_name[index]}
+                            </span>
+                          </div>
+                          <div
+                            className="itemm"
+                            style={{ padding: "0px 20px !important" }}
+                          >
+                            <div
+                              onClick={() =>
+                                openFileInNewTab("driving_licence", index)
+                              }
+                              className="buttonn"
+                            >
+                              View
+                            </div>
+                            {/* {!shouldHideRemoveButton && ( */}
+                            <div
+                              onClick={() =>
+                                removeFile("driving_licence", index, fileName)
+                              }
+                              className="buttonn"
+                            >
+                              Remove
+                            </div>
+                            {/* )} */}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
                     <input
                       style={{ marginTop: 20 }}
                       type="file"
@@ -6785,10 +6188,6 @@ not be eligible for the SETC program.
                     />
                   )}
 
-                  {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                   {userData?.driving_licence &&
                     userData?.driving_licence.length > 0 && (
                       <button
@@ -6800,14 +6199,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={() => handleAddFileClick('driving_licence')}
+                        onClick={() => handleAddFileClick("driving_licence")}
                       >
                         Add File
                       </button>
                     )}
 
-          {addingFileType === 'driving_licence' && (
-
+                  {addingFileType === "driving_licence" && (
                     <FileInputComponent
                       inputName="driving_licence"
                       onRemove={handleRemoveInput}
@@ -6821,7 +6219,7 @@ not be eligible for the SETC program.
                     />
                   )}
                 </div>
-                
+
                 <div className="mb-3 file_div">
                   <label for="schedule_pdf" className="form-label">
                     A PDF Copy of your 2019 Form 1040 (Tax Return), including
@@ -6833,46 +6231,47 @@ not be eligible for the SETC program.
                   userData?.schedule_pdf.length > 0 ? (
                     userData.schedule_pdf.map((file, index) => {
                       const fileName = userData.schedule_pdf_name[index];
-                      const shouldHideRemoveButton = isThirtySecondsPassed(fileName);
+                      const shouldHideRemoveButton =
+                        isThirtySecondsPassed(fileName);
 
-                  return  (
-                      <div key={index} className="containerr">
-                        <div className="itemm">
-                          <TaskAlt />
-                          <span className="namee">
-                            {userData.schedule_pdf_name[index]}
-                          </span>
-                        </div>
-                        <div
-                          className="itemm"
-                          style={{ padding: "0px 20px !important" }}
-                        >
-                          <div
-                            onClick={() =>
-                              openFileInNewTab("schedule_pdf", index)
-                            }
-                            className="buttonn"
-                          >
-                            View
+                      return (
+                        <div key={index} className="containerr">
+                          <div className="itemm">
+                            <TaskAlt />
+                            <span className="namee">
+                              {userData.schedule_pdf_name[index]}
+                            </span>
                           </div>
-                          {!shouldHideRemoveButton && (
+                          <div
+                            className="itemm"
+                            style={{ padding: "0px 20px !important" }}
+                          >
                             <div
                               onClick={() =>
-                                removeFile(
-                                  "schedule_pdf",
-                                  index,
-                                  userData.schedule_pdf_name[index]
-                                )
+                                openFileInNewTab("schedule_pdf", index)
                               }
                               className="buttonn"
                             >
-                              Remove
+                              View
                             </div>
-                          )}
+                          
+                              <div
+                                onClick={() =>
+                                  removeFile(
+                                    "schedule_pdf",
+                                    index,
+                                    userData.schedule_pdf_name[index]
+                                  )
+                                }
+                                className="buttonn"
+                              >
+                                Remove
+                              </div>
+                          
+                          </div>
                         </div>
-                      </div>
-                    )
-                            })
+                      );
+                    })
                   ) : (
                     <input
                       style={{ marginTop: 20 }}
@@ -6902,13 +6301,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={() => handleAddFileClick('schedule_pdf')}
+                        onClick={() => handleAddFileClick("schedule_pdf")}
                       >
                         Add File
                       </button>
                     )}
 
-             {addingFileType === 'schedule_pdf'  && (
+                  {addingFileType === "schedule_pdf" && (
                     <FileInputComponent
                       inputName="schedule_pdf"
                       onRemove={handleRemoveInput}
@@ -6922,12 +6321,6 @@ not be eligible for the SETC program.
                     />
                   )}
                 </div>
-
-
-
-
-
-
 
                 <div className="mb-3 file_div">
                   <label for="Tax_Return_2020" className="form-label">
@@ -6989,10 +6382,6 @@ not be eligible for the SETC program.
                     />
                   )}
 
-                  {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                   {userData?.Tax_Return_2020 &&
                     userData?.Tax_Return_2020.length > 0 && (
                       <button
@@ -7004,13 +6393,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={() => handleAddFileClick('Tax_Return_2020')}
+                        onClick={() => handleAddFileClick("Tax_Return_2020")}
                       >
                         Add File
                       </button>
                     )}
 
-{addingFileType === 'Tax_Return_2020'  && (
+                  {addingFileType === "Tax_Return_2020" && (
                     <FileInputComponent
                       inputName="Tax_Return_2020"
                       onRemove={handleRemoveInput}
@@ -7082,10 +6471,6 @@ not be eligible for the SETC program.
                     />
                   )}
 
-                  {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                   {userData?.Tax_Return_2021 &&
                     userData?.Tax_Return_2021.length > 0 && (
                       <button
@@ -7097,13 +6482,13 @@ not be eligible for the SETC program.
                           color: "white",
                           background: "#3c4d77",
                         }}
-                        onClick={() => handleAddFileClick('Tax_Return_2021')}
+                        onClick={() => handleAddFileClick("Tax_Return_2021")}
                       >
                         Add File
                       </button>
                     )}
 
-{addingFileType === 'Tax_Return_2021'  && (
+                  {addingFileType === "Tax_Return_2021" && (
                     <FileInputComponent
                       inputName="Tax_Return_2021"
                       onRemove={handleRemoveInput}
@@ -7201,10 +6586,6 @@ not be eligible for the SETC program.
                           />
                         )}
 
-                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                         {userData?.supplemental_attachment_2020 &&
                           userData?.supplemental_attachment_2020.length > 0 && (
                             <button
@@ -7216,13 +6597,17 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={() => handleAddFileClick('supplemental_attachment_2020')}
+                              onClick={() =>
+                                handleAddFileClick(
+                                  "supplemental_attachment_2020"
+                                )
+                              }
                             >
                               Add File
                             </button>
                           )}
 
-{addingFileType === 'supplemental_attachment_2020'  && (
+                        {addingFileType === "supplemental_attachment_2020" && (
                           <FileInputComponent
                             inputName="supplemental_attachment_2020"
                             onRemove={handleRemoveInput}
@@ -7317,10 +6702,6 @@ not be eligible for the SETC program.
                           />
                         )}
 
-                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                         {userData?.supplemental_attachment_2021 &&
                           userData?.supplemental_attachment_2021.length > 0 && (
                             <button
@@ -7332,13 +6713,17 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={() => handleAddFileClick('supplemental_attachment_2021')}
+                              onClick={() =>
+                                handleAddFileClick(
+                                  "supplemental_attachment_2021"
+                                )
+                              }
                             >
                               Add File
                             </button>
                           )}
 
-{addingFileType === 'supplemental_attachment_2021'  && (
+                        {addingFileType === "supplemental_attachment_2021" && (
                           <FileInputComponent
                             inputName="supplemental_attachment_2021"
                             onRemove={handleRemoveInput}
@@ -7411,10 +6796,6 @@ not be eligible for the SETC program.
                           />
                         )}
 
-                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                         {userData?.FormA1099 &&
                           userData?.FormA1099.length > 0 && (
                             <button
@@ -7426,13 +6807,13 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={() => handleAddFileClick('FormA1099')}
+                              onClick={() => handleAddFileClick("FormA1099")}
                             >
                               Add File
                             </button>
                           )}
 
-{addingFileType === 'FormA1099'  && (
+                        {addingFileType === "FormA1099" && (
                           <FileInputComponent
                             inputName="FormA1099"
                             onRemove={handleRemoveInput}
@@ -7505,10 +6886,6 @@ not be eligible for the SETC program.
                           />
                         )}
 
-                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                         {userData?.FormB1099 &&
                           userData?.FormB1099.length > 0 && (
                             <button
@@ -7520,13 +6897,13 @@ not be eligible for the SETC program.
                                 color: "white",
                                 background: "#3c4d77",
                               }}
-                              onClick={() => handleAddFileClick('FormB1099')}
+                              onClick={() => handleAddFileClick("FormB1099")}
                             >
                               Add File
                             </button>
                           )}
 
-{addingFileType === 'FormB1099'  && (
+                        {addingFileType === "FormB1099" && (
                           <FileInputComponent
                             inputName="FormB1099"
                             onRemove={handleRemoveInput}
@@ -7597,10 +6974,6 @@ not be eligible for the SETC program.
                           />
                         )}
 
-                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                         {userData?.ks2020 && userData?.ks2020.length > 0 && (
                           <button
                             style={{
@@ -7611,13 +6984,13 @@ not be eligible for the SETC program.
                               color: "white",
                               background: "#3c4d77",
                             }}
-                            onClick={() => handleAddFileClick('ks2020')}
+                            onClick={() => handleAddFileClick("ks2020")}
                           >
                             Add File
                           </button>
                         )}
 
-{addingFileType === 'ks2020'  && (
+                        {addingFileType === "ks2020" && (
                           <FileInputComponent
                             inputName="ks2020"
                             onRemove={handleRemoveInput}
@@ -7688,10 +7061,6 @@ not be eligible for the SETC program.
                           />
                         )}
 
-                        {/* {userData?.driving_licence && userData?.driving_licence.length > 0 && (
-            <button >Add File</button>
-          )} */}
-
                         {userData?.ks22020 && userData?.ks22020.length > 0 && (
                           <button
                             style={{
@@ -7702,13 +7071,13 @@ not be eligible for the SETC program.
                               color: "white",
                               background: "#3c4d77",
                             }}
-                            onClick={() => handleAddFileClick('ks22020')}
+                            onClick={() => handleAddFileClick("ks22020")}
                           >
                             Add File
                           </button>
                         )}
 
-{addingFileType === 'ks22020'  && (
+                        {addingFileType === "ks22020" && (
                           <FileInputComponent
                             inputName="ks22020"
                             onRemove={handleRemoveInput}
@@ -7800,7 +7169,10 @@ not be eligible for the SETC program.
                           className="modal-header py-2"
                           style={{ borderBottom: "none" }}
                         >
-                          <h5 className="modal-title" id="exampleModalLabel"></h5>
+                          <h5
+                            className="modal-title"
+                            id="exampleModalLabel"
+                          ></h5>
 
                           <a href="#">
                             <i
@@ -7817,15 +7189,18 @@ not be eligible for the SETC program.
                             style={{ width: "120px" }}
                           />
                           <h5 className="text-center pb-4">
-                            <span className="text-success">Congratultion</span> Your
-                            application has been submitted!{" "}
+                            <span className="text-success">Congratultion</span>{" "}
+                            Your application has been submitted!{" "}
                           </h5>
                           <h5 className="text-center">
                             Our team will get back to you in 24-72 hours. Thank
                             you.
                           </h5>
 
-                          <a href="#" className="btn btn-primary px-5 go-on-btn">
+                          <a
+                            href="#"
+                            className="btn btn-primary px-5 go-on-btn"
+                          >
                             Go on
                           </a>
                         </div>
@@ -7847,7 +7222,10 @@ not be eligible for the SETC program.
                           className="modal-header py-2"
                           style={{ borderBottom: "none" }}
                         >
-                          <h5 className="modal-title" id="exampleModalLabel"></h5>
+                          <h5
+                            className="modal-title"
+                            id="exampleModalLabel"
+                          ></h5>
 
                           <a href="">
                             <i
@@ -7868,7 +7246,10 @@ not be eligible for the SETC program.
                             application has been submittd.We will send you a
                             personalupload link for your documents.
                           </h5>
-                          <a href="#" className="btn btn-primary px-5 go-on-btn2">
+                          <a
+                            href="#"
+                            className="btn btn-primary px-5 go-on-btn2"
+                          >
                             Go on
                           </a>
                         </div>
@@ -7956,7 +7337,12 @@ not be eligible for the SETC program.
                 height: "30px", // Adjust size as needed
               }}
             >
-              <Check sx={{ fontSize: {sm: 12, xs: 12, md: 20, lg: 20} ,fontWeight: "bold" }} />
+              <Check
+                sx={{
+                  fontSize: { sm: 12, xs: 12, md: 20, lg: 20 },
+                  fontWeight: "bold",
+                }}
+              />
             </Avatar>
           ) : (
             <Avatar
@@ -8014,24 +7400,23 @@ not be eligible for the SETC program.
           " linear-gradient(direction, color-stop1, color-stop2)",
       }}
     >
-      {
-        activeStep !== 0 &&
+      {loading && <LoadingScreen />}
+      {activeStep !== 0 &&
         activeStep !== 1 &&
         userData?.applicationWithDocument !== true &&
-        userData?.applicationStatus !== true && 
-       (
-        <>
-          {activeStep <= 8 && (
-            <Stepper
-              className="first-stepper container"
-              activeStep={activeStep}
-              alternativeLabel
-              connector={<QontoConnector />}
-            >
-              {activeStep <= 8 &&
-                steps1.map((label) => (
-                  <Step key={label}>
-                    {/* <StepLabel
+        userData?.applicationStatus !== true && (
+          <>
+            {activeStep <= 8 && (
+              <Stepper
+                className="first-stepper container"
+                activeStep={activeStep}
+                alternativeLabel
+                connector={<QontoConnector />}
+              >
+                {activeStep <= 8 &&
+                  steps1.map((label) => (
+                    <Step key={label}>
+                      {/* <StepLabel
               sx={{
                 '& .MuiStepLabel-label': {
                   color: activeStep === index ? 'green' : 'gray', // Change label color based on active step
@@ -8040,125 +7425,118 @@ not be eligible for the SETC program.
             >
               {label}
             </StepLabel> */}
-                    <StepLabel
-                      sx={{
-                        "& .MuiStepLabel-label.Mui-completed": {
-                          color: "#00b6ff", // Change label color based on active step
-                          fontWeight: "300",
-                          fontSize: 16
-                        },
-                        "& .MuiStepLabel-label.Mui-active": {
-                          color: "#00b6ff", // Change label color based on active step
-                          fontWeight: "300",
-                          fontSize: 16
-                        },
-                        "& .MuiStepLabel-label": {
-                          color: "gray", // Change label color based on active step
-                          fontWeight: "300",
-                          fontSize: 16
-                        },
-                      }}
-                      StepIconComponent={QontoStepIcon}
-                    >
-                      {label}
-                    </StepLabel>
-                  </Step>
-                ))}
-            </Stepper>
-          )}
-        </>
-      )}
-      {activeStep > 8 && activeStep !== 18 && 
-       userData?.applicationWithDocument !== true &&
-       userData?.applicationStatus !== true && 
-      
-      (
-        <Stepper
-          className="container secondStepper" style={{width: '40px !important'}}
-          activeStep={activeStep - 9}
-          alternativeLabel
-          connector={<QontoConnector />}
-        >
-          {steps2.map((label, index) => (
-            <Step key={label}>
-              {/* <StepLabel
-             sx={{
-               '& .MuiStepLabel-label': {
-                 color: activeStep === index ? 'green' : 'gray', // Change label color based on active step
-               },
-             }}
-           >
-             {label}
-           </StepLabel> */}
-              <StepLabel
-                sx={{
-                  "& .MuiStepLabel-label.Mui-completed": {
-                    color:  index === 8 ? "red" : "#00b6ff", // Change label color based on active step
-                    fontWeight: "300",
-                    fontSize: 16
-                  },
-                  "& .MuiStepLabel-label.Mui-active": {
-                    color:  index === 8 ? "red" : "#00b6ff", // Change label color based on active step
-                    fontWeight: "300",
-                    fontSize: 16
-                  },
-                  "& .MuiStepLabel-label": {
-                    color: index === 8 ? "red" : "gray", // Change label color based on active step
-                    fontWeight: "300",
-                    fontSize: 16
-                  },
-                }}
-                StepIconComponent={QontoStepIcon}
-              >
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      )}
+                      <StepLabel
+                        sx={{
+                          "& .MuiStepLabel-label.Mui-completed": {
+                            color: "#00b6ff", // Change label color based on active step
+                            fontWeight: "300",
+                            fontSize: 16,
+                          },
+                          "& .MuiStepLabel-label.Mui-active": {
+                            color: "#00b6ff", // Change label color based on active step
+                            fontWeight: "300",
+                            fontSize: 16,
+                          },
+                          "& .MuiStepLabel-label": {
+                            color: "gray", // Change label color based on active step
+                            fontWeight: "300",
+                            fontSize: 16,
+                          },
+                        }}
+                        StepIconComponent={QontoStepIcon}
+                      >
+                        {label}
+                      </StepLabel>
+                    </Step>
+                  ))}
+              </Stepper>
+            )}
+          </>
+        )}
+      {activeStep > 8 &&
+        activeStep !== 18 &&
+        userData?.applicationWithDocument !== true &&
+        userData?.applicationStatus !== true && (
+          <Stepper
+            className="container secondStepper"
+            style={{ width: "40px !important" }}
+            activeStep={activeStep - 9}
+            alternativeLabel
+            connector={<QontoConnector />}
+          >
+            {steps2.map((label, index) => (
+              <Step key={label}>
+                <StepLabel
+                  sx={{
+                    "& .MuiStepLabel-label.Mui-completed": {
+                      color: index === 8 ? "red" : "#00b6ff", // Change label color based on active step
+                      fontWeight: "300",
+                      fontSize: 16,
+                    },
+                    "& .MuiStepLabel-label.Mui-active": {
+                      color: index === 8 ? "red" : "#00b6ff", // Change label color based on active step
+                      fontWeight: "300",
+                      fontSize: 16,
+                    },
+                    "& .MuiStepLabel-label": {
+                      color: index === 8 ? "red" : "gray", // Change label color based on active step
+                      fontWeight: "300",
+                      fontSize: 16,
+                    },
+                  }}
+                  StepIconComponent={QontoStepIcon}
+                >
+                  {label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        )}
       {activeStep === 18 &&
-       userData?.applicationWithDocument !== true &&
-       userData?.applicationStatus !== true && 
-      (
-        <Stepper
-          className="nineteenStepper container"
-          activeStep={1}
-          alternativeLabel
-          connector={<CustomConnector />}
-        >
-          {steps18.map((label, index) => (
-            <Step key={label}>
-              <StepLabel
-                sx={{
-                 
-                  "& .MuiStepLabel-alternativeLabel": {
-                    color: index === 2 ? "gray !important" : index === 1 ? "red !important" : "#00b6ff !important",
-                    fontWeight: "500",
-                    fontSize: 17
-                  },
-              
-                }}
-                StepIconComponent={(props) => (
-                  <CustomStepIcon
-                    {...props}
-                    completed={index < 1}
-                    active={index === 1}
-                    // isIndex7={index === 7} // Change based on the current active step
-                  >
-                    { index === 2 ? (
-                      <Check style={{ color: "#00b6ff" }} />
-                    ) : (
-                      <Check style={{ color: "white" }} />
-                    )}
-                  </CustomStepIcon>
-                )}
-              >
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      )}
+        userData?.applicationWithDocument !== true &&
+        userData?.applicationStatus !== true && (
+          <Stepper
+            className="nineteenStepper container"
+            activeStep={1}
+            alternativeLabel
+            connector={<CustomConnector />}
+          >
+            {steps18.map((label, index) => (
+              <Step key={label}>
+                <StepLabel
+                  sx={{
+                    "& .MuiStepLabel-alternativeLabel": {
+                      color:
+                        index === 2
+                          ? "gray !important"
+                          : index === 1
+                          ? "red !important"
+                          : "#00b6ff !important",
+                      fontWeight: "500",
+                      fontSize: 17,
+                    },
+                  }}
+                  StepIconComponent={(props) => (
+                    <CustomStepIcon
+                      {...props}
+                      completed={index < 1}
+                      active={index === 1}
+                      // isIndex7={index === 7} // Change based on the current active step
+                    >
+                      {index === 2 ? (
+                        <Check style={{ color: "#00b6ff" }} />
+                      ) : (
+                        <Check style={{ color: "white" }} />
+                      )}
+                    </CustomStepIcon>
+                  )}
+                >
+                  {label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        )}
 
       {userData?.applicationStatus !== true &&
         userData?.applicationWithDocument !== true && <>{getStepContent()}</>}
@@ -8169,18 +7547,19 @@ not be eligible for the SETC program.
             <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
               <img src={gifTick} style={{ width: "120px" }} />
               <h5 className="text-center pb-4">
-                <span className="text-success">Great</span>, your application has
-                been submitted. We will send you a personal upload link for your
-                documents.
+                <span className="text-success">Great</span>, your application
+                has been submitted. We will send you a personal upload link for
+                your documents.
               </h5>
 
               <button
                 type="button"
-                data-bs-dismiss="modal"
+                onClick={handleGo}
+                
                 className="btn btn-primary"
-                id="confirmSubmitButton1"
+               
               >
-                Go on
+                Check your application Status
               </button>
             </div>
           </div>
@@ -8202,35 +7581,21 @@ not be eligible for the SETC program.
               </h5>
 
               <button
-                style={{ marginTop: 8 }}
+                style={{ marginTop: 33 }}
+                onClick={handleGo}
                 type="button"
-                data-bs-dismiss="modal"
+               
                 className="btn btn-primary"
-                id="confirmSubmitButton1"
+              
               >
-                Go on
+                Check you application status
               </button>
             </div>
           </div>
         </>
       )}
       <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-        {/* <Button
-          color="inherit"
-          disabled={activeStep === 0} 
-          onClick={() => setActiveStep((prevActiveStep) => prevActiveStep - 1)}
-          
-          
-          
-          
-          sx={{ mr: 1 }}
-        >
-          Back
-        </Button> */}
         <Box sx={{ flex: "1 1 auto" }} />
-        {/* <Button onClick={handleNext}>
-          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-        </Button> */}
       </Box>
     </Box>
   );

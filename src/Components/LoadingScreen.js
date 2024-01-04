@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import styled from 'styled-components';
+import { CircularProgress } from '@mui/material';
 const Icon = styled.img`
 	width: 10vw;
 `;
@@ -20,7 +21,13 @@ export default function LoadingScreen() {
 				open={open}
 				//onClick={handleClose}
 			>
-				<Icon src='https://a.trellocdn.com/prgb/dist/images/header-logo-spirit-loading.87e1af770a49ce8e84e3.gif' />
+				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+				<p className='text-center' style={{fontWeight: 'bold'}}>Please wait ...</p> 
+				<div class="spinner-grow mt-2" role="status">
+				</div>
+				
+  
+               </div>
 			</Backdrop>
 		</div>
 	);
