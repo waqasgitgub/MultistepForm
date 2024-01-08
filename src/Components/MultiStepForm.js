@@ -132,6 +132,14 @@ const MultiStepForm = () => {
   const [uploadCompleteTimes, setUploadCompleteTimes] = useState({
     driving_licence: null,
     schedule_pdf: null,
+    Tax_Return_2020: null,
+    Tax_Return_2021: null,
+    supplemental_attachment_2020: null,
+    supplemental_attachment_2021: null,
+    FormA1099: null,
+    FormB1099: null,
+    ks2020: null,
+    ks22020: null,
   });
 
   console.log(uploadCompleteTimes.driving_licence, "timewaqas");
@@ -536,6 +544,8 @@ const MultiStepForm = () => {
           address_line_2: formData.streetAddressTwo,
           zip: formData.zipCode,
           know_about_us: formData.knowAbout,
+          accounting_professional: formData.accounting_professional,
+          accounting_partnership: formData.accounting_partnership
         }),
       });
       if (response.ok) {
@@ -597,6 +607,9 @@ const MultiStepForm = () => {
             address_line_2: formData.streetAddressTwo,
             zip: formData.zipCode,
             know_about_us: formData.knowAbout,
+            accounting_professional: formData.accounting_professional,
+            accounting_partnership: formData.accounting_partnership,
+            
             self_employed_from: formData.selfEmployedFrom,
             net_income_2019: formData.netIncome2019,
             net_income_2020: formData.netIncome2020,
@@ -894,6 +907,7 @@ const MultiStepForm = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
+            step: step,
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
@@ -906,6 +920,9 @@ const MultiStepForm = () => {
             address_line_2: formData.streetAddressTwo,
             zip: formData.zipCode,
             know_about_us: formData.knowAbout,
+            accounting_professional: formData.accounting_professional,
+            accounting_partnership: formData.accounting_partnership,
+            
             self_employed_from: formData.selfEmployedFrom,
             net_income_2019: formData.netIncome2019,
             net_income_2020: formData.netIncome2020,
@@ -944,7 +961,6 @@ const MultiStepForm = () => {
 
             your_file_schedule: formData.scheduleSelfEmployement,
             mandatory_questions: formData.mandatory_questions,
-
             if_you_have_positive_earning: formData.positive_net_earning,
             did_you_miss_SEWDTC: formData.covid_related_issues,
             have_you_filed_already_for_setc: formData.setc_program,
@@ -1192,7 +1208,7 @@ const MultiStepForm = () => {
     const { name, value, type } = event.target;
     let inputValue = value;
 
-    if (name.startsWith("netIncome")) {
+    if (name.startsWith("netIncome") || name.startsWith("amount")) {
       inputValue = value.replace(/\D/g, ""); // Remove non-digit characters
       inputValue = inputValue ? `$${Number(inputValue).toLocaleString()}` : "$"; // Format as currency with dollar sign
     }
@@ -1457,7 +1473,7 @@ const MultiStepForm = () => {
         formData.selfEmployedFrom !== "Yes"
       ) {
         setActiveErrorQualifyOne(true);
-        // formDataUpdateWithoutNextStepTwo(activeStep);
+        formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
       if (formData.selfEmployedFrom === "Yes") {
@@ -1476,7 +1492,7 @@ const MultiStepForm = () => {
         formData.scheduleSelfEmployement !== "Yes"
       ) {
         setActiveErrorQualifyTwoo(true);
-        // formDataUpdateWithoutNextStepTwo(activeStep);
+        formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
       if (formData.scheduleSelfEmployement === "Yes") {
@@ -1495,7 +1511,7 @@ const MultiStepForm = () => {
         formData.positive_net_earning !== "Yes"
       ) {
         setActiveErrorQualifyThree(true);
-        // formDataUpdateWithoutNextStepTwo(activeStep);
+        formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
       if (formData.positive_net_earning === "Yes") {
@@ -1513,7 +1529,7 @@ const MultiStepForm = () => {
         formData.covid_related_issues !== "Yes"
       ) {
         setActiveErrorQualifyFive(true);
-        // formDataUpdateWithoutNextStepTwo(activeStep);
+        formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
       if (formData.covid_related_issues === "Yes") {
@@ -1528,7 +1544,7 @@ const MultiStepForm = () => {
       }
       if (formData.setc_program === "Yes" && formData.setc_program !== "No") {
         setActiveErrorQualifySix(true);
-        // formDataUpdateWithoutNextStepTwo(activeStep);
+        formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
       if (formData.setc_program === "No") {
@@ -1543,7 +1559,7 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      if (Number(formData.netIncome2019.replace(/\D/g, "")) < 25000) {
+      if (Number(formData.netIncome2019.replace(/\D/g, "")) < 10000) {
         largerThan25KCount++;
       }
 
@@ -1552,7 +1568,7 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      if (Number(formData.netIncome2020.replace(/\D/g, "")) < 25000) {
+      if (Number(formData.netIncome2020.replace(/\D/g, "")) < 10000) {
         largerThan25KCount++;
       }
 
@@ -1561,7 +1577,7 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      if (Number(formData.netIncome2021.replace(/\D/g, "")) < 25000) {
+      if (Number(formData.netIncome2021.replace(/\D/g, "")) < 10000) {
         largerThan25KCount++;
       }
 
@@ -1833,6 +1849,10 @@ const MultiStepForm = () => {
               streetAddressTwo: userData.address_line_2 || "",
               zipCode: userData.zip || "",
 
+              accounting_professional: userData.accounting_professional || "",
+
+              accounting_partnership: userData.accounting_partnership || "",
+
               isChecked: userData.email ? true : false || false,
               knowAbout: userData.know_about_us || "",
               selfEmployedFrom: userData.self_employed_from || "",
@@ -2001,18 +2021,22 @@ const MultiStepForm = () => {
       });
   };
 
-  const openFileInNewTab = (fileKey, index) => {
-    // alert(selectedFiles?.driving_licence.length)
-    if (fileKey && userData) {
-      const fileUrls = userData[fileKey]; // Array of file URLs
-      if (fileUrls && fileUrls[index]) {
-        window.open(`http://localhost:5000/${fileUrls[index]}`, "_blank");
+  const openFileInNewTab = (fileKey, index, originalFileName) => {
+    // if (fileKey && userData) {
+    //   const fileUrls = userData[fileKey]; // Array of file URLs
+    //   if (fileUrls && fileUrls[index]) {
+    //     window.open(`http://localhost:5000/${fileUrls[index]}`, "_blank");
+    //   } else {
+    //     console.error("File URL not found for the provided index");
+    //   }
+    // } else {
+    //   console.error("Invalid fileKey or userData is missing");
+    // }
+    if (fileKey && userData && originalFileName ) {
+        window.open(`http://localhost:5000/${originalFileName}`, "_blank");
       } else {
         console.error("File URL not found for the provided index");
       }
-    } else {
-      console.error("Invalid fileKey or userData is missing");
-    }
   };
 
   const removeFile = async (fileKey, index, originalFileName) => {
@@ -2034,12 +2058,11 @@ const MultiStepForm = () => {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
             // originalFieldName: `${fileKey}_name`,
-            // originalName: originalFileName,
-  
+            // originalName: originalFileName
             fieldName: `${fileKey}_name` ,
-            fileName: fileKey ,
-            originalFieldName: fileUrls[index],
-            originalName: originalFileName,
+            fileName: originalFileName  ,
+            originalFieldName: fileKey,
+            originalName: fileUrls[index],
           };
 
           const response = await fetch(url, {
@@ -2161,8 +2184,8 @@ const MultiStepForm = () => {
 
         await handleSuccessfulUpload(inputName, lastFileName);
         await fetchUserDataa();
-
-        // setAddingFileType(null);
+        setAddingFileType(null)
+   
       } catch (error) {
         console.error(`Error uploading file:`, error);
       } finally {
@@ -5959,7 +5982,7 @@ const MultiStepForm = () => {
                             {activeErrorQualify17 && (
                               <div>
                                 <h4 style={{ color: "#e62e2d" }}>
-                                  Value must be more or equal to 25k for two
+                                  Value must be more or equal to 10k for two
                                   input fileds.
                                 </h4>
                               </div>
@@ -6154,7 +6177,7 @@ const MultiStepForm = () => {
                           >
                             <div
                               onClick={() =>
-                                openFileInNewTab("driving_licence", index)
+                                openFileInNewTab("driving_licence", index, userData.driving_licence_name[index])
                               }
                               className="buttonn"
                             >
@@ -6183,7 +6206,7 @@ const MultiStepForm = () => {
                       id="driving_licence"
                       accept=".pdf"
                       required
-                      multiple // Allow multiple file selection
+                      // multiple // Allow multiple file selection
                       onChange={(e) => handleFileChange("driving_licence", e)}
                     />
                   )}
@@ -6248,7 +6271,7 @@ const MultiStepForm = () => {
                           >
                             <div
                               onClick={() =>
-                                openFileInNewTab("schedule_pdf", index)
+                                openFileInNewTab("schedule_pdf", index, userData.schedule_pdf_name[index])
                               }
                               className="buttonn"
                             >
@@ -6281,7 +6304,7 @@ const MultiStepForm = () => {
                       id="schedule_pdf"
                       accept=".pdf"
                       required
-                      multiple // Allow multiple file selection
+                      // multiple // Allow multiple file selection
                       onChange={(e) => handleFileChange("schedule_pdf", e)}
                     />
                   )}
@@ -6345,7 +6368,7 @@ const MultiStepForm = () => {
                         >
                           <div
                             onClick={() =>
-                              openFileInNewTab("Tax_Return_2020", index)
+                              openFileInNewTab("Tax_Return_2020", index, userData.Tax_Return_2020_name[index])
                             }
                             className="buttonn"
                           >
@@ -6377,7 +6400,7 @@ const MultiStepForm = () => {
                       id="Tax_Return_2020"
                       accept=".pdf"
                       required
-                      multiple // Allow multiple file selection
+                      // multiple // Allow multiple file selection
                       onChange={(e) => handleFileChange("Tax_Return_2020", e)}
                     />
                   )}
@@ -6434,7 +6457,7 @@ const MultiStepForm = () => {
                         >
                           <div
                             onClick={() =>
-                              openFileInNewTab("Tax_Return_2021", index)
+                              openFileInNewTab("Tax_Return_2021", index, userData.Tax_Return_2021_name[index])
                             }
                             className="buttonn"
                           >
@@ -6466,7 +6489,7 @@ const MultiStepForm = () => {
                       id="Tax_Return_2021"
                       accept=".pdf"
                       required
-                      multiple // Allow multiple file selection
+                      // multiple // Allow multiple file selection
                       onChange={(e) => handleFileChange("Tax_Return_2021", e)}
                     />
                   )}
@@ -6539,7 +6562,11 @@ const MultiStepForm = () => {
                                     onClick={() =>
                                       openFileInNewTab(
                                         "supplemental_attachment_2020",
-                                        index
+                                        index,
+                                        userData
+                                          .supplemental_attachment_2020_name[
+                                          index
+                                        ]
                                       )
                                     }
                                     className="buttonn"
@@ -6576,7 +6603,7 @@ const MultiStepForm = () => {
                             id="supplemental_attachment_2020"
                             accept=".pdf"
                             required
-                            multiple // Allow multiple file selection
+                            // multiple // Allow multiple file selection
                             onChange={(e) =>
                               handleFileChange(
                                 "supplemental_attachment_2020",
@@ -6655,7 +6682,11 @@ const MultiStepForm = () => {
                                     onClick={() =>
                                       openFileInNewTab(
                                         "supplemental_attachment_2021",
-                                        index
+                                        index,
+                                        userData
+                                          .supplemental_attachment_2021_name[
+                                          index
+                                        ]
                                       )
                                     }
                                     className="buttonn"
@@ -6692,7 +6723,7 @@ const MultiStepForm = () => {
                             id="supplemental_attachment_2021"
                             accept=".pdf"
                             required
-                            multiple // Allow multiple file selection
+                            // multiple // Allow multiple file selection
                             onChange={(e) =>
                               handleFileChange(
                                 "supplemental_attachment_2021",
@@ -6759,7 +6790,8 @@ const MultiStepForm = () => {
                               >
                                 <div
                                   onClick={() =>
-                                    openFileInNewTab("FormA1099", index)
+                                    openFileInNewTab("FormA1099", index,
+                                    userData.FormA1099_name[index] )
                                   }
                                   className="buttonn"
                                 >
@@ -6791,7 +6823,7 @@ const MultiStepForm = () => {
                             id="FormA1099"
                             accept=".pdf"
                             required
-                            multiple // Allow multiple file selection
+                            // multiple // Allow multiple file selection
                             onChange={(e) => handleFileChange("FormA1099", e)}
                           />
                         )}
@@ -6849,7 +6881,8 @@ const MultiStepForm = () => {
                               >
                                 <div
                                   onClick={() =>
-                                    openFileInNewTab("FormB1099", index)
+                                    openFileInNewTab("FormB1099", index,
+                                    userData.FormB1099_name[index])
                                   }
                                   className="buttonn"
                                 >
@@ -6881,7 +6914,7 @@ const MultiStepForm = () => {
                             id="FormB1099"
                             accept=".pdf"
                             required
-                            multiple // Allow multiple file selection
+                            // multiple // Allow multiple file selection
                             onChange={(e) => handleFileChange("FormB1099", e)}
                           />
                         )}
@@ -6935,9 +6968,11 @@ const MultiStepForm = () => {
                                 className="itemm"
                                 style={{ padding: "0px 20px !important" }}
                               >
+          
                                 <div
                                   onClick={() =>
-                                    openFileInNewTab("ks2020", index)
+                                    openFileInNewTab("ks2020", index,
+                                    userData.ks2020_name[index])
                                   }
                                   className="buttonn"
                                 >
@@ -6969,7 +7004,7 @@ const MultiStepForm = () => {
                             id="ks2020"
                             accept=".pdf"
                             required
-                            multiple // Allow multiple file selection
+                            // multiple // Allow multiple file selection
                             onChange={(e) => handleFileChange("ks2020", e)}
                           />
                         )}
@@ -7024,7 +7059,8 @@ const MultiStepForm = () => {
                               >
                                 <div
                                   onClick={() =>
-                                    openFileInNewTab("ks22020", index)
+                                    openFileInNewTab("ks22020", index,
+                                    userData.ks22020_name[index] )
                                   }
                                   className="buttonn"
                                 >
@@ -7056,7 +7092,7 @@ const MultiStepForm = () => {
                             id="ks22020"
                             accept=".pdf"
                             required
-                            multiple // Allow multiple file selection
+                            // multiple // Allow multiple file selection
                             onChange={(e) => handleFileChange("ks22020", e)}
                           />
                         )}

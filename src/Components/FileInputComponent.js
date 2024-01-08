@@ -10,7 +10,7 @@ const FileInputComponent = ({ inputName, handleFileChange, onRemove }) => {
         className="form-control file"
         accept=".pdf"
         required
-        multiple
+        // multiple
         onChange={(e) => handleFileChange(inputName, e)}
       />
       {onRemove && (

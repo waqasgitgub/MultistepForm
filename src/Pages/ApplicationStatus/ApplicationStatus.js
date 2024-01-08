@@ -42,7 +42,6 @@ export default function ApplicationStatus({}) {
   const [userData, setUserData] = useState();
   const [uploadingFile, setUploadingFile] = useState("");
   const [activeTab, setActiveTab] = useState("status_tab"); // Default to 'status_tab' or last selected tab
-  const [isAddingFile, setIsAddingFile] = useState(false);
   const [addingFileType, setAddingFileType] = useState(null);
   const [uploadCompleteTimes, setUploadCompleteTimes] = useState({
     driving_licence: null,
@@ -58,7 +57,6 @@ export default function ApplicationStatus({}) {
   });
 
   const handleAddFileClick = (type) => {
-    // setIsAddingFile(true);
     setAddingFileType(type);
   };
 
@@ -238,7 +236,8 @@ export default function ApplicationStatus({}) {
         }
 
         await handleSuccessfulUpload(inputName, lastFileName);
-        setIsAddingFile(false);
+     
+        setAddingFileType(null)
       } catch (error) {
         console.error(`Error uploading file:`, error);
       } finally {
@@ -327,18 +326,22 @@ export default function ApplicationStatus({}) {
     return ((activeStep + 1) / steps.length) * 100; // Calculate progress percentage
   };
 
-  const openFileInNewTab = (fileKey, index) => {
-    // alert(selectedFiles?.driving_licence.length)
-    if (fileKey && userData) {
-      const fileUrls = userData[fileKey]; // Array of file URLs
-      if (fileUrls && fileUrls[index]) {
-        window.open(`http://localhost:5000/${fileUrls[index]}`, "_blank");
+  const openFileInNewTab = (fileKey, index, originalFileName) => {
+    // if (fileKey && userData) {
+    //   const fileUrls = userData[fileKey]; // Array of file URLs
+    //   if (fileUrls && fileUrls[index]) {
+    //     window.open(`http://localhost:5000/${fileUrls[index]}`, "_blank");
+    //   } else {
+    //     console.error("File URL not found for the provided index");
+    //   }
+    // } else {
+    //   console.error("Invalid fileKey or userData is missing");
+    // }
+    if (fileKey && userData && originalFileName ) {
+        window.open(`http://localhost:5000/${originalFileName}`, "_blank");
       } else {
         console.error("File URL not found for the provided index");
       }
-    } else {
-      console.error("Invalid fileKey or userData is missing");
-    }
   };
 
   const removeFile = async (fileKey, index, originalFileName) => {
@@ -353,13 +356,19 @@ export default function ApplicationStatus({}) {
       const fileUrls = userData[fileKey];
 
       if (fileUrls && fileUrls[index]) {
+        alert("Are you sure to remove file");
+
         try {
           const url = "http://localhost:5000/user/deleteFile";
           const payload = {
-            fieldName: fileKey,
-            fileName: fileUrls[index],
-            originalFieldName: `${fileKey}_name`,
-            originalName: originalFileName,
+            // fieldName: fileKey,
+            // fileName: fileUrls[index],
+            // originalFieldName: `${fileKey}_name`,
+            // originalName: originalFileName,
+             fieldName: `${fileKey}_name` ,
+            fileName: originalFileName  ,
+            originalFieldName: fileKey,
+            originalName: fileUrls[index],
           };
 
           const response = await fetch(url, {
@@ -816,7 +825,11 @@ export default function ApplicationStatus({}) {
                                               onClick={() =>
                                                 openFileInNewTab(
                                                   "driving_licence",
+                                                  index,
+                                                  userData
+                                                  .driving_licence_name[
                                                   index
+                                                ]
                                                 )
                                               }
                                               className="buttonn"
@@ -854,7 +867,7 @@ export default function ApplicationStatus({}) {
                                     id="driving_licence"
                                     accept=".pdf"
                                     required
-                                    multiple // Allow multiple file selection
+                                    // multiple // Allow multiple file selection
                                     onChange={(e) =>
                                       handleFileChange("driving_licence", e)
                                     }
@@ -928,7 +941,11 @@ export default function ApplicationStatus({}) {
                                             onClick={() =>
                                               openFileInNewTab(
                                                 "schedule_pdf",
+                                                index,
+                                                userData
+                                                .schedule_pdf_name[
                                                 index
+                                              ]
                                               )
                                             }
                                             className="buttonn"
@@ -964,7 +981,7 @@ export default function ApplicationStatus({}) {
                                     id="schedule_pdf"
                                     accept=".pdf"
                                     required
-                                    multiple // Allow multiple file selection
+                                    // multiple // Allow multiple file selection
                                     onChange={(e) =>
                                       handleFileChange("schedule_pdf", e)
                                     }
@@ -1041,7 +1058,11 @@ export default function ApplicationStatus({}) {
                                               onClick={() =>
                                                 openFileInNewTab(
                                                   "Tax_Return_2020",
+                                                  index,
+                                                  userData
+                                                  .Tax_Return_2020_name[
                                                   index
+                                                ]
                                                 )
                                               }
                                               className="buttonn"
@@ -1079,7 +1100,7 @@ export default function ApplicationStatus({}) {
                                     id="Tax_Return_2020"
                                     accept=".pdf"
                                     required
-                                    multiple // Allow multiple file selection
+                                    // multiple // Allow multiple file selection
                                     onChange={(e) =>
                                       handleFileChange("Tax_Return_2020", e)
                                     }
@@ -1157,7 +1178,8 @@ export default function ApplicationStatus({}) {
                                               onClick={() =>
                                                 openFileInNewTab(
                                                   "Tax_Return_2021",
-                                                  index
+                                                  index,
+                                                  userData.Tax_Return_2021_name[index]
                                                 )
                                               }
                                               className="buttonn"
@@ -1195,7 +1217,7 @@ export default function ApplicationStatus({}) {
                                     id="Tax_Return_2021"
                                     accept=".pdf"
                                     required
-                                    multiple // Allow multiple file selection
+                                    // multiple // Allow multiple file selection
                                     onChange={(e) =>
                                       handleFileChange("Tax_Return_2021", e)
                                     }
@@ -1285,7 +1307,11 @@ export default function ApplicationStatus({}) {
                                                   onClick={() =>
                                                     openFileInNewTab(
                                                       "supplemental_attachment_2020",
+                                                      index,
+                                                      userData
+                                                      .supplemental_attachment_2020_name[
                                                       index
+                                                    ]
                                                     )
                                                   }
                                                   className="buttonn"
@@ -1322,7 +1348,7 @@ export default function ApplicationStatus({}) {
                                           id="supplemental_attachment_2020"
                                           accept=".pdf"
                                           required
-                                          multiple // Allow multiple file selection
+                                          // multiple // Allow multiple file selection
                                           onChange={(e) =>
                                             handleFileChange(
                                               "supplemental_attachment_2020",
@@ -1420,7 +1446,11 @@ export default function ApplicationStatus({}) {
                                                     onClick={() =>
                                                       openFileInNewTab(
                                                         "supplemental_attachment_2021",
+                                                        index,
+                                                        userData
+                                                        .supplemental_attachment_2021_name[
                                                         index
+                                                      ]
                                                       )
                                                     }
                                                     className="buttonn"
@@ -1458,7 +1488,7 @@ export default function ApplicationStatus({}) {
                                           id="supplemental_attachment_2021"
                                           accept=".pdf"
                                           required
-                                          multiple // Allow multiple file selection
+                                          // multiple // Allow multiple file selection
                                           onChange={(e) =>
                                             handleFileChange(
                                               "supplemental_attachment_2021",
@@ -1549,7 +1579,11 @@ export default function ApplicationStatus({}) {
                                                     onClick={() =>
                                                       openFileInNewTab(
                                                         "FormA1099",
+                                                        index,
+                                                        userData
+                                                        .FormA1099_name[
                                                         index
+                                                      ]
                                                       )
                                                     }
                                                     className="buttonn"
@@ -1587,7 +1621,7 @@ export default function ApplicationStatus({}) {
                                           id="FormA1099"
                                           accept=".pdf"
                                           required
-                                          multiple // Allow multiple file selection
+                                          // multiple // Allow multiple file selection
                                           onChange={(e) =>
                                             handleFileChange("FormA1099", e)
                                           }
@@ -1667,7 +1701,11 @@ export default function ApplicationStatus({}) {
                                                     onClick={() =>
                                                       openFileInNewTab(
                                                         "FormB1099",
+                                                        index,
+                                                        userData
+                                                        .FormB1099_name[
                                                         index
+                                                      ]
                                                       )
                                                     }
                                                     className="buttonn"
@@ -1705,7 +1743,7 @@ export default function ApplicationStatus({}) {
                                           id="FormB1099"
                                           accept=".pdf"
                                           required
-                                          multiple // Allow multiple file selection
+                                          // multiple // Allow multiple file selection
                                           onChange={(e) =>
                                             handleFileChange("FormB1099", e)
                                           }
@@ -1780,7 +1818,11 @@ export default function ApplicationStatus({}) {
                                                   onClick={() =>
                                                     openFileInNewTab(
                                                       "ks2020",
+                                                      index,
+                                                      userData
+                                                      .ks2020_name[
                                                       index
+                                                    ]
                                                     )
                                                   }
                                                   className="buttonn"
@@ -1816,7 +1858,7 @@ export default function ApplicationStatus({}) {
                                           id="ks2020"
                                           accept=".pdf"
                                           required
-                                          multiple // Allow multiple file selection
+                                          // multiple // Allow multiple file selection
                                           onChange={(e) =>
                                             handleFileChange("ks2020", e)
                                           }
@@ -1891,7 +1933,11 @@ export default function ApplicationStatus({}) {
                                                   onClick={() =>
                                                     openFileInNewTab(
                                                       "ks22020",
+                                                      index,
+                                                      userData
+                                                      .ks22020_name[
                                                       index
+                                                    ]
                                                     )
                                                   }
                                                   className="buttonn"
@@ -1927,7 +1973,7 @@ export default function ApplicationStatus({}) {
                                           id="ks22020"
                                           accept=".pdf"
                                           required
-                                          multiple // Allow multiple file selection
+                                          // multiple // Allow multiple file selection
                                           onChange={(e) =>
                                             handleFileChange("ks22020", e)
                                           }
