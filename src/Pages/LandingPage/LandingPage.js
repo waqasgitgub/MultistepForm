@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 const LandingPage = () => {
   const history = useHistory();
   const handleClickNewApp = () => {
-    history.push("/application-form");
+    history.push("/login");
   };
   const handleLogin = () => {
     history.push("/login");
@@ -171,13 +171,13 @@ const LandingPage = () => {
                             class="accordion-body"
                             style={{ borderRadius: "10px" }}
                           >
-                            <a class="text-white" href="tel:(855) 701-3678"></a>
+                            {/* <a class="text-white" href="tel:(855) 701-3678"></a>
                             <p class="text-white">
                               <a class="text-white" href="tel:(855) 701-3678">
                                 <i class="fa-solid fa-phone me-1"></i>
                                 (855) 701-3678
                               </a>
-                            </p>
+                            </p> */}
 
                             <a
                               class="text-white"
@@ -187,26 +187,30 @@ const LandingPage = () => {
                               <a
                                 class="text-white"
                                 href="mailto:support@setczone.com"
+                                style={{textDecoration: 'underline'}}
                               >
                                 <i class="fa-regular fa-envelope me-1"></i>
                                 support@setczone.com
                               </a>
                             </p>
-
-                            <a
+                            <div class="d-flex">
+                                <p class="text-white">
+                                 AppSetczone 
+                                </p>
+                              </div>
+                            {/* <a
                               class="text-white"
                               href="https://calendly.com/setc-expert-kayembe/book-an-appointment-with-an-setc-expert-today"
                               target="_blank"
-                            >
-                              <div class="d-flex">
-                                {/* <img src="./images/calendly.svg" class="img-fluid me-1" alt="" style={{width: "21px", height: "fit-content"}} /> */}
+                            > */}
+                              {/* <div class="d-flex">
                                 <p class="text-white">
                                   Book an appointment with
                                   <br />
                                   an SETC Expert
                                 </p>
-                              </div>
-                            </a>
+                              </div> */}
+                            {/* </a> */}
                           </div>
                         </div>
                       </div>

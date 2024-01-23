@@ -153,15 +153,7 @@ const MultiStepForm = () => {
   const maxDate = new Date(2020, 11, 31); // December 2020
   const initialOpenDate = new Date(2020, 3, 1); // December 2020 initially
 
-  // useEffect(() => {
-  //   if (personal_startdate2020 && personal_enddate2020) {
-  //     const differenceInTime = personal_enddate2020.getTime() - personal_startdate2020.getTime();
-  //     const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)) + 1;
-  //     setNumberOffDays(differenceInDays);
-  //   } else {
-  //     setNumberOffDays(0);
-  //   }
-  // }, [personal_startdate2020, personal_enddate2020]);
+
   
   useEffect(() => {
     if (personal_startdate2020 && personal_enddate2020) {
@@ -251,15 +243,7 @@ const MultiStepForm = () => {
     return workingDays;
   };
 
-  // useEffect(() => {
-  //   if (personal_startdate2021 && personal_enddate2021) {
-  //     const differenceInTime = personal_enddate2021.getTime() - personal_startdate2021.getTime();
-  //     const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)) + 1;
-  //     setNumberOffDaysTwo(differenceInDays);
-  //   } else {
-  //     setNumberOffDaysTwo(0);
-  //   }
-  // }, [personal_startdate2021, personal_enddate2021]);
+ 
 
   const handleDateChangeTwo = (update) => {
     setDateRangeTwo(update);
@@ -359,15 +343,7 @@ const MultiStepForm = () => {
   const maxSymptomsDateTwo = new Date(2021, 8, 30); // September 30, 2020
   const initialOpenSymptomsDateTwo = new Date(2021, 0, 1); // January 1, 2020 initially
 
-  // useEffect(() => {
-  //   if (cared_startdate2021 && cared_enddate2021) {
-  //     const differenceInTime = cared_enddate2021.getTime() - cared_startdate2021.getTime();
-  //     const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)) + 1;
-  //     setSymptomsDaysTwo(differenceInDays);
-  //   } else {
-  //     setSymptomsDaysTwo(0);
-  //   }
-  // }, [cared_startdate2021, cared_enddate2021]);
+ 
 
   useEffect(() => {
     if (cared_startdate2021 && cared_enddate2021) {
@@ -434,16 +410,7 @@ const MultiStepForm = () => {
   const maxClosureDate = new Date(2020, 11, 31); // December 2020
   const initialOpenClosureDate = new Date(2020, 3, 1); // Initial open date for closure
 
-  // useEffect(() => {
-  //   // Calculate minordays2020
-  //   if (minor_startdate2020 && minor_enddate2020) {
-  //     const differenceInTime = minor_enddate2020.getTime() - minor_startdate2020.getTime();
-  //     const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)) + 1;
-  //     setMinordays2020(differenceInDays);
-  //   } else {
-  //     setMinordays2020(0);
-  //   }
-  // }, [minor_startdate2020, minor_enddate2020]);
+
 
   useEffect(() => {
     if (minor_startdate2020 && minor_enddate2020) {
@@ -524,16 +491,7 @@ const MultiStepForm = () => {
   const initialOpenClosureDateTwo = new Date(2021, 0, 1); // January 1, 2020 initially
 
   
-  // useEffect(() => {
-  // // Calculate minordays2020
-  // if (minor_startdate2021 && minor_enddate2021) {
-  // const differenceInTime = minor_enddate2021.getTime() - minor_startdate2021.getTime();
-  // const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)) + 1;
-  // setMinordays2021(differenceInDays);
-  // } else {
-  // setMinordays2021(0);
-  // }
-  // }, [minor_startdate2021, minor_enddate2021]);
+ 
 
   useEffect(() => {
     if (minor_startdate2021 && minor_enddate2021) {
@@ -815,7 +773,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "http://localhost:5000/user/updateApplication",
+        "https://agree.setczone.com/api/updateApplication",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -853,7 +811,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "http://localhost:5000/user/updateDocumentStatus",
+        "https://agree.setczone.com/api/updateDocumentStatus",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -1003,17 +961,14 @@ const MultiStepForm = () => {
 
   const handleToken = (token) => {
     localStorage.setItem("token", token);
-    // const existingToken = localStorage.getItem('token');
-    // if (!existingToken) {
-    //   localStorage.setItem('token', token);
-    // }
+
     dispatch(setToken(token));
   };
 
   const formDataPreparing = async (step) => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/user/create", {
+      const response = await fetch("https://agree.setczone.com/api/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1075,7 +1030,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1173,7 +1128,7 @@ const MultiStepForm = () => {
 
   const callVeriffAPI = (token) => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
-    const apiEndpoint = "http://localhost:5000/user/createSession"; // Replace with your actual API endpoint
+    const apiEndpoint = "https://agree.setczone.com/api/createSession"; // Replace with your actual API endpoint
 
     // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
 
@@ -1204,6 +1159,52 @@ const MultiStepForm = () => {
   };
 
   const formDataUpdate = async (step) => {
+
+
+    const formattedStartDate = personal_startdate2020
+    ? personal_startdate2020.toLocaleDateString()
+    : "";
+  const formattedEndDate = personal_enddate2020
+    ? personal_enddate2020.toLocaleDateString()
+    : "";
+
+  const formattedStartDate2021 = personal_startdate2021
+    ? personal_startdate2021.toLocaleDateString()
+    : "";
+  const formattedEndDate20221 = personal_enddate2021
+    ? personal_enddate2021.toLocaleDateString()
+    : "";
+
+  const formattedStartDate2020 = cared_startdate2020
+    ? cared_startdate2020.toLocaleDateString()
+    : "";
+  const formattedEndDate2020 = cared_enddate2020
+    ? cared_enddate2020.toLocaleDateString()
+    : "";
+
+  const formattedStartDaate2021 = cared_startdate2021
+    ? cared_startdate2021.toLocaleDateString()
+    : "";
+  const formattedEndDate2021 = cared_enddate2021
+    ? cared_enddate2021.toLocaleDateString()
+    : "";
+
+  const formatedClosureStartDaate2020 = minor_startdate2020
+    ? minor_startdate2020.toLocaleDateString()
+    : "";
+  const formatedClosureEndDaate2020 = minor_enddate2020
+    ? minor_enddate2020.toLocaleDateString()
+    : "";
+
+  const formatedClosureStartDaate2021 = minor_startdate2021
+    ? minor_startdate2021.toLocaleDateString()
+    : "";
+  const formatedClosureEndDaate2021 = minor_enddate2021
+    ? minor_enddate2021.toLocaleDateString()
+    : "";
+
+
+
     try {
       setLoading(true);
       let token = localStorage.getItem("token");
@@ -1227,6 +1228,10 @@ const MultiStepForm = () => {
       {
         stepToSend = 16;
       }
+      else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
+      {
+        stepToSend = 18;
+      }
       else {
         stepToSend = step
       }
@@ -1234,7 +1239,7 @@ const MultiStepForm = () => {
 
 
       const response = await fetch(
-        `http://localhost:5000/user/${stepToSend}/updateuser`,
+        `https://agree.setczone.com/api/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1243,12 +1248,12 @@ const MultiStepForm = () => {
           },
           body: JSON.stringify({
             step: stepToSend,
+           
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
             email: formData.email,
             business_name: formData.bussinessName,
-            employees: formData.employees,
             trade_name: formData.tradeName,
             address_line_1: formData.streetAddressOne,
             city: formData.city,
@@ -1256,38 +1261,61 @@ const MultiStepForm = () => {
             address_line_2: formData.streetAddressTwo,
             zip: formData.zipCode,
             know_about_us: formData.knowAbout,
-            accounting_professional: formData.accounting_professional,
-            accounting_partnership: formData.accounting_partnership,
-
             self_employed_from: formData.selfEmployedFrom,
             net_income_2019: formData.netIncome2019,
             net_income_2020: formData.netIncome2020,
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            personal_startdate2020: formData.personal_startdate2020,
-            personal_enddate2020: formData.personal_enddate2020,
-            onedays: formData.numberOfDays,
+           
+            personal_startdate2020: formattedStartDate,
+            personal_enddate2020: formattedEndDate,
+            onedays: numberOffDays,
 
-            personal_startdate2021: formData.personal_startdate2021,
-            personal_enddate2021: formData.personal_enddate2021,
-            twodays: formData.numberOfDays2021,
+           
 
-            cared_startdate2020: formData.cared_startdate2020,
-            cared_enddate2020: formData.cared_enddate2020,
-            threedays: formData.symptomsdays2020,
+            personal_startdate2021: formattedStartDate2021,
+            personal_enddate2021: formattedEndDate20221,
+            twodays: numberOffDaysTwo,
 
-            cared_startdate2021: formData.cared_startdate2021,
-            cared_enddate2021: formData.cared_enddate2021,
-            fourdays: formData.symptomsdays2021,
+           
+            cared_startdate2020: formattedStartDate2020,
+            cared_enddate2020: formattedEndDate2020,
+            threedays: symptomsDays,
 
-            minor_startdate2020: formData.minor_startdate2020,
-            minor_enddate2020: formData.minor_enddate2020,
-            fivedays: formData.minordays2020,
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
 
-            minor_startdate2021: formData.minor_startdate2021,
-            minor_enddate2021: formData.minor_enddate2021,
-            sixdays: formData.minordays2021,
+            cared_startdate2021: formattedStartDaate2021,
+            cared_enddate2021: formattedEndDate2021,
+            fourdays: symptomsDaysTwo,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            minor_startdate2020: formatedClosureStartDaate2020,
+            minor_enddate2020: formatedClosureEndDaate2020,
+            fivedays: minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
+
+            minor_startdate2021: formatedClosureStartDaate2021,
+            minor_enddate2021: formatedClosureEndDaate2021,
+            sixdays: minordays2021,
+
+
+
+            personally_sick_symptoms_2020: formData.personallySick2020,
+            personally_sick_symptoms_2021: formData.personallySick2021,
+            covid_experienced_symptoms_2020: formData.symptoms2020,
+            covid_experienced_symptoms_2021:  formData.symptoms2021,
+            childs_daycare_2020:  formData.closure2020,
+            childs_daycare_2021:   formData.closure2021,
+
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -1306,7 +1334,13 @@ const MultiStepForm = () => {
             did_receive_unemployement21: formData.did_receive_unemployement21,
             care_for_minor_child: formData.care_for_minor_child,
             minor_child_tax_20: formData.minor_child_tax_20,
-            minor_child_tax_21: formData.minor_child_tax_21
+            minor_child_tax_21: formData.minor_child_tax_21,
+            
+
+            E_File_My_texes_2020: taxYears[0].eFiled,
+            Mail_My_texes_2020: taxYears[0].mailed,
+            E_File_My_texes_2021: taxYears[1].eFiled,
+            Mail_My_texes_2021: taxYears[1].mailed,
           }),
         }
       );
@@ -1327,6 +1361,9 @@ const MultiStepForm = () => {
         } else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
         {
           setActiveStep(16); 
+        } else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
+        {
+          setActiveStep(18); 
         } else {
           setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
@@ -1364,6 +1401,315 @@ const MultiStepForm = () => {
       setLoading(false);
     }
   };
+  const formDataUpdateWithoutLoader = async (step) => {
+
+
+    const formattedStartDate = personal_startdate2020
+    ? personal_startdate2020.toLocaleDateString()
+    : "";
+  const formattedEndDate = personal_enddate2020
+    ? personal_enddate2020.toLocaleDateString()
+    : "";
+
+  const formattedStartDate2021 = personal_startdate2021
+    ? personal_startdate2021.toLocaleDateString()
+    : "";
+  const formattedEndDate20221 = personal_enddate2021
+    ? personal_enddate2021.toLocaleDateString()
+    : "";
+
+  const formattedStartDate2020 = cared_startdate2020
+    ? cared_startdate2020.toLocaleDateString()
+    : "";
+  const formattedEndDate2020 = cared_enddate2020
+    ? cared_enddate2020.toLocaleDateString()
+    : "";
+
+  const formattedStartDaate2021 = cared_startdate2021
+    ? cared_startdate2021.toLocaleDateString()
+    : "";
+  const formattedEndDate2021 = cared_enddate2021
+    ? cared_enddate2021.toLocaleDateString()
+    : "";
+
+  const formatedClosureStartDaate2020 = minor_startdate2020
+    ? minor_startdate2020.toLocaleDateString()
+    : "";
+  const formatedClosureEndDaate2020 = minor_enddate2020
+    ? minor_enddate2020.toLocaleDateString()
+    : "";
+
+  const formatedClosureStartDaate2021 = minor_startdate2021
+    ? minor_startdate2021.toLocaleDateString()
+    : "";
+  const formatedClosureEndDaate2021 = minor_enddate2021
+    ? minor_enddate2021.toLocaleDateString()
+    : "";
+
+
+
+    try {
+      let token = localStorage.getItem("token");
+
+      if (!token) {
+        // Handle missing token - Redirect or handle the situation accordingly
+        console.error("Token is missing");
+        // For example, redirect to the step where the token should be available
+        setActiveStep(0); // Redirect to step 0 for token creation
+        return;
+      }
+
+
+  let stepToSend = step; // Default step value to send
+
+      if (
+        formData.care_for_minor_child === "No"  && activeStep === 14 ) {
+        stepToSend = 18; // Set step to 11 based on conditions
+      }
+      else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
+      {
+        stepToSend = 16;
+      }
+      else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
+      {
+        stepToSend = 18;
+      }
+      else {
+        stepToSend = step
+      }
+     
+
+
+      const response = await fetch(
+        `https://agree.setczone.com/api/${stepToSend}/updateuser`,
+        {
+          method: "PUT", // Change the method to PUT
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            step: stepToSend,
+            // first_name: formData.firstName,
+            // last_name: formData.lastName,
+            // phone: formData.phone,
+            // email: formData.email,
+            // business_name: formData.bussinessName,
+            // employees: formData.employees,
+            // trade_name: formData.tradeName,
+            // address_line_1: formData.streetAddressOne,
+            // city: formData.city,
+            // state: formData.province,
+            // address_line_2: formData.streetAddressTwo,
+            // zip: formData.zipCode,
+            // know_about_us: formData.knowAbout,
+            // accounting_professional: formData.accounting_professional,
+            // accounting_partnership: formData.accounting_partnership,
+
+            // self_employed_from: formData.selfEmployedFrom,
+            // net_income_2019: formData.netIncome2019,
+            // net_income_2020: formData.netIncome2020,
+            // net_income_2021: formData.netIncome2021,
+            // business_negatively_impacted: formData.bussinessNegatively,
+
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // onedays: formData.numberOfDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
+
+            // employed_as_W2: formData.employed_as_W2,
+            // Family_Sick_Leave: formData.family_sick,
+
+            // amount2020: formData.amount2020,
+            // amount2021: formData.amount2021,
+
+            // your_file_schedule: formData.scheduleSelfEmployement,
+            // mandatory_questions: formData.mandatory_questions,
+            // if_you_have_positive_earning: formData.positive_net_earning,
+            // did_you_miss_SEWDTC: formData.covid_related_issues,
+            // have_you_filed_already_for_setc: formData.setc_program,
+
+
+            // did_receive_unemployement20: formData.did_receive_unemployement20,
+            // did_receive_unemployement21: formData.did_receive_unemployement21,
+            // care_for_minor_child: formData.care_for_minor_child,
+            // minor_child_tax_20: formData.minor_child_tax_20,
+            // minor_child_tax_21: formData.minor_child_tax_21
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            email: formData.email,
+            business_name: formData.bussinessName,
+            trade_name: formData.tradeName,
+            address_line_1: formData.streetAddressOne,
+            city: formData.city,
+            state: formData.province,
+            address_line_2: formData.streetAddressTwo,
+            zip: formData.zipCode,
+            know_about_us: formData.knowAbout,
+            self_employed_from: formData.selfEmployedFrom,
+            net_income_2019: formData.netIncome2019,
+            net_income_2020: formData.netIncome2020,
+            net_income_2021: formData.netIncome2021,
+            business_negatively_impacted: formData.bussinessNegatively,
+
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // onedays: formData.numberOfDays,
+            personal_startdate2020: formattedStartDate,
+            personal_enddate2020: formattedEndDate,
+            onedays: numberOffDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            personal_startdate2021: formattedStartDate2021,
+            personal_enddate2021: formattedEndDate20221,
+            twodays: numberOffDaysTwo,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            cared_startdate2020: formattedStartDate2020,
+            cared_enddate2020: formattedEndDate2020,
+            threedays: symptomsDays,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            cared_startdate2021: formattedStartDaate2021,
+            cared_enddate2021: formattedEndDate2021,
+            fourdays: symptomsDaysTwo,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            minor_startdate2020: formatedClosureStartDaate2020,
+            minor_enddate2020: formatedClosureEndDaate2020,
+            fivedays: minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
+
+            minor_startdate2021: formatedClosureStartDaate2021,
+            minor_enddate2021: formatedClosureEndDaate2021,
+            sixdays: minordays2021,
+
+
+
+            personally_sick_symptoms_2020: formData.personallySick2020,
+            personally_sick_symptoms_2021: formData.personallySick2021,
+            covid_experienced_symptoms_2020: formData.symptoms2020,
+            covid_experienced_symptoms_2021:  formData.symptoms2021,
+            childs_daycare_2020:  formData.closure2020,
+            childs_daycare_2021:   formData.closure2021,
+
+
+            employed_as_W2: formData.employed_as_W2,
+            Family_Sick_Leave: formData.family_sick,
+
+            amount2020: formData.amount2020,
+            amount2021: formData.amount2021,
+
+            your_file_schedule: formData.scheduleSelfEmployement,
+            mandatory_questions: formData.mandatory_questions,
+            if_you_have_positive_earning: formData.positive_net_earning,
+            did_you_miss_SEWDTC: formData.covid_related_issues,
+            have_you_filed_already_for_setc: formData.setc_program,
+
+
+            did_receive_unemployement20: formData.did_receive_unemployement20,
+            did_receive_unemployement21: formData.did_receive_unemployement21,
+            care_for_minor_child: formData.care_for_minor_child,
+            minor_child_tax_20: formData.minor_child_tax_20,
+            minor_child_tax_21: formData.minor_child_tax_21,
+            
+
+            E_File_My_texes_2020: taxYears[0].eFiled,
+            Mail_My_texes_2020: taxYears[0].mailed,
+            E_File_My_texes_2021: taxYears[1].eFiled,
+            Mail_My_texes_2021: taxYears[1].mailed,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // alert(`success ${step}`);
+        const data = await response.json();
+
+        console.log(data);
+        await fetchUserDataa();
+
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+
+        if (formData.care_for_minor_child === "No"  && activeStep === 14 )
+        {
+          setActiveStep(18); 
+        } else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
+        {
+          setActiveStep(16); 
+        } else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
+        {
+          setActiveStep(18); 
+        } else {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+  
+      } else {
+        // Handle error
+        console.error("Error in API call");
+        const errorData = await response.json();
+
+        if (errorData.errMessage === "Authorization token invalid" && errorData.details.name === "TokenExpiredError") {
+          dispatch(removeToken());
+             
+          localStorage.removeItem("activeTab");
+          localStorage.removeItem("isModalOpened");
+          history.push("/login");
+          alert("Your session expired, please login again. Thanks")
+          setTimeout(() => {
+            window.location.reload();
+          }, 200);
+            // Token is invalid or expired, remove it from local storage and navigate to /login
+            // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+            // You can use your preferred navigation method, e.g., react-router-dom or window.location
+            // Example using react-router-dom:
+            // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+        } else {
+            // Handle other types of errors
+            console.error("Unhandled error:", errorData);
+        }
+    }
+    } catch (error) {
+      // Handle network error
+      console.error("Network error", error);
+    } 
+  };
 
   const formDataConfirmation = async (step) => {
     try {
@@ -1380,7 +1726,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1545,7 +1891,7 @@ const MultiStepForm = () => {
       // }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1679,11 +2025,10 @@ const MultiStepForm = () => {
       setLoading(false);
     }
   };
-
   const callSetcformData = async (token, formData) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/user/setcformData", {
+      const response = await fetch("https://agree.setczone.com/api/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1748,6 +2093,276 @@ const MultiStepForm = () => {
       setLoading(false);
     }
   };
+  const formDataUpdateCalculationWithoutLoader = async (step) => {
+    const formattedStartDate = personal_startdate2020
+      ? personal_startdate2020.toLocaleDateString()
+      : "";
+    const formattedEndDate = personal_enddate2020
+      ? personal_enddate2020.toLocaleDateString()
+      : "";
+
+    const formattedStartDate2021 = personal_startdate2021
+      ? personal_startdate2021.toLocaleDateString()
+      : "";
+    const formattedEndDate20221 = personal_enddate2021
+      ? personal_enddate2021.toLocaleDateString()
+      : "";
+
+    const formattedStartDate2020 = cared_startdate2020
+      ? cared_startdate2020.toLocaleDateString()
+      : "";
+    const formattedEndDate2020 = cared_enddate2020
+      ? cared_enddate2020.toLocaleDateString()
+      : "";
+
+    const formattedStartDaate2021 = cared_startdate2021
+      ? cared_startdate2021.toLocaleDateString()
+      : "";
+    const formattedEndDate2021 = cared_enddate2021
+      ? cared_enddate2021.toLocaleDateString()
+      : "";
+
+    const formatedClosureStartDaate2020 = minor_startdate2020
+      ? minor_startdate2020.toLocaleDateString()
+      : "";
+    const formatedClosureEndDaate2020 = minor_enddate2020
+      ? minor_enddate2020.toLocaleDateString()
+      : "";
+
+    const formatedClosureStartDaate2021 = minor_startdate2021
+      ? minor_startdate2021.toLocaleDateString()
+      : "";
+    const formatedClosureEndDaate2021 = minor_enddate2021
+      ? minor_enddate2021.toLocaleDateString()
+      : "";
+
+    try {
+     
+      let token = localStorage.getItem("token");
+
+      if (!token) {
+        // Handle missing token - Redirect or handle the situation accordingly
+        console.error("Token is missing");
+        // For example, redirect to the step where the token should be available
+        setActiveStep(0); // Redirect to step 0 for token creation
+        return;
+      }
+      // let stepToSend = step; // Default step value to send
+
+      // if (
+      //   formData.personallySick2020 === "Yes" &&
+      //   numberOffDays === 10 &&
+      //   activeStep === 9
+      // ) {
+      //   stepToSend = 11; // Set step to 11 based on conditions
+      // }
+      // if (
+      //   formData.personallySick2021 === "Yes" &&
+      //   numberOffDaysTwo === 10 &&
+      //   activeStep === 9
+      // ) {
+      //   stepToSend = 12; // Set step to 13 based on conditions
+      // }
+
+      const response = await fetch(
+        `https://agree.setczone.com/api/${step}/updateuser`,
+        {
+          method: "PUT", // Change the method to PUT
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+            step: step,
+
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            email: formData.email,
+            business_name: formData.bussinessName,
+            trade_name: formData.tradeName,
+            address_line_1: formData.streetAddressOne,
+            city: formData.city,
+            state: formData.province,
+            address_line_2: formData.streetAddressTwo,
+            zip: formData.zipCode,
+            know_about_us: formData.knowAbout,
+            self_employed_from: formData.selfEmployedFrom,
+            net_income_2019: formData.netIncome2019,
+            net_income_2020: formData.netIncome2020,
+            net_income_2021: formData.netIncome2021,
+            business_negatively_impacted: formData.bussinessNegatively,
+
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // onedays: formData.numberOfDays,
+            personal_startdate2020: formattedStartDate,
+            personal_enddate2020: formattedEndDate,
+            onedays: numberOffDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            personal_startdate2021: formattedStartDate2021,
+            personal_enddate2021: formattedEndDate20221,
+            twodays: numberOffDaysTwo,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            cared_startdate2020: formattedStartDate2020,
+            cared_enddate2020: formattedEndDate2020,
+            threedays: symptomsDays,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            cared_startdate2021: formattedStartDaate2021,
+            cared_enddate2021: formattedEndDate2021,
+            fourdays: symptomsDaysTwo,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            minor_startdate2020: formatedClosureStartDaate2020,
+            minor_enddate2020: formatedClosureEndDaate2020,
+            fivedays: minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
+
+            minor_startdate2021: formatedClosureStartDaate2021,
+            minor_enddate2021: formatedClosureEndDaate2021,
+            sixdays: minordays2021,
+
+
+
+            personally_sick_symptoms_2020: formData.personallySick2020,
+            personally_sick_symptoms_2021: formData.personallySick2021,
+            covid_experienced_symptoms_2020: formData.symptoms2020,
+            covid_experienced_symptoms_2021:  formData.symptoms2021,
+            childs_daycare_2020:  formData.closure2020,
+            childs_daycare_2021:   formData.closure2021,
+
+
+            employed_as_W2: formData.employed_as_W2,
+            Family_Sick_Leave: formData.family_sick,
+
+            amount2020: formData.amount2020,
+            amount2021: formData.amount2021,
+
+            your_file_schedule: formData.scheduleSelfEmployement,
+            mandatory_questions: formData.mandatory_questions,
+            if_you_have_positive_earning: formData.positive_net_earning,
+            did_you_miss_SEWDTC: formData.covid_related_issues,
+            have_you_filed_already_for_setc: formData.setc_program,
+
+
+
+
+            E_File_My_texes_2020: taxYears[0].eFiled,
+            Mail_My_texes_2020: taxYears[0].mailed,
+            E_File_My_texes_2021: taxYears[1].eFiled,
+            Mail_My_texes_2021: taxYears[1].mailed,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // alert(`success ${step}`);
+        const data = await response.json();
+
+        console.log(data);
+
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+        // Call the separate function for calculation API
+
+        await callSetcformDataWithoutLoader(token, formData);
+
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      } else {
+        // Handle error
+        console.error("Error in API call");
+      }
+    } catch (error) {
+      // Handle network error
+      console.error("Network error", error);
+    } 
+  };
+
+ 
+  const callSetcformDataWithoutLoader = async (token, formData) => {
+   
+    try {
+      const response = await fetch("https://agree.setczone.com/api/setcformData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          net_income_2019: formData.netIncome2019,
+          net_income_2020: formData.netIncome2020,
+          net_income_2021: formData.netIncome2021,
+          "1days": numberOffDays,
+          "2days": numberOffDaysTwo,
+          "3days": symptomsDays,
+          "4days": symptomsDaysTwo,
+          "5days": minordays2020,
+          "6days": minordays2021,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // if (
+        //   formData.personallySick2021 === "Yes" &&
+        //   numberOffDaysTwo === 10 &&
+        //   activeStep === 9
+        // ) {
+        //   setActiveStep(12); // Move to step 14 for sick2021
+        // } else if (
+        //   formData.personallySick2020 === "Yes" &&
+        //   numberOffDays === 10 &&
+        //   activeStep === 9
+        // ) {
+        //   setActiveStep(11); // Move to step 13 for sick2020
+        // } else {
+        //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        // }
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+        // Check if final_credit_amount is not null and store it in local storage
+        if (data.user && data.user.final_roundedValue !== null) {
+          setFinalIncomeValue(data.user.final_roundedValue);
+
+          localStorage.setItem(
+            "final_roundedValue",
+            data.user.final_roundedValue
+          );
+        }
+        await fetchUserDataa();
+        // if(activeStep === 16){
+        //   await fetchUserDataa();
+        // }
+        
+
+      } else {
+        console.error("Error in calculation API call");
+      }
+    } catch (error) {
+      console.error("Network error", error);
+    } 
+  };
 
   const formDataUpdateStepTwo = async (step) => {
     try {
@@ -1762,7 +2377,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1815,7 +2430,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1927,7 +2542,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1970,7 +2585,7 @@ const MultiStepForm = () => {
   const checkEmailAvailability = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/user/checkMail",
+        "https://agree.setczone.com/api/checkMail",
         {
           email: formData.email,
         }
@@ -2031,60 +2646,58 @@ const MultiStepForm = () => {
       }
     }
 
+    // if (activeStep === 1) {
+      
+    //   formDataUpdate(activeStep);
+    // }
     if (activeStep === 1) {
-      // await submitHubspotForm();
-      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      formDataUpdate(activeStep);
+      
+      formDataUpdateWithoutLoader(activeStep);
     }
+    
 
     if (activeStep === 2) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
       // formDataUpdateStepTwo(activeStep);
     }
 
     if (activeStep === 3) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
 
     // if (activeStep === 4) {
     //   formDataUpdate(activeStep);
     // }
     if (activeStep === 4) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
 
     // if (activeStep === 5) {
     //   formDataUpdateCalculation(activeStep);
     // }
     if (activeStep === 5) {
-      formDataUpdate(activeStep);
-    }
-
-    // if (activeStep === 6) {
-    //   formDataUpdateCalculation(activeStep);
-    // }
-    if (activeStep === 18) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
 
     if (activeStep === 6) {
       formDataUpdate(activeStep);
     }
+
+ 
+   
+
+   
     if (activeStep === 7) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
     if (activeStep === 8) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
     if (activeStep === 9) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
-    if (activeStep === 14) {
-      formDataUpdate(activeStep);
-    }
-    if (activeStep === 16) {
-      formDataUpdate(activeStep);
-    }
+   
+   
 
     if (activeStep === 10) {
       // formDataUpdateCalculation(activeStep);
@@ -2093,7 +2706,7 @@ const MultiStepForm = () => {
           if (numberOffDays > 10) {
             setOpenModalDate(true);
           } else {
-            formDataUpdateCalculation(activeStep);
+            formDataUpdateCalculationWithoutLoader(activeStep);
 
             // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
@@ -2103,7 +2716,7 @@ const MultiStepForm = () => {
       }
 
       if (formData.personallySick2020 === "No") {
-        formDataUpdateCalculation(activeStep);
+        formDataUpdateCalculationWithoutLoader(activeStep);
       }
     }
 
@@ -2113,7 +2726,7 @@ const MultiStepForm = () => {
           if (numberOffDaysTwo > 10) {
             setOpenModalDateTwo(true);
           } else {
-            formDataUpdateCalculation(activeStep);
+            formDataUpdateCalculationWithoutLoader(activeStep);
 
             // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
@@ -2123,7 +2736,7 @@ const MultiStepForm = () => {
       }
 
       if (formData.personallySick2021 === "No") {
-        formDataUpdateCalculation(activeStep);
+        formDataUpdateCalculationWithoutLoader(activeStep);
       }
     }
 
@@ -2134,7 +2747,7 @@ const MultiStepForm = () => {
           if (symptomsDays > 10) {
             setOpenModalSymptoms(true);
           } else {
-            formDataUpdateCalculation(activeStep);
+            formDataUpdateCalculationWithoutLoader(activeStep);
 
             // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
@@ -2144,7 +2757,7 @@ const MultiStepForm = () => {
       }
 
       if (formData.symptoms2020 === "No") {
-        formDataUpdateCalculation(activeStep);
+        formDataUpdateCalculationWithoutLoader(activeStep);
       }
     }
 
@@ -2155,7 +2768,7 @@ const MultiStepForm = () => {
           if (symptomsDaysTwo > 10) {
             setOpenModalSymptomsTwo(true);
           } else {
-            formDataUpdateCalculation(activeStep);
+            formDataUpdateCalculationWithoutLoader(activeStep);
 
             // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
@@ -2165,8 +2778,12 @@ const MultiStepForm = () => {
       }
 
       if (formData.symptoms2021 === "No") {
-        formDataUpdateCalculation(activeStep);
+        formDataUpdateCalculationWithoutLoader(activeStep);
       }
+    }
+
+    if (activeStep === 14) {
+      formDataUpdateWithoutLoader(activeStep);
     }
 
     if (activeStep === 15) {
@@ -2176,7 +2793,7 @@ const MultiStepForm = () => {
           if (minordays2020 > 50) {
             setOpenModalClosure(true);
           } else {
-            formDataUpdateCalculation(activeStep);
+            formDataUpdateCalculationWithoutLoader(activeStep);
 
             // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
@@ -2186,9 +2803,15 @@ const MultiStepForm = () => {
       }
 
       if (formData.closure2020 === "No") {
-        formDataUpdateCalculation(activeStep);
+        formDataUpdateCalculationWithoutLoader(activeStep);
       }
     }
+
+    if (activeStep === 16) {
+      formDataUpdateWithoutLoader(activeStep);
+    }
+
+
     if (activeStep === 17) {
       // formDataUpdateCalculation(activeStep);
       if (formData.closure2021 === "Yes") {
@@ -2196,7 +2819,7 @@ const MultiStepForm = () => {
           if (minordays2021 > 60) {
             setOpenModalClosureTwo(true);
           } else {
-            formDataUpdateCalculation(activeStep);
+            formDataUpdateCalculationWithoutLoader(activeStep);
 
             // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
@@ -2206,21 +2829,27 @@ const MultiStepForm = () => {
       }
 
       if (formData.closure2021 === "No") {
-        formDataUpdateCalculation(activeStep);
+        formDataUpdateCalculationWithoutLoader(activeStep);
       }
+    }
+
+    if (activeStep === 18) {
+      formDataUpdateWithoutLoader(activeStep);
+    }
+
+    if (activeStep === 19) {
+      formDataUpdateWithoutLoader(activeStep);
     }
 
     if (activeStep === 20) {
       // alert(finalIncomeValue)
       //  alert(finalCreditAmountStorage)
-      formDataUpdateCalculation(activeStep);
+      formDataUpdateCalculationWithoutLoader(activeStep);
       
     }
-    if (activeStep === 19) {
-      formDataUpdate(activeStep);
-    }
+   
     if (activeStep === 21) {
-      formDataUpdate(activeStep);
+      formDataUpdateWithoutLoader(activeStep);
     }
     if (activeStep === 22) {
       // setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -2256,7 +2885,10 @@ const MultiStepForm = () => {
     || formData.minor_child_tax_20 === "No" && activeStep === 16)
      {
       setActiveStep(14); 
-    } else {
+    } else if( formData.minor_child_tax_21 === "No" && activeStep === 18)
+    {
+      setActiveStep(16); 
+    }  else {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }
     
@@ -2300,11 +2932,37 @@ const MultiStepForm = () => {
     }
 
     if (name === "care_for_minor_child" && inputValue === "No") {
+
+      setClosureDateRange(["", ""]);
+      setMinordays2020("");
+
+      setClosureDateRangeTwo(["", ""]);
+      setMinordays2021("");
+
       setFormData((prevFormData) => ({
         ...prevFormData,
         minor_child_tax_20: "",
         [name]: inputValue,
       }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: inputValue,
+      }));
+    }
+    if (name === "minor_child_tax_20" && inputValue === "No") {
+      setClosureDateRange(["", ""]);
+      setMinordays2020("");
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: inputValue,
+      }));
+    }
+    
+    if (name === "minor_child_tax_21" && inputValue === "No") {
+      setClosureDateRangeTwo(["", ""]);
+      setMinordays2021("");
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -2507,10 +3165,11 @@ const MultiStepForm = () => {
       // }
 
       if (!formData.isChecked) {
-        errorsObj.isChecked = "Please check the box";
+        errorsObj.isChecked = "Please check the terms & conditions policy";
         hasErrors = true;
       }
     }
+    
 
 
     if (activeStep === 23) {
@@ -2709,6 +3368,38 @@ const MultiStepForm = () => {
     }
 
 
+    if (activeStep === 14) {
+      if (!formData.care_for_minor_child) {
+        errorsObj.care_for_minor_child = "Please select an option";
+        hasErrors = true;
+      }
+      
+      if (!formData.minor_child_tax_20 && formData.care_for_minor_child === "Yes") {
+        errorsObj.minor_child_tax_20 = "Please select an option";
+        hasErrors = true;
+      }
+
+      // if (
+      //   formData.employed_as_W2 === "Yes" &&
+      //   formData.family_sick === "Yes" &&
+      //   formData.amount2020 === ""
+      // ) {
+      //   errorsObj.amount2020 = "Please select an option";
+      //   // errorsObj.amount2021 = "Please select an option";
+      //   hasErrors = true;
+      // }
+      // if (
+      //   formData.employed_as_W2 === "Yes" &&
+      //   formData.family_sick === "Yes" &&
+      //   formData.amount2021 === ""
+      // ) {
+      //   errorsObj.amount2021 = "Please select an option";
+      //   // errorsObj.amount2021 = "Please select an option";
+      //   hasErrors = true;
+      // }
+    }
+
+
     if (activeStep === 18) {
       if (!formData.setc_program) {
         errorsObj.setc_program = "Please select an option";
@@ -2854,8 +3545,16 @@ const MultiStepForm = () => {
     const email = formData.email.trim();
     if (!token && email !== "" && email.includes("@")) {
       checkEmailAvailability();
+    } else {
+      // If email is empty, reset email validation state and clear errors
+      setEmailValidated(false);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "",
+      }));
     }
   }, [formData.email]);
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -2863,7 +3562,7 @@ const MultiStepForm = () => {
       if (token) {
         //  alert(token, 'useeffect tokeeeeeeeeeeeennnnnnnnnnnnnn')
         try {
-          const response = await fetch("http://localhost:5000/user/getUser", {
+          const response = await fetch("https://agree.setczone.com/api/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -2876,6 +3575,7 @@ const MultiStepForm = () => {
 
             const currentStep = userData.step;
             setActiveStep(currentStep || 0);
+          
             // Extract personal start date and end date from userData
             const startdate2020 = userData.personal_startdate2020
               ? new Date(userData.personal_startdate2020)
@@ -3069,7 +3769,7 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const response = await fetch("http://localhost:5000/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -3091,7 +3791,7 @@ const MultiStepForm = () => {
   };
 
   const submitHubspotForm = async () => {
-    const apiUrl = "http://localhost:5000/user/dataPosttoHubspot";
+    const apiUrl = "https://agree.setczone.com/api/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
     const data = {
@@ -3130,7 +3830,7 @@ const MultiStepForm = () => {
   };
 
 //   const callFilesCom = async () => {
-//     const apiUrl = "http://localhost:5000/user/multiupload";
+//     const apiUrl = "https://agree.setczone.com/api/multiupload";
 
 //     const payload = {
 //         path: [...userData?.driving_licence_name, ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
@@ -3175,7 +3875,7 @@ const MultiStepForm = () => {
 //     }
 // };
 const callFilesCom = async () => {
-  const apiUrl = "http://localhost:5000/user/multiupload";
+  const apiUrl = "https://agree.setczone.com/api/multiupload";
 
   const payload = {
     path: [ ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
@@ -3244,7 +3944,7 @@ const callFilesCom = async () => {
         alert("Are you sure to remove file");
 
         try {
-          const url = "http://localhost:5000/user/deleteFile";
+          const url = "https://agree.setczone.com/api/deleteFile";
           const payload = {
             fieldName: `${fileKey}_name`,
             fileName: originalFileName,
@@ -3308,7 +4008,7 @@ const callFilesCom = async () => {
         };
 
         const response = await axios.put(
-          "http://localhost:5000/user/multiple-form-data",
+          "https://agree.setczone.com/api/multiple-form-data",
           formData,
           config
         );
@@ -3589,13 +4289,17 @@ const callFilesCom = async () => {
                           name="email"
                           maxLength="254"
                           placeholder="e.g. example@example.com"
+                          // class={`form-control ${
+                          //   errors.email === "Email is available"
+                          //     ? "border-success text-success"
+                          //     : errors.email
+                          //     ? "border-danger"
+                          //     : ""
+                          // }`}
                           class={`form-control ${
-                            errors.email === "Email is available"
-                              ? "border-success text-success"
-                              : errors.email
-                              ? "border-danger"
-                              : ""
+                            emailValidated ? "border-success text-success" : errors.email ? "border-danger" : ""
                           }`}
+                          
                           required=""
                           id="id_email"
                           onChange={handleInputChange}
@@ -4045,7 +4749,14 @@ const callFilesCom = async () => {
                         via phone, text, and/or email.
                       </p>
                     </div>
-                       
+                    {errors.isChecked && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "13px", fontWeight: 600 }}
+                          >
+                            {errors.isChecked}
+                          </div>
+                        )}
 
                     <div
                               className="modal fade"
@@ -4500,7 +5211,7 @@ const callFilesCom = async () => {
                   <div className="start-application">
                     <div
                       className="row roww"
-                      style={{ marginTop: "0px !important" }}
+                      
                     >
                       <div className="col-lg-12 col-md-12 col-sm-12">
                         <div class="img-applic-content border-0">
@@ -4822,7 +5533,7 @@ const callFilesCom = async () => {
                               activeErrorQualifyOne && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    Were Sorry. By answering “No” to the above
+                                    We are sorry. By answering “No” to the above
                                     question, you will not be eligible for the
                                     SETC program.
                                   </h4>
@@ -4972,7 +5683,7 @@ const callFilesCom = async () => {
                               activeErrorQualifyTwoo && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    Were Sorry. By answering “No” to the above
+                                    We are sorry. By answering “No” to the above
                                     question, you will not be eligible for the
                                     SETC program.
                                   </h4>
@@ -5134,7 +5845,7 @@ const callFilesCom = async () => {
                               activeErrorQualifyThree && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    Were Sorry. By answering “No” to the above
+                                    We are sorry. By answering “No” to the above
                                     question, you will not be eligible for the
                                     SETC program.
                                   </h4>
@@ -5223,7 +5934,10 @@ const callFilesCom = async () => {
                                   data-bs-toggle="modal"
                                   data-bs-target="#exampleModal_step_6"
                                   className="d-none d-md-inline"
-                                  style={{ color: "red" }}
+                                  style={{  color: "red",
+                                  cursor: "pointer",
+                                  fontSize: 23,
+                                  textDecoration: "underline",}}
                                 >
                                   Click here for examples
                                 </a>
@@ -5231,12 +5945,15 @@ const callFilesCom = async () => {
                                   data-bs-toggle="modal"
                                   data-bs-target="#exampleModalS_step_6"
                                   className="d-inline d-md-none"
-                                  style={{ color: "red" }}
+                                  style={{  color: "red",
+                                  cursor: "pointer",
+                                  fontSize: 23,
+                                  textDecoration: "underline", }}
                                 >
                                   Click here for examples
                                 </a>
                               </span>
-                              <br/> From 4/1/2020-9/30/2021
+                              {" "} From 4/1/2020-9/30/2021
                             </label>
 
                             <div className="optio mb-2">
@@ -5301,7 +6018,7 @@ const callFilesCom = async () => {
                               activeErrorQualifyFive && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    Were Sorry. By answering “No” to the above
+                                    We are sorry. By answering “No” to the above
                                     question, you will not be eligible for the
                                     SETC program.
                                   </h4>
@@ -5689,8 +6406,9 @@ const callFilesCom = async () => {
                 <div className="col-lg-12">
                   <div className="start-application">
                     <div
+                  
                       className="row ROWW"
-                      style={{ marginTop: "0px !important" }}
+                     
                     >
                       <div className="col-lg-8 col-md-8 col-sm-12 ">
                         <div className="img-applic-content border-0">
@@ -6088,7 +6806,7 @@ const callFilesCom = async () => {
                                 activeErrorQualifyTwoo && (
                                   <div>
                                     <h4 style={{ color: "#e62e2d" }}>
-                                      Were Sorry. By answering “No” to the above
+                                      We are sorry. By answering “No” to the above
                                       question, you will not be eligible for the
                                       SETC program.
                                     </h4>
@@ -6243,7 +6961,7 @@ const callFilesCom = async () => {
                                 (
                                   <div>
                                     <h4 style={{ color: "#e62e2d" }}>
-                                      Were Sorry. By answering “No” to the previous
+                                      We are sorry. By answering “No” to the previous
                                       questions, you will not be eligible for the
                                       SETC program.
                                     </h4>
@@ -8426,50 +9144,63 @@ const callFilesCom = async () => {
           </div>
         );
       case 18:
+
+      if ((userData?.onedays == "" || userData?.onedays == "0") &&
+      (userData?.twodays == "" || userData?.twodays == "0") &&
+      (userData?.threedays == "" || userData?.threedays == "0") &&
+      (userData?.fourdays == "" || userData?.fourdays == "0") &&
+      (userData?.fivedays == "" || userData?.fivedays == "0") &&
+      (userData?.sixdays == "" || userData?.sixdays == "0")) 
+      {
+        // Display error message and prevent progressing further
         return (
-          
-          <>
-          {/* { ( userData?.onedays == "0" &&
-            userData?.twodays == "0" &&
-            userData?.threedays == "0" &&
-            userData?.fourdays == "0" &&
-            userData?.fivedays == "0" &&
-            userData?.sixdays == "0" )  ?
-          (
-        <div className="step step-17">
-        <div className="container ">
-          <div className="row justify-content-center">
-            <div className="col-lg-10">
-           
-              <div className="start-application">
-                <div className="row ROWW">
-                  <div className="col-lg-8 col-md-8 col-sm-12">
-                    <div className="img-applic-content">
-                    <label
-                            for="net_income_2019"
-                            className="form-label fs-5"
-                            style={{ color: "red", }}
-                          >
-                            Oops...!
-                          </label>
-                          <br/>
-                    <label
-                            for="net_income_2019"
-                            className="form-label fs-5"
-                            style={{ color: "red" }}
-                          >
-                            "Based on the previous response, you are not eligible as your value does not meet our criteria."
-                          </label>
-                          <div className="d-flex justify-content-center mt-3">
-                                <button
-                                  onClick={handlePrevious}
-                                  type="button"
-                                  className="px-3 py-2 prev-step"
-                                >
-                                  Previous
-                                </button>
-                               
-                              </div>
+          <div className="step step-17">
+          <div className="container ">
+            <div className="row justify-content-center">
+              <div className="col-lg-10">
+              <LinearProgress
+                        variant="determinate"
+                        sx={{
+                          height: "14px",
+                          borderRadius: "6px",
+                          marginBottom: 5,
+                          backgroundColor: "#f0f0f0",
+                          "& .MuiLinearProgress-bar": {
+                            backgroundColor: "rgb(13, 189, 243);",
+                          },
+                        }}
+                        value={100}
+                      />
+                <div className="start-application">
+                  <div className="row ROWW">
+                    <div className="col-lg-8 col-md-8 col-sm-12">
+                      <div className="img-applic-content">
+                      <label
+                              for="net_income_2019"
+                              className="form-label fs-5"
+                              style={{ color: "red", }}
+                            >
+                              Oops...!
+                            </label>
+                            <br/>
+                      <label
+                              for="net_income_2019"
+                              className="form-label fs-5"
+                              style={{ color: "red" }}
+                            >
+                              "Based on the previous response, you are not eligible as your value does not meet our criteria."
+                            </label>
+                            <div className="d-flex justify-content-center mt-3">
+                                  <button
+                                    onClick={handlePrevious}
+                                    type="button"
+                                    className="px-3 py-2 prev-step"
+                                  >
+                                    Previous
+                                  </button>
+                                 
+                                </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -8477,10 +9208,12 @@ const callFilesCom = async () => {
             </div>
           </div>
         </div>
-      </div>
 
-          ) : ( */}
-
+        );
+      } else {
+        // Regular form content for Step 2
+        return (
+        
           <div className="step step-15">
             <div className="container ">
               <div className="row justify-content-center">
@@ -8583,7 +9316,7 @@ const callFilesCom = async () => {
                               activeErrorQualifySix && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    Were Sorry. By answering “YES” to the above
+                                    We are sorry. By answering “YES” to the above
                                     question, you will not be eligible for the
                                     SETC program.
                                   </h4>
@@ -8617,9 +9350,10 @@ const callFilesCom = async () => {
               </div>
             </div>
           </div>
-          
-             </>
-        );
+            );
+          }
+
+       
       case 19:
         return (
           <div className="step step-16">

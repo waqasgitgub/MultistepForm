@@ -40,15 +40,15 @@ const App = () => {
           render={() => (token ? <Redirect to="/status" /> : <LandingPage />)}
         />
         {/* Private route - Render ApplicationForm if token exists */}
-        <Route
+        {/* <Route
           path="/status"
           render={() => (token ? <ApplicationStatus /> : <Redirect to="/" />)}
-        />
+        /> */}
         {/* Public routes */}
         <Route path="/login" component={Login} />
         <Route path="/verifyOtp" component={VerifyOtp} />
         <Route path="/application-form" component={ApplicationForm} />
-        <Route path="/status" component={ApplicationStatus} />
+        <Route path="/status" exact component={ApplicationStatus} />
         <Route path="/support" component={Support} />
         <Route path="/strip" component={Strip} />
 

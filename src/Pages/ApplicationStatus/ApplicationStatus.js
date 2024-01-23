@@ -164,7 +164,7 @@ export default function ApplicationStatus({}) {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("http://localhost:5000/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -187,7 +187,7 @@ export default function ApplicationStatus({}) {
   const uploadFile = async (formData, inputName) => {
     const token = localStorage.getItem("token");
     if (formData) {
-      alert("Verify that the delete button disappears after 30 seconds of uploading the file.");
+      // alert("Verify that the delete button disappears after 30 seconds of uploading the file.");
 
       try {
         setUploadingFile(inputName);
@@ -209,7 +209,7 @@ export default function ApplicationStatus({}) {
         };
 
         const response = await axios.put(
-          "http://localhost:5000/user/multiple-form-data",
+          "https://agree.setczone.com/api/multiple-form-data",
           formData,
           config
         );
@@ -399,7 +399,7 @@ export default function ApplicationStatus({}) {
         alert("Are you sure to remove file");
 
         try {
-          const url = "http://localhost:5000/user/deleteFile";
+          const url = "https://agree.setczone.com/api/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -447,7 +447,7 @@ export default function ApplicationStatus({}) {
     try {
         // setLoading(true);
 
-        const apiUrl = "http://localhost:5000/user/downloadfile";
+        const apiUrl = "https://agree.setczone.com/api/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -502,7 +502,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "http://localhost:5000/user/deletefilecom";
+    const apiUrl = "https://agree.setczone.com/api/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -601,7 +601,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "http://localhost:5000/user/digisign";
+      const apiUrl = "https://agree.setczone.com/api/digisign";
 
       const formData = {
         name: userData?.first_name,
@@ -650,7 +650,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("http://localhost:5000/user/getUser", {
+          const response = await fetch("https://agree.setczone.com/api/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

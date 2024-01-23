@@ -2,6 +2,7 @@
 
 body {
   font-family: "Outfit", sans-serif;
+  overflow-x: hidden;
 }
 
 .logo-set {
@@ -57,6 +58,17 @@ body {
   /* border: none !important; */
   box-shadow: none !important;
 }
+
+.step-2{
+  margin-top: -75px !important;
+}
+
+.step-8{
+  margin-top: -40px !important;
+}
+
+
+
 
 .first-stepper .css-n7tliy-MuiStep-root:nth-child(2) {
   display: none;
@@ -323,8 +335,8 @@ input.error {
 }
 
 .itemm {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
   color: #2e8a5f;
 }
 
@@ -341,6 +353,7 @@ input.error {
 }
 
 .buttonn {
+  margin-right: 10px !important; /* You can adjust the value as needed */
   background: none;
   /* margin-right: 30px; */
   padding-right: 20px;
@@ -452,7 +465,7 @@ input.error{
 }
 
 .start-application .row {
-  margin-top: 18px !important;
+  margin-top: 2px !important;
 }
 
 .start-application .customRow {

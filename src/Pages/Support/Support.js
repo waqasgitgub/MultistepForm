@@ -98,7 +98,7 @@ const Support = () => {
         <div class="contact">
           <div class="container">
             <div class="row">
-              <div class="col-lg-6 mt-3">
+              {/* <div class="col-lg-6 mt-3">
                 <div class="contactsDiv shadow">
                   <div class="row align-items-center">
                     <div class="col-lg-7 col-md-7 col-sm-7">
@@ -136,7 +136,7 @@ const Support = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div class="col-lg-6 mt-3">
                 <div class="contactsDiv shadow">
                   <div class="row align-items-center">

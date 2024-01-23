@@ -52,7 +52,7 @@ const Navbar = () => {
 
     localStorage.removeItem("activeTab");
     localStorage.removeItem("isModalOpened");
-    history.push("/");
+    history.push("/login");
     setTimeout(() => {
       window.location.reload();
     }, 200);
@@ -104,6 +104,7 @@ const Navbar = () => {
               </NavLink>
 
               <button
+              
                 style={{ marginRight: "16px" }}
                 class="navbar-toggler"
                 type="button"
@@ -155,7 +156,7 @@ const Navbar = () => {
 
                     <li
                       className="about nav-item me-1"
-                      onClick={() => window.location.reload()}
+                      // onClick={() => window.location.reload()}
                     >
                       <NavLink
                         className="nav-link cool-link"
@@ -177,6 +178,7 @@ const Navbar = () => {
                     </li>
 
                     <Button
+                     disableRipple
                       id="basic-button"
                       aria-controls={open ? "basic-menu" : undefined}
                       aria-haspopup="true"
