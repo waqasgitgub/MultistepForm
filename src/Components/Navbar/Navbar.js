@@ -51,7 +51,7 @@ const Navbar = () => {
     dispatch(removeToken());
 
     localStorage.removeItem("activeTab");
-
+    localStorage.removeItem("isModalOpened");
     history.push("/");
     setTimeout(() => {
       window.location.reload();

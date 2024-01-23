@@ -12,6 +12,7 @@ import Login from "./Pages/Login/Login";
 import { useSelector } from "react-redux";
 import VerifyOtp from "./Pages/VerifyOtp/VerifyOtp";
 import { useEffect, useState } from "react";
+import Strip from "./Pages/Strip/Strip";
 
 const App = () => {
   // const { token } = useSelector((state) => state.user);
@@ -49,6 +50,8 @@ const App = () => {
         <Route path="/application-form" component={ApplicationForm} />
         <Route path="/status" component={ApplicationStatus} />
         <Route path="/support" component={Support} />
+        <Route path="/strip" component={Strip} />
+
         {/* Redirect to LandingPage for any other undefined route */}
         <Redirect to="/" />
       </Switch>
@@ -57,3 +60,6 @@ const App = () => {
 };
 
 export default App;
+
+
+

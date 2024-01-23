@@ -9,13 +9,23 @@ import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import LinearProgress from "@mui/material/LinearProgress";
 import "./ApplicationStatus.css";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import { useState, useEffect } from "react";
-import { Check, CheckCircle, TaskAlt } from "@mui/icons-material";
+import {
+  Check,
+  CheckCircle,
+  Clear,
+  DoneOutline,
+  PictureAsPdfSharp,
+  TaskAlt,
+} from "@mui/icons-material";
 import axios from "axios";
 import FileInputComponent from "../../Components/FileInputComponent";
+import LoadingScreen from "../../Components/LoadingScreen";
+import { Modal } from "@mui/material";
 
 function LinearProgressWithLabel(props) {
   return (
@@ -38,13 +48,19 @@ function LinearProgressWithLabel(props) {
   );
 }
 export default function ApplicationStatus({}) {
+  const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+
+  const [openModalDate, setOpenModalDate] = useState(false);
+
   const [userData, setUserData] = useState();
   const [uploadingFile, setUploadingFile] = useState("");
   const [activeTab, setActiveTab] = useState("status_tab"); // Default to 'status_tab' or last selected tab
   const [addingFileType, setAddingFileType] = useState(null);
   const [uploadCompleteTimes, setUploadCompleteTimes] = useState({
-    driving_licence: null,
+    // driving_licence: null,
     schedule_pdf: null,
     Tax_Return_2020: null,
     Tax_Return_2021: null,
@@ -61,7 +77,7 @@ export default function ApplicationStatus({}) {
   };
 
   const [selectedFiles, setSelectedFiles] = useState({
-    driving_licence: [],
+    // driving_licence: [],
     schedule_pdf: [],
     Tax_Return_2020: [],
     Tax_Return_2021: [],
@@ -75,7 +91,7 @@ export default function ApplicationStatus({}) {
 
   const allFilesSelected = () => {
     return (
-      selectedFiles?.driving_licence?.length > 0 &&
+      // selectedFiles?.driving_licence?.length > 0 &&
       selectedFiles?.schedule_pdf?.length > 0 &&
       selectedFiles?.Tax_Return_2020?.length > 0 &&
       selectedFiles?.Tax_Return_2021?.length > 0
@@ -84,7 +100,7 @@ export default function ApplicationStatus({}) {
 
   const allFilesSelectedAdditional = () => {
     return (
-      selectedFiles?.driving_licence?.length > 0 &&
+      // selectedFiles?.driving_licence?.length > 0 &&
       selectedFiles?.schedule_pdf?.length > 0 &&
       selectedFiles?.Tax_Return_2020?.length > 0 &&
       selectedFiles?.Tax_Return_2021?.length > 0 &&
@@ -97,7 +113,7 @@ export default function ApplicationStatus({}) {
     );
   };
   const [uploadProgress, setUploadProgress] = useState({
-    driving_licence: 0,
+    // driving_licence: 0,
     schedule_pdf: 0,
     Tax_Return_2020: 0,
     Tax_Return_2021: 0,
@@ -108,6 +124,17 @@ export default function ApplicationStatus({}) {
     ks2020: 0,
     ks22020: 0,
   });
+
+
+  //for close payment modal
+  const handleCloseModal = () => {
+  
+    setActiveTab("final_calculation");
+    setOpenModalDate(false);
+  };
+
+
+  
 
   const handleFileChange = (inputName, event) => {
     const selectedFiles = event.target.files;
@@ -135,6 +162,8 @@ export default function ApplicationStatus({}) {
     const token = localStorage.getItem("token");
     if (token) {
       try {
+        setLoading(true); // Hide the loader when the request is completed (either success or failure)
+
         const response = await fetch("http://localhost:5000/user/getUser", {
           method: "GET",
           headers: {
@@ -149,6 +178,8 @@ export default function ApplicationStatus({}) {
         }
       } catch (error) {
         console.error("Network error", error);
+      } finally {
+        setLoading(false); // Hide the loader when the request is completed (either success or failure)
       }
     }
   };
@@ -156,6 +187,8 @@ export default function ApplicationStatus({}) {
   const uploadFile = async (formData, inputName) => {
     const token = localStorage.getItem("token");
     if (formData) {
+      alert("Verify that the delete button disappears after 30 seconds of uploading the file.");
+
       try {
         setUploadingFile(inputName);
         formData.append("step", 10);
@@ -185,12 +218,13 @@ export default function ApplicationStatus({}) {
         await fetchUserDataa();
         let lastFileName = "";
 
-        if (inputName === "driving_licence") {
-          const lastDrivingLicenceIndex =
-            response.data.user.driving_licence_name.length - 1;
-          lastFileName =
-            response.data.user.driving_licence_name[lastDrivingLicenceIndex];
-        } else if (inputName === "schedule_pdf") {
+        // if (inputName === "driving_licence") {
+        //   const lastDrivingLicenceIndex =
+        //     response.data.user.driving_licence_name.length - 1;
+        //   lastFileName =
+        //     response.data.user.driving_licence_name[lastDrivingLicenceIndex];
+        // } else
+         if (inputName === "schedule_pdf") {
           const lastScheduleIndex =
             response.data.user.schedule_pdf_name.length - 1;
           lastFileName =
@@ -236,8 +270,8 @@ export default function ApplicationStatus({}) {
         }
 
         await handleSuccessfulUpload(inputName, lastFileName);
-     
-        setAddingFileType(null)
+
+        setAddingFileType(null);
       } catch (error) {
         console.error(`Error uploading file:`, error);
       } finally {
@@ -270,10 +304,16 @@ export default function ApplicationStatus({}) {
     }
     return false;
   };
+
+  // const shareFileOnFileDotCom = (inputName, fileName) => {
+  //   console.log(`Input Name: ${inputName}, File Name: ${fileName}`);
+  //   // Call your API function here
+  //   // Example: apiFunction(inputName, fileName);
+  // };
   // Function to retrieve upload completion times from localStorage on component mount
   useEffect(() => {
     const storedUploadTimes = {
-      driving_licence: localStorage.getItem("driving_licence"),
+      // driving_licence: localStorage.getItem("driving_licence"),
       schedule_pdf: localStorage.getItem("schedule_pdf"),
       Tax_Return_2020: localStorage.getItem("Tax_Return_2020"),
       Tax_Return_2021: localStorage.getItem("Tax_Return_2021"),
@@ -337,11 +377,11 @@ export default function ApplicationStatus({}) {
     // } else {
     //   console.error("Invalid fileKey or userData is missing");
     // }
-    if (fileKey && userData && originalFileName ) {
-        window.open(`http://localhost:5000/${originalFileName}`, "_blank");
-      } else {
-        console.error("File URL not found for the provided index");
-      }
+    if (fileKey && userData && originalFileName) {
+      window.open(`http://localhost:5000/${originalFileName}`, "_blank");
+    } else {
+      console.error("File URL not found for the provided index");
+    }
   };
 
   const removeFile = async (fileKey, index, originalFileName) => {
@@ -365,8 +405,8 @@ export default function ApplicationStatus({}) {
             // fileName: fileUrls[index],
             // originalFieldName: `${fileKey}_name`,
             // originalName: originalFileName,
-             fieldName: `${fileKey}_name` ,
-            fileName: originalFileName  ,
+            fieldName: `${fileKey}_name`,
+            fileName: originalFileName,
             originalFieldName: fileKey,
             originalName: fileUrls[index],
           };
@@ -381,6 +421,8 @@ export default function ApplicationStatus({}) {
           });
 
           if (response.ok) {
+
+            // await deleteFilesComFile(fileKey);
             await fetchUserDataa();
 
             setSelectedFiles((prevSelectedFiles) => {
@@ -400,6 +442,102 @@ export default function ApplicationStatus({}) {
     }
   };
 
+  const downloadLink = async (index) => {
+
+    try {
+        // setLoading(true);
+
+        const apiUrl = "http://localhost:5000/user/downloadfile";
+        let fileNamee = index;
+
+        if (Array.isArray(fileNamee)) {
+            fileNamee = fileNamee[0];
+        }
+
+        const paylaod = {
+            email: userData?.email,
+            fileName: fileNamee
+        };
+
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paylaod),
+        });
+
+        if (!response.ok) {
+            throw new Error("API request failed");
+        }
+
+        const data = await response.json();
+        console.log("API response downlaod file:", data);
+
+        // Create a link element
+        const downloadLink = document.createElement("a");
+        downloadLink.href = data.download_uri;
+        downloadLink.target = "_blank"; // Open in a new tab/window
+        downloadLink.download = data.display_name; // Specify the filename for download
+
+        // Append the link to the body
+        document.body.appendChild(downloadLink);
+
+        // Trigger a click event on the link to initiate the download
+        downloadLink.click();
+
+        // Remove the link from the DOM
+        document.body.removeChild(downloadLink);
+    } catch (error) {
+        alert("Something went wrong...");
+        console.error("Error calling API:", error.message);
+    } 
+    // finally {
+    //     // setLoading(false);
+    // }
+};
+
+
+const deleteFilesComFile = async (fileKey) => {
+  try {
+    setLoading(true);
+
+    const apiUrl = "http://localhost:5000/user/deletefilecom";
+    // let fileNamee = index;
+
+    // if (Array.isArray(fileNamee)) {
+    //     fileNamee = fileNamee[0];
+    // }
+
+    const paylaod = {
+        email: userData?.email,
+        fileName: fileKey
+    };
+
+    const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(paylaod),
+    });
+
+    if (!response.ok) {
+        throw new Error("API request failed");
+    }
+
+    const data = await response.json();
+    console.log("API response downlaod file:", data);
+
+   
+} catch (error) {
+    alert("Something went wrong...");
+    console.error("Error calling API:", error.message);
+} finally {
+    setLoading(false);
+}
+}
+
   const [steps, setSteps] = useState([
     {
       title: "Application Started",
@@ -416,17 +554,17 @@ export default function ApplicationStatus({}) {
       isCompleted: false,
     },
     {
-      title: "Review Calculation",
+      title: "Calculation Completed, Review Agreement & Payment Option",
       isCompleted: false,
     },
-    {
-      title: "Sign Agreement and Remit Payment",
-      isCompleted: false,
-    },
-    {
-      title: "Filed SETC with the IRS",
-      isCompleted: false,
-    },
+    // {
+    //   title: "Sign Agreement and Remit Payment",
+    //   isCompleted: false,
+    // },
+    // {
+    //   title: "Filed SETC with the IRS",
+    //   isCompleted: false,
+    // },
     {
       title: "Awaiting SETC Payment (12-20 weeks)",
       description: "6-9 weeks",
@@ -446,52 +584,129 @@ export default function ApplicationStatus({}) {
     localStorage.setItem("activeTab", tabId);
   };
 
+  const handleStrip = async (e) => {
+    e.preventDefault();
+
+    // // Check if 'docuSign' status is completed in local storage
+    // const docuSignStatus = localStorage.getItem('docuSign');
+
+    if (userData?.strip_inprocess == "true") {
+      // If 'docuSign' is completed, navigate to /strip
+      // window.location.href = "/strip";
+      history.push("/strip");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    try {
+      setLoading(true);
+
+      const apiUrl = "http://localhost:5000/user/digisign";
+
+      const formData = {
+        name: userData?.first_name,
+        email: userData?.email,
+      };
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+      console.log("API response:", data);
+      const url = data.result.url;
+
+      // // Store success status in local storage
+      // localStorage.setItem('docuSign', 'completed');
+
+      // Redirect to the received URL
+      window.location.href = url;
+      // history.push("/strip");
+
+
+      // You can perform further actions with the API response here
+    } catch (error) {
+      alert("Something went wrong...");
+      console.error("Error calling API:", error.message);
+    }finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    }
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
+      try {
+        setLoading(true);
+  
+        const token = localStorage.getItem("token");
+  
+        if (token) {
           const response = await fetch("http://localhost:5000/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
+  
           if (response.ok) {
+            const isModalAlreadyOpened = localStorage.getItem("isModalOpened");
             const userData = await response.json();
+  
+            if (userData?.strip_payment !== null && !isModalAlreadyOpened) {
+              setOpenModalDate(true);
+              localStorage.setItem("isModalOpened", "true");
+            } else {
+              setOpenModalDate(false);
+              // localStorage.removeItem("isModalOpened")
+            }
+  
             setUserData(userData);
-            const currentStep = userData.step;
-            setActiveStep(currentStep || 0);
-
+  
+            const currentStep = userData.step || 0;
+            setActiveStep(currentStep);
+  
             setSelectedFiles((prevSelectedFiles) => ({
               ...prevSelectedFiles,
-              driving_licence: userData?.driving_licence,
               schedule_pdf: userData?.schedule_pdf,
               Tax_Return_2020: userData?.Tax_Return_2020,
               Tax_Return_2021: userData?.Tax_Return_2021,
-              supplemental_attachment_2020:
-                userData?.supplemental_attachment_2020,
-              supplemental_attachment_2021:
-                userData?.supplemental_attachment_2021,
+              supplemental_attachment_2020: userData?.supplemental_attachment_2020,
+              supplemental_attachment_2021: userData?.supplemental_attachment_2021,
               FormA1099: userData?.FormA1099,
               FormB1099: userData?.FormB1099,
               ks2020: userData?.ks2020,
               ks22020: userData?.ks22020,
             }));
           } else {
-            console.error("Error fetching user data");
+            console.error("Error fetching user data:", response.status, response.statusText);
           }
-        } catch (error) {
-          console.error("Network error", error);
+        } else {
+          console.error("Token not found");
         }
+      } catch (error) {
+        console.error("Network error:", error);
+      } finally {
+        setLoading(false); // Hide the loader when the request is completed (either success or failure)
       }
     };
-
+  
     fetchUserData();
-  }, []);
+  }, []);  // Empty dependency array means this effect runs once after the initial render
+  
 
   const updateDocumentUploadedStatus = () => {
     let isCompleted = false;
+    // let title = userData?.is_docs_verify !== 'not verified' ? "Documents Uploaded" : "Documents Uploading";
+     let title = "Documents Uploaded";
     if (userData?.Family_Sick_Leave === "Yes") {
       if (allFilesSelectedAdditional()) {
         isCompleted = true;
@@ -501,17 +716,18 @@ export default function ApplicationStatus({}) {
         isCompleted = true;
       }
     }
-    // Update 'isCompleted' status for 'Documents Uploaded' step
+  
+    // Update 'isCompleted' status and dynamic 'title'
     setSteps((prevSteps) =>
       prevSteps.map((step) =>
-        step.title === "Documents Uploaded" ? { ...step, isCompleted } : step
+        step.title === "Documents Uploaded" ? { ...step, isCompleted, title } : step
       )
     );
 
     // Alert lengths
     console.log("All Files Selected Length:", {
       allFilesSelected: {
-        driving_licence: selectedFiles?.driving_licence?.length,
+        // driving_licence: selectedFiles?.driving_licence?.length,
         schedule_pdf: selectedFiles?.schedule_pdf?.length,
         Tax_Return_2020: selectedFiles?.Tax_Return_2020?.length,
         Tax_Return_2021: selectedFiles?.Tax_Return_2021?.length,
@@ -527,9 +743,26 @@ export default function ApplicationStatus({}) {
     // Alert lengths after updateDocumentUploadedStatus
   }, [userData, selectedFiles]);
 
+
+//   useEffect(() => {
+//     // Check if userData.payment is not empty 
+
+    // // if (userData?.strip_payment && userData?.strip_payment !== null) {
+    //   if (userData?.first_name && userData?.first_name !== null) {
+    //     alert("hi waqas")
+    //     console.log("hi waqas")
+    //   setOpenModalDate(true);
+    // } else {
+    //   setOpenModalDate(false);
+    // }
+//   // }, [userData.payment]); 
+// }, [userData?.first_name]); 
   return (
     <div>
+
       <Navbar />
+      {loading && <LoadingScreen />}
+
       <div class="status-page">
         <div class="container-fluid">
           <div class="row">
@@ -539,6 +772,7 @@ export default function ApplicationStatus({}) {
                   <div class="col-lg-9 col-md-12">
                     <div class="row justify-content-center">
                       <div class="col-lg-12 col-md-12">
+                       
                         <ul class="nav nav-tab tabs-heading mb-4" role="tab">
                           <li class="tab-item me-4">
                             <a
@@ -574,9 +808,143 @@ export default function ApplicationStatus({}) {
                               Documents
                             </a>
                           </li>
+
+                          <li class="tab-item me-3">
+                            <a
+                              className={`status-heading nav-link ${
+                                activeTab === "esignature_tab" ? "active" : ""
+                              }`}
+                              data-bs-toggle="tab"
+                              href="#esignature_tab"
+                              style={{
+                                fontSize: 18,
+                                textDecoration: "underline",
+                              }}
+                              onClick={() => handleTabChange("esignature_tab")}
+                            >
+                              E-Signature
+                            </a>
+                          </li>
+
+                    {userData && userData?.strip_payment !== null && (
+                          <li class="tab-item me-3">
+                            <a
+                              className={`status-heading nav-link ${
+                                activeTab === "final_calculation" ? "active" : ""
+                              }`}
+                              data-bs-toggle="tab"
+                              href="#final_calculation"
+                              style={{
+                                fontSize: 18,
+                                textDecoration: "underline",
+                              }}
+                              onClick={() => handleTabChange("final_calculation")}
+                            >
+                              Final Calculation
+                            </a>
+                          </li>
+
+                          )}
+                       
                         </ul>
 
                         <div class="tab-content mt-2">
+                          <div
+                            className={`tab-pane fade ${
+                              activeTab === "esignature_tab"
+                                ? "show active"
+                                : ""
+                            }`}
+                            id="esignature_tab"
+                          >
+                            {/* <h2 class="mb-3 comp-info">E-Signature</h2> */}
+                            <Typography
+                              style={{
+                                marginLeft: "18px",
+                                color: "#98a4ae",
+                                fontStyle: "italic",
+                                fontSize: "14px",
+                              }}
+                            >
+                              {" "}
+                              Your Name: {userData?.first_name}{" "}
+                              {userData?.last_name}
+                            </Typography>
+                            <Typography
+                              style={{
+                                marginLeft: "18px",
+                                color: "#98a4ae",
+                                fontStyle: "italic",
+                                fontSize: "14px",
+                                marginTop: 10,
+                              }}
+                            >
+                              Your Email: {userData?.email}
+                            </Typography>
+
+                        
+
+                            {userData?.strip_payment === null && (
+                              <button
+                                onClick={handleStrip}
+                                className="esigbutton"
+                                disabled={
+                                  userData?.pre_signature_document === null
+                                }
+                              >
+                                E-Signature
+                              </button>
+                            )}
+
+                            {/* {userData?.strip_payment !== null && (
+                              <div style={{ marginTop: 16 }}>
+                                <a
+                                  href="https://beta.ccalerc.com//public/pdfs/pdf_file_changeable_1704734452_31c95b170ba977d5bb26d7f6159d9ed0_orignal_aptly.pdf"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <PictureAsPdfSharp
+                                    sx={{
+                                      width: "30px",
+                                      height: "30px",
+                                      marginRight: "5px",
+                                    }}
+                                  />
+                                  Download/View PDF (John's File)
+                                </a>
+                              </div>
+                            )} */}
+
+                          </div>
+                          <div
+                            className={`tab-pane fade ${
+                              activeTab === "final_calculation"
+                                ? "show active"
+                                : ""
+                            }`}
+                            id="final_calculation"
+                          >
+                           
+                            {userData?.strip_payment !== null && (
+                              <div style={{ marginTop: 16 }}>
+                                <a
+                                  href="https://beta.ccalerc.com//public/pdfs/pdf_file_changeable_1704734452_31c95b170ba977d5bb26d7f6159d9ed0_orignal_aptly.pdf"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <PictureAsPdfSharp
+                                    sx={{
+                                      width: "30px",
+                                      height: "30px",
+                                      marginRight: "5px",
+                                    }}
+                                  />
+                                  Download/View PDF (John's File)
+                                </a>
+                              </div>
+                            )}
+
+                          </div>
                           <div
                             className={`tab-pane fade ${
                               activeTab === "status_tab" ? "show active" : ""
@@ -780,6 +1148,71 @@ export default function ApplicationStatus({}) {
                             </div>
                           </div>
 
+
+                          <Modal
+                                  open={openModalDate}
+                                  onClose={handleCloseModal}
+                                  aria-labelledby="modal-title"
+                                  aria-describedby="modal-description"
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      bgcolor: "background.paper",
+                                      boxShadow: 24,
+                                      p: 4,
+                                      maxWidth: 500,
+                                      borderRadius: "12px",
+                                      width: "90%",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                  
+                                 
+                                        <>
+                                          <DoneOutline
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                              color: "green",
+                                              marginBottom: 3,
+                                            }}
+                                          />
+                                          <Typography
+                                            style={{
+                                              fontSize: 20,
+                                              color: "black",
+                                              fontWeight: "600",
+                                              color: "#192c57",
+                                            }}
+                                          >
+                                           Congratulations...
+                                          </Typography>
+                                          <p id="modal-description">
+                                          Your payment has been submitted successfully. Now, you can download the file.
+                                          </p>
+                                          <button
+                                            style={{
+                                              padding: "5px 16px",
+                                              borderRadius: "5px",
+                                              color: "white",
+                                              backgroundColor: "#467A8A",
+                                              border: "1px solid #467A8A",
+                                            }}
+                                            className="mt-3"
+                                            onClick={handleCloseModal}
+                                          >
+                                            OK
+                                          </button>
+                                        </>
+                                     
+                                  </Box>
+                                </Modal>
+
                           {(userData?.applicationStatus === true ||
                             userData?.applicationWithDocument === true) && (
                             <div
@@ -790,7 +1223,7 @@ export default function ApplicationStatus({}) {
                               }`}
                               id="document_tab"
                             >
-                              <div class="file_div">
+                              {/* <div class="file_div">
                                 <h4>
                                   A PDF Copy of a Current ID or Driver's License
                                 </h4>
@@ -826,10 +1259,9 @@ export default function ApplicationStatus({}) {
                                                 openFileInNewTab(
                                                   "driving_licence",
                                                   index,
-                                                  userData
-                                                  .driving_licence_name[
-                                                  index
-                                                ]
+                                                  userData.driving_licence_name[
+                                                    index
+                                                  ]
                                                 )
                                               }
                                               className="buttonn"
@@ -906,7 +1338,7 @@ export default function ApplicationStatus({}) {
                                     value={uploadProgress.driving_licence}
                                   />
                                 )}
-                              </div>
+                              </div> */}
 
                               <div class="file_div">
                                 <h4>
@@ -942,17 +1374,16 @@ export default function ApplicationStatus({}) {
                                               openFileInNewTab(
                                                 "schedule_pdf",
                                                 index,
-                                                userData
-                                                .schedule_pdf_name[
-                                                index
-                                              ]
+                                                userData.schedule_pdf_name[
+                                                  index
+                                                ]
                                               )
                                             }
                                             className="buttonn"
                                           >
                                             View
                                           </div>
-                                          {!shouldHideRemoveButton && (
+                                         {!shouldHideRemoveButton && ( 
                                             <div
                                               onClick={() =>
                                                 removeFile(
@@ -967,7 +1398,14 @@ export default function ApplicationStatus({}) {
                                             >
                                               Remove
                                             </div>
-                                          )}
+                                           )} 
+                                                {/* <div
+                                               onClick={() => downloadLink(userData.schedule_pdf)}
+                                              className="buttonn"
+                                            >
+                                              Download
+                                            </div> */}
+                                          
                                         </div>
                                       </div>
                                     );
@@ -1059,10 +1497,9 @@ export default function ApplicationStatus({}) {
                                                 openFileInNewTab(
                                                   "Tax_Return_2020",
                                                   index,
-                                                  userData
-                                                  .Tax_Return_2020_name[
-                                                  index
-                                                ]
+                                                  userData.Tax_Return_2020_name[
+                                                    index
+                                                  ]
                                                 )
                                               }
                                               className="buttonn"
@@ -1179,7 +1616,9 @@ export default function ApplicationStatus({}) {
                                                 openFileInNewTab(
                                                   "Tax_Return_2021",
                                                   index,
-                                                  userData.Tax_Return_2021_name[index]
+                                                  userData.Tax_Return_2021_name[
+                                                    index
+                                                  ]
                                                 )
                                               }
                                               className="buttonn"
@@ -1281,6 +1720,7 @@ export default function ApplicationStatus({}) {
                                               ];
                                             const shouldHideRemoveButton =
                                               isThirtySecondsPassed(fileName);
+                                              return (
                                             <div
                                               key={index}
                                               className="containerr"
@@ -1288,12 +1728,13 @@ export default function ApplicationStatus({}) {
                                               <div className="itemm">
                                                 <TaskAlt />
                                                 <span className="namee">
-                                                  {
+                                                  {/* {
                                                     userData
                                                       .supplemental_attachment_2020_name[
                                                       index
                                                     ]
-                                                  }
+                                                  } */}
+                                                  <p>waqas</p>
                                                 </span>
                                               </div>
                                               <div
@@ -1309,9 +1750,9 @@ export default function ApplicationStatus({}) {
                                                       "supplemental_attachment_2020",
                                                       index,
                                                       userData
-                                                      .supplemental_attachment_2020_name[
-                                                      index
-                                                    ]
+                                                        .supplemental_attachment_2020_name[
+                                                        index
+                                                      ]
                                                     )
                                                   }
                                                   className="buttonn"
@@ -1336,7 +1777,8 @@ export default function ApplicationStatus({}) {
                                                   </div>
                                                 )}
                                               </div>
-                                            </div>;
+                                            </div>
+                                              ) ;
                                           }
                                         )
                                       ) : (
@@ -1448,9 +1890,9 @@ export default function ApplicationStatus({}) {
                                                         "supplemental_attachment_2021",
                                                         index,
                                                         userData
-                                                        .supplemental_attachment_2021_name[
-                                                        index
-                                                      ]
+                                                          .supplemental_attachment_2021_name[
+                                                          index
+                                                        ]
                                                       )
                                                     }
                                                     className="buttonn"
@@ -1580,10 +2022,9 @@ export default function ApplicationStatus({}) {
                                                       openFileInNewTab(
                                                         "FormA1099",
                                                         index,
-                                                        userData
-                                                        .FormA1099_name[
-                                                        index
-                                                      ]
+                                                        userData.FormA1099_name[
+                                                          index
+                                                        ]
                                                       )
                                                     }
                                                     className="buttonn"
@@ -1702,10 +2143,9 @@ export default function ApplicationStatus({}) {
                                                       openFileInNewTab(
                                                         "FormB1099",
                                                         index,
-                                                        userData
-                                                        .FormB1099_name[
-                                                        index
-                                                      ]
+                                                        userData.FormB1099_name[
+                                                          index
+                                                        ]
                                                       )
                                                     }
                                                     className="buttonn"
@@ -1819,10 +2259,9 @@ export default function ApplicationStatus({}) {
                                                     openFileInNewTab(
                                                       "ks2020",
                                                       index,
-                                                      userData
-                                                      .ks2020_name[
-                                                      index
-                                                    ]
+                                                      userData.ks2020_name[
+                                                        index
+                                                      ]
                                                     )
                                                   }
                                                   className="buttonn"
@@ -1934,10 +2373,9 @@ export default function ApplicationStatus({}) {
                                                     openFileInNewTab(
                                                       "ks22020",
                                                       index,
-                                                      userData
-                                                      .ks22020_name[
-                                                      index
-                                                    ]
+                                                      userData.ks22020_name[
+                                                        index
+                                                      ]
                                                     )
                                                   }
                                                   className="buttonn"
@@ -2025,7 +2463,10 @@ export default function ApplicationStatus({}) {
               </div>
             </div>
 
-            <div class="col-lg-5 px-0" style={{ backgroundColor: "#1a2c57", paddingBottom: '1.5rem' }}>
+            <div
+              class="col-lg-5 px-0"
+              style={{ backgroundColor: "#1a2c57", paddingBottom: "1.5rem" }}
+            >
               <div
                 class="status-progress"
                 style={{ margin: 0, marginTop: "28px" }}
@@ -2034,16 +2475,21 @@ export default function ApplicationStatus({}) {
                   <Timeline>
                     <TimelineItem key={index}>
                       <TimelineSeparator>
-                        {/* <TimelineDot style={{ width: '20px', height: '20px', backgroundColor: step.isCompleted ? 'rgb(29 215 46)' : 'white' }} /> */}
 
                         <Check
                           style={{
                             width: "35px",
                             height: "35px",
                             padding: 5,
-                            backgroundColor: step.isCompleted
-                              ? "rgb(1, 179, 228)"
-                              : "white",
+                            backgroundColor:
+                            step.isCompleted  ||
+                            (userData && userData?.is_docs_verify !== 'not verified' && step.title === "Documents Uploaded") ||
+                              (userData && userData?.strip_payment !== null &&
+                                step.title === "Calculation Completed, Review Agreement & Payment Option") ||
+                              (userData && userData?.isProcess === true &&
+                                step.title === "Application in Process")
+                                ? "rgb(1, 179, 228)"
+                                : "white",
                             borderRadius: "35px",
                             color: "white",
                           }}
@@ -2054,9 +2500,15 @@ export default function ApplicationStatus({}) {
                             style={{
                               minHeight: "80px",
                               minWidth: "6px",
-                              background: step.isCompleted
-                                ? "rgb(1, 179, 228)"
-                                : "white",
+                              background:
+                              step.isCompleted  ||
+                              (userData && userData?.is_docs_verify !== 'not verified' && step.title === "Documents Uploaded") ||
+                                (userData && userData?.strip_payment !== null &&
+                                  step.title === "Calculation Completed, Review Agreement & Payment Option") ||
+                                (userData && userData?.isProcess === true &&
+                                  step.title === "Application in Process")
+                                  ? "rgb(1, 179, 228)"
+                                  : "white",
                             }}
                           />
                         )}
@@ -2064,18 +2516,70 @@ export default function ApplicationStatus({}) {
                       <TimelineContent>
                         <h4
                           style={{
-                            color: step.isCompleted
-                              ? "rgb(1, 179, 228)"
-                              : "white",
+                            color:
+                              step.isCompleted  || 
+                              (userData && userData?.is_docs_verify !== 'not verified' && step.title === "Documents Uploaded") ||
+                             
+                              (userData && userData?.strip_payment !== null &&
+                                step.title === "Calculation Completed, Review Agreement & Payment Option") ||
+                              (userData && userData?.isProcess === true &&
+                                step.title === "Application in Process")
+                                ? "rgb(1, 179, 228)"
+                                : "white",
                           }}
                         >
-                          {step.title}
+                          {step.title === "Documents Uploaded" ? 
+            (userData && userData?.is_docs_verify !== 'not verified' ? "Documents Uploaded" : "Documents Uploading") :
+            step.title
+          }
                         </h4>
                         {step.description && <p>{step.description}</p>}
                       </TimelineContent>
                     </TimelineItem>
                   </Timeline>
                 ))}
+
+            {/* {steps.map((step, index) => (
+              <Timeline key={index}>
+                <TimelineItem>
+                  <TimelineSeparator>
+                    <Check
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        padding: 5,
+                        backgroundColor: step.isCompleted ? "rgb(1, 179, 228)" : "white",
+                        borderRadius: "35px",
+                        color: "white",
+                      }}
+                    />
+                    {index !== steps.length - 1 && (
+                      <TimelineConnector
+                        style={{
+                          minHeight: "80px",
+                          minWidth: "6px",
+                          background: step.isCompleted ? "rgb(1, 179, 228)" : "white",
+                        }}
+                      />
+                    )}
+                  </TimelineSeparator>
+                  <TimelineContent>
+                  <h4
+          style={{
+            color: step.isCompleted ? "rgb(1, 179, 228)" : "white",
+          }}
+        >
+          {step.title === "Documents Uploaded" ? 
+            (userData?.is_docs_verify !== 'not verified' ? "Documents Uploaded" : "Documents Uploading") :
+            step.title
+          }
+        </h4>
+                    {step.description && <p>{step.description}</p>}
+                  </TimelineContent>
+                </TimelineItem>
+              </Timeline>
+            ))} */}
+
               </div>
             </div>
           </div>

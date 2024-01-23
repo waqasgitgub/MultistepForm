@@ -8,6 +8,16 @@ body {
   width: 180px;
   height: 60px;
 }
+
+.custom-date-picker-input {
+  /* Add your custom styles here */
+  width: 230px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  /* Add more styles as needed */
+}
 .error-border {
   border: 1px solid #ff3860;
   height: 78px;
@@ -18,6 +28,13 @@ body {
 .border-success {
   border: 1px solid rgb(170, 225, 170);
 }
+
+.empty-name {
+  height: 38px; 
+  line-height: 30px; 
+  color: #999; 
+}
+
 
 .mainClas {
   display: block;
@@ -69,6 +86,18 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+
+.containerr {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between;
+  align-items: center;
+  margin-top: 20px; */
+  color: #2e8a5f;
+  /* Add additional styling as needed */
+}
+
+
   /* Adjust the width of the stepper for smaller screens */
   .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
     font-size: 6px !important; /* Set the width you prefer for smaller screens */
@@ -81,13 +110,30 @@ body {
 }
 @media screen and (min-width: 769px) and (max-width: 992px) {
   .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
-    font-size: 10px !important; /* Set the width you prefer for smaller screens */
+    font-size: 5px !important; /* Set the width you prefer for smaller screens */
   }
 }
 @media screen and (max-width: 768px) {
   .secondStepper .css-2s90m6-MuiAvatar-root {
-    width: 22px !important;
-    height: 22px !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
+    font-size: 3px !important; /* Set the width you prefer for smaller screens */
+  }
+  .css-163lrmv-MuiStepLabel-root .MuiStepLabel-label {
+    font-size: 3px !important; /* Set the width you prefer for smaller screens */
+
+    /* Other adjustments as needed */
+  }
+
+
+  .secondStepper .css-2s90m6-MuiAvatar-root {
+    width: 13px !important;
+    height: 13px !important;
   }
 }
 @media screen and (max-width: 768px) {
@@ -270,7 +316,7 @@ input.error {
 .containerr {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  /* align-items: center; */
   margin-top: 20px;
   color: #2e8a5f;
   /* Add additional styling as needed */
@@ -856,6 +902,23 @@ h3.plain {
   font-weight: 600;
 }
 
+/* styles.css (or any other file where you manage your styles) */
+
+.activeQ {
+  color: rgb(0, 182, 255); /* Set your desired background color here */
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.table-cell {
+  padding-right: 10px; /* Adjust the value as per your requirement */
+}
+
+.table_head{
+  font-size: 16px;
+}
+
+
 .status-progress {
   width: 100%;
   /* background-color: #1a2c57; */
@@ -1063,14 +1126,47 @@ h3.plain {
   padding: 0 !important;
   flex: unset !important;
 }
-
+.css-1rcbby2::before{
+  display: none !important;
+}
+.css-1oa1nt{
+  margin: 0px !important;
+}
 .checkBoxStepOne {
   margin-bottom: 18px;
 }
-
+.toi{
+  margin-top: -40px;
+}
 @media (max-width: 767px) {
   .desktop-box {
     padding: 110px 20px !important;
+  }
+  .ss{
+    font-size: 27px !important;
+  }
+  .eret {
+    padding-bottom: 0px;
+  }
+  .step2_h5{
+    line-height: 28px;
+    font-size: 18px;
+  }
+  .step2_content h1{
+    margin-bottom: 10px !important;
+  }
+  .wee{
+    margin-bottom: 30px;
+  }
+.toi{
+  margin-top: -40px;
+}
+  .img-applic-content{
+    padding: 25px;
+  }
+  .start-application .row{
+    margin-top: 0px !important;
+    padding-bottom: 0px !important;
   }
   .backGround {
     height: 32vh !important;

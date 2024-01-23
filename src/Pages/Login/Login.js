@@ -28,7 +28,7 @@ const Login = () => {
     event.preventDefault();
    
       try {
-        const response = await axios.post('http://localhost:5000/user/send-invitation', {
+        const response = await axios.post('https://agree.setczone.com/apiuser/send-invitation', {
          email: formData.email
         });
     
@@ -38,12 +38,14 @@ const Login = () => {
           // alert(data.user.token)
           // dispatch(createUser({ user: data.user }));
           history.push("/verifyOtp");
+          alert("Check your eamil, verification code successfully send")
         } else {
           console.error('Error in API call');
           // dispatch(loginFailure());
         }
       } catch (error) {
         console.error('Network error', error);
+        alert("Something went wrong, please check your email & try again...")
         // dispatch(loginFailure());
       }
    
