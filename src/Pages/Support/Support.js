@@ -56,7 +56,7 @@ const Support = () => {
                 </div>
                 <div class="actions_div">
                   <a
-                    href="/login"
+                    href="/status"
                     style={{ textDecoration: "none" }}
                   >
                     Check the status of your application
@@ -72,10 +72,10 @@ const Support = () => {
                 </div>
                 <div class="actions_div">
                   <a
-                    href="mailto:support@setczone.com"
+                     href="/status"
                     style={{ textDecoration: "none" }}
                   >
-                    Upload payroll documents
+                    Upload  documents
                   </a>
                 </div>
                 <div class="actions_div">
@@ -242,7 +242,7 @@ const Support = () => {
                         <span>
                           Check the current application status of
                           <a
-                            href="https://agree.setczone.com/apipanel"
+                            href="http://localhost:5000panel"
                             style={{ color: "#29abe2", fontWeight: "500" }}
                           >
                             Setczone

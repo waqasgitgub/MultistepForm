@@ -9,7 +9,7 @@
 
 // const fetchData = async () => {
 //   try {
-//     const apiUrl = 'https://agree.setczone.com/apiuser/sessions';
+//     const apiUrl = 'http://localhost:5000user/sessions';
 
 //     // Make an API call using fetch or Axios
 //     const response = await fetch(apiUrl, {
@@ -86,7 +86,7 @@ const fetchDataWithoutEvent = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const apiUrl = 'https://agree.setczone.com/apiuser/sessions';
+    const apiUrl = 'https://app.setczone.com/api/user/sessions';
 
     // Make an API call using fetch or Axios
     const response = await fetch(apiUrl, {
@@ -130,12 +130,13 @@ const fetchUserDataa = async () => {
   const token = localStorage.getItem("token");
   if (token) {
     try {
-      const response = await fetch("https://agree.setczone.com/apiuser/getUser", {
+      const response = await fetch("https://app.setczone.com/api/user/getUser", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(response)
       if (response.ok) {
         const userData = await response.json(); // Use await to wait for the JSON parsing
         setUserData(userData);
@@ -150,13 +151,14 @@ const fetchUserDataa = async () => {
 
 
 const fetchData = async (eventValue) => {
+  console.log(eventValue, 'waqas')
   const token = localStorage.getItem("token");
   console.log('Event Value in  fetch  data:', eventValue);
   if(eventValue == 'signing_complete' || userData?.strip_inprocess == "true"){
   console.log("signing conditions  true")
 
     try {
-      const apiUrl = 'https://agree.setczone.com/apiuser/sessions';
+      const apiUrl = 'https://app.setczone.com/api/user/sessions';
       // Make an API call using fetch or Axios
       const response = await fetch(apiUrl, {
         method: 'POST', // or 'GET' depending on your API
@@ -226,8 +228,8 @@ useEffect(() => {
 }, [location.search, userData]); 
 
   return (
-    <div>
-     
+    <div style={{marginTop: 90}}>
+    
     </div>
   );
 }

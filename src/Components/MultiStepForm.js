@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -27,7 +27,9 @@ import framepng from "./GlobalImages/Frame.png";
 import qustMark from "./GlobalImages/Qust_mark.png";
 import congrats from "./GlobalImages/congratss.png";
 import Confetti from "react-confetti";
-
+import MultiplePicker, { DateObject } from "react-multi-date-picker";
+import dayjs from "dayjs";
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "@mui/material/Modal";
@@ -110,9 +112,7 @@ const firstPreQualifier = [
   "Step 4",
   "Step 5",
   "Step 6",
-  
 ];
-
 
 const firstPreQualifier2 = [
   "Step 1",
@@ -133,62 +133,139 @@ const stepss = ["Estimate Calculator", "Verification", "Confirmation"];
 
 const steps18 = ["Affirmation", "Estimated Calculator", "Upload Documents"];
 
-
-
-
-
 const MultiStepForm = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
   // personal start date 2020
 
+  // const [dateRange, setDateRange] = useState([null, null]);
+  // const [personal_startdate2020, personal_enddate2020] = dateRange;
+  // const [numberOffDays, setNumberOffDays] = useState(0);
+  // const [openModalDate, setOpenModalDate] = useState(false);
+  // const [skippedDates, setSkippedDates] = useState([]); // Add this line
+
+  // const minDate = new Date(2020, 3, 1); // April 2020 (Note: Month is zero-based)
+  // const maxDate = new Date(2020, 11, 31); // December 2020
+  // const initialOpenDate = new Date(2020, 3, 1); // December 2020 initially
+
+  // useEffect(() => {
+  //   if (personal_startdate2020 && personal_enddate2020) {
+  //     const daysInRange = calculateWorkingDays(
+  //       personal_startdate2020,
+  //       personal_enddate2020,
+  //       skippedDates
+  //     );
+  //     setNumberOffDays(daysInRange);
+  //   } else {
+  //     setNumberOffDays(0);
+  //   }
+  // }, [personal_startdate2020, personal_enddate2020, skippedDates]);
+  // const calculateWorkingDays = (startDate, endDate, skippedDates) => {
+  //   let workingDays = 0;
+  //   let currentDate = new Date(startDate);
+
+  //   while (currentDate <= endDate) {
+  //     const dayOfWeek = currentDate?.getDay();
+  //     // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
+  //     if (
+  //       dayOfWeek !== 0 &&
+  //       dayOfWeek !== 6 &&
+  //       !skippedDates?.includes(currentDate)
+  //     ) {
+  //       workingDays++;
+  //     }
+  //     currentDate.setDate(currentDate?.getDate() + 1);
+  //   }
+
+  //   return workingDays;
+  // };
+
+  // const handleDateChange = (update) => {
+  //   setDateRange(update);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setOpenModalDate(false);
+  // };
+
+  // // Function to filter out weekends (Saturday and Sunday)
+  // const filterWeekends = (date) => {
+  //   const day = date.getDay();
+  //   return day !== 0 && day !== 6;
+  // };
+
+  //  new code
+
   const [dateRange, setDateRange] = useState([null, null]);
   const [personal_startdate2020, personal_enddate2020] = dateRange;
   const [numberOffDays, setNumberOffDays] = useState(0);
+  const [selectedDates, setSelectedDates] = useState([]);
+
+  const format = "YYYY-MM-DD";
+  const specificDate1 = new DateObject().set({
+    day: 1,
+    month: 4,
+    year: 2020,
+    format,
+  });
+  const specificDate2 = new DateObject().set({
+    day: 1,
+    month: 1,
+    year: 2021,
+    format,
+  });
+  console.log(selectedDates);
+
   const [openModalDate, setOpenModalDate] = useState(false);
-  const [skippedDates, setSkippedDates] = useState([]); // Add this line
 
   const minDate = new Date(2020, 3, 1); // April 2020 (Note: Month is zero-based)
   const maxDate = new Date(2020, 11, 31); // December 2020
   const initialOpenDate = new Date(2020, 3, 1); // December 2020 initially
 
-
-  
-  useEffect(() => {
-    if (personal_startdate2020 && personal_enddate2020) {
-      const daysInRange = calculateWorkingDays(
-        personal_startdate2020,
-        personal_enddate2020,
-        skippedDates
-      );
-      setNumberOffDays(daysInRange);
-    } else {
-      setNumberOffDays(0);
-    }
-  }, [personal_startdate2020, personal_enddate2020, skippedDates]);
-  const calculateWorkingDays = (startDate, endDate, skippedDates) => {
-    let workingDays = 0;
-    let currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate?.getDay();
-      // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
-      if (
-        dayOfWeek !== 0 &&
-        dayOfWeek !== 6 &&
-        !skippedDates?.includes(currentDate)
-      ) {
-        workingDays++;
-      }
-      currentDate.setDate(currentDate?.getDate() + 1);
-    }
-
-    return workingDays;
-  };
-
   const handleDateChange = (update) => {
     setDateRange(update);
+  };
+  const isWeekend = (date) => [0, 6].includes(date.weekDay.index);
+
+  const handleMerge = () => {
+    const newDates = getDatesInRange();
+    const mergedDates = [...selectedDates, ...newDates];
+
+    // Check if '1970/01/01' is present in mergedDates
+    if (mergedDates.includes("1970-01-01T00:00:00.000Z")) {
+      // Log a message indicating that the date is present
+      console.log(
+        "Selected dates include '1970/01/01'. Array will not be updated."
+      );
+      return;
+    }
+    // Check for overlapping dates before adding new dates
+    const overlappingDates = newDates.filter((date) =>
+      selectedDates.includes(date)
+    );
+
+    if (overlappingDates.length === 0) {
+      setSelectedDates(mergedDates);
+    } else {
+      console.log("Selected dates overlap with existing dates. Merge aborted.");
+    }
+
+    setDateRange([null, null]);
+  };
+
+  const getDatesInRange = () => {
+    const dates = [];
+    let currentDate = new Date(personal_startdate2020);
+
+    while (currentDate <= personal_enddate2020) {
+      if (!isDateDisabledOne(currentDate) && filterWeekends(currentDate)) {
+        dates.push(currentDate.toISOString());
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
   };
 
   const handleCloseModal = () => {
@@ -200,63 +277,129 @@ const MultiStepForm = () => {
     const day = date.getDay();
     return day !== 0 && day !== 6;
   };
+  const isDateDisabledOne = (date) => {
+    // Disable weekends
+    if (!filterWeekends(date)) {
+      return true;
+    }
+    // Disable selected dates
+    return selectedDates.some((selectedDate) =>
+      dayjs(date).isSame(selectedDate, "day")
+    );
+  };
 
   // personal start date 2021
   const [dateRangeTwo, setDateRangeTwo] = useState([null, null]);
   const [personal_startdate2021, personal_enddate2021] = dateRangeTwo;
   const [numberOffDaysTwo, setNumberOffDaysTwo] = useState(0);
+  const [selectedDatesTwo, setSelectedDatesTwo] = useState([]);
+
   const [openModalDateTwo, setOpenModalDateTwo] = useState(false);
   const [skippedDatesTwo, setSkippedDatesTwo] = useState([]); // Add this line
 
   const minDateTwo = new Date(2021, 0, 1); // January 1, 2021 (Note: Month is zero-based)
   const maxDateTwo = new Date(2021, 8, 30); // September 30, 2021
   const initialOpenDateTwo = new Date(2021, 0, 1); // January 1, 2021 initially
-  useEffect(() => {
-    if (personal_startdate2021 && personal_enddate2021) {
-      const daysInRange = calculateWorkingDaysTwo(
-        personal_startdate2021,
-        personal_enddate2021,
-        skippedDatesTwo
-      );
-      setNumberOffDaysTwo(daysInRange);
-    } else {
-      setNumberOffDaysTwo(0);
-    }
-  }, [personal_startdate2021, personal_enddate2021, skippedDatesTwo]);
-  const calculateWorkingDaysTwo = (startDate, endDate, skippedDates) => {
-    let workingDays = 0;
-    let currentDate = new Date(startDate);
+  // useEffect(() => {
+  //   if (personal_startdate2021 && personal_enddate2021) {
+  //     const daysInRange = calculateWorkingDaysTwo(
+  //       personal_startdate2021,
+  //       personal_enddate2021,
+  //       skippedDatesTwo
+  //     );
+  //     setNumberOffDaysTwo(daysInRange);
+  //   } else {
+  //     setNumberOffDaysTwo(0);
+  //   }
+  // }, [personal_startdate2021, personal_enddate2021, skippedDatesTwo]);
+  // const calculateWorkingDaysTwo = (startDate, endDate, skippedDates) => {
+  //   let workingDays = 0;
+  //   let currentDate = new Date(startDate);
 
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay();
-      // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
-      if (
-        dayOfWeek !== 0 &&
-        dayOfWeek !== 6 &&
-        !skippedDates.includes(currentDate)
-      ) {
-        workingDays++;
+  //   while (currentDate <= endDate) {
+  //     const dayOfWeek = currentDate.getDay();
+  //     // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
+  //     if (
+  //       dayOfWeek !== 0 &&
+  //       dayOfWeek !== 6 &&
+  //       !skippedDates.includes(currentDate)
+  //     ) {
+  //       workingDays++;
+  //     }
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+
+  //   return workingDays;
+  // };
+
+  const handleDateChangeTwo = (update) => {
+    setDateRangeTwo(update);
+  };
+  const handleMergeTwo = () => {
+    const newDates = getDatesInRangeTwo();
+    const mergedDates = [...selectedDatesTwo, ...newDates];
+
+    // Check if '1970/01/01' is present in mergedDates
+    if (mergedDates.includes("1970-01-01T00:00:00.000Z")) {
+      // Log a message indicating that the date is present
+      console.log(
+        "Selected dates include '1970/01/01'. Array will not be updated."
+      );
+      return;
+    }
+
+    // Check for overlapping dates before adding new dates
+    const overlappingDates = newDates.filter((date) =>
+      selectedDatesTwo.includes(date)
+    );
+
+    if (overlappingDates.length === 0) {
+      setSelectedDatesTwo(mergedDates);
+    } else {
+      console.log("Selected dates overlap with existing dates. Merge aborted.");
+    }
+
+    setDateRangeTwo([null, null]);
+  };
+
+  const getDatesInRangeTwo = () => {
+    const dates = [];
+    let currentDate = new Date(personal_startdate2021);
+
+    while (currentDate <= personal_enddate2021) {
+      if (!isDateDisabledTwoo(currentDate) && filterWeekends(currentDate)) {
+        dates.push(currentDate.toISOString());
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    return workingDays;
-  };
-
- 
-
-  const handleDateChangeTwo = (update) => {
-    setDateRangeTwo(update);
+    return dates;
   };
 
   const handleCloseModalTwo = () => {
     setOpenModalDateTwo(false);
   };
 
+  const isDateDisabledTwoo = (date) => {
+    // Disable weekends
+    if (!filterWeekends(date)) {
+      return true;
+    }
+    // Disable selected dates
+    return selectedDatesTwo.some((selectedDate) =>
+      dayjs(date).isSame(selectedDate, "day")
+    );
+  };
+
   // cared start date 2020
   const [caredDateRange, setCaredDateRange] = useState([null, null]);
   const [cared_startdate2020, cared_enddate2020] = caredDateRange;
   const [symptomsDays, setSymptomsDays] = useState(0);
+
+  const [selectedDatesCared2020, setSelectedDatesCared2020] = useState([]);
+  const datesFormatCared2020 = selectedDates.map((date) =>
+    dayjs(date).format("YYYY-MM-DD")
+  );
   const [openModalSymptoms, setOpenModalSymptoms] = useState(false);
   const [skippedDatesThree, setSkippedDatesThree] = useState([]); // Add this line
 
@@ -274,43 +417,84 @@ const MultiStepForm = () => {
   //     setSymptomsDays(0);
   //   }
   // }, [cared_startdate2020, cared_enddate2020]);
-  useEffect(() => {
-    if (cared_startdate2020 && cared_enddate2020) {
-      const daysInRange = calculateWorkingDaysThree(
-        cared_startdate2020,
-        cared_enddate2020,
-        skippedDatesThree
+  // useEffect(() => {
+  //   if (cared_startdate2020 && cared_enddate2020) {
+  //     const daysInRange = calculateWorkingDaysThree(
+  //       cared_startdate2020,
+  //       cared_enddate2020,
+  //       skippedDatesThree
+  //     );
+  //     setSymptomsDays(daysInRange);
+  //   } else {
+  //     setSymptomsDays(0);
+  //   }
+  // }, [cared_startdate2020, cared_enddate2020, skippedDatesThree]);
+
+  // const calculateWorkingDaysThree = (startDate, endDate, skippedDates) => {
+  //   let workingDays = 0;
+  //   let currentDate = new Date(startDate);
+
+  //   while (currentDate <= endDate) {
+  //     const dayOfWeek = currentDate.getDay();
+  //     // Check if the current date is not a weekend, not in the skippedDates array,
+  //     // not skipped as a weekend, and not disabled
+  //     if (
+  //       dayOfWeek !== 0 &&
+  //       dayOfWeek !== 6 &&
+  //       !skippedDates.includes(currentDate) &&
+  //       !isDateDisabled(currentDate)
+  //     ) {
+  //       workingDays++;
+  //     }
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+
+  //   return workingDays;
+  // };
+
+  const handleCaredDateChange = (update) => {
+    setCaredDateRange(update);
+  };
+
+  const handleMergeCared2020 = () => {
+    const newDates = getDatesInRangeCared2020();
+    const mergedDates = [...selectedDatesCared2020, ...newDates];
+
+    // Check if '1970/01/01' is present in mergedDates
+    if (mergedDates.includes("1970-01-01T00:00:00.000Z")) {
+      // Log a message indicating that the date is present
+      console.log(
+        "Selected dates include '1970/01/01'. Array will not be updated."
       );
-      setSymptomsDays(daysInRange);
-    } else {
-      setSymptomsDays(0);
+      return;
     }
-  }, [cared_startdate2020, cared_enddate2020, skippedDatesThree]);
 
-  const calculateWorkingDaysThree = (startDate, endDate, skippedDates) => {
-    let workingDays = 0;
-    let currentDate = new Date(startDate);
+    // Check for overlapping dates before adding new dates
+    const overlappingDates = newDates.filter((date) =>
+      selectedDatesCared2020.includes(date)
+    );
 
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay();
-      // Check if the current date is not a weekend, not in the skippedDates array,
-      // not skipped as a weekend, and not disabled
-      if (
-        dayOfWeek !== 0 &&
-        dayOfWeek !== 6 &&
-        !skippedDates.includes(currentDate) &&
-        !isDateDisabled(currentDate)
-      ) {
-        workingDays++;
+    if (overlappingDates.length === 0) {
+      setSelectedDatesCared2020(mergedDates);
+    } else {
+      console.log("Selected dates overlap with existing dates. Merge aborted.");
+    }
+
+    setCaredDateRange([null, null]);
+  };
+
+  const getDatesInRangeCared2020 = () => {
+    const dates = [];
+    let currentDate = new Date(cared_startdate2020);
+
+    while (currentDate <= cared_enddate2020) {
+      if (!isDateDisabled(currentDate) && filterWeekends(currentDate)) {
+        dates.push(currentDate.toISOString());
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    return workingDays;
-  };
-
-  const handleCaredDateChange = (update) => {
-    setCaredDateRange(update);
+    return dates;
   };
 
   const handleCloseSymptomsModal = () => {
@@ -321,13 +505,20 @@ const MultiStepForm = () => {
     const startDate = new Date(personal_startdate2020);
     const endDate = new Date(personal_enddate2020);
 
-      // Disable weekends
-      if (!filterWeekends(date)) {
-        return true;
-        }
+    // Disable weekends
+    if (!filterWeekends(date)) {
+      return true;
+    }
 
-    // Disable dates within the range
-    return date >= startDate && date <= endDate;
+    // Disable dates within the range or in selectedDatesCared2020 or selectedDates
+    return (
+      selectedDatesCared2020.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      ) ||
+      selectedDates.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      )
+    );
   };
 
   // cared start date 2021
@@ -336,6 +527,10 @@ const MultiStepForm = () => {
   const [symptomsDaysTwo, setSymptomsDaysTwo] = useState(0);
   const [openModalSymptomsTwo, setOpenModalSymptomsTwo] = useState(false);
   const [skippedDatesFour, setSkippedDatesFour] = useState([]); // Add this line
+  const [selectedDatesCared2021, setSelectedDatesCared2021] = useState([]);
+  const datesFormatCared2021 = selectedDatesTwo.map((date) =>
+    dayjs(date).format("YYYY-MM-DD")
+  );
 
   // Update the minDate and maxDate as needed for symptoms
 
@@ -343,44 +538,84 @@ const MultiStepForm = () => {
   const maxSymptomsDateTwo = new Date(2021, 8, 30); // September 30, 2020
   const initialOpenSymptomsDateTwo = new Date(2021, 0, 1); // January 1, 2020 initially
 
- 
+  // useEffect(() => {
+  //   if (cared_startdate2021 && cared_enddate2021) {
+  //     const daysInRange = calculateWorkingDaysFour(
+  //       cared_startdate2021,
+  //       cared_enddate2021,
+  //       skippedDatesFour
+  //     );
+  //     setSymptomsDaysTwo(daysInRange);
+  //   } else {
+  //     setSymptomsDaysTwo(0);
+  //   }
+  // }, [cared_startdate2021, cared_enddate2021, skippedDatesFour]);
 
-  useEffect(() => {
-    if (cared_startdate2021 && cared_enddate2021) {
-      const daysInRange = calculateWorkingDaysFour(
-        cared_startdate2021,
-        cared_enddate2021,
-        skippedDatesFour
+  // const calculateWorkingDaysFour = (startDate, endDate, skippedDates) => {
+  //   let workingDays = 0;
+  //   let currentDate = new Date(startDate);
+
+  //   while (currentDate <= endDate) {
+  //     const dayOfWeek = currentDate.getDay();
+  //     // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
+  //     if (
+  //       dayOfWeek !== 0 &&
+  //       dayOfWeek !== 6 &&
+  //       !skippedDates.includes(currentDate) &&
+  //       !isDateDisabledTwo(currentDate)
+  //     ) {
+  //       workingDays++;
+  //     }
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+
+  //   return workingDays;
+  // };
+
+  const handleCaredDateChangeTwo = (update) => {
+    setCaredDateRangeTwo(update);
+  };
+
+  const handleMergeCared2021 = () => {
+    const newDates = getDatesInRangeCared2021();
+    const mergedDates = [...selectedDatesCared2021, ...newDates];
+
+    // Check if '1970/01/01' is present in mergedDates
+    if (mergedDates.includes("1970-01-01T00:00:00.000Z")) {
+      // Log a message indicating that the date is present
+      console.log(
+        "Selected dates include '1970/01/01'. Array will not be updated."
       );
-      setSymptomsDaysTwo(daysInRange);
-    } else {
-      setSymptomsDaysTwo(0);
+      return;
     }
-  }, [cared_startdate2021, cared_enddate2021, skippedDatesFour]);
 
-  const calculateWorkingDaysFour = (startDate, endDate, skippedDates) => {
-    let workingDays = 0;
-    let currentDate = new Date(startDate);
+    // Check for overlapping dates before adding new dates
+    const overlappingDates = newDates.filter((date) =>
+      selectedDatesCared2021.includes(date)
+    );
+    console.log(overlappingDates);
 
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay();
-      // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
-      if (
-        dayOfWeek !== 0 &&
-        dayOfWeek !== 6 &&
-        !skippedDates.includes(currentDate) &&
-        !isDateDisabledTwo(currentDate)
-      ) {
-        workingDays++;
+    if (overlappingDates.length === 0) {
+      setSelectedDatesCared2021(mergedDates);
+    } else {
+      console.log("Selected dates overlap with existing dates. Merge aborted.");
+    }
+
+    setCaredDateRangeTwo([null, null]);
+  };
+
+  const getDatesInRangeCared2021 = () => {
+    const dates = [];
+    let currentDate = new Date(cared_startdate2021);
+
+    while (currentDate <= cared_enddate2021) {
+      if (!isDateDisabledTwo(currentDate) && filterWeekends(currentDate)) {
+        dates.push(currentDate.toISOString());
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    return workingDays;
-  };
-
-  const handleCaredDateChangeTwo = (update) => {
-    setCaredDateRangeTwo(update);
+    return dates;
   };
 
   const handleCloseSymptomsModalTwo = () => {
@@ -388,20 +623,36 @@ const MultiStepForm = () => {
   };
 
   const isDateDisabledTwo = (date) => {
-    const startDate = new Date(personal_startdate2021);
-    const endDate = new Date(personal_enddate2021);
-  // Disable weekends
-      if (!filterWeekends(date)) {
-        return true;
-        }
-    // Disable dates within the range
-    return date >= startDate && date <= endDate;
+    const startDate = new Date(personal_enddate2021);
+    const endDate = new Date(personal_startdate2021);
+
+    // Disable weekends
+    if (!filterWeekends(date)) {
+      return true;
+    }
+
+    // Disable dates within the range or in selectedDatesCared2020 or selectedDates
+    return (
+      selectedDatesCared2021.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      ) ||
+      selectedDatesTwo.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      )
+    );
   };
 
   // Closure states 2020
   const [closureDateRange, setClosureDateRange] = useState([null, null]);
   const [minor_startdate2020, minor_enddate2020] = closureDateRange;
   const [minordays2020, setMinordays2020] = useState(0);
+
+  const [selectedDatesClosure2020, setSelectedDatesClosure2020] = useState([]);
+  const datesFormatClosure2020 = selectedDatesCared2020.map((date) =>
+    dayjs(date).format("YYYY-MM-DD")
+  );
+  // const datesFormatClosure2021 = selectedDatesCared2021.map(date => dayjs(date).format('YYYY-MM-DD'));
+
   const [openModalClosure, setOpenModalClosure] = useState(false);
   const [skippedDatesFive, setSkippedDatesFive] = useState([]); // Add this line
 
@@ -410,154 +661,223 @@ const MultiStepForm = () => {
   const maxClosureDate = new Date(2020, 11, 31); // December 2020
   const initialOpenClosureDate = new Date(2020, 3, 1); // Initial open date for closure
 
+  // useEffect(() => {
+  //   if (minor_startdate2020 && minor_enddate2020) {
+  //     const daysInRange = calculateWorkingDaysFive(
+  //       minor_startdate2020,
+  //       minor_enddate2020,
+  //       skippedDatesFive
+  //     );
+  //     setMinordays2020(daysInRange);
+  //   } else {
+  //     setMinordays2020(0);
+  //   }
+  // }, [minor_startdate2020, minor_enddate2020, skippedDatesFive]);
 
+  // const calculateWorkingDaysFive = (startDate, endDate, skippedDates) => {
+  //   let workingDays = 0;
+  //   let currentDate = new Date(startDate);
 
-  useEffect(() => {
-    if (minor_startdate2020 && minor_enddate2020) {
-      const daysInRange = calculateWorkingDaysFive(
-        minor_startdate2020,
-        minor_enddate2020,
-        skippedDatesFive
-      );
-      setMinordays2020(daysInRange);
-    } else {
-      setMinordays2020(0);
-    }
-  }, [minor_startdate2020, minor_enddate2020, skippedDatesFive]);
+  //   while (currentDate <= endDate) {
+  //     const dayOfWeek = currentDate.getDay();
+  //     // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
+  //     if (
+  //       dayOfWeek !== 0 &&
+  //       dayOfWeek !== 6 &&
+  //       !skippedDates.includes(currentDate) &&
+  //       !isDateDisabledThree(currentDate)
+  //     ) {
+  //       workingDays++;
+  //     }
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
-  const calculateWorkingDaysFive = (startDate, endDate, skippedDates) => {
-    let workingDays = 0;
-    let currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay();
-      // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
-      if (
-        dayOfWeek !== 0 &&
-        dayOfWeek !== 6 &&
-        !skippedDates.includes(currentDate) &&
-        !isDateDisabledThree(currentDate)
-      ) {
-        workingDays++;
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return workingDays;
-  };
+  //   return workingDays;
+  // };
 
   const handleMinorDateChange = (update) => {
     setClosureDateRange(update);
+  };
+  const handleMergeClosure2020 = () => {
+    const newDates = getDatesInRangeClosure2020();
+    const mergedDates = [...selectedDatesClosure2020, ...newDates];
+
+    // Check if '1970/01/01' is present in mergedDates
+    if (mergedDates.includes("1970-01-01T00:00:00.000Z")) {
+      // Log a message indicating that the date is present
+      console.log(
+        "Selected dates include '1970/01/01'. Array will not be updated."
+      );
+      return;
+    }
+
+    // Check for overlapping dates before adding new dates
+    const overlappingDates = newDates.filter((date) =>
+      selectedDatesClosure2020.includes(date)
+    );
+
+    if (overlappingDates.length === 0) {
+      setSelectedDatesClosure2020(mergedDates);
+    } else {
+      console.log("Selected dates overlap with existing dates. Merge aborted.");
+    }
+
+    setClosureDateRange([null, null]);
   };
 
   const handleCloseClosureModal = () => {
     setOpenModalClosure(false);
   };
 
+  const getDatesInRangeClosure2020 = () => {
+    const dates = [];
+    let currentDate = new Date(minor_startdate2020);
+
+    while (currentDate <= minor_enddate2020) {
+      if (!isDateDisabledThree(currentDate) && filterWeekends(currentDate)) {
+        dates.push(currentDate.toISOString());
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+  };
+
+  // const isDateDisabledThree = (date) => {
+  //   const personalStartDate2020 = new Date(personal_startdate2020);
+  //   const personalEndDate2020 = new Date(personal_enddate2020);
+  //   const caredStartDate2020 = new Date(cared_startdate2020);
+  //   const caredEndDate2020 = new Date(cared_enddate2020);
+
+  //   // Disable dates within the personal date range
+  //   if (date >= personalStartDate2020 && date <= personalEndDate2020) {
+  //     return true;
+  //   }
+  // // Disable weekends
+  // if (!filterWeekends(date)) {
+  //   return true;
+  //   }
+  //   // Disable dates within the cared date range
+  //   if (date >= caredStartDate2020 && date <= caredEndDate2020) {
+  //     return true;
+  //   }
+
+  //   // Allow other dates
+  //   return false;
+  // };
   const isDateDisabledThree = (date) => {
-    const personalStartDate2020 = new Date(personal_startdate2020);
-    const personalEndDate2020 = new Date(personal_enddate2020);
-    const caredStartDate2020 = new Date(cared_startdate2020);
-    const caredEndDate2020 = new Date(cared_enddate2020);
+    const startDate = new Date(personal_startdate2020);
+    const endDate = new Date(personal_enddate2020);
 
-    // Disable dates within the personal date range
-    if (date >= personalStartDate2020 && date <= personalEndDate2020) {
-      return true;
-    }
-  // Disable weekends
-  if (!filterWeekends(date)) {
-    return true;
-    }
-    // Disable dates within the cared date range
-    if (date >= caredStartDate2020 && date <= caredEndDate2020) {
+    // Disable weekends
+    if (!filterWeekends(date)) {
       return true;
     }
 
-    // Allow other dates
-    return false;
+    // Disable dates within the range or in selectedDatesCared2020 or selectedDates
+    return (
+      selectedDatesClosure2020.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      ) ||
+      selectedDates.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      ) ||
+      selectedDatesCared2020.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      )
+    );
   };
 
   // Closure states 2021
   const [closureDateRangeTwo, setClosureDateRangeTwo] = useState([null, null]);
   const [minor_startdate2021, minor_enddate2021] = closureDateRangeTwo;
   const [minordays2021, setMinordays2021] = useState(0);
+
+  const [selectedDatesClosure2021, setSelectedDatesClosure2021] = useState([]);
+  const datesFormatClosure2021 = selectedDatesCared2021.map((date) =>
+    dayjs(date).format("YYYY-MM-DD")
+  );
+
   const [openModalClosureTwo, setOpenModalClosureTwo] = useState(false);
   const [skippedDatesSix, setSkippedDatesSix] = useState([]); // Add this line
 
   // Closure date range limits
-  
+
   const minClosureDateTwo = new Date(2021, 0, 1); // January 1, 2020 (Note: Month is zero-based)
   const maxClosureDateTwo = new Date(2021, 8, 30); // September 30, 2020
   const initialOpenClosureDateTwo = new Date(2021, 0, 1); // January 1, 2020 initially
 
-  
- 
-
-  useEffect(() => {
-    if (minor_startdate2021 && minor_enddate2021) {
-      const daysInRange = calculateWorkingDaysSix(
-        minor_startdate2021,
-        minor_enddate2021,
-        skippedDatesSix
-      );
-      setMinordays2021(daysInRange);
-    } else {
-      setMinordays2021(0);
-    }
-  }, [minor_startdate2021, minor_enddate2021, skippedDatesSix]);
-
-  const calculateWorkingDaysSix = (startDate, endDate, skippedDates) => {
-    let workingDays = 0;
-    let currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay();
-      // Check if the current date is not a weekend, not in the skippedDates array, and not skipped as a weekend
-      if (
-        dayOfWeek !== 0 &&
-        dayOfWeek !== 6 &&
-        !skippedDates.includes(currentDate) &&
-        !isDateDisabledFour(currentDate)
-      ) {
-        workingDays++;
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return workingDays;
-  };
-
   const handleMinorDateChangeTwo = (update) => {
     setClosureDateRangeTwo(update);
+  };
+
+  const handleMergeClosure2021 = () => {
+    const newDates = getDatesInRangeClosure2021();
+    const mergedDates = [...selectedDatesClosure2021, ...newDates];
+
+    // Check if '1970/01/01' is present in mergedDates
+    if (mergedDates.includes("1970-01-01T00:00:00.000Z")) {
+      // Log a message indicating that the date is present
+      console.log(
+        "Selected dates include '1970/01/01'. Array will not be updated."
+      );
+      return;
+    }
+
+    // Check for overlapping dates before adding new dates
+    const overlappingDates = newDates.filter((date) =>
+      selectedDatesClosure2021.includes(date)
+    );
+
+    if (overlappingDates.length === 0) {
+      setSelectedDatesClosure2021(mergedDates);
+    } else {
+      console.log("Selected dates overlap with existing dates. Merge aborted.");
+    }
+
+    setClosureDateRangeTwo([null, null]);
   };
 
   const handleCloseClosureModalTwo = () => {
     setOpenModalClosureTwo(false);
   };
 
-  const isDateDisabledFour = (date) => {
-    const personalStartDate2021 = new Date(personal_startdate2021);
-    const personalEndDate2021 = new Date(personal_enddate2021);
-    const caredStartDate2021 = new Date(cared_startdate2021);
-    const caredEndDate2021 = new Date(cared_enddate2021);
+  const getDatesInRangeClosure2021 = () => {
+    const dates = [];
+    let currentDate = new Date(minor_startdate2021);
 
-    // Disable dates within the personal date range
-    if (date >= personalStartDate2021 && date <= personalEndDate2021) {
-      return true;
-    }
-  // Disable weekends
-  if (!filterWeekends(date)) {
-    return true;
-    }
-    // Disable dates within the cared date range
-    if (date >= caredStartDate2021 && date <= caredEndDate2021) {
-      return true;
+    while (currentDate <= minor_enddate2021) {
+      if (!isDateDisabledFour(currentDate) && filterWeekends(currentDate)) {
+        dates.push(currentDate.toISOString());
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    // Allow other dates
-    return false;
+    return dates;
   };
 
+  const isDateDisabledFour = (date) => {
+    const startDate = new Date(personal_startdate2020);
+    const endDate = new Date(personal_enddate2020);
+
+    // Disable weekends
+    if (!filterWeekends(date)) {
+      return true;
+    }
+
+    // Disable dates within the range or in selectedDatesCared2020 or selectedDates
+    return (
+      selectedDatesClosure2021.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      ) ||
+      selectedDatesTwo.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      ) ||
+      selectedDatesCared2021.some((selectedDate) =>
+        dayjs(date).isSame(selectedDate, "day")
+      )
+    );
+  };
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -579,16 +899,18 @@ const MultiStepForm = () => {
 
   const [finalIncomeValue, setFinalIncomeValue] = useState(null);
 
-  console.log(finalIncomeValue, 'finalIcomeValue') ;
+  console.log(finalIncomeValue, "finalIcomeValue");
   const [activeErrorQualifyOne, setActiveErrorQualifyOne] = useState(false);
   const [activeErrorQualifyTwoo, setActiveErrorQualifyTwoo] = useState(false);
   const [activeErrorStep16, setActiveErrorStep16] = useState(false);
-  
+
   const [activeErrorQualifyTen, setActiveErrorQualifyTen] = useState(false);
   const [activeErrorQualifyThree, setActiveErrorQualifyThree] = useState(false);
-  const [activeErrorDidRecieveUnemployement, setActiveErrorDidRecieveUnemployement] = useState(false);
+  const [
+    activeErrorDidRecieveUnemployement,
+    setActiveErrorDidRecieveUnemployement,
+  ] = useState(false);
 
-  
   const [activeErrorQualifyFive, setActiveErrorQualifyFive] = useState(false);
   const [activeErrorQualifySix, setActiveErrorQualifySix] = useState(false);
   const [activeErrorQualify17, setActiveErrorQualify17] = useState(false);
@@ -773,7 +1095,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "https://agree.setczone.com/api/updateApplication",
+        "https://app.setczone.com/api/user/updateApplication",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -792,26 +1114,22 @@ const MultiStepForm = () => {
       // await callFilesCom();
 
       await fetchUserDataa();
-
-      
     } catch (error) {
       console.error(`Error uploading files:`, error);
       // Handle error
     } finally {
       setLoading(false); // Hide the loader when the request is completed (either success or failure)
     }
-
   };
 
   const handleSubmiDocuments = async () => {
-  
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "https://agree.setczone.com/api/updateDocumentStatus",
+        "https://app.setczone.com/api/user/updateDocumentStatus",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -824,7 +1142,7 @@ const MultiStepForm = () => {
           },
         }
       );
-      
+
       // // await submitHubspotForm();
       // await callFilesCom();
 
@@ -915,21 +1233,17 @@ const MultiStepForm = () => {
     amount2020: "",
     amount2021: "",
 
-
-
     did_receive_unemployement20: "",
     did_receive_unemployement21: "",
     care_for_minor_child: "",
     minor_child_tax_20: "",
-    minor_child_tax_21: ""
-
+    minor_child_tax_21: "",
 
     // Add other form fields here
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [emailValidated, setEmailValidated] = useState(false);
-
 
   const [taxYears, setTaxYears] = useState([
     { year: 2020, eFiled: false, mailed: false },
@@ -952,9 +1266,6 @@ const MultiStepForm = () => {
     console.log(`Year: ${year}, Option: ${option}, isActive: ${isActive}`);
   };
 
-
-
-
   console.log(formData.symptomsdays2020, "dayssssssssssss");
 
   const [errors, setErrors] = useState({});
@@ -968,7 +1279,7 @@ const MultiStepForm = () => {
   const formDataPreparing = async (step) => {
     try {
       setLoading(true);
-      const response = await fetch("https://agree.setczone.com/api/create", {
+      const response = await fetch("https://app.setczone.com/api/user/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1030,7 +1341,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1060,29 +1371,49 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            personal_startdate2020: formData.personal_startdate2020,
-            personal_enddate2020: formData.personal_enddate2020,
-            onedays: formData.numberOfDays,
 
-            personal_startdate2021: formData.personal_startdate2021,
-            personal_enddate2021: formData.personal_enddate2021,
-            twodays: formData.numberOfDays2021,
+             personally_sick_symptoms_2020_dates: selectedDates,
+            onedays: selectedDates?.length,
 
-            cared_startdate2020: formData.cared_startdate2020,
-            cared_enddate2020: formData.cared_enddate2020,
-            threedays: formData.symptomsdays2020,
+            personally_sick_symptoms_2021_dates: selectedDatesTwo,
+            twodays: selectedDatesTwo?.length,
 
-            cared_startdate2021: formData.cared_startdate2021,
-            cared_enddate2021: formData.cared_enddate2021,
-            fourdays: formData.symptomsdays2021,
+            covid_experienced_symptoms_2020_dates: selectedDatesCared2020,
+            threedays: selectedDatesCared2020?.length,
 
-            minor_startdate2020: formData.minor_startdate2020,
-            minor_enddate2020: formData.minor_enddate2020,
-            fivedays: formData.minordays2020,
+            covid_experienced_symptoms_2021_dates: selectedDatesCared2021,
+            fourdays: selectedDatesCared2021?.length,
 
-            minor_startdate2021: formData.minor_startdate2021,
-            minor_enddate2021: formData.minor_enddate2021,
-            sixdays: formData.minordays2021,
+            childs_daycare_2020_dates: selectedDatesClosure2020,
+            fivedays: selectedDatesClosure2020?.length,
+
+            childs_daycare_2021_dates: selectedDatesClosure2021,
+            sixdays: selectedDatesClosure2021?.length,
+
+
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // // onedays: formData.numberOfDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -1128,7 +1459,7 @@ const MultiStepForm = () => {
 
   const callVeriffAPI = (token) => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
-    const apiEndpoint = "https://agree.setczone.com/api/createSession"; // Replace with your actual API endpoint
+    const apiEndpoint = "https://app.setczone.com/api/user/createSession"; // Replace with your actual API endpoint
 
     // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
 
@@ -1159,51 +1490,47 @@ const MultiStepForm = () => {
   };
 
   const formDataUpdate = async (step) => {
-
-
     const formattedStartDate = personal_startdate2020
-    ? personal_startdate2020.toLocaleDateString()
-    : "";
-  const formattedEndDate = personal_enddate2020
-    ? personal_enddate2020.toLocaleDateString()
-    : "";
+      ? personal_startdate2020.toLocaleDateString()
+      : "";
+    const formattedEndDate = personal_enddate2020
+      ? personal_enddate2020.toLocaleDateString()
+      : "";
 
-  const formattedStartDate2021 = personal_startdate2021
-    ? personal_startdate2021.toLocaleDateString()
-    : "";
-  const formattedEndDate20221 = personal_enddate2021
-    ? personal_enddate2021.toLocaleDateString()
-    : "";
+    const formattedStartDate2021 = personal_startdate2021
+      ? personal_startdate2021.toLocaleDateString()
+      : "";
+    const formattedEndDate20221 = personal_enddate2021
+      ? personal_enddate2021.toLocaleDateString()
+      : "";
 
-  const formattedStartDate2020 = cared_startdate2020
-    ? cared_startdate2020.toLocaleDateString()
-    : "";
-  const formattedEndDate2020 = cared_enddate2020
-    ? cared_enddate2020.toLocaleDateString()
-    : "";
+    const formattedStartDate2020 = cared_startdate2020
+      ? cared_startdate2020.toLocaleDateString()
+      : "";
+    const formattedEndDate2020 = cared_enddate2020
+      ? cared_enddate2020.toLocaleDateString()
+      : "";
 
-  const formattedStartDaate2021 = cared_startdate2021
-    ? cared_startdate2021.toLocaleDateString()
-    : "";
-  const formattedEndDate2021 = cared_enddate2021
-    ? cared_enddate2021.toLocaleDateString()
-    : "";
+    const formattedStartDaate2021 = cared_startdate2021
+      ? cared_startdate2021.toLocaleDateString()
+      : "";
+    const formattedEndDate2021 = cared_enddate2021
+      ? cared_enddate2021.toLocaleDateString()
+      : "";
 
-  const formatedClosureStartDaate2020 = minor_startdate2020
-    ? minor_startdate2020.toLocaleDateString()
-    : "";
-  const formatedClosureEndDaate2020 = minor_enddate2020
-    ? minor_enddate2020.toLocaleDateString()
-    : "";
+    const formatedClosureStartDaate2020 = minor_startdate2020
+      ? minor_startdate2020.toLocaleDateString()
+      : "";
+    const formatedClosureEndDaate2020 = minor_enddate2020
+      ? minor_enddate2020.toLocaleDateString()
+      : "";
 
-  const formatedClosureStartDaate2021 = minor_startdate2021
-    ? minor_startdate2021.toLocaleDateString()
-    : "";
-  const formatedClosureEndDaate2021 = minor_enddate2021
-    ? minor_enddate2021.toLocaleDateString()
-    : "";
-
-
+    const formatedClosureStartDaate2021 = minor_startdate2021
+      ? minor_startdate2021.toLocaleDateString()
+      : "";
+    const formatedClosureEndDaate2021 = minor_enddate2021
+      ? minor_enddate2021.toLocaleDateString()
+      : "";
 
     try {
       setLoading(true);
@@ -1217,29 +1544,23 @@ const MultiStepForm = () => {
         return;
       }
 
+      let stepToSend = step; // Default step value to send
 
-  let stepToSend = step; // Default step value to send
-
-      if (
-        formData.care_for_minor_child === "No"  && activeStep === 14 ) {
-        stepToSend = 18; // Set step to 11 based on conditions
-      }
-      else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
-      {
+      // if (
+      //   formData.care_for_minor_child === "No"  && activeStep === 14 ) {
+      //   stepToSend = 18; // Set step to 11 based on conditions
+      // }
+      // else
+      if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
         stepToSend = 16;
-      }
-      else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
-      {
+      } else if (formData.minor_child_tax_21 === "No" && activeStep === 16) {
         stepToSend = 18;
+      } else {
+        stepToSend = step;
       }
-      else {
-        stepToSend = step
-      }
-     
-
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${stepToSend}/updateuser`,
+        `https://app.setczone.com/api/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1248,7 +1569,7 @@ const MultiStepForm = () => {
           },
           body: JSON.stringify({
             step: stepToSend,
-           
+
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
@@ -1267,55 +1588,48 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-           
-            personal_startdate2020: formattedStartDate,
-            personal_enddate2020: formattedEndDate,
-            onedays: numberOffDays,
+            // personal_startdate2020: formattedStartDate,
+            // personal_enddate2020: formattedEndDate,
+            // onedays: numberOffDays,
 
-           
+            // personal_startdate2021: formattedStartDate2021,
+            // personal_enddate2021: formattedEndDate20221,
+            // twodays: numberOffDaysTwo,
 
-            personal_startdate2021: formattedStartDate2021,
-            personal_enddate2021: formattedEndDate20221,
-            twodays: numberOffDaysTwo,
+            // cared_startdate2020: formattedStartDate2020,
+            // cared_enddate2020: formattedEndDate2020,
+            // threedays: symptomsDays,
 
-           
-            cared_startdate2020: formattedStartDate2020,
-            cared_enddate2020: formattedEndDate2020,
-            threedays: symptomsDays,
+            // // cared_startdate2021: formData.cared_startdate2021,
+            // // cared_enddate2021: formData.cared_enddate2021,
+            // // fourdays: formData.symptomsdays2021,
 
-            // cared_startdate2021: formData.cared_startdate2021,
-            // cared_enddate2021: formData.cared_enddate2021,
-            // fourdays: formData.symptomsdays2021,
+            // cared_startdate2021: formattedStartDaate2021,
+            // cared_enddate2021: formattedEndDate2021,
+            // fourdays: symptomsDaysTwo,
 
-            cared_startdate2021: formattedStartDaate2021,
-            cared_enddate2021: formattedEndDate2021,
-            fourdays: symptomsDaysTwo,
+            // // minor_startdate2020: formData.minor_startdate2020,
+            // // minor_enddate2020: formData.minor_enddate2020,
+            // // fivedays: formData.minordays2020,
 
-            // minor_startdate2020: formData.minor_startdate2020,
-            // minor_enddate2020: formData.minor_enddate2020,
-            // fivedays: formData.minordays2020,
+            // minor_startdate2020: formatedClosureStartDaate2020,
+            // minor_enddate2020: formatedClosureEndDaate2020,
+            // fivedays: minordays2020,
 
-            minor_startdate2020: formatedClosureStartDaate2020,
-            minor_enddate2020: formatedClosureEndDaate2020,
-            fivedays: minordays2020,
+            // // minor_startdate2021: formData.minor_startdate2021,
+            // // minor_enddate2021: formData.minor_enddate2021,
+            // // sixdays: formData.minordays2021,
 
-            // minor_startdate2021: formData.minor_startdate2021,
-            // minor_enddate2021: formData.minor_enddate2021,
-            // sixdays: formData.minordays2021,
-
-            minor_startdate2021: formatedClosureStartDaate2021,
-            minor_enddate2021: formatedClosureEndDaate2021,
-            sixdays: minordays2021,
-
-
+            // minor_startdate2021: formatedClosureStartDaate2021,
+            // minor_enddate2021: formatedClosureEndDaate2021,
+            // sixdays: minordays2021,
 
             personally_sick_symptoms_2020: formData.personallySick2020,
             personally_sick_symptoms_2021: formData.personallySick2021,
             covid_experienced_symptoms_2020: formData.symptoms2020,
-            covid_experienced_symptoms_2021:  formData.symptoms2021,
-            childs_daycare_2020:  formData.closure2020,
-            childs_daycare_2021:   formData.closure2021,
-
+            covid_experienced_symptoms_2021: formData.symptoms2021,
+            childs_daycare_2020: formData.closure2020,
+            childs_daycare_2021: formData.closure2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -1329,13 +1643,11 @@ const MultiStepForm = () => {
             did_you_miss_SEWDTC: formData.covid_related_issues,
             have_you_filed_already_for_setc: formData.setc_program,
 
-
             did_receive_unemployement20: formData.did_receive_unemployement20,
             did_receive_unemployement21: formData.did_receive_unemployement21,
-            care_for_minor_child: formData.care_for_minor_child,
+            // care_for_minor_child: formData.care_for_minor_child,
             minor_child_tax_20: formData.minor_child_tax_20,
             minor_child_tax_21: formData.minor_child_tax_21,
-            
 
             E_File_My_texes_2020: taxYears[0].eFiled,
             Mail_My_texes_2020: taxYears[0].mailed,
@@ -1354,45 +1666,45 @@ const MultiStepForm = () => {
 
         // setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-
-        if (formData.care_for_minor_child === "No"  && activeStep === 14 )
-        {
-          setActiveStep(18); 
-        } else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
-        {
-          setActiveStep(16); 
-        } else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
-        {
-          setActiveStep(18); 
+        // if (formData.care_for_minor_child === "No"  && activeStep === 14 )
+        // {
+        //   setActiveStep(18);
+        // } else
+        if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
+          setActiveStep(16);
+        } else if (formData.minor_child_tax_21 === "No" && activeStep === 16) {
+          setActiveStep(18);
         } else {
           setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
-  
       } else {
         // Handle error
         console.error("Error in API call");
         const errorData = await response.json();
 
-        if (errorData.errMessage === "Authorization token invalid" && errorData.details.name === "TokenExpiredError") {
+        if (
+          errorData.errMessage === "Authorization token invalid" &&
+          errorData.details.name === "TokenExpiredError"
+        ) {
           dispatch(removeToken());
-             
+
           localStorage.removeItem("activeTab");
           localStorage.removeItem("isModalOpened");
           history.push("/login");
-          alert("Your session expired, please login again. Thanks")
+          alert("Your session expired, please login again. Thanks");
           setTimeout(() => {
             window.location.reload();
           }, 200);
-            // Token is invalid or expired, remove it from local storage and navigate to /login
-            // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
-            // You can use your preferred navigation method, e.g., react-router-dom or window.location
-            // Example using react-router-dom:
-            // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+          // Token is invalid or expired, remove it from local storage and navigate to /login
+          // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+          // You can use your preferred navigation method, e.g., react-router-dom or window.location
+          // Example using react-router-dom:
+          // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
         } else {
-            // Handle other types of errors
-            console.error("Unhandled error:", errorData);
+          // Handle other types of errors
+          console.error("Unhandled error:", errorData);
         }
-    }
+      }
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
@@ -1402,51 +1714,47 @@ const MultiStepForm = () => {
     }
   };
   const formDataUpdateWithoutLoader = async (step) => {
-
-
     const formattedStartDate = personal_startdate2020
-    ? personal_startdate2020.toLocaleDateString()
-    : "";
-  const formattedEndDate = personal_enddate2020
-    ? personal_enddate2020.toLocaleDateString()
-    : "";
+      ? personal_startdate2020.toLocaleDateString()
+      : "";
+    const formattedEndDate = personal_enddate2020
+      ? personal_enddate2020.toLocaleDateString()
+      : "";
 
-  const formattedStartDate2021 = personal_startdate2021
-    ? personal_startdate2021.toLocaleDateString()
-    : "";
-  const formattedEndDate20221 = personal_enddate2021
-    ? personal_enddate2021.toLocaleDateString()
-    : "";
+    const formattedStartDate2021 = personal_startdate2021
+      ? personal_startdate2021.toLocaleDateString()
+      : "";
+    const formattedEndDate20221 = personal_enddate2021
+      ? personal_enddate2021.toLocaleDateString()
+      : "";
 
-  const formattedStartDate2020 = cared_startdate2020
-    ? cared_startdate2020.toLocaleDateString()
-    : "";
-  const formattedEndDate2020 = cared_enddate2020
-    ? cared_enddate2020.toLocaleDateString()
-    : "";
+    const formattedStartDate2020 = cared_startdate2020
+      ? cared_startdate2020.toLocaleDateString()
+      : "";
+    const formattedEndDate2020 = cared_enddate2020
+      ? cared_enddate2020.toLocaleDateString()
+      : "";
 
-  const formattedStartDaate2021 = cared_startdate2021
-    ? cared_startdate2021.toLocaleDateString()
-    : "";
-  const formattedEndDate2021 = cared_enddate2021
-    ? cared_enddate2021.toLocaleDateString()
-    : "";
+    const formattedStartDaate2021 = cared_startdate2021
+      ? cared_startdate2021.toLocaleDateString()
+      : "";
+    const formattedEndDate2021 = cared_enddate2021
+      ? cared_enddate2021.toLocaleDateString()
+      : "";
 
-  const formatedClosureStartDaate2020 = minor_startdate2020
-    ? minor_startdate2020.toLocaleDateString()
-    : "";
-  const formatedClosureEndDaate2020 = minor_enddate2020
-    ? minor_enddate2020.toLocaleDateString()
-    : "";
+    const formatedClosureStartDaate2020 = minor_startdate2020
+      ? minor_startdate2020.toLocaleDateString()
+      : "";
+    const formatedClosureEndDaate2020 = minor_enddate2020
+      ? minor_enddate2020.toLocaleDateString()
+      : "";
 
-  const formatedClosureStartDaate2021 = minor_startdate2021
-    ? minor_startdate2021.toLocaleDateString()
-    : "";
-  const formatedClosureEndDaate2021 = minor_enddate2021
-    ? minor_enddate2021.toLocaleDateString()
-    : "";
-
-
+    const formatedClosureStartDaate2021 = minor_startdate2021
+      ? minor_startdate2021.toLocaleDateString()
+      : "";
+    const formatedClosureEndDaate2021 = minor_enddate2021
+      ? minor_enddate2021.toLocaleDateString()
+      : "";
 
     try {
       let token = localStorage.getItem("token");
@@ -1459,29 +1767,23 @@ const MultiStepForm = () => {
         return;
       }
 
+      let stepToSend = step; // Default step value to send
 
-  let stepToSend = step; // Default step value to send
-
-      if (
-        formData.care_for_minor_child === "No"  && activeStep === 14 ) {
-        stepToSend = 18; // Set step to 11 based on conditions
-      }
-      else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
-      {
-        stepToSend = 16;
-      }
-      else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
-      {
+      // if (
+      //   formData.care_for_minor_child === "No"  && activeStep === 14 ) {
+      //   stepToSend = 18; // Set step to 11 based on conditions
+      // }
+      // else
+      if ((formData.minor_child_tax_20 === "No" && activeStep === 14 && formData.did_receive_unemployement21 === "Yes") || (formData.minor_child_tax_21 === "No" && activeStep === 16)) {
         stepToSend = 18;
+      } else if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
+        stepToSend = 16;
+      } else {
+        stepToSend = step;
       }
-      else {
-        stepToSend = step
-      }
-     
-
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${stepToSend}/updateuser`,
+        `https://app.setczone.com/api/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1548,7 +1850,6 @@ const MultiStepForm = () => {
             // did_you_miss_SEWDTC: formData.covid_related_issues,
             // have_you_filed_already_for_setc: formData.setc_program,
 
-
             // did_receive_unemployement20: formData.did_receive_unemployement20,
             // did_receive_unemployement21: formData.did_receive_unemployement21,
             // care_for_minor_child: formData.care_for_minor_child,
@@ -1572,62 +1873,78 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
+
+            personally_sick_symptoms_2020_dates: selectedDates,
+            onedays: selectedDates?.length,
+
+            personally_sick_symptoms_2021_dates: selectedDatesTwo,
+            twodays: selectedDatesTwo?.length,
+
+            covid_experienced_symptoms_2020_dates: selectedDatesCared2020,
+            threedays: selectedDatesCared2020?.length,
+
+            covid_experienced_symptoms_2021_dates: selectedDatesCared2021,
+            fourdays: selectedDatesCared2021?.length,
+
+            childs_daycare_2020_dates: selectedDatesClosure2020,
+            fivedays: selectedDatesClosure2020?.length,
+
+            childs_daycare_2021_dates: selectedDatesClosure2021,
+            sixdays: selectedDatesClosure2021?.length,
             // personal_startdate2020: formData.personal_startdate2020,
             // personal_enddate2020: formData.personal_enddate2020,
             // onedays: formData.numberOfDays,
-            personal_startdate2020: formattedStartDate,
-            personal_enddate2020: formattedEndDate,
-            onedays: numberOffDays,
+
+            // personal_startdate2020: formattedStartDate,
+            // personal_enddate2020: formattedEndDate,
+            // onedays: numberOffDays,
 
             // personal_startdate2021: formData.personal_startdate2021,
             // personal_enddate2021: formData.personal_enddate2021,
             // twodays: formData.numberOfDays2021,
 
-            personal_startdate2021: formattedStartDate2021,
-            personal_enddate2021: formattedEndDate20221,
-            twodays: numberOffDaysTwo,
+            // personal_startdate2021: formattedStartDate2021,
+            // personal_enddate2021: formattedEndDate20221,
+            // twodays: numberOffDaysTwo,
 
             // cared_startdate2020: formData.cared_startdate2020,
             // cared_enddate2020: formData.cared_enddate2020,
             // threedays: formData.symptomsdays2020,
 
-            cared_startdate2020: formattedStartDate2020,
-            cared_enddate2020: formattedEndDate2020,
-            threedays: symptomsDays,
+            // cared_startdate2020: formattedStartDate2020,
+            // cared_enddate2020: formattedEndDate2020,
+            // threedays: symptomsDays,
 
             // cared_startdate2021: formData.cared_startdate2021,
             // cared_enddate2021: formData.cared_enddate2021,
             // fourdays: formData.symptomsdays2021,
 
-            cared_startdate2021: formattedStartDaate2021,
-            cared_enddate2021: formattedEndDate2021,
-            fourdays: symptomsDaysTwo,
+            // cared_startdate2021: formattedStartDaate2021,
+            // cared_enddate2021: formattedEndDate2021,
+            // fourdays: symptomsDaysTwo,
 
             // minor_startdate2020: formData.minor_startdate2020,
             // minor_enddate2020: formData.minor_enddate2020,
             // fivedays: formData.minordays2020,
 
-            minor_startdate2020: formatedClosureStartDaate2020,
-            minor_enddate2020: formatedClosureEndDaate2020,
-            fivedays: minordays2020,
+            // minor_startdate2020: formatedClosureStartDaate2020,
+            // minor_enddate2020: formatedClosureEndDaate2020,
+            // fivedays: minordays2020,
 
             // minor_startdate2021: formData.minor_startdate2021,
             // minor_enddate2021: formData.minor_enddate2021,
             // sixdays: formData.minordays2021,
 
-            minor_startdate2021: formatedClosureStartDaate2021,
-            minor_enddate2021: formatedClosureEndDaate2021,
-            sixdays: minordays2021,
-
-
+            // minor_startdate2021: formatedClosureStartDaate2021,
+            // minor_enddate2021: formatedClosureEndDaate2021,
+            // sixdays: minordays2021,
 
             personally_sick_symptoms_2020: formData.personallySick2020,
             personally_sick_symptoms_2021: formData.personallySick2021,
             covid_experienced_symptoms_2020: formData.symptoms2020,
-            covid_experienced_symptoms_2021:  formData.symptoms2021,
-            childs_daycare_2020:  formData.closure2020,
-            childs_daycare_2021:   formData.closure2021,
-
+            covid_experienced_symptoms_2021: formData.symptoms2021,
+            childs_daycare_2020: formData.closure2020,
+            childs_daycare_2021: formData.closure2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -1641,13 +1958,11 @@ const MultiStepForm = () => {
             did_you_miss_SEWDTC: formData.covid_related_issues,
             have_you_filed_already_for_setc: formData.setc_program,
 
-
             did_receive_unemployement20: formData.did_receive_unemployement20,
             did_receive_unemployement21: formData.did_receive_unemployement21,
-            care_for_minor_child: formData.care_for_minor_child,
+            // care_for_minor_child: formData.care_for_minor_child,
             minor_child_tax_20: formData.minor_child_tax_20,
             minor_child_tax_21: formData.minor_child_tax_21,
-            
 
             E_File_My_texes_2020: taxYears[0].eFiled,
             Mail_My_texes_2020: taxYears[0].mailed,
@@ -1666,56 +1981,64 @@ const MultiStepForm = () => {
 
         // setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
+        // if (formData.care_for_minor_child === "No"  && activeStep === 14 )
+        // {
+        //   setActiveStep(18);
+        // } else
 
-        if (formData.care_for_minor_child === "No"  && activeStep === 14 )
-        {
-          setActiveStep(18); 
-        } else if( formData.minor_child_tax_20 === "No" && activeStep === 14)
-        {
-          setActiveStep(16); 
-        } else if( formData.minor_child_tax_21 === "No" && activeStep === 16)
-        {
-          setActiveStep(18); 
+        // if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
+        //   setActiveStep(16);
+        // } else if (formData.minor_child_tax_21 === "No" && activeStep === 16) {
+        //   setActiveStep(18);
+        // } else {
+        //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        // }
+
+        if ((formData.minor_child_tax_20 === "No" && activeStep === 14 && formData.did_receive_unemployement21 === "Yes") || (formData.minor_child_tax_21 === "No" && activeStep === 16)) {
+          setActiveStep(18);
+        } else if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
+          setActiveStep(16);
         } else {
           setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
-  
       } else {
         // Handle error
         console.error("Error in API call");
         const errorData = await response.json();
 
-        if (errorData.errMessage === "Authorization token invalid" && errorData.details.name === "TokenExpiredError") {
+        if (
+          errorData.errMessage === "Authorization token invalid" &&
+          errorData.details.name === "TokenExpiredError"
+        ) {
           dispatch(removeToken());
-             
+
           localStorage.removeItem("activeTab");
           localStorage.removeItem("isModalOpened");
           history.push("/login");
-          alert("Your session expired, please login again. Thanks")
+          alert("Your session expired, please login again. Thanks");
           setTimeout(() => {
             window.location.reload();
           }, 200);
-            // Token is invalid or expired, remove it from local storage and navigate to /login
-            // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
-            // You can use your preferred navigation method, e.g., react-router-dom or window.location
-            // Example using react-router-dom:
-            // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+          // Token is invalid or expired, remove it from local storage and navigate to /login
+          // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+          // You can use your preferred navigation method, e.g., react-router-dom or window.location
+          // Example using react-router-dom:
+          // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
         } else {
-            // Handle other types of errors
-            console.error("Unhandled error:", errorData);
+          // Handle other types of errors
+          console.error("Unhandled error:", errorData);
         }
-    }
+      }
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
-    } 
+    }
   };
 
   const formDataConfirmation = async (step) => {
     try {
       setLoading(true);
       let token = localStorage.getItem("token");
-      
 
       if (!token) {
         // Handle missing token - Redirect or handle the situation accordingly
@@ -1726,7 +2049,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1755,30 +2078,48 @@ const MultiStepForm = () => {
             net_income_2020: formData.netIncome2020,
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
+            personally_sick_symptoms_2020_dates: selectedDates,
+            onedays: selectedDates?.length,
 
-            personal_startdate2020: formData.personal_startdate2020,
-            personal_enddate2020: formData.personal_enddate2020,
-            onedays: formData.numberOfDays,
+            personally_sick_symptoms_2021_dates: selectedDatesTwo,
+            twodays: selectedDatesTwo?.length,
 
-            personal_startdate2021: formData.personal_startdate2021,
-            personal_enddate2021: formData.personal_enddate2021,
-            twodays: formData.numberOfDays2021,
+            covid_experienced_symptoms_2020_dates: selectedDatesCared2020,
+            threedays: selectedDatesCared2020?.length,
 
-            cared_startdate2020: formData.cared_startdate2020,
-            cared_enddate2020: formData.cared_enddate2020,
-            threedays: formData.symptomsdays2020,
+            covid_experienced_symptoms_2021_dates: selectedDatesCared2021,
+            fourdays: selectedDatesCared2021?.length,
 
-            cared_startdate2021: formData.cared_startdate2021,
-            cared_enddate2021: formData.cared_enddate2021,
-            fourdays: formData.symptomsdays2021,
+            childs_daycare_2020_dates: selectedDatesClosure2020,
+            fivedays: selectedDatesClosure2020?.length,
 
-            minor_startdate2020: formData.minor_startdate2020,
-            minor_enddate2020: formData.minor_enddate2020,
-            fivedays: formData.minordays2020,
+            childs_daycare_2021_dates: selectedDatesClosure2021,
+            sixdays: selectedDatesClosure2021?.length,
 
-            minor_startdate2021: formData.minor_startdate2021,
-            minor_enddate2021: formData.minor_enddate2021,
-            sixdays: formData.minordays2021,
+
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // onedays: formData.numberOfDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -1805,7 +2146,6 @@ const MultiStepForm = () => {
         console.log(data);
         await fetchUserDataa();
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        
       } else {
         // Handle error
         console.error("Error in API call");
@@ -1891,7 +2231,7 @@ const MultiStepForm = () => {
       // }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1967,15 +2307,12 @@ const MultiStepForm = () => {
             minor_enddate2021: formatedClosureEndDaate2021,
             sixdays: minordays2021,
 
-
-
             personally_sick_symptoms_2020: formData.personallySick2020,
             personally_sick_symptoms_2021: formData.personallySick2021,
             covid_experienced_symptoms_2020: formData.symptoms2020,
-            covid_experienced_symptoms_2021:  formData.symptoms2021,
-            childs_daycare_2020:  formData.closure2020,
-            childs_daycare_2021:   formData.closure2021,
-
+            covid_experienced_symptoms_2021: formData.symptoms2021,
+            childs_daycare_2020: formData.closure2020,
+            childs_daycare_2021: formData.closure2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -1988,9 +2325,6 @@ const MultiStepForm = () => {
             if_you_have_positive_earning: formData.positive_net_earning,
             did_you_miss_SEWDTC: formData.covid_related_issues,
             have_you_filed_already_for_setc: formData.setc_program,
-
-
-
 
             E_File_My_texes_2020: taxYears[0].eFiled,
             Mail_My_texes_2020: taxYears[0].mailed,
@@ -2028,7 +2362,7 @@ const MultiStepForm = () => {
   const callSetcformData = async (token, formData) => {
     setLoading(true);
     try {
-      const response = await fetch("https://agree.setczone.com/api/setcformData", {
+      const response = await fetch("https://app.setczone.com/api/user/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2081,8 +2415,6 @@ const MultiStepForm = () => {
         // if(activeStep === 16){
         //   await fetchUserDataa();
         // }
-        
-
       } else {
         console.error("Error in calculation API call");
       }
@@ -2137,7 +2469,6 @@ const MultiStepForm = () => {
       : "";
 
     try {
-     
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -2147,25 +2478,52 @@ const MultiStepForm = () => {
         setActiveStep(0); // Redirect to step 0 for token creation
         return;
       }
+
       // let stepToSend = step; // Default step value to send
 
       // if (
-      //   formData.personallySick2020 === "Yes" &&
-      //   numberOffDays === 10 &&
-      //   activeStep === 9
+      //   formData.did_receive_unemployement20 === "Yes" &&
+      //   formData.did_receive_unemployement21 === "No" &&
+      //   activeStep === 13
       // ) {
-      //   stepToSend = 11; // Set step to 11 based on conditions
-      // }
-      // if (
-      //   formData.personallySick2021 === "Yes" &&
-      //   numberOffDaysTwo === 10 &&
-      //   activeStep === 9
+      //   stepToSend = 16;
+      // } else if (
+      //   formData.did_receive_unemployement21 === "Yes" &&
+      //   formData.did_receive_unemployement20 === "No" &&
+      //   activeStep === 13
       // ) {
-      //   stepToSend = 12; // Set step to 13 based on conditions
+      //   stepToSend = 18;
+      // } else {
+      //   stepToSend = step;
       // }
+      let stepToSend = step;
+
+      const { did_receive_unemployement20, did_receive_unemployement21 } =
+      formData;
+
+    // Check the conditions in a more organized way
+    if (activeStep === 13) {
+      if (did_receive_unemployement20 === "No") {
+       
+        stepToSend = 14;
+      } else if (did_receive_unemployement20 === "Yes") {
+       
+        stepToSend = 16;
+      }
+    } else if (activeStep === 15) {
+      if (did_receive_unemployement21 === "No") {
+        stepToSend = 16
+      } else if (did_receive_unemployement21 === "Yes") {
+       
+        stepToSend = 18
+      }
+    } else {
+      // Default case if none of the specific conditions are met
+      stepToSend = step;
+    }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2174,7 +2532,7 @@ const MultiStepForm = () => {
           },
 
           body: JSON.stringify({
-            step: step,
+            step: stepToSend,
 
             first_name: formData.firstName,
             last_name: formData.lastName,
@@ -2194,62 +2552,30 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            // personal_startdate2020: formData.personal_startdate2020,
-            // personal_enddate2020: formData.personal_enddate2020,
-            // onedays: formData.numberOfDays,
-            personal_startdate2020: formattedStartDate,
-            personal_enddate2020: formattedEndDate,
-            onedays: numberOffDays,
+            personally_sick_symptoms_2020_dates: selectedDates,
+            onedays: selectedDates?.length,
 
-            // personal_startdate2021: formData.personal_startdate2021,
-            // personal_enddate2021: formData.personal_enddate2021,
-            // twodays: formData.numberOfDays2021,
+            personally_sick_symptoms_2021_dates: selectedDatesTwo,
+            twodays: selectedDatesTwo?.length,
 
-            personal_startdate2021: formattedStartDate2021,
-            personal_enddate2021: formattedEndDate20221,
-            twodays: numberOffDaysTwo,
+            covid_experienced_symptoms_2020_dates: selectedDatesCared2020,
+            threedays: selectedDatesCared2020?.length,
 
-            // cared_startdate2020: formData.cared_startdate2020,
-            // cared_enddate2020: formData.cared_enddate2020,
-            // threedays: formData.symptomsdays2020,
+            covid_experienced_symptoms_2021_dates: selectedDatesCared2021,
+            fourdays: selectedDatesCared2021?.length,
 
-            cared_startdate2020: formattedStartDate2020,
-            cared_enddate2020: formattedEndDate2020,
-            threedays: symptomsDays,
+            childs_daycare_2020_dates: selectedDatesClosure2020,
+            fivedays: selectedDatesClosure2020?.length,
 
-            // cared_startdate2021: formData.cared_startdate2021,
-            // cared_enddate2021: formData.cared_enddate2021,
-            // fourdays: formData.symptomsdays2021,
-
-            cared_startdate2021: formattedStartDaate2021,
-            cared_enddate2021: formattedEndDate2021,
-            fourdays: symptomsDaysTwo,
-
-            // minor_startdate2020: formData.minor_startdate2020,
-            // minor_enddate2020: formData.minor_enddate2020,
-            // fivedays: formData.minordays2020,
-
-            minor_startdate2020: formatedClosureStartDaate2020,
-            minor_enddate2020: formatedClosureEndDaate2020,
-            fivedays: minordays2020,
-
-            // minor_startdate2021: formData.minor_startdate2021,
-            // minor_enddate2021: formData.minor_enddate2021,
-            // sixdays: formData.minordays2021,
-
-            minor_startdate2021: formatedClosureStartDaate2021,
-            minor_enddate2021: formatedClosureEndDaate2021,
-            sixdays: minordays2021,
-
-
+            childs_daycare_2021_dates: selectedDatesClosure2021,
+            sixdays: selectedDatesClosure2021?.length,
 
             personally_sick_symptoms_2020: formData.personallySick2020,
             personally_sick_symptoms_2021: formData.personallySick2021,
             covid_experienced_symptoms_2020: formData.symptoms2020,
-            covid_experienced_symptoms_2021:  formData.symptoms2021,
-            childs_daycare_2020:  formData.closure2020,
-            childs_daycare_2021:   formData.closure2021,
-
+            covid_experienced_symptoms_2021: formData.symptoms2021,
+            childs_daycare_2020: formData.closure2020,
+            childs_daycare_2021: formData.closure2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -2262,9 +2588,6 @@ const MultiStepForm = () => {
             if_you_have_positive_earning: formData.positive_net_earning,
             did_you_miss_SEWDTC: formData.covid_related_issues,
             have_you_filed_already_for_setc: formData.setc_program,
-
-
-
 
             E_File_My_texes_2020: taxYears[0].eFiled,
             Mail_My_texes_2020: taxYears[0].mailed,
@@ -2294,14 +2617,12 @@ const MultiStepForm = () => {
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
-    } 
+    }
   };
 
- 
   const callSetcformDataWithoutLoader = async (token, formData) => {
-   
     try {
-      const response = await fetch("https://agree.setczone.com/api/setcformData", {
+      const response = await fetch("https://app.setczone.com/api/user/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2311,35 +2632,40 @@ const MultiStepForm = () => {
           net_income_2019: formData.netIncome2019,
           net_income_2020: formData.netIncome2020,
           net_income_2021: formData.netIncome2021,
-          "1days": numberOffDays,
-          "2days": numberOffDaysTwo,
-          "3days": symptomsDays,
-          "4days": symptomsDaysTwo,
-          "5days": minordays2020,
-          "6days": minordays2021,
+          "1days": selectedDates?.length,
+          "2days": selectedDatesTwo?.length,
+          "3days": selectedDatesCared2020?.length,
+          "4days": selectedDatesCared2021?.length,
+          "5days": selectedDatesClosure2020?.length,
+          "6days": selectedDatesClosure2021?.length,
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
 
-        // if (
-        //   formData.personallySick2021 === "Yes" &&
-        //   numberOffDaysTwo === 10 &&
-        //   activeStep === 9
-        // ) {
-        //   setActiveStep(12); // Move to step 14 for sick2021
-        // } else if (
-        //   formData.personallySick2020 === "Yes" &&
-        //   numberOffDays === 10 &&
-        //   activeStep === 9
-        // ) {
-        //   setActiveStep(11); // Move to step 13 for sick2020
-        // } else {
-        //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        // }
+        const { did_receive_unemployement20, did_receive_unemployement21 } =
+          formData;
 
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        // Check the conditions in a more organized way
+        if (activeStep === 13) {
+          if (did_receive_unemployement20 === "No") {
+            setActiveStep(14);
+          } else if (did_receive_unemployement20 === "Yes") {
+            setActiveStep(16);
+          }
+        } else if (activeStep === 15) {
+          if (did_receive_unemployement21 === "No") {
+            setActiveStep(16);
+          } else if (did_receive_unemployement21 === "Yes") {
+            setActiveStep(18);
+          }
+        } else {
+          // Default case if none of the specific conditions are met
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
         // Check if final_credit_amount is not null and store it in local storage
         if (data.user && data.user.final_roundedValue !== null) {
@@ -2354,14 +2680,12 @@ const MultiStepForm = () => {
         // if(activeStep === 16){
         //   await fetchUserDataa();
         // }
-        
-
       } else {
         console.error("Error in calculation API call");
       }
     } catch (error) {
       console.error("Network error", error);
-    } 
+    }
   };
 
   const formDataUpdateStepTwo = async (step) => {
@@ -2377,7 +2701,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2430,7 +2754,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2439,7 +2763,7 @@ const MultiStepForm = () => {
           },
           body: JSON.stringify({
             step: step,
-            first_name: formData.firstName,
+           first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
             email: formData.email,
@@ -2451,38 +2775,84 @@ const MultiStepForm = () => {
             address_line_2: formData.streetAddressTwo,
             zip: formData.zipCode,
             know_about_us: formData.knowAbout,
-            accounting_professional: formData.accounting_professional,
-            accounting_partnership: formData.accounting_partnership,
-
             self_employed_from: formData.selfEmployedFrom,
             net_income_2019: formData.netIncome2019,
             net_income_2020: formData.netIncome2020,
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            personal_startdate2020: formData.personal_startdate2020,
-            personal_enddate2020: formData.personal_enddate2020,
-            onedays: formData.numberOfDays,
+            
+            personally_sick_symptoms_2020_dates: selectedDates,
+            onedays: selectedDates?.length,
 
-            personal_startdate2021: formData.personal_startdate2021,
-            personal_enddate2021: formData.personal_enddate2021,
-            twodays: formData.numberOfDays2021,
+            personally_sick_symptoms_2021_dates: selectedDatesTwo,
+            twodays: selectedDatesTwo?.length,
 
-            cared_startdate2020: formData.cared_startdate2020,
-            cared_enddate2020: formData.cared_enddate2020,
-            threedays: formData.symptomsdays2020,
+            covid_experienced_symptoms_2020_dates: selectedDatesCared2020,
+            threedays: selectedDatesCared2020?.length,
 
-            cared_startdate2021: formData.cared_startdate2021,
-            cared_enddate2021: formData.cared_enddate2021,
-            fourdays: formData.symptomsdays2021,
+            covid_experienced_symptoms_2021_dates: selectedDatesCared2021,
+            fourdays: selectedDatesCared2021?.length,
 
-            minor_startdate2020: formData.minor_startdate2020,
-            minor_enddate2020: formData.minor_enddate2020,
-            fivedays: formData.minordays2020,
+            childs_daycare_2020_dates: selectedDatesClosure2020,
+            fivedays: selectedDatesClosure2020?.length,
 
-            minor_startdate2021: formData.minor_startdate2021,
-            minor_enddate2021: formData.minor_enddate2021,
-            sixdays: formData.minordays2021,
+            childs_daycare_2021_dates: selectedDatesClosure2021,
+            sixdays: selectedDatesClosure2021?.length,
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // onedays: formData.numberOfDays,
+
+            // personal_startdate2020: formattedStartDate,
+            // personal_enddate2020: formattedEndDate,
+            // onedays: numberOffDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            // personal_startdate2021: formattedStartDate2021,
+            // personal_enddate2021: formattedEndDate20221,
+            // twodays: numberOffDaysTwo,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            // cared_startdate2020: formattedStartDate2020,
+            // cared_enddate2020: formattedEndDate2020,
+            // threedays: symptomsDays,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            // cared_startdate2021: formattedStartDaate2021,
+            // cared_enddate2021: formattedEndDate2021,
+            // fourdays: symptomsDaysTwo,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            // minor_startdate2020: formatedClosureStartDaate2020,
+            // minor_enddate2020: formatedClosureEndDaate2020,
+            // fivedays: minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
+
+            // minor_startdate2021: formatedClosureStartDaate2021,
+            // minor_enddate2021: formatedClosureEndDaate2021,
+            // sixdays: minordays2021,
+
+            personally_sick_symptoms_2020: formData.personallySick2020,
+            personally_sick_symptoms_2021: formData.personallySick2021,
+            covid_experienced_symptoms_2020: formData.symptoms2020,
+            covid_experienced_symptoms_2021: formData.symptoms2021,
+            childs_daycare_2020: formData.closure2020,
+            childs_daycare_2021: formData.closure2021,
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
@@ -2496,20 +2866,16 @@ const MultiStepForm = () => {
             did_you_miss_SEWDTC: formData.covid_related_issues,
             have_you_filed_already_for_setc: formData.setc_program,
 
-
             did_receive_unemployement20: formData.did_receive_unemployement20,
             did_receive_unemployement21: formData.did_receive_unemployement21,
-            care_for_minor_child: formData.care_for_minor_child,
+            // care_for_minor_child: formData.care_for_minor_child,
             minor_child_tax_20: formData.minor_child_tax_20,
             minor_child_tax_21: formData.minor_child_tax_21,
 
-
-            personally_sick_symptoms_2020: formData.personallySick2020,
-            personally_sick_symptoms_2021: formData.personallySick2021,
-            covid_experienced_symptoms_2020: formData.symptoms2020,
-            covid_experienced_symptoms_2021:  formData.symptoms2021,
-            childs_daycare_2020:  formData.closure2020,
-            childs_daycare_2021:   formData.closure2021,
+            E_File_My_texes_2020: taxYears[0].eFiled,
+            Mail_My_texes_2020: taxYears[0].mailed,
+            E_File_My_texes_2021: taxYears[1].eFiled,
+            Mail_My_texes_2021: taxYears[1].mailed,
           }),
         }
       );
@@ -2542,7 +2908,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2550,6 +2916,7 @@ const MultiStepForm = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
+            step: step,
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
@@ -2563,6 +2930,106 @@ const MultiStepForm = () => {
             zip: formData.zipCode,
             know_about_us: formData.knowAbout,
             self_employed_from: formData.selfEmployedFrom,
+            net_income_2019: formData.netIncome2019,
+            net_income_2020: formData.netIncome2020,
+            net_income_2021: formData.netIncome2021,
+            business_negatively_impacted: formData.bussinessNegatively,
+
+            
+            personally_sick_symptoms_2020_dates: selectedDates,
+            onedays: selectedDates?.length,
+
+            personally_sick_symptoms_2021_dates: selectedDatesTwo,
+            twodays: selectedDatesTwo?.length,
+
+            covid_experienced_symptoms_2020_dates: selectedDatesCared2020,
+            threedays: selectedDatesCared2020?.length,
+
+            covid_experienced_symptoms_2021_dates: selectedDatesCared2021,
+            fourdays: selectedDatesCared2021?.length,
+
+            childs_daycare_2020_dates: selectedDatesClosure2020,
+            fivedays: selectedDatesClosure2020?.length,
+
+            childs_daycare_2021_dates: selectedDatesClosure2021,
+            sixdays: selectedDatesClosure2021?.length,
+            // personal_startdate2020: formData.personal_startdate2020,
+            // personal_enddate2020: formData.personal_enddate2020,
+            // onedays: formData.numberOfDays,
+
+            // personal_startdate2020: formattedStartDate,
+            // personal_enddate2020: formattedEndDate,
+            // onedays: numberOffDays,
+
+            // personal_startdate2021: formData.personal_startdate2021,
+            // personal_enddate2021: formData.personal_enddate2021,
+            // twodays: formData.numberOfDays2021,
+
+            // personal_startdate2021: formattedStartDate2021,
+            // personal_enddate2021: formattedEndDate20221,
+            // twodays: numberOffDaysTwo,
+
+            // cared_startdate2020: formData.cared_startdate2020,
+            // cared_enddate2020: formData.cared_enddate2020,
+            // threedays: formData.symptomsdays2020,
+
+            // cared_startdate2020: formattedStartDate2020,
+            // cared_enddate2020: formattedEndDate2020,
+            // threedays: symptomsDays,
+
+            // cared_startdate2021: formData.cared_startdate2021,
+            // cared_enddate2021: formData.cared_enddate2021,
+            // fourdays: formData.symptomsdays2021,
+
+            // cared_startdate2021: formattedStartDaate2021,
+            // cared_enddate2021: formattedEndDate2021,
+            // fourdays: symptomsDaysTwo,
+
+            // minor_startdate2020: formData.minor_startdate2020,
+            // minor_enddate2020: formData.minor_enddate2020,
+            // fivedays: formData.minordays2020,
+
+            // minor_startdate2020: formatedClosureStartDaate2020,
+            // minor_enddate2020: formatedClosureEndDaate2020,
+            // fivedays: minordays2020,
+
+            // minor_startdate2021: formData.minor_startdate2021,
+            // minor_enddate2021: formData.minor_enddate2021,
+            // sixdays: formData.minordays2021,
+
+            // minor_startdate2021: formatedClosureStartDaate2021,
+            // minor_enddate2021: formatedClosureEndDaate2021,
+            // sixdays: minordays2021,
+
+            personally_sick_symptoms_2020: formData.personallySick2020,
+            personally_sick_symptoms_2021: formData.personallySick2021,
+            covid_experienced_symptoms_2020: formData.symptoms2020,
+            covid_experienced_symptoms_2021: formData.symptoms2021,
+            childs_daycare_2020: formData.closure2020,
+            childs_daycare_2021: formData.closure2021,
+
+            employed_as_W2: formData.employed_as_W2,
+            Family_Sick_Leave: formData.family_sick,
+
+            amount2020: formData.amount2020,
+            amount2021: formData.amount2021,
+
+            your_file_schedule: formData.scheduleSelfEmployement,
+            mandatory_questions: formData.mandatory_questions,
+            if_you_have_positive_earning: formData.positive_net_earning,
+            did_you_miss_SEWDTC: formData.covid_related_issues,
+            have_you_filed_already_for_setc: formData.setc_program,
+
+            did_receive_unemployement20: formData.did_receive_unemployement20,
+            did_receive_unemployement21: formData.did_receive_unemployement21,
+            // care_for_minor_child: formData.care_for_minor_child,
+            minor_child_tax_20: formData.minor_child_tax_20,
+            minor_child_tax_21: formData.minor_child_tax_21,
+
+            E_File_My_texes_2020: taxYears[0].eFiled,
+            Mail_My_texes_2020: taxYears[0].mailed,
+            E_File_My_texes_2021: taxYears[1].eFiled,
+            Mail_My_texes_2021: taxYears[1].mailed,
           }),
         }
       );
@@ -2585,7 +3052,7 @@ const MultiStepForm = () => {
   const checkEmailAvailability = async () => {
     try {
       const response = await axios.post(
-        "https://agree.setczone.com/api/checkMail",
+        "https://app.setczone.com/api/user/checkMail",
         {
           email: formData.email,
         }
@@ -2634,7 +3101,6 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
 
     // }
-  
 
     if (token) {
       if (activeStep === 0) {
@@ -2647,14 +3113,12 @@ const MultiStepForm = () => {
     }
 
     // if (activeStep === 1) {
-      
+
     //   formDataUpdate(activeStep);
     // }
     if (activeStep === 1) {
-      
       formDataUpdateWithoutLoader(activeStep);
     }
-    
 
     if (activeStep === 2) {
       formDataUpdateWithoutLoader(activeStep);
@@ -2683,10 +3147,6 @@ const MultiStepForm = () => {
       formDataUpdate(activeStep);
     }
 
- 
-   
-
-   
     if (activeStep === 7) {
       formDataUpdateWithoutLoader(activeStep);
     }
@@ -2696,14 +3156,32 @@ const MultiStepForm = () => {
     if (activeStep === 9) {
       formDataUpdateWithoutLoader(activeStep);
     }
-   
-   
 
+    // if (activeStep === 10) {
+    //   // formDataUpdateCalculation(activeStep);
+    //   if (formData.personallySick2020 === "Yes") {
+    //     if (personal_startdate2020 && personal_enddate2020) {
+    //       if (numberOffDays > 10) {
+    //         setOpenModalDate(true);
+    //       } else {
+    //         formDataUpdateCalculationWithoutLoader(activeStep);
+
+    //         // console.log(formattedStartDate, formattedEndDate, numberOffDays)
+    //       }
+    //     } else {
+    //       setOpenModalDate(true);
+    //     }
+    //   }
+
+    //   if (formData.personallySick2020 === "No") {
+    //     formDataUpdateCalculationWithoutLoader(activeStep);
+    //   }
+    // }
     if (activeStep === 10) {
       // formDataUpdateCalculation(activeStep);
       if (formData.personallySick2020 === "Yes") {
-        if (personal_startdate2020 && personal_enddate2020) {
-          if (numberOffDays > 10) {
+        if (selectedDates?.length > 0) {
+          if (selectedDates?.length > 10) {
             setOpenModalDate(true);
           } else {
             formDataUpdateCalculationWithoutLoader(activeStep);
@@ -2720,10 +3198,30 @@ const MultiStepForm = () => {
       }
     }
 
+    // if (activeStep === 11) {
+    //   if (formData.personallySick2021 === "Yes") {
+    //     if (personal_startdate2021 && personal_enddate2021) {
+    //       if (numberOffDaysTwo > 10) {
+    //         setOpenModalDateTwo(true);
+    //       } else {
+    //         formDataUpdateCalculationWithoutLoader(activeStep);
+
+    //         // console.log(formattedStartDate, formattedEndDate, numberOffDays)
+    //       }
+    //     } else {
+    //       setOpenModalDateTwo(true);
+    //     }
+    //   }
+
+    //   if (formData.personallySick2021 === "No") {
+    //     formDataUpdateCalculationWithoutLoader(activeStep);
+    //   }
+    // }
     if (activeStep === 11) {
+      // formDataUpdateCalculation(activeStep);
       if (formData.personallySick2021 === "Yes") {
-        if (personal_startdate2021 && personal_enddate2021) {
-          if (numberOffDaysTwo > 10) {
+        if (selectedDatesTwo?.length > 0) {
+          if (selectedDatesTwo?.length > 10) {
             setOpenModalDateTwo(true);
           } else {
             formDataUpdateCalculationWithoutLoader(activeStep);
@@ -2740,11 +3238,33 @@ const MultiStepForm = () => {
       }
     }
 
+    // if (activeStep === 12) {
+    //   // formDataUpdateCalculation(activeStep);
+    //   if (formData.symptoms2020 === "Yes") {
+    //     if (cared_startdate2020 && cared_enddate2020) {
+    //       if (symptomsDays > 10) {
+    //         setOpenModalSymptoms(true);
+    //       } else {
+    //         formDataUpdateCalculationWithoutLoader(activeStep);
+
+    //         // console.log(formattedStartDate, formattedEndDate, numberOffDays)
+    //       }
+    //     } else {
+    //       setOpenModalSymptoms(true);
+    //     }
+    //   }
+
+    //   if (formData.symptoms2020 === "No") {
+    //     formDataUpdateCalculationWithoutLoader(activeStep);
+    //   }
+    // }
+
     if (activeStep === 12) {
-      // formDataUpdateCalculation(activeStep);
+      console.log(datesFormatCared2020, "format");
+
       if (formData.symptoms2020 === "Yes") {
-        if (cared_startdate2020 && cared_enddate2020) {
-          if (symptomsDays > 10) {
+        if (selectedDatesCared2020?.length > 0) {
+          if (selectedDatesCared2020?.length > 10) {
             setOpenModalSymptoms(true);
           } else {
             formDataUpdateCalculationWithoutLoader(activeStep);
@@ -2761,16 +3281,33 @@ const MultiStepForm = () => {
       }
     }
 
+    // if (activeStep === 13) {
+    //   // formDataUpdateCalculation(activeStep);
+    //   if (formData.symptoms2021 === "Yes") {
+    //     if (cared_startdate2021 && cared_enddate2021) {
+    //       if (symptomsDaysTwo > 10) {
+    //         setOpenModalSymptomsTwo(true);
+    //       } else {
+    //         formDataUpdateCalculationWithoutLoader(activeStep);
+
+    //         // console.log(formattedStartDate, formattedEndDate, numberOffDays)
+    //       }
+    //     } else {
+    //       setOpenModalSymptomsTwo(true);
+    //     }
+    //   }
+
+    //   if (formData.symptoms2021 === "No") {
+    //     formDataUpdateCalculationWithoutLoader(activeStep);
+    //   }
+    // }
     if (activeStep === 13) {
-      // formDataUpdateCalculation(activeStep);
       if (formData.symptoms2021 === "Yes") {
-        if (cared_startdate2021 && cared_enddate2021) {
-          if (symptomsDaysTwo > 10) {
+        if (selectedDatesCared2021?.length > 0) {
+          if (selectedDatesCared2021?.length > 10) {
             setOpenModalSymptomsTwo(true);
           } else {
             formDataUpdateCalculationWithoutLoader(activeStep);
-
-            // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
         } else {
           setOpenModalSymptomsTwo(true);
@@ -2786,16 +3323,34 @@ const MultiStepForm = () => {
       formDataUpdateWithoutLoader(activeStep);
     }
 
+    // if (activeStep === 15) {
+    //   // formDataUpdateCalculation(activeStep);
+    //   if (formData.closure2020 === "Yes") {
+    //     if (minor_startdate2020 && minor_enddate2020) {
+    //       if (minordays2020 > 50) {
+    //         setOpenModalClosure(true);
+    //       } else {
+    //         formDataUpdateCalculationWithoutLoader(activeStep);
+
+    //         // console.log(formattedStartDate, formattedEndDate, numberOffDays)
+    //       }
+    //     } else {
+    //       setOpenModalClosure(true);
+    //     }
+    //   }
+
+    //   if (formData.closure2020 === "No") {
+    //     formDataUpdateCalculationWithoutLoader(activeStep);
+    //   }
+    // }
+
     if (activeStep === 15) {
-      // formDataUpdateCalculation(activeStep);
       if (formData.closure2020 === "Yes") {
-        if (minor_startdate2020 && minor_enddate2020) {
-          if (minordays2020 > 50) {
+        if (selectedDatesClosure2020?.length > 0) {
+          if (selectedDatesClosure2020?.length > 50) {
             setOpenModalClosure(true);
           } else {
             formDataUpdateCalculationWithoutLoader(activeStep);
-
-            // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
         } else {
           setOpenModalClosure(true);
@@ -2811,17 +3366,33 @@ const MultiStepForm = () => {
       formDataUpdateWithoutLoader(activeStep);
     }
 
+    // if (activeStep === 17) {
+    //   // formDataUpdateCalculation(activeStep);
+    //   if (formData.closure2021 === "Yes") {
+    //     if (minor_startdate2021 && minor_enddate2021) {
+    //       if (minordays2021 > 60) {
+    //         setOpenModalClosureTwo(true);
+    //       } else {
+    //         formDataUpdateCalculationWithoutLoader(activeStep);
 
+    //         // console.log(formattedStartDate, formattedEndDate, numberOffDays)
+    //       }
+    //     } else {
+    //       setOpenModalClosureTwo(true);
+    //     }
+    //   }
+
+    //   if (formData.closure2021 === "No") {
+    //     formDataUpdateCalculationWithoutLoader(activeStep);
+    //   }
+    // }
     if (activeStep === 17) {
-      // formDataUpdateCalculation(activeStep);
       if (formData.closure2021 === "Yes") {
-        if (minor_startdate2021 && minor_enddate2021) {
-          if (minordays2021 > 60) {
+        if (selectedDatesClosure2021?.length > 0) {
+          if (selectedDatesClosure2021?.length > 60) {
             setOpenModalClosureTwo(true);
           } else {
             formDataUpdateCalculationWithoutLoader(activeStep);
-
-            // console.log(formattedStartDate, formattedEndDate, numberOffDays)
           }
         } else {
           setOpenModalClosureTwo(true);
@@ -2845,16 +3416,15 @@ const MultiStepForm = () => {
       // alert(finalIncomeValue)
       //  alert(finalCreditAmountStorage)
       formDataUpdateCalculationWithoutLoader(activeStep);
-      
     }
-   
+
     if (activeStep === 21) {
       formDataUpdateWithoutLoader(activeStep);
     }
     if (activeStep === 22) {
-      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-      handleVerification(activeStep);
+      // handleVerification(activeStep);
     }
 
     if (activeStep === 23) {
@@ -2863,39 +3433,58 @@ const MultiStepForm = () => {
 
     window.scrollTo(0, 0);
 
-  //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handlePrevious = () => {
-    // setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    // window.scrollTo(0, 0);
-    // if (
-    //   (activeStep === 11 &&
-    //     formData.personallySick2020 === "Yes" &&
-    //     numberOffDays === 10) ||
-    //   (activeStep === 12 &&
-    //     formData.personallySick2021 === "Yes" &&
-    //     numberOffDaysTwo === 10)
-    // ) {
-    //   setActiveStep(9); // Move back to step 2
-    // } else {
-    //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    // }
-    if (formData.care_for_minor_child === "No" && activeStep === 18 
-    || formData.minor_child_tax_20 === "No" && activeStep === 16)
-     {
-      setActiveStep(14); 
-    } else if( formData.minor_child_tax_21 === "No" && activeStep === 18)
+  // const handlePrevious = () => {
+  //   if (formData.minor_child_tax_20 === "No" && activeStep === 16) {
+  //     setActiveStep(14);
+  //   } else if (formData.minor_child_tax_21 === "No" && activeStep === 18) {
+  //     setActiveStep(16);
+  //   } else {
+  //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  //   }
+
+  //   window.scrollTo(0, 0);
+  // };
+
+ const handlePrevious = () => {
+
+if(
+  formData.did_receive_unemployement20 === "No" 
+  &&  activeStep === 14)
+  {
+    setActiveStep(13); 
+  } else if(  formData.did_receive_unemployement20 === "Yes" 
+ && activeStep === 16)
+  {
+    setActiveStep(13); 
+  } else if(  formData.did_receive_unemployement21 === "No" && formData.minor_child_tax_20 === "Yes"
+  && activeStep === 16)
+   {
+     setActiveStep(15); 
+   } else if(  formData.did_receive_unemployement21 === "Yes" && formData.minor_child_tax_20 === "Yes" 
+   && activeStep === 18)
     {
-      setActiveStep(16); 
-    }  else {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    }
+      setActiveStep(15); 
+    }  else if (formData.minor_child_tax_20 === "No" && activeStep === 18 && formData.did_receive_unemployement21 === "Yes")
+       {
+        setActiveStep(14); 
+      } else if (
+      formData.minor_child_tax_20 === "No" && activeStep === 16)
+       {
+        setActiveStep(14); 
+      } else if( formData.minor_child_tax_21 === "No" && activeStep === 18)
+      {
+        setActiveStep(16); 
+      } 
+       else {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+      }
     
     window.scrollTo(0, 0);
   };
-
-
+  
 
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
@@ -2905,7 +3494,6 @@ const MultiStepForm = () => {
       inputValue = value.replace(/\D/g, ""); // Remove non-digit characters
       inputValue = inputValue ? `$${Number(inputValue).toLocaleString()}` : "$"; // Format as currency with dollar sign
     }
-
     if (type === "checkbox") {
       inputValue = event.target.checked;
     } else if (type === "date") {
@@ -2919,11 +3507,13 @@ const MultiStepForm = () => {
     }
 
     if (name === "personallySick2020" && inputValue === "No") {
-      setNumberOffDays("");
-      setDateRange(["", ""]);
+      // setNumberOffDays("");
+      // setDateRange(["", ""]);
+      setSelectedDates([]);
     } else if (name === "personallySick2021" && inputValue === "No") {
-      setDateRangeTwo(["", ""]);
-      setNumberOffDaysTwo("");
+      // setDateRangeTwo(["", ""]);
+      // setNumberOffDaysTwo("");
+      setSelectedDatesTwo([]);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -2932,12 +3522,14 @@ const MultiStepForm = () => {
     }
 
     if (name === "care_for_minor_child" && inputValue === "No") {
+      // setClosureDateRange(["", ""]);
+      // setMinordays2020("");
 
-      setClosureDateRange(["", ""]);
-      setMinordays2020("");
+      setSelectedDatesClosure2020([]);
+      setSelectedDatesClosure2021([]);
 
-      setClosureDateRangeTwo(["", ""]);
-      setMinordays2021("");
+      // setClosureDateRangeTwo(["", ""]);
+      // setMinordays2021("");
 
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -2950,34 +3542,39 @@ const MultiStepForm = () => {
         [name]: inputValue,
       }));
     }
-    if (name === "minor_child_tax_20" && inputValue === "No") {
-      setClosureDateRange(["", ""]);
-      setMinordays2020("");
+    if ( (name === "minor_child_tax_20" && inputValue === "No") 
+    || (formData.did_receive_unemployement20 === "Yes")) {
+      // setClosureDateRange(["", ""]);
+      // setMinordays2020("");
+      setSelectedDatesClosure2020([]);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: inputValue,
       }));
     }
-    
-    if (name === "minor_child_tax_21" && inputValue === "No") {
-      setClosureDateRangeTwo(["", ""]);
-      setMinordays2021("");
+
+    if ((name === "minor_child_tax_21" && inputValue === "No") ||
+     (formData.did_receive_unemployement20 === "Yes") ) {
+      // setClosureDateRangeTwo(["", ""]);
+      // setMinordays2021("");
+      setSelectedDatesClosure2021([]);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: inputValue,
       }));
     }
-    
 
     if (name === "symptoms2020" && inputValue === "No") {
       // Clear values for 2020 if "No" is selected
-      setSymptomsDays("");
-      setCaredDateRange(["", ""]);
+      // setSymptomsDays("");
+      // setCaredDateRange(["", ""]);
+      setSelectedDatesCared2020([]);
     } else if (name === "symptoms2021" && inputValue === "No") {
-      setSymptomsDaysTwo("");
-      setCaredDateRangeTwo(["", ""]);
+      // setSymptomsDaysTwo("");
+      // setCaredDateRangeTwo(["", ""]);
+      setSelectedDatesCared2021([]);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -2987,11 +3584,13 @@ const MultiStepForm = () => {
 
     if (name === "closure2020" && inputValue === "No") {
       // Clear values for 2020 if "No" is selected
-      setClosureDateRange(["", ""]);
-      setMinordays2020("");
+      // setClosureDateRange(["", ""]);
+      // setMinordays2020("");
+      setSelectedDatesClosure2020([]);
     } else if (name === "closure2021" && inputValue === "No") {
-      setClosureDateRangeTwo(["", ""]);
-      setMinordays2021("");
+      // setClosureDateRangeTwo(["", ""]);
+      // setMinordays2021("");
+      setSelectedDatesClosure2021([]);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -3017,55 +3616,55 @@ const MultiStepForm = () => {
       }));
     }
 
-    if (name === "numberOfDays" && inputValue === "0") {
-      // Reset date values to empty strings if numberOfDays becomes zero
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        personal_startdate2020: "",
-        personal_enddate2020: "",
-        [name]: value,
-      }));
-    } else if (name === "numberOfDays2021" && inputValue === "0") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        personal_startdate2021: "",
-        personal_enddate2021: "",
-        [name]: value,
-      }));
-    } else if (name === "symptomsdays2020" && inputValue === "0") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        cared_startdate2020: "",
-        cared_enddate2020: "",
-        [name]: inputValue,
-      }));
-    } else if (name === "symptomsdays2021" && inputValue === "0") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        cared_startdate2021: "",
-        cared_enddate2021: "",
-        [name]: inputValue,
-      }));
-    } else if (name === "minordays2020" && inputValue === "0") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        minor_startdate2020: "",
-        minor_enddate2020: "",
-        [name]: inputValue,
-      }));
-    } else if (name === "minordays2021" && inputValue === "0") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        minor_startdate2021: "",
-        minor_enddate2021: "",
-        [name]: inputValue,
-      }));
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: inputValue,
-      }));
-    }
+    // if (name === "numberOfDays" && inputValue === "0") {
+    //   // Reset date values to empty strings if numberOfDays becomes zero
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     personal_startdate2020: "",
+    //     personal_enddate2020: "",
+    //     [name]: value,
+    //   }));
+    // } else if (name === "numberOfDays2021" && inputValue === "0") {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     personal_startdate2021: "",
+    //     personal_enddate2021: "",
+    //     [name]: value,
+    //   }));
+    // } else if (name === "symptomsdays2020" && inputValue === "0") {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     cared_startdate2020: "",
+    //     cared_enddate2020: "",
+    //     [name]: inputValue,
+    //   }));
+    // } else if (name === "symptomsdays2021" && inputValue === "0") {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     cared_startdate2021: "",
+    //     cared_enddate2021: "",
+    //     [name]: inputValue,
+    //   }));
+    // } else if (name === "minordays2020" && inputValue === "0") {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     minor_startdate2020: "",
+    //     minor_enddate2020: "",
+    //     [name]: inputValue,
+    //   }));
+    // } else if (name === "minordays2021" && inputValue === "0") {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     minor_startdate2021: "",
+    //     minor_enddate2021: "",
+    //     [name]: inputValue,
+    //   }));
+    // } else {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     [name]: inputValue,
+    //   }));
+    // }
   };
   const handleEmailBlur = async () => {
     const token = localStorage.getItem("token");
@@ -3169,8 +3768,6 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
     }
-    
-
 
     if (activeStep === 23) {
       // if (formData.firstName.trim() === "") {
@@ -3239,8 +3836,6 @@ const MultiStepForm = () => {
         errorsObj.isChecked = "Please check the box";
         hasErrors = true;
       }
-
-    
     }
 
     if (activeStep === 2) {
@@ -3263,25 +3858,25 @@ const MultiStepForm = () => {
       }
     }
 
-
     if (activeStep === 16) {
       if (!formData.minor_child_tax_21) {
         errorsObj.minor_child_tax_21 = "Please select an option";
         hasErrors = true;
       }
 
-      if (
-        formData.minor_child_tax_20 === "No" && formData.minor_child_tax_21 === "No" &&
-        formData.minor_child_tax_21 !== "Yes"
-      ) {
-        setActiveErrorStep16(true);
-        formDataUpdateWithoutNextStep(activeStep);
-        hasErrors = true;
-      }
-      if (formData.minor_child_tax_21 === "Yes") {
-        setActiveErrorStep16(false);
-        hasErrors = false;
-      }
+      // if (
+      //   formData.minor_child_tax_20 === "No" &&
+      //   formData.minor_child_tax_21 === "No" &&
+      //   formData.minor_child_tax_21 !== "Yes"
+      // ) {
+      //   setActiveErrorStep16(true);
+      //   formDataUpdateWithoutNextStep(activeStep);
+      //   hasErrors = true;
+      // }
+      // if (formData.minor_child_tax_21 === "Yes") {
+      //   setActiveErrorStep16(false);
+      //   hasErrors = false;
+      // }
     }
 
     if (activeStep === 3) {
@@ -3345,7 +3940,6 @@ const MultiStepForm = () => {
         errorsObj.did_receive_unemployement20 = "Please select an option";
         hasErrors = true;
       }
-     
     }
     if (activeStep === 9) {
       if (!formData.did_receive_unemployement21) {
@@ -3353,28 +3947,27 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
       if (
-        formData.did_receive_unemployement21 === "No" && 
-        formData.did_receive_unemployement20 === "No" &&
-        formData.did_receive_unemployement21 !== "Yes"
+        formData.did_receive_unemployement21 === "Yes" &&
+        formData.did_receive_unemployement20 === "Yes" &&
+        formData.did_receive_unemployement21 !== "No"
       ) {
         setActiveErrorDidRecieveUnemployement(true);
         formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
-      if (formData.did_receive_unemployement21 === "Yes") {
+      if (formData.did_receive_unemployement21 === "No") {
         setActiveErrorDidRecieveUnemployement(false);
         hasErrors = false;
       }
     }
 
-
     if (activeStep === 14) {
-      if (!formData.care_for_minor_child) {
-        errorsObj.care_for_minor_child = "Please select an option";
-        hasErrors = true;
-      }
-      
-      if (!formData.minor_child_tax_20 && formData.care_for_minor_child === "Yes") {
+      // if (!formData.care_for_minor_child) {
+      //   errorsObj.care_for_minor_child = "Please select an option";
+      //   hasErrors = true;
+      // }
+
+      if (!formData.minor_child_tax_20) {
         errorsObj.minor_child_tax_20 = "Please select an option";
         hasErrors = true;
       }
@@ -3398,7 +3991,6 @@ const MultiStepForm = () => {
       //   hasErrors = true;
       // }
     }
-
 
     if (activeStep === 18) {
       if (!formData.setc_program) {
@@ -3538,8 +4130,6 @@ const MultiStepForm = () => {
     return ((activeStep + 1) / firstPreQualifier2.length) * 100; // Calculate progress percentage
   };
 
-
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const email = formData.email.trim();
@@ -3554,7 +4144,6 @@ const MultiStepForm = () => {
       }));
     }
   }, [formData.email]);
-  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -3562,7 +4151,7 @@ const MultiStepForm = () => {
       if (token) {
         //  alert(token, 'useeffect tokeeeeeeeeeeeennnnnnnnnnnnnn')
         try {
-          const response = await fetch("https://agree.setczone.com/api/getUser", {
+          const response = await fetch("https://app.setczone.com/api/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -3570,76 +4159,158 @@ const MultiStepForm = () => {
           });
           if (response.ok) {
             const userData = await response.json();
-            setUserData(userData);
+           setUserData(userData);
+          
             // alert(userData.self_employed_from);
 
             const currentStep = userData.step;
             setActiveStep(currentStep || 0);
           
+            // setActiveStep(24);
+
             // Extract personal start date and end date from userData
-            const startdate2020 = userData.personal_startdate2020
-              ? new Date(userData.personal_startdate2020)
-              : null;
-            const enddate2020 = userData.personal_enddate2020
-              ? new Date(userData.personal_enddate2020)
-              : null;
-            setDateRange([startdate2020, enddate2020]);
-            setNumberOffDays(userData.onedays || 0);
 
-            const startdate2021 = userData.personal_startdate2021
-              ? new Date(userData.personal_startdate2021)
-              : null;
-            const enddate2021 = userData.personal_enddate2021
-              ? new Date(userData.personal_enddate2021)
-              : null;
-            setDateRangeTwo([startdate2021, enddate2021]);
-            setNumberOffDaysTwo(userData.twodays || 0);
+            const personallySickSymptoms2020Dates =
+              userData?.personally_sick_symptoms_2020_dates;
 
-            const startdatee2020 = userData.cared_startdate2020
-              ? new Date(userData.cared_startdate2020)
-              : null;
-            const enddatee2020 = userData.cared_enddate2020
-              ? new Date(userData.cared_enddate2020)
-              : null;
-            setCaredDateRange([startdatee2020, enddatee2020]);
-            setSymptomsDays(userData.threedays || 0);
+            // Convert date strings to UTC format
+            const utcDates = personallySickSymptoms2020Dates.map(
+              (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString();
+              }
+            );
 
-            const startdatee2021 = userData.cared_startdate2021
-              ? new Date(userData.cared_startdate2021)
-              : null;
-            const enddatee2021 = userData.cared_enddate2021
-              ? new Date(userData.cared_enddate2021)
-              : null;
-            setCaredDateRangeTwo([startdatee2021, enddatee2021]);
-            setSymptomsDaysTwo(userData.fourdays || 0);
+            // Set the UTC dates in the state
+            setSelectedDates(utcDates);
 
-            const closure2020 = userData.minor_startdate2020
-              ? new Date(userData.minor_startdate2020)
-              : null;
-            const endclosure2020 = userData.minor_enddate2020
-              ? new Date(userData.minor_enddate2020)
-              : null;
-            setClosureDateRange([closure2020, endclosure2020]);
-            setMinordays2020(userData.fivedays || 0);
+            const personallySickSymptoms2021Dates =
+              userData?.personally_sick_symptoms_2021_dates;
 
-            const closure2021 = userData.minor_startdate2021
-              ? new Date(userData.minor_startdate2021)
-              : null;
+            // Convert date strings to UTC format
+            const utcDates2 = personallySickSymptoms2021Dates.map(
+              (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString();
+              }
+            );
 
-            const endclosure2021 = userData.minor_enddate2021
-              ? new Date(userData.minor_enddate2021)
-              : null;
-            setClosureDateRangeTwo([closure2021, endclosure2021]);
-            setMinordays2021(userData.sixdays || 0);
+            // Set the UTC dates in the state
+            setSelectedDatesTwo(utcDates2);
+
+            const covidExperiencedSymptoms2020Dates =
+              userData?.covid_experienced_symptoms_2020_dates;
+
+            // Convert date strings to UTC format
+            const utcDates3 = covidExperiencedSymptoms2020Dates.map(
+              (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString();
+              }
+            );
+
+            // Set the UTC dates in the state
+            setSelectedDatesCared2020(utcDates3);
+
+            const covidExperiencedSymptoms2021Dates =
+              userData?.covid_experienced_symptoms_2021_dates;
+
+            // Convert date strings to UTC format
+            const utcDates4 = covidExperiencedSymptoms2021Dates.map(
+              (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString();
+              }
+            );
+
+            // Set the UTC dates in the state
+            setSelectedDatesCared2021(utcDates4);
+
+            const childDaycare2020Dates = userData?.childs_daycare_2020_dates;
+
+            // Convert date strings to UTC format
+            const utcDates5 = childDaycare2020Dates.map((dateString) => {
+              const date = new Date(dateString);
+              return date.toISOString();
+            });
+
+            // Set the UTC dates in the state
+            setSelectedDatesClosure2020(utcDates5);
+
+            const childDaycare2021Dates = userData?.childs_daycare_2021_dates;
+
+            // Convert date strings to UTC format
+            const utcDates6 = childDaycare2021Dates.map((dateString) => {
+              const date = new Date(dateString);
+              return date.toISOString();
+            });
+
+            // Set the UTC dates in the state
+            setSelectedDatesClosure2021(utcDates6);
+
+            // // Extract personal start date and end date from userData
+            // const startdate2020 = userData.personal_startdate2020
+            //   ? new Date(userData.personal_startdate2020)
+            //   : null;
+            // const enddate2020 = userData.personal_enddate2020
+            //   ? new Date(userData.personal_enddate2020)
+            //   : null;
+            // setDateRange([startdate2020, enddate2020]);
+            // setNumberOffDays(userData.onedays || 0);
+
+            // const startdate2021 = userData.personal_startdate2021
+            //   ? new Date(userData.personal_startdate2021)
+            //   : null;
+            // const enddate2021 = userData.personal_enddate2021
+            //   ? new Date(userData.personal_enddate2021)
+            //   : null;
+            // setDateRangeTwo([startdate2021, enddate2021]);
+            // setNumberOffDaysTwo(userData.twodays || 0);
+
+            // const startdatee2020 = userData.cared_startdate2020
+            //   ? new Date(userData.cared_startdate2020)
+            //   : null;
+            // const enddatee2020 = userData.cared_enddate2020
+            //   ? new Date(userData.cared_enddate2020)
+            //   : null;
+            // setCaredDateRange([startdatee2020, enddatee2020]);
+            // setSymptomsDays(userData.threedays || 0);
+
+            // const startdatee2021 = userData.cared_startdate2021
+            //   ? new Date(userData.cared_startdate2021)
+            //   : null;
+            // const enddatee2021 = userData.cared_enddate2021
+            //   ? new Date(userData.cared_enddate2021)
+            //   : null;
+            // setCaredDateRangeTwo([startdatee2021, enddatee2021]);
+            // setSymptomsDaysTwo(userData.fourdays || 0);
+
+            // const closure2020 = userData.minor_startdate2020
+            //   ? new Date(userData.minor_startdate2020)
+            //   : null;
+            // const endclosure2020 = userData.minor_enddate2020
+            //   ? new Date(userData.minor_enddate2020)
+            //   : null;
+            // setClosureDateRange([closure2020, endclosure2020]);
+            // setMinordays2020(userData.fivedays || 0);
+
+            // const closure2021 = userData.minor_startdate2021
+            //   ? new Date(userData.minor_startdate2021)
+            //   : null;
+
+            // const endclosure2021 = userData.minor_enddate2021
+            //   ? new Date(userData.minor_enddate2021)
+            //   : null;
+            // setClosureDateRangeTwo([closure2021, endclosure2021]);
+            // setMinordays2021(userData.sixdays || 0);
 
             setTaxYears((prevTaxYears) =>
-            prevTaxYears.map((taxYear) => ({
-              ...taxYear,
-              eFiled: userData[`E_File_My_texes_${taxYear.year}`] === "1",
-              mailed: userData[`Mail_My_texes_${taxYear.year}`] === "1",
-            }))
-          );
-
+              prevTaxYears.map((taxYear) => ({
+                ...taxYear,
+                eFiled: userData[`E_File_My_texes_${taxYear.year}`] === "1",
+                mailed: userData[`Mail_My_texes_${taxYear.year}`] === "1",
+              }))
+            );
 
             setFormData((prevData) => ({
               ...prevData,
@@ -3663,14 +4334,14 @@ const MultiStepForm = () => {
 
               accounting_partnership: userData.accounting_partnership || "",
 
-              did_receive_unemployement20: userData.did_receive_unemployement20 || "",
-              did_receive_unemployement21: userData.did_receive_unemployement21 || "",
+              did_receive_unemployement20:
+                userData.did_receive_unemployement20 || "",
+              did_receive_unemployement21:
+                userData.did_receive_unemployement21 || "",
               care_for_minor_child: userData.care_for_minor_child || "",
               minor_child_tax_20: userData.minor_child_tax_20 || "",
               minor_child_tax_21: userData.minor_child_tax_21 || "",
 
-
-             
               isChecked: userData.email ? true : false || false,
               knowAbout: userData.know_about_us || "",
               selfEmployedFrom: userData.self_employed_from || "",
@@ -3686,7 +4357,7 @@ const MultiStepForm = () => {
               personallySick2020: userData.personally_sick_symptoms_2020 || "",
 
               // personal_enddate2020: userData.personal_enddate2020 || "",
-              // numberOfDays: userData.onedays || "",
+              // numberOfDays: userData.onedays || 0,
 
               // personal_startdate2021: userData.personal_startdate2021 || "",
 
@@ -3730,12 +4401,6 @@ const MultiStepForm = () => {
               positive_net_earning: userData.if_you_have_positive_earning || "",
               covid_related_issues: userData.did_you_miss_SEWDTC || "",
               setc_program: userData.have_you_filed_already_for_setc || "",
-
-
-
-              
-
-
             }));
             setSelectedFiles((prevSelectedFiles) => ({
               ...prevSelectedFiles,
@@ -3769,7 +4434,7 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const response = await fetch("https://agree.setczone.com/api/getUser", {
+        const response = await fetch("https://app.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -3791,7 +4456,7 @@ const MultiStepForm = () => {
   };
 
   const submitHubspotForm = async () => {
-    const apiUrl = "https://agree.setczone.com/api/dataPosttoHubspot";
+    const apiUrl = "https://app.setczone.com/api/user/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
     const data = {
@@ -3829,63 +4494,192 @@ const MultiStepForm = () => {
       });
   };
 
-//   const callFilesCom = async () => {
-//     const apiUrl = "https://agree.setczone.com/api/multiupload";
+  //   const callFilesCom = async () => {
+  //     const apiUrl = "https://app.setczone.com/api/user/multiupload";
 
-//     const payload = {
-//         path: [...userData?.driving_licence_name, ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
-//         name: [...userData?.driving_licence, ...userData?.schedule_pdf, ...userData?.Tax_Return_2020, ...userData?.Tax_Return_2021, ...userData?.supplemental_attachment_2020, ...userData?.supplemental_attachment_2021, ...userData?.FormA1099, ...userData?.FormB1099, ...userData?.ks2020, ...userData?.ks22020]
-//     };
+  //     const payload = {
+  //         path: [...userData?.driving_licence_name, ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
+  //         name: [...userData?.driving_licence, ...userData?.schedule_pdf, ...userData?.Tax_Return_2020, ...userData?.Tax_Return_2021, ...userData?.supplemental_attachment_2020, ...userData?.supplemental_attachment_2021, ...userData?.FormA1099, ...userData?.FormB1099, ...userData?.ks2020, ...userData?.ks22020]
+  //     };
 
-//     const data = {
-//         email: userData?.email,
-//         fileName: payload.name,
-//         filesPath: payload.path,
-//     };
+  //     const data = {
+  //         email: userData?.email,
+  //         fileName: payload.name,
+  //         filesPath: payload.path,
+  //     };
 
+  //     try {
+  //         // Set loading state here, if needed
+  //         setLoading(true);
+
+  //         const response = await axios.post(apiUrl, data, {
+  //             headers: {
+  //                 "Content-Type": "application/json",
+  //             },
+  //         });
+
+  //         console.log("Success Files.com uploaded:", response.data);
+
+  //         // Reset loading state here, if needed
+  //         // setLoading(false);
+  //     } catch (error) {
+  //         console.error(
+  //             "Error:",
+  //             error.response ? error.response.data : error.message
+  //         );
+
+  //         // Handle errors or set error state here, if needed
+  //         // setError(true);
+
+  //         // Reset loading state here, if needed
+  //         // setLoading(false);
+  //     } finally {
+  //       setLoading(false); // Hide the loader when the request is completed (either success or failure)
+  //     }
+  // };
+  const callFilesCom = async () => {
+    const apiUrl = "https://app.setczone.com/api/user/multiupload";
+
+    const payload = {
+      path: [
+        ...userData?.schedule_pdf_name,
+        ...userData?.Tax_Return_2020_name,
+        ...userData?.Tax_Return_2021_name,
+        ...userData?.supplemental_attachment_2020_name,
+        ...userData?.supplemental_attachment_2021_name,
+        ...userData?.FormA1099_name,
+        ...userData?.FormB1099_name,
+        ...userData?.ks2020_name,
+        ...userData?.ks22020_name,
+      ],
+      name: [
+        ...userData?.schedule_pdf,
+        ...userData?.Tax_Return_2020,
+        ...userData?.Tax_Return_2021,
+        ...userData?.supplemental_attachment_2020,
+        ...userData?.supplemental_attachment_2021,
+        ...userData?.FormA1099,
+        ...userData?.FormB1099,
+        ...userData?.ks2020,
+        ...userData?.ks22020,
+      ],
+    };
+
+    const data = {
+      email: userData?.email,
+      fileName: payload.name,
+      filesPath: payload.path,
+    };
+
+    try {
+      // Set loading state here, if needed
+      setLoading(true);
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log("Success Files.com uploaded:", responseData);
+
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } catch (error) {
+      console.error("Error:", error.message);
+
+      // Handle errors or set error state here, if needed
+      // setError(true);
+
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    }
+  };
+
+  // const openFileInNewTab = async (fileKey, index, originalFileName) => {
+
+  //   // // Split the original file name using the backslash as the separator
+  //   // const parts = originalFileName.split('\\');
+     
+  //   // // Get the last part of the resulting array, which is the filename
+  //   // const filenameView = parts[parts.length - 1];
+      
+   
+   
+ 
+ 
+  //   // const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
+   
+  //   //  const data = {
+  //   //    email: userData?.email,
+  //   //    fileName: filenameView,
+  //   //  };
+   
+  //   //  try {
+  //   //    // Set loading state here, if needed
+  //   //    setLoading(true);
+   
+  //   //    const response = await fetch(apiUrl, {
+  //   //      method: "POST",
+  //   //      headers: {
+  //   //        "Content-Type": "application/json",
+  //   //      },
+  //   //      body: JSON.stringify(data),
+  //   //    });
+   
+  //   //    if (!response.ok) {
+  //   //      throw new Error(`HTTP error! Status: ${response.status}`);
+  //   //    }
+      //  const responseData = await response.json();
+      //  const viewUrl = responseData.viewUrl;
+      //  window.open(viewUrl, "_blank");
+       
+  //   //    alert("hello")
+  //   //    console.log("View :", responseData);
+   
+  //   //    // Reset loading state here, if needed
+  //   //    // setLoading(false);
+  //   //  } catch (error) {
+  //   //    console.error("Error:", error.message);
+   
+  //   //    // Handle errors or set error state here, if needed
+  //   //    // setError(true);
+   
+  //   //    // Reset loading state here, if needed
+  //   //    // setLoading(false);
+  //   //  } finally {
+  //   //    setLoading(false); // Hide the loader when the request is completed (either success or failure)
+  //   //  }
+  //    if (fileKey && userData && originalFileName) {
+  //      window.open(`https://app.setczone.com/api/${originalFileName}`, "_blank");
+  //    } else {
+  //      console.error("File URL not found for the provided index");
+  //    }
+  //  };
+
+   const openFileInNewTab = async (fileKey, index, originalFileName) => {
+     
+    // Split the original file name using the backslash as the separator
+    const parts = originalFileName.split('\\');
+     
+    // Get the last part of the resulting array, which is the filename
+    const filenameView = parts[parts.length - 1];
    
 
-//     try {
-//         // Set loading state here, if needed
-//         setLoading(true);
-
-//         const response = await axios.post(apiUrl, data, {
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//         });
-
-//         console.log("Success Files.com uploaded:", response.data);
-
-//         // Reset loading state here, if needed
-//         // setLoading(false);
-//     } catch (error) {
-//         console.error(
-//             "Error:",
-//             error.response ? error.response.data : error.message
-//         );
-
-//         // Handle errors or set error state here, if needed
-//         // setError(true);
-
-//         // Reset loading state here, if needed
-//         // setLoading(false);
-//     } finally {
-//       setLoading(false); // Hide the loader when the request is completed (either success or failure)
-//     }
-// };
-const callFilesCom = async () => {
-  const apiUrl = "https://agree.setczone.com/api/multiupload";
-
-  const payload = {
-    path: [ ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
-    name: [ ...userData?.schedule_pdf, ...userData?.Tax_Return_2020, ...userData?.Tax_Return_2021, ...userData?.supplemental_attachment_2020, ...userData?.supplemental_attachment_2021, ...userData?.FormA1099, ...userData?.FormB1099, ...userData?.ks2020, ...userData?.ks22020]
-  };
+  const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
 
   const data = {
     email: userData?.email,
-    fileName: payload.name,
-    filesPath: payload.path,
+    fileName: filenameView,
   };
 
   try {
@@ -3893,9 +4687,9 @@ const callFilesCom = async () => {
     setLoading(true);
 
     const response = await fetch(apiUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
@@ -3904,8 +4698,14 @@ const callFilesCom = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
+   
     const responseData = await response.json();
-    console.log("Success Files.com uploaded:", responseData);
+    console.log(responseData)
+    const viewUrl = responseData.url;
+
+    window.open(viewUrl, "_blank");
+
+    
 
     // Reset loading state here, if needed
     // setLoading(false);
@@ -3922,15 +4722,12 @@ const callFilesCom = async () => {
   }
 };
 
-  const openFileInNewTab = (fileKey, index, originalFileName) => {
-    if (fileKey && userData && originalFileName) {
-      window.open(`http://localhost:5000/${originalFileName}`, "_blank");
-    } else {
-      console.error("File URL not found for the provided index");
-    }
-  };
+
+ 
+ 
 
   const removeFile = async (fileKey, index, originalFileName) => {
+    // removeFileVasabi(originalFileName);
     const token = localStorage.getItem("token");
 
     // // Check if both token and fileKey are present
@@ -3944,7 +4741,7 @@ const callFilesCom = async () => {
         alert("Are you sure to remove file");
 
         try {
-          const url = "https://agree.setczone.com/api/deleteFile";
+          const url = "https://app.setczone.com/api/user/deleteFile";
           const payload = {
             fieldName: `${fileKey}_name`,
             fileName: originalFileName,
@@ -3963,6 +4760,9 @@ const callFilesCom = async () => {
 
           if (response.ok) {
             // Call fetchData() upon successful response
+
+             removeFileVasabi(originalFileName);
+
             await fetchUserDataa();
 
             setSelectedFiles((prevSelectedFiles) => {
@@ -3980,6 +4780,58 @@ const callFilesCom = async () => {
           console.error("Error removing file:", error);
         }
       }
+    }
+  };
+
+  const removeFileVasabi = async (originalFileName) => {
+
+
+    // Split the original file name using the backslash as the separator
+    const parts = originalFileName.split('\\');
+    
+    // Get the last part of the resulting array, which is the filename
+    const filename = parts[parts.length - 1];
+      
+ 
+
+    const apiUrl = "https://app.setczone.com/api/user/deleteFilesawabi";
+  
+    const data = {
+      email: userData?.email,
+      fileName: filename,
+    };
+  
+    try {
+      // Set loading state here, if needed
+      setLoading(true);
+  
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("Remove File from swabi successfully:", responseData);
+  
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } catch (error) {
+      console.error("Error:", error.message);
+  
+      // Handle errors or set error state here, if needed
+      // setError(true);
+  
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
 
@@ -4008,34 +4860,36 @@ const callFilesCom = async () => {
         };
 
         const response = await axios.put(
-          "https://agree.setczone.com/api/multiple-form-data",
+          "https://app.setczone.com/api/user/multiple-form-data",
           formData,
           config
         );
 
         let lastFileName = "";
 
-        // if (inputName === "driving_licence") {
-        //   const lastDrivingLicenceIndex =
-        //     response.data.user.driving_licence_name.length - 1;
-        //   lastFileName =
-        //     response.data.user.driving_licence_name[lastDrivingLicenceIndex];
-        // } else 
+      
         if (inputName === "schedule_pdf") {
           const lastScheduleIndex =
             response.data.user.schedule_pdf_name.length - 1;
           lastFileName =
             response.data.user.schedule_pdf_name[lastScheduleIndex];
+
+             uploadVasabi(response.data.user.schedule_pdf_name)
+
         } else if (inputName === "Tax_Return_2020") {
           const lastScheduleIndex =
             response.data.user.Tax_Return_2020_name.length - 1;
           lastFileName =
             response.data.user.Tax_Return_2020_name[lastScheduleIndex];
+
+            uploadVasabi(response.data.user.Tax_Return_2020_name)
         } else if (inputName === "Tax_Return_2021") {
           const lastScheduleIndex =
             response.data.user.Tax_Return_2021_name.length - 1;
           lastFileName =
             response.data.user.Tax_Return_2021_name[lastScheduleIndex];
+
+            uploadVasabi(response.data.user.Tax_Return_2021_name)
         } else if (inputName === "supplemental_attachment_2020") {
           const lastScheduleIndex =
             response.data.user.supplemental_attachment_2020_name.length - 1;
@@ -4043,6 +4897,7 @@ const callFilesCom = async () => {
             response.data.user.supplemental_attachment_2020_name[
               lastScheduleIndex
             ];
+            uploadVasabi(response.data.user.supplemental_attachment_2020_name)
         } else if (inputName === "supplemental_attachment_2021") {
           const lastScheduleIndex =
             response.data.user.supplemental_attachment_2021_name.length - 1;
@@ -4050,20 +4905,29 @@ const callFilesCom = async () => {
             response.data.user.supplemental_attachment_2021_name[
               lastScheduleIndex
             ];
+            uploadVasabi(response.data.user.supplemental_attachment_2021_name)
         } else if (inputName === "FormA1099") {
           const lastScheduleIndex =
             response.data.user.FormA1099_name.length - 1;
           lastFileName = response.data.user.FormA1099_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.FormA1099_name)
         } else if (inputName === "FormB1099") {
           const lastScheduleIndex =
             response.data.user.FormB1099_name.length - 1;
           lastFileName = response.data.user.FormB1099_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.FormB1099_name)
         } else if (inputName === "ks2020") {
           const lastScheduleIndex = response.data.user.ks2020_name.length - 1;
           lastFileName = response.data.user.ks2020_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.ks2020_name)
         } else if (inputName === "ks22020") {
           const lastScheduleIndex = response.data.user.ks22020_name.length - 1;
           lastFileName = response.data.user.ks22020_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.ks22020_name)
         }
 
         await handleSuccessfulUpload(inputName, lastFileName);
@@ -4080,6 +4944,63 @@ const callFilesCom = async () => {
       }
     }
   };
+
+
+  const uploadVasabi = async (files) => {
+   
+      const lastIndex = files.length - 1;
+
+
+      const lastFilename = files[lastIndex];
+  
+
+      const parts = lastFilename.split('\\');
+
+      // Get the last part of the resulting array, which is the filename
+      const filenameFinal = parts[parts.length - 1];
+     
+  
+    const apiUrl = "https://app.setczone.com/api/user/sendfiletosawabi";
+  
+    const data = {
+      email: userData?.email,
+      fileName: filenameFinal,
+    };
+  
+    try {
+      // Set loading state here, if needed
+      setLoading(true);
+  
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("Success Files.com uploaded:", responseData);
+  
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } catch (error) {
+      console.error("Error:", error.message);
+  
+      // Handle errors or set error state here, if needed
+      // setError(true);
+  
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    }
+  };
+  
 
   const handleSuccessfulUpload = (inputName, fileName) => {
     const currentTime = Date.now(); // Get the current time in milliseconds
@@ -4102,7 +5023,6 @@ const callFilesCom = async () => {
     }
     return false;
   };
-
 
   const allDaysApplicable = () => {
     return (
@@ -4158,8 +5078,7 @@ const callFilesCom = async () => {
                   className="step step-1 bg-white shadow  pb-5"
                   style={{ borderRadius: "20px" }}
                 >
-
-                    {/* <LinearProgress
+                  {/* <LinearProgress
                       variant="determinate"
                       sx={{
                         height: "14px",
@@ -4172,7 +5091,6 @@ const callFilesCom = async () => {
                       }}
                       value={getProgressPercentage()}
                     /> */}
-
 
                   <h3
                     className="text-center mb-3 py-3 text-white"
@@ -4297,9 +5215,12 @@ const callFilesCom = async () => {
                           //     : ""
                           // }`}
                           class={`form-control ${
-                            emailValidated ? "border-success text-success" : errors.email ? "border-danger" : ""
+                            emailValidated
+                              ? "border-success text-success"
+                              : errors.email
+                              ? "border-danger"
+                              : ""
                           }`}
-                          
                           required=""
                           id="id_email"
                           onChange={handleInputChange}
@@ -4737,454 +5658,753 @@ const callFilesCom = async () => {
 
                       <p class="mb-3 mt-0">
                         By checking the box, you agree to our{" "}
-                       
-                           <a  style={{textDecoration: 'underline', cursor: 'pointer', color: 'blue'}}
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#exampleModal_step_1"
-
-                                >
-                                 terms & conditions
-                                </a> {" "}
-                         and will allow SETC Zone and its partners to contact you
+                        <a
+                          style={{
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            color: "blue",
+                          }}
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal_step_1"
+                        >
+                          terms & conditions
+                        </a>{" "}
+                        and will allow SETC Zone and its partners to contact you
                         via phone, text, and/or email.
                       </p>
                     </div>
                     {errors.isChecked && (
-                          <div
-                            className="text-danger"
-                            style={{ fontSize: "13px", fontWeight: 600 }}
-                          >
-                            {errors.isChecked}
+                      <div
+                        className="text-danger"
+                        style={{ fontSize: "13px", fontWeight: 600 }}
+                      >
+                        {errors.isChecked}
+                      </div>
+                    )}
+
+                    <div
+                      className="modal fade"
+                      id="exampleModal_step_1"
+                      style={{
+                        display: "none",
+                        // padding: "0px 40px 20px 40px",
+                      }}
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header bg-success text-white">
+                            <h4 class="modal-title" style={{ color: "white" }}>
+                              <i
+                                class="fas fa-check-circle"
+                                style={{ color: "white" }}
+                              ></i>{" "}
+                              Terms and conditions
+                            </h4>
+                            <button
+                              type="button"
+                              className="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
                           </div>
-                        )}
+                          <div class="modal-body">
+                            <p>
+                              <span>Terms of Service</span>
+                            </p>
+                            <p>
+                              <span>Effective: November 1st, 2023</span>
+                            </p>
+                            <p>
+                              Thank you for using our services! These terms of
+                              service (“Terms”) cover your use and access to our
+                              services, client software, and websites
+                              ("Services"). By using our Services, you agree to
+                              be bound by these Terms and our Privacy Policy. If
+                              you are using our Services for an organization,
+                              you are agreeing to these Terms on behalf of that
+                              organization.
+                            </p>
+                            <p>
+                              <b>Your Information and Your Permissions</b>
+                            </p>
+                            <p>
+                              When you use our Services, you provide us with
+                              things like your files, content, messages,
+                              contacts, and so on (your information). Your
+                              information is yours. These Terms do not give us
+                              any rights to your information except for the
+                              limited rights that enable us to offer the
+                              Services.
+                            </p>
+                            <p>
+                              Our Services also provide you with features like
+                              eSign, file sharing, email newsletters,
+                              appointment setting, and more. These and other
+                              features may require our systems to access, store,
+                              and scan your information. You give us permission
+                              to do those things, and this permission extends to
+                              our affiliates and trusted third parties we work
+                              with.
+                            </p>
+                            <p>
+                              <b>Your Responsibilities</b>
+                            </p>
+                            <p>
+                              You are responsible for your conduct. Your
+                              information and you must comply with applicable
+                              laws. Content in the Services may be protected by
+                              others’ intellectual property rights. Please do
+                              not copy, upload, download, or share content
+                              unless you have the right to do so. We may review
+                              your conduct and content for compliance with these
+                              Terms. With that said, we have no obligation to do
+                              so. We are not responsible for the content people
+                              post and share via the Services.
+                            </p>
+                            <p>
+                              Help us keep you informed and your information
+                              protected. Safeguard your password to the
+                              Services, and keep your account information
+                              current. Do not share your account credentials or
+                              give others access to your account.
+                            </p>
+                            <p>
+                              You may use our Services only as permitted by
+                              applicable law, including export control laws and
+                              regulations.
+                            </p>
+                            <p>
+                              <b>Our Information</b>
+                            </p>
+                            <p>
+                              The Services are protected by copyright,
+                              trademark, and other US and foreign laws. These
+                              Terms do not grant you any right, title, or
+                              interest in the Services, others’ content in the
+                              Services, SETC Zone, and our trademarks, logos,
+                              and other brand features. We welcome feedback, but
+                              note that we may use comments or suggestions
+                              without any obligation to you.
+                            </p>
+                            <p>
+                              <b>Copyright</b>
+                            </p>
+                            <p>
+                              We respect the intellectual property of others and
+                              ask that you do too. We respond to notices of
+                              alleged copyright infringement if they comply with
+                              the law, and such notices should be reported to{" "}
+                              <a href="mailto:info@setczone.com">
+                                info@setczone.com
+                              </a>
+                              . We reserve the right to delete or disable
+                              content alleged to be infringing and terminate
+                              accounts of repeat infringers.
+                            </p>
+                            <p>
+                              <b>Termination</b>
+                            </p>
+                            <p>
+                              You are free to stop using our Services at any
+                              time. We reserve the right to suspend or terminate
+                              your access to the Services with notice to you if:
+                            </p>
+                            <p>(a) you are in breach of these Terms,</p>
+                            <p>
+                              (b) you are using the Services in a manner that
+                              would cause a real risk of harm or loss to us or
+                              other users, or
+                            </p>
+                            <p>
+                              We will provide you with reasonable advance notice
+                              via the email address associated with your account
+                              to remedy the activity that prompted us to contact
+                              you and give you the opportunity to export your
+                              information from our Services. If after such
+                              notice you fail to take the steps we ask of you,
+                              we will terminate or suspend your access to the
+                              Services.
+                            </p>
+                            <p>
+                              We will not provide notice before termination
+                              where:
+                            </p>
+                            <p>
+                              (a) you are in material breach of these Terms,
+                            </p>
+                            <p>
+                              (b) doing so would cause us legal liability or
+                              compromise our ability to provide the Services to
+                              our other users, or
+                            </p>
+                            <p>(c) we are prohibited from doing so by law.</p>
+                            <p>
+                              <b>Discontinuation of Services</b>
+                            </p>
+                            <p>
+                              We may decide to discontinue the Services in
+                              response to unforeseen circumstances beyond SETC
+                              Zone’s control or to comply with a legal
+                              requirement. If we do so, we will give you
+                              reasonable prior notice so that you can export
+                              your information from our systems.
+                            </p>
+                            <p>
+                              <b>Services “AS IS”</b>
+                            </p>
+                            <p>
+                              We strive to provide great Services, but there are
+                              certain things that we cannot guarantee. TO THE
+                              FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS
+                              AFFILIATES, SUPPLIERS, AND DISTRIBUTORS MAKE NO
+                              WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE
+                              SERVICES. THE SERVICES ARE PROVIDED "AS IS." WE
+                              ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY,
+                              FITNESS FOR A PARTICULAR PURPOSE, AND
+                              NON-INFRINGEMENT. Some places do not allow the
+                              disclaimers in this paragraph, so they may not
+                              apply to you.
+                            </p>
+                            <p>
+                              <b>Limitation of Liability</b>
+                            </p>
+                            <p>
+                              WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU
+                              WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
+                              ANY LIABILITY FOR SETC Zone OR ITS AFFILIATES’
+                              FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
+                              THE SERVICES. IN COUNTRIES WHERE THE FOLLOWING
+                              TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE
+                              RESPONSIBLE TO YOU ONLY FOR LOSSES AND DAMAGES
+                              THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR
+                              FAILURE TO USE REASONABLE CARE AND SKILL OR OUR
+                              BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH
+                              DOES NOT AFFECT CONSUMER RIGHTS THAT CANNOT BE
+                              WAIVED OR LIMITED BY ANY CONTRACT OR AGREEMENT.
+                            </p>
+                            <p>
+                              IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF
+                              LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
+                              SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:
+                            </p>
+                            <ol>
+                              <li>
+                                ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE,
+                                EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR
+                              </li>
+                              <li>
+                                ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS,
+                                REGARDLESS OF LEGAL THEORY.
+                              </li>
+                            </ol>
+                            <p>
+                              THESE EXCLUSIONS OR LIMITATIONS WILL APPLY
+                              REGARDLESS OF WHETHER OR NOT SETC Zone OR ANY OF
+                              ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY
+                              OF SUCH DAMAGES.
+                            </p>
+                            <p>
+                              IF YOU USE THE SERVICES FOR ANY COMMERCIAL,
+                              BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
+                              AFFILIATES, SUPPLIERS, OR DISTRIBUTORS WILL HAVE
+                              NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS
+                              OF BUSINESS, BUSINESS INTERRUPTION, OR LOSS OF
+                              BUSINESS OPPORTUNITY. SETC Zones AND ITS
+                              AFFILIATES ARE NOT RESPONSIBLE FOR THE CONDUCT,
+                              WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE
+                              SERVICES.
+                            </p>
+                            <p>
+                              <b>Resolving Disputes</b>
+                            </p>
+                            <p>
+                              Let’s Try To Sort Things Out First. We want to
+                              address your concerns without needing a formal
+                              legal case. Before filing a claim against SETC
+                              Zone or our affiliates, you agree to try to
+                              resolve the dispute informally by contacting{" "}
+                              <a href="mailto:info@setczone.com">
+                                info@setczone.com
+                              </a>
+                              . We will try to resolve the dispute informally by
+                              contacting you via email.
+                            </p>
+                            <p>
+                              Judicial forum for disputes. You and SETC Zone
+                              agree that any judicial proceeding to resolve
+                              claims relating to these Terms or the Services
+                              will be brought in the federal or state courts of
+                              Texas, subject to the mandatory arbitration
+                              provisions below. Both you and SETC Zone consent
+                              to venue and personal jurisdiction in such courts.
+                            </p>
+                            <p>
+                              We Both Agree To Arbitrate. You and SETC Zone
+                              agree to resolve any claims relating to these
+                              Terms or the Services through final and binding
+                              arbitration by a single arbitrator. This includes
+                              disputes arising out of or relating to
+                              interpretation or application of this “Mandatory
+                              Arbitration Provisions” section, including its
+                              enforceability, revocability, or validity.
+                            </p>
+                            <p>
+                              Arbitration Procedures. The American Arbitration
+                              Association (AAA) will administer the arbitration
+                              under its Commercial Arbitration Rules and the
+                              Supplementary Procedures for Consumer Related
+                              Disputes. The arbitration will be held in the
+                              United States county where you live or work,
+                              Texas, or any other location we agree to.
+                            </p>
+                            <p>
+                              NO CLASS ACTIONS. You may only resolve disputes
+                              with us on an individual basis and may not bring a
+                              claim as a plaintiff or a class member in a class,
+                              consolidated, or representative action. Class
+                              arbitrations, class actions, private attorney
+                              general actions, and consolidation with other
+                              arbitrations are not allowed. If this specific
+                              paragraph is held unenforceable, then the entirety
+                              of this “Mandatory Arbitration Provisions” section
+                              will be deemed void.
+                            </p>
+                            <p>
+                              <b>Controlling Law</b>
+                            </p>
+                            <p>
+                              These Terms will be governed by California law
+                              except for its conflicts of laws principles.
+                              However, some countries (including those in the
+                              European Union) have laws that require agreements
+                              to be governed by the local laws of the consumer's
+                              country. This paragraph does not override those
+                              laws.
+                            </p>
+                            <p>
+                              <b>Entire Agreement</b>
+                            </p>
+                            <p>
+                              These Terms constitute the entire agreement
+                              between you and SETC Zone with respect to the
+                              subject matter of these Terms and supersede and
+                              replace any other prior or contemporaneous
+                              agreements or terms and conditions applicable to
+                              the subject matter of these Terms. These Terms
+                              create no third-party beneficiary rights.
+                            </p>
+                            <p>
+                              <b>
+                                Revised Waiver, Severability &amp; Assignment
+                                Terms
+                              </b>
+                            </p>
+                            <p>
+                              At SETC Zone, failure to enforce a particular
+                              provision does not mean that we waive our right to
+                              enforce it later. If a provision is deemed
+                              unenforceable, the remaining terms of the
+                              agreement will continue to remain in effect, and
+                              we will substitute the unenforceable provision
+                              with one that reflects our intentions as closely
+                              as possible. Please note that you cannot assign
+                              any of your rights under these Terms, and any
+                              attempt to do so will be considered invalid.
+                              However, we reserve the right to assign our rights
+                              to any affiliates, subsidiaries, or any successor
+                              in interest of any business associated with the
+                              Services.
+                            </p>
+                            <p>
+                              <b>Modifications Terms</b>
+                            </p>
+                            <p>
+                              We are committed to providing the best possible
+                              services to our users, which may require us to
+                              revise these Terms from time to time. Such
+                              revisions may be made to reflect changes in the
+                              law, new regulatory requirements, or improvements
+                              and enhancements made to our Services. If any
+                              modification affects your use of the Services or
+                              your legal rights, we will notify you before the
+                              effective date of the update. We will send you an
+                              email to the email address associated with your
+                              account or send you an in-product notification.
+                              Please note that the updated terms will take
+                              effect no less than 30 days from when we notify
+                              you.
+                            </p>
+                            {/* <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button> */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     <div
-                              className="modal fade"
-                              id="exampleModal_step_1"
-                             
-                              style={{
-                                display: "none",
-                                // padding: "0px 40px 20px 40px",
-                              }}
-                              aria-hidden="true"
+                      className="modal fade"
+                      id="exampleModal_step_0"
+                      tabindex="-1"
+                      aria-labelledby="exampleModalLabel"
+                      style={{
+                        display: "none",
+                        padding: "0px 40px 20px 40px",
+                      }}
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header bg-success text-white">
+                            <h4 class="modal-title">
+                              <i class="fas fa-check-circle"></i> Terms and
+                              conditions
+                            </h4>
+                            <i
+                              class="fa-solid fa-xmark fs-3 text-white"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></i>
+                          </div>
+                          <div class="modal-body">
+                            <p>
+                              <span>Terms of Service</span>
+                            </p>
+                            <p>
+                              <span>Effective: November 1st, 2023</span>
+                            </p>
+                            <p>
+                              Thank you for using our services! These terms of
+                              service (“Terms”) cover your use and access to our
+                              services, client software, and websites
+                              ("Services"). By using our Services, you agree to
+                              be bound by these Terms and our Privacy Policy. If
+                              you are using our Services for an organization,
+                              you are agreeing to these Terms on behalf of that
+                              organization.
+                            </p>
+                            <p>
+                              <b>Your Information and Your Permissions</b>
+                            </p>
+                            <p>
+                              When you use our Services, you provide us with
+                              things like your files, content, messages,
+                              contacts, and so on (your information). Your
+                              information is yours. These Terms do not give us
+                              any rights to your information except for the
+                              limited rights that enable us to offer the
+                              Services.
+                            </p>
+                            <p>
+                              Our Services also provide you with features like
+                              eSign, file sharing, email newsletters,
+                              appointment setting, and more. These and other
+                              features may require our systems to access, store,
+                              and scan your information. You give us permission
+                              to do those things, and this permission extends to
+                              our affiliates and trusted third parties we work
+                              with.
+                            </p>
+                            <p>
+                              <b>Your Responsibilities</b>
+                            </p>
+                            <p>
+                              You are responsible for your conduct. Your
+                              information and you must comply with applicable
+                              laws. Content in the Services may be protected by
+                              others’ intellectual property rights. Please do
+                              not copy, upload, download, or share content
+                              unless you have the right to do so. We may review
+                              your conduct and content for compliance with these
+                              Terms. With that said, we have no obligation to do
+                              so. We are not responsible for the content people
+                              post and share via the Services.
+                            </p>
+                            <p>
+                              Help us keep you informed and your information
+                              protected. Safeguard your password to the
+                              Services, and keep your account information
+                              current. Do not share your account credentials or
+                              give others access to your account.
+                            </p>
+                            <p>
+                              You may use our Services only as permitted by
+                              applicable law, including export control laws and
+                              regulations.
+                            </p>
+                            <p>
+                              <b>Our Information</b>
+                            </p>
+                            <p>
+                              The Services are protected by copyright,
+                              trademark, and other US and foreign laws. These
+                              Terms do not grant you any right, title, or
+                              interest in the Services, others’ content in the
+                              Services, SETC Zone, and our trademarks, logos,
+                              and other brand features. We welcome feedback, but
+                              note that we may use comments or suggestions
+                              without any obligation to you.
+                            </p>
+                            <p>
+                              <b>Copyright</b>
+                            </p>
+                            <p>
+                              We respect the intellectual property of others and
+                              ask that you do too. We respond to notices of
+                              alleged copyright infringement if they comply with
+                              the law, and such notices should be reported to{" "}
+                              <a href="mailto:info@setczone.com">
+                                info@setczone.com
+                              </a>
+                              . We reserve the right to delete or disable
+                              content alleged to be infringing and terminate
+                              accounts of repeat infringers.
+                            </p>
+                            <p>
+                              <b>Termination</b>
+                            </p>
+                            <p>
+                              You are free to stop using our Services at any
+                              time. We reserve the right to suspend or terminate
+                              your access to the Services with notice to you if:
+                            </p>
+                            <p>(a) you are in breach of these Terms,</p>
+                            <p>
+                              (b) you are using the Services in a manner that
+                              would cause a real risk of harm or loss to us or
+                              other users, or
+                            </p>
+                            <p>
+                              We will provide you with reasonable advance notice
+                              via the email address associated with your account
+                              to remedy the activity that prompted us to contact
+                              you and give you the opportunity to export your
+                              information from our Services. If after such
+                              notice you fail to take the steps we ask of you,
+                              we will terminate or suspend your access to the
+                              Services.
+                            </p>
+                            <p>
+                              We will not provide notice before termination
+                              where:
+                            </p>
+                            <p>
+                              (a) you are in material breach of these Terms,
+                            </p>
+                            <p>
+                              (b) doing so would cause us legal liability or
+                              compromise our ability to provide the Services to
+                              our other users, or
+                            </p>
+                            <p>(c) we are prohibited from doing so by law.</p>
+                            <p>
+                              <b>Discontinuation of Services</b>
+                            </p>
+                            <p>
+                              We may decide to discontinue the Services in
+                              response to unforeseen circumstances beyond SETC
+                              Zone’s control or to comply with a legal
+                              requirement. If we do so, we will give you
+                              reasonable prior notice so that you can export
+                              your information from our systems.
+                            </p>
+                            <p>
+                              <b>Services “AS IS”</b>
+                            </p>
+                            <p>
+                              We strive to provide great Services, but there are
+                              certain things that we cannot guarantee. TO THE
+                              FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS
+                              AFFILIATES, SUPPLIERS, AND DISTRIBUTORS MAKE NO
+                              WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE
+                              SERVICES. THE SERVICES ARE PROVIDED "AS IS." WE
+                              ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY,
+                              FITNESS FOR A PARTICULAR PURPOSE, AND
+                              NON-INFRINGEMENT. Some places do not allow the
+                              disclaimers in this paragraph, so they may not
+                              apply to you.
+                            </p>
+                            <p>
+                              <b>Limitation of Liability</b>
+                            </p>
+                            <p>
+                              WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU
+                              WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
+                              ANY LIABILITY FOR SETC Zone OR ITS AFFILIATES’
+                              FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
+                              THE SERVICES. IN COUNTRIES WHERE THE FOLLOWING
+                              TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE
+                              RESPONSIBLE TO YOU ONLY FOR LOSSES AND DAMAGES
+                              THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR
+                              FAILURE TO USE REASONABLE CARE AND SKILL OR OUR
+                              BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH
+                              DOES NOT AFFECT CONSUMER RIGHTS THAT CANNOT BE
+                              WAIVED OR LIMITED BY ANY CONTRACT OR AGREEMENT.
+                            </p>
+                            <p>
+                              IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF
+                              LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
+                              SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:
+                            </p>
+                            <ol>
+                              <li>
+                                ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE,
+                                EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR
+                              </li>
+                              <li>
+                                ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS,
+                                REGARDLESS OF LEGAL THEORY.
+                              </li>
+                            </ol>
+                            <p>
+                              THESE EXCLUSIONS OR LIMITATIONS WILL APPLY
+                              REGARDLESS OF WHETHER OR NOT SETC Zone OR ANY OF
+                              ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY
+                              OF SUCH DAMAGES.
+                            </p>
+                            <p>
+                              IF YOU USE THE SERVICES FOR ANY COMMERCIAL,
+                              BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
+                              AFFILIATES, SUPPLIERS, OR DISTRIBUTORS WILL HAVE
+                              NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS
+                              OF BUSINESS, BUSINESS INTERRUPTION, OR LOSS OF
+                              BUSINESS OPPORTUNITY. SETC Zones AND ITS
+                              AFFILIATES ARE NOT RESPONSIBLE FOR THE CONDUCT,
+                              WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE
+                              SERVICES.
+                            </p>
+                            <p>
+                              <b>Resolving Disputes</b>
+                            </p>
+                            <p>
+                              Let’s Try To Sort Things Out First. We want to
+                              address your concerns without needing a formal
+                              legal case. Before filing a claim against SETC
+                              Zone or our affiliates, you agree to try to
+                              resolve the dispute informally by contacting{" "}
+                              <a href="mailto:info@setczone.com">
+                                info@setczone.com
+                              </a>
+                              . We will try to resolve the dispute informally by
+                              contacting you via email.
+                            </p>
+                            <p>
+                              Judicial forum for disputes. You and SETC Zone
+                              agree that any judicial proceeding to resolve
+                              claims relating to these Terms or the Services
+                              will be brought in the federal or state courts of
+                              Texas, subject to the mandatory arbitration
+                              provisions below. Both you and SETC Zone consent
+                              to venue and personal jurisdiction in such courts.
+                            </p>
+                            <p>
+                              We Both Agree To Arbitrate. You and SETC Zone
+                              agree to resolve any claims relating to these
+                              Terms or the Services through final and binding
+                              arbitration by a single arbitrator. This includes
+                              disputes arising out of or relating to
+                              interpretation or application of this “Mandatory
+                              Arbitration Provisions” section, including its
+                              enforceability, revocability, or validity.
+                            </p>
+                            <p>
+                              Arbitration Procedures. The American Arbitration
+                              Association (AAA) will administer the arbitration
+                              under its Commercial Arbitration Rules and the
+                              Supplementary Procedures for Consumer Related
+                              Disputes. The arbitration will be held in the
+                              United States county where you live or work,
+                              Texas, or any other location we agree to.
+                            </p>
+                            <p>
+                              NO CLASS ACTIONS. You may only resolve disputes
+                              with us on an individual basis and may not bring a
+                              claim as a plaintiff or a class member in a class,
+                              consolidated, or representative action. Class
+                              arbitrations, class actions, private attorney
+                              general actions, and consolidation with other
+                              arbitrations are not allowed. If this specific
+                              paragraph is held unenforceable, then the entirety
+                              of this “Mandatory Arbitration Provisions” section
+                              will be deemed void.
+                            </p>
+                            <p>
+                              <b>Controlling Law</b>
+                            </p>
+                            <p>
+                              These Terms will be governed by California law
+                              except for its conflicts of laws principles.
+                              However, some countries (including those in the
+                              European Union) have laws that require agreements
+                              to be governed by the local laws of the consumer's
+                              country. This paragraph does not override those
+                              laws.
+                            </p>
+                            <p>
+                              <b>Entire Agreement</b>
+                            </p>
+                            <p>
+                              These Terms constitute the entire agreement
+                              between you and SETC Zone with respect to the
+                              subject matter of these Terms and supersede and
+                              replace any other prior or contemporaneous
+                              agreements or terms and conditions applicable to
+                              the subject matter of these Terms. These Terms
+                              create no third-party beneficiary rights.
+                            </p>
+                            <p>
+                              <b>
+                                Revised Waiver, Severability &amp; Assignment
+                                Terms
+                              </b>
+                            </p>
+                            <p>
+                              At SETC Zone, failure to enforce a particular
+                              provision does not mean that we waive our right to
+                              enforce it later. If a provision is deemed
+                              unenforceable, the remaining terms of the
+                              agreement will continue to remain in effect, and
+                              we will substitute the unenforceable provision
+                              with one that reflects our intentions as closely
+                              as possible. Please note that you cannot assign
+                              any of your rights under these Terms, and any
+                              attempt to do so will be considered invalid.
+                              However, we reserve the right to assign our rights
+                              to any affiliates, subsidiaries, or any successor
+                              in interest of any business associated with the
+                              Services.
+                            </p>
+                            <p>
+                              <b>Modifications Terms</b>
+                            </p>
+                            <p>
+                              We are committed to providing the best possible
+                              services to our users, which may require us to
+                              revise these Terms from time to time. Such
+                              revisions may be made to reflect changes in the
+                              law, new regulatory requirements, or improvements
+                              and enhancements made to our Services. If any
+                              modification affects your use of the Services or
+                              your legal rights, we will notify you before the
+                              effective date of the update. We will send you an
+                              email to the email address associated with your
+                              account or send you an in-product notification.
+                              Please note that the updated terms will take
+                              effect no less than 30 days from when we notify
+                              you.
+                            </p>
+                            <button
+                              type="button"
+                              class="btn btn-primary px-4 py-1"
+                              id="flexCheckDefault"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
                             >
-                              <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h4 class="modal-title" style={{color: 'white'}}>
-                        <i class="fas fa-check-circle" style={{color: 'white'}}></i> Terms and conditions
-                    </h4>
-                    <button
-                                      type="button"
-                                      className="btn-close"
-                                      data-bs-dismiss="modal"
-                                      aria-label="Close"
-                                    ></button>
-                </div>
-                <div class="modal-body">
-                    <p><span>Terms of Service</span></p>
-                    <p><span>Effective: November 1st, 2023</span></p>
-                    <p>Thank you for using our services! These terms of service (“Terms”) cover your use and access to
-                        our
-                        services, client software, and websites ("Services"). By using our Services, you agree to be
-                        bound by these
-                        Terms and our Privacy Policy. If you are using our Services for an organization, you are
-                        agreeing to these
-                        Terms on behalf of that organization.</p>
-                    <p><b>Your Information and Your Permissions</b></p>
-                    <p>When you use our Services, you provide us with things like your files, content, messages,
-                        contacts, and so
-                        on (your information). Your information is yours. These Terms do not give us any rights to your
-                        information
-                        except
-                        for the limited rights that enable us to offer the Services.</p>
-                    <p>Our Services also provide you with features like eSign, file sharing, email newsletters,
-                        appointment
-                        setting, and more. These and other features may require our systems to access, store, and scan
-                        your
-                        information. You give us permission to do those things,
-                        and this permission extends to our affiliates and trusted third parties we work with.</p>
-                    <p><b>Your Responsibilities</b></p>
-                    <p>You are responsible for your conduct. Your information and you must comply with applicable laws.
-                        Content in
-                        the Services may be protected by others’ intellectual property rights. Please do not copy,
-                        upload, download,
-                        or share content unless you have the right to do so. We may review your conduct and content for
-                        compliance
-                        with these Terms. With that said, we have no obligation
-                        to do so. We are not responsible for the content people post and share via the Services.</p>
-                    <p>Help us keep you informed and your information protected. Safeguard your password to the
-                        Services, and keep
-                        your account information current.
-                        Do not share your account credentials or give others access to your account.</p>
-                    <p>You may use our Services only as permitted by applicable law, including export control laws and
-                        regulations.</p>
-                    <p><b>Our Information</b></p>
-                    <p>The Services are protected by copyright, trademark, and other US and foreign laws. These Terms do
-                        not grant
-                        you any right, title, or interest in the Services, others’ content in the Services, SETC Zone,
-                        and our
-                        trademarks, logos, and other brand features. We welcome feedback,
-                        but note that we may use comments or suggestions without any obligation to you.</p>
-                    <p><b>Copyright</b></p>
-                    <p>We respect the intellectual property of others and ask that you do too.
-                        We respond to notices of alleged copyright infringement if they comply with
-                        the law, and such notices should be reported to <a href="mailto:info@setczone.com">info@setczone.com</a>. We
-                        reserve the right to delete or disable content alleged to be infringing and terminate accounts
-                        of repeat
-                        infringers.</p>
-                    <p><b>Termination</b></p>
-                    <p>You are free to stop using our Services at any time. We reserve the right to suspend or terminate
-                        your
-                        access to the Services with notice to you if:</p>
-                    <p>(a) you are in breach of these Terms,</p>
-                    <p>(b) you are using the Services in a manner that would cause a real risk of harm or loss to us or
-                        other
-                        users, or</p>
-                    <p>We will provide you with reasonable advance notice via the email address associated with your
-                        account to
-                        remedy the activity that prompted us to contact you and give you the opportunity to export your
-                        information
-                        from our Services. If after such notice you fail to take
-                        the steps we ask of you, we will terminate or suspend your access to the Services.</p>
-                    <p>We will not provide notice before termination where:</p>
-                    <p>(a) you are in material breach of these Terms,</p>
-                    <p>(b) doing so would cause us legal liability or compromise our ability to provide the Services to
-                        our other
-                        users, or</p>
-                    <p>(c) we are prohibited from doing so by law.</p>
-                    <p><b>Discontinuation of Services</b></p>
-                    <p>We may decide to discontinue the Services in response to unforeseen circumstances beyond SETC
-                        Zone’s
-                        control or to comply with a legal requirement. If we do so, we will
-                        give you reasonable prior notice so that you can export your information from our systems.</p>
-                    <p><b>Services “AS IS”</b></p>
-                    <p>We strive to provide great Services, but there are certain things that we cannot guarantee.
-                        TO THE FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS AFFILIATES, SUPPLIERS, AND
-                        DISTRIBUTORS MAKE
-                        NO WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE SERVICES. THE SERVICES ARE PROVIDED "AS IS."
-                        WE ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-                        AND NON-INFRINGEMENT. Some places do not allow the disclaimers in this paragraph, so they may
-                        not apply to
-                        you.</p>
-                    <p><b>Limitation of Liability</b></p>
-                    <p>WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
-                        ANY
-                        LIABILITY FOR SETC Zone OR ITS AFFILIATES’ FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
-                        THE SERVICES.
-                        IN COUNTRIES WHERE THE FOLLOWING TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE RESPONSIBLE TO YOU
-                        ONLY FOR
-                        LOSSES AND DAMAGES THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR FAILURE TO USE REASONABLE
-                        CARE AND SKILL
-                        OR OUR BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH DOES NOT AFFECT CONSUMER RIGHTS THAT
-                        CANNOT BE WAIVED
-                        OR LIMITED BY ANY CONTRACT OR AGREEMENT.</p>
-                    <p>IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:</p>
-                    <ol>
-                        <li>ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR</li>
-                        <li>ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS, REGARDLESS OF LEGAL THEORY.</li>
-                    </ol>
-                    <p>THESE EXCLUSIONS OR LIMITATIONS WILL APPLY REGARDLESS OF WHETHER OR NOT SETC Zone
-                        OR ANY OF ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
-                    <p>IF YOU USE THE SERVICES FOR ANY COMMERCIAL, BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
-                        AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL HAVE NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS OF
-                        BUSINESS, BUSINESS
-                        INTERRUPTION, OR LOSS OF BUSINESS OPPORTUNITY. SETC Zones AND ITS AFFILIATES
-                        ARE NOT RESPONSIBLE FOR THE CONDUCT, WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE SERVICES.</p>
-                    <p><b>Resolving Disputes</b></p>
-                    <p>Let’s Try To Sort Things Out First. We want to address your concerns without needing a formal
-                        legal case.
-                        Before filing a claim against SETC Zone or our affiliates, you agree to try to resolve the
-                        dispute
-                        informally by contacting <a href="mailto:info@setczone.com">info@setczone.com</a>. We will try
-                        to resolve
-                        the dispute informally by contacting you via email.</p>
-                    <p>Judicial forum for disputes. You and SETC Zone agree that any judicial proceeding to resolve
-                        claims
-                        relating to these Terms or the Services will be brought in the federal or state courts of Texas,
-                        subject to
-                        the mandatory arbitration provisions below. Both you and SETC Zone consent to venue and personal
-                        jurisdiction in such courts.</p>
-                    <p>We Both Agree To Arbitrate. You and SETC Zone agree to resolve any claims relating to these Terms
-                        or the
-                        Services through final and binding arbitration by a single arbitrator. This includes disputes
-                        arising out of
-                        or relating to interpretation or application of this “Mandatory Arbitration Provisions” section,
-                        including
-                        its enforceability, revocability, or validity.</p>
-                    <p>Arbitration Procedures. The American Arbitration Association (AAA) will administer the
-                        arbitration under
-                        its Commercial Arbitration Rules and the Supplementary Procedures for Consumer Related Disputes.
-                        The
-                        arbitration will be held in the United States county where you live or work, Texas, or any other
-                        location we
-                        agree to.</p>
-                    <p>NO CLASS ACTIONS. You may only resolve disputes with us on an individual basis and may not bring
-                        a claim as
-                        a plaintiff or a class member in a class, consolidated, or representative action. Class
-                        arbitrations, class
-                        actions, private attorney general actions, and consolidation with other arbitrations are not
-                        allowed. If
-                        this specific paragraph is held unenforceable, then the entirety of this “Mandatory Arbitration
-                        Provisions”
-                        section will be deemed void.</p>
-                    <p><b>Controlling Law</b></p>
-                    <p>These Terms will be governed by California law except for its conflicts of laws principles.
-                        However, some
-                        countries (including those in the European Union) have laws that require agreements to be
-                        governed by the
-                        local laws of the consumer's country. This paragraph does not override those laws.</p>
-                    <p><b>Entire Agreement</b></p>
-                    <p>These Terms constitute the entire agreement between you and SETC Zone with respect to the subject
-                        matter of
-                        these Terms and supersede and replace any other prior or contemporaneous agreements or terms and
-                        conditions
-                        applicable to the subject matter of these Terms. These Terms create no third-party beneficiary
-                        rights.</p>
-                    <p><b>Revised Waiver, Severability &amp; Assignment Terms</b></p>
-                    <p>At SETC Zone, failure to enforce a particular provision does not mean that we waive our right to
-                        enforce it
-                        later. If a provision is deemed unenforceable, the remaining terms of the agreement will
-                        continue to remain
-                        in effect, and we will substitute the unenforceable provision with one that reflects our
-                        intentions as
-                        closely as possible. Please note that you cannot assign any of your rights under these Terms,
-                        and any
-                        attempt to do so will be considered invalid. However, we reserve the right to assign our rights
-                        to any
-                        affiliates, subsidiaries, or any successor in interest of any business associated with the
-                        Services.</p>
-                    <p><b>Modifications Terms</b></p>
-                    <p>We are committed to providing the best possible services to our users, which may require
-                        us to revise these Terms from time to time. Such revisions may be made to reflect changes
-                        in the law, new regulatory requirements, or improvements and enhancements made to our Services.
-                        If any modification affects your use of the Services or your legal rights, we will notify you
-                        before
-                        the effective date of the update. We will send you an email to the email address associated with
-                        your
-                        account or send you an in-product notification. Please note that the updated terms will take
-                        effect no
-                        less than 30 days from when we notify you.</p>
-                    {/* <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button> */}
-                </div>
-            </div>
-        </div>
-                            </div>
-
-                 
-   
-                    <div
-                              className="modal fade"
-                              id="exampleModal_step_0"
-                              tabindex="-1"
-                              aria-labelledby="exampleModalLabel"
-                              style={{
-                                display: "none",
-                                padding: "0px 40px 20px 40px",
-                              }}
-                              aria-hidden="true"
-                            >
-                              <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h4 class="modal-title">
-                        <i class="fas fa-check-circle"></i> Terms and conditions
-                    </h4>
-                    <i class="fa-solid fa-xmark fs-3 text-white" data-bs-dismiss="modal" aria-label="Close"></i>
-                </div>
-                <div class="modal-body">
-                    <p><span>Terms of Service</span></p>
-                    <p><span>Effective: November 1st, 2023</span></p>
-                    <p>Thank you for using our services! These terms of service (“Terms”) cover your use and access to
-                        our
-                        services, client software, and websites ("Services"). By using our Services, you agree to be
-                        bound by these
-                        Terms and our Privacy Policy. If you are using our Services for an organization, you are
-                        agreeing to these
-                        Terms on behalf of that organization.</p>
-                    <p><b>Your Information and Your Permissions</b></p>
-                    <p>When you use our Services, you provide us with things like your files, content, messages,
-                        contacts, and so
-                        on (your information). Your information is yours. These Terms do not give us any rights to your
-                        information
-                        except
-                        for the limited rights that enable us to offer the Services.</p>
-                    <p>Our Services also provide you with features like eSign, file sharing, email newsletters,
-                        appointment
-                        setting, and more. These and other features may require our systems to access, store, and scan
-                        your
-                        information. You give us permission to do those things,
-                        and this permission extends to our affiliates and trusted third parties we work with.</p>
-                    <p><b>Your Responsibilities</b></p>
-                    <p>You are responsible for your conduct. Your information and you must comply with applicable laws.
-                        Content in
-                        the Services may be protected by others’ intellectual property rights. Please do not copy,
-                        upload, download,
-                        or share content unless you have the right to do so. We may review your conduct and content for
-                        compliance
-                        with these Terms. With that said, we have no obligation
-                        to do so. We are not responsible for the content people post and share via the Services.</p>
-                    <p>Help us keep you informed and your information protected. Safeguard your password to the
-                        Services, and keep
-                        your account information current.
-                        Do not share your account credentials or give others access to your account.</p>
-                    <p>You may use our Services only as permitted by applicable law, including export control laws and
-                        regulations.</p>
-                    <p><b>Our Information</b></p>
-                    <p>The Services are protected by copyright, trademark, and other US and foreign laws. These Terms do
-                        not grant
-                        you any right, title, or interest in the Services, others’ content in the Services, SETC Zone,
-                        and our
-                        trademarks, logos, and other brand features. We welcome feedback,
-                        but note that we may use comments or suggestions without any obligation to you.</p>
-                    <p><b>Copyright</b></p>
-                    <p>We respect the intellectual property of others and ask that you do too.
-                        We respond to notices of alleged copyright infringement if they comply with
-                        the law, and such notices should be reported to <a href="mailto:info@setczone.com">info@setczone.com</a>. We
-                        reserve the right to delete or disable content alleged to be infringing and terminate accounts
-                        of repeat
-                        infringers.</p>
-                    <p><b>Termination</b></p>
-                    <p>You are free to stop using our Services at any time. We reserve the right to suspend or terminate
-                        your
-                        access to the Services with notice to you if:</p>
-                    <p>(a) you are in breach of these Terms,</p>
-                    <p>(b) you are using the Services in a manner that would cause a real risk of harm or loss to us or
-                        other
-                        users, or</p>
-                    <p>We will provide you with reasonable advance notice via the email address associated with your
-                        account to
-                        remedy the activity that prompted us to contact you and give you the opportunity to export your
-                        information
-                        from our Services. If after such notice you fail to take
-                        the steps we ask of you, we will terminate or suspend your access to the Services.</p>
-                    <p>We will not provide notice before termination where:</p>
-                    <p>(a) you are in material breach of these Terms,</p>
-                    <p>(b) doing so would cause us legal liability or compromise our ability to provide the Services to
-                        our other
-                        users, or</p>
-                    <p>(c) we are prohibited from doing so by law.</p>
-                    <p><b>Discontinuation of Services</b></p>
-                    <p>We may decide to discontinue the Services in response to unforeseen circumstances beyond SETC
-                        Zone’s
-                        control or to comply with a legal requirement. If we do so, we will
-                        give you reasonable prior notice so that you can export your information from our systems.</p>
-                    <p><b>Services “AS IS”</b></p>
-                    <p>We strive to provide great Services, but there are certain things that we cannot guarantee.
-                        TO THE FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS AFFILIATES, SUPPLIERS, AND
-                        DISTRIBUTORS MAKE
-                        NO WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE SERVICES. THE SERVICES ARE PROVIDED "AS IS."
-                        WE ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-                        AND NON-INFRINGEMENT. Some places do not allow the disclaimers in this paragraph, so they may
-                        not apply to
-                        you.</p>
-                    <p><b>Limitation of Liability</b></p>
-                    <p>WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
-                        ANY
-                        LIABILITY FOR SETC Zone OR ITS AFFILIATES’ FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
-                        THE SERVICES.
-                        IN COUNTRIES WHERE THE FOLLOWING TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE RESPONSIBLE TO YOU
-                        ONLY FOR
-                        LOSSES AND DAMAGES THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR FAILURE TO USE REASONABLE
-                        CARE AND SKILL
-                        OR OUR BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH DOES NOT AFFECT CONSUMER RIGHTS THAT
-                        CANNOT BE WAIVED
-                        OR LIMITED BY ANY CONTRACT OR AGREEMENT.</p>
-                    <p>IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:</p>
-                    <ol>
-                        <li>ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR</li>
-                        <li>ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS, REGARDLESS OF LEGAL THEORY.</li>
-                    </ol>
-                    <p>THESE EXCLUSIONS OR LIMITATIONS WILL APPLY REGARDLESS OF WHETHER OR NOT SETC Zone
-                        OR ANY OF ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
-                    <p>IF YOU USE THE SERVICES FOR ANY COMMERCIAL, BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
-                        AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL HAVE NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS OF
-                        BUSINESS, BUSINESS
-                        INTERRUPTION, OR LOSS OF BUSINESS OPPORTUNITY. SETC Zones AND ITS AFFILIATES
-                        ARE NOT RESPONSIBLE FOR THE CONDUCT, WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE SERVICES.</p>
-                    <p><b>Resolving Disputes</b></p>
-                    <p>Let’s Try To Sort Things Out First. We want to address your concerns without needing a formal
-                        legal case.
-                        Before filing a claim against SETC Zone or our affiliates, you agree to try to resolve the
-                        dispute
-                        informally by contacting <a href="mailto:info@setczone.com">info@setczone.com</a>. We will try
-                        to resolve
-                        the dispute informally by contacting you via email.</p>
-                    <p>Judicial forum for disputes. You and SETC Zone agree that any judicial proceeding to resolve
-                        claims
-                        relating to these Terms or the Services will be brought in the federal or state courts of Texas,
-                        subject to
-                        the mandatory arbitration provisions below. Both you and SETC Zone consent to venue and personal
-                        jurisdiction in such courts.</p>
-                    <p>We Both Agree To Arbitrate. You and SETC Zone agree to resolve any claims relating to these Terms
-                        or the
-                        Services through final and binding arbitration by a single arbitrator. This includes disputes
-                        arising out of
-                        or relating to interpretation or application of this “Mandatory Arbitration Provisions” section,
-                        including
-                        its enforceability, revocability, or validity.</p>
-                    <p>Arbitration Procedures. The American Arbitration Association (AAA) will administer the
-                        arbitration under
-                        its Commercial Arbitration Rules and the Supplementary Procedures for Consumer Related Disputes.
-                        The
-                        arbitration will be held in the United States county where you live or work, Texas, or any other
-                        location we
-                        agree to.</p>
-                    <p>NO CLASS ACTIONS. You may only resolve disputes with us on an individual basis and may not bring
-                        a claim as
-                        a plaintiff or a class member in a class, consolidated, or representative action. Class
-                        arbitrations, class
-                        actions, private attorney general actions, and consolidation with other arbitrations are not
-                        allowed. If
-                        this specific paragraph is held unenforceable, then the entirety of this “Mandatory Arbitration
-                        Provisions”
-                        section will be deemed void.</p>
-                    <p><b>Controlling Law</b></p>
-                    <p>These Terms will be governed by California law except for its conflicts of laws principles.
-                        However, some
-                        countries (including those in the European Union) have laws that require agreements to be
-                        governed by the
-                        local laws of the consumer's country. This paragraph does not override those laws.</p>
-                    <p><b>Entire Agreement</b></p>
-                    <p>These Terms constitute the entire agreement between you and SETC Zone with respect to the subject
-                        matter of
-                        these Terms and supersede and replace any other prior or contemporaneous agreements or terms and
-                        conditions
-                        applicable to the subject matter of these Terms. These Terms create no third-party beneficiary
-                        rights.</p>
-                    <p><b>Revised Waiver, Severability &amp; Assignment Terms</b></p>
-                    <p>At SETC Zone, failure to enforce a particular provision does not mean that we waive our right to
-                        enforce it
-                        later. If a provision is deemed unenforceable, the remaining terms of the agreement will
-                        continue to remain
-                        in effect, and we will substitute the unenforceable provision with one that reflects our
-                        intentions as
-                        closely as possible. Please note that you cannot assign any of your rights under these Terms,
-                        and any
-                        attempt to do so will be considered invalid. However, we reserve the right to assign our rights
-                        to any
-                        affiliates, subsidiaries, or any successor in interest of any business associated with the
-                        Services.</p>
-                    <p><b>Modifications Terms</b></p>
-                    <p>We are committed to providing the best possible services to our users, which may require
-                        us to revise these Terms from time to time. Such revisions may be made to reflect changes
-                        in the law, new regulatory requirements, or improvements and enhancements made to our Services.
-                        If any modification affects your use of the Services or your legal rights, we will notify you
-                        before
-                        the effective date of the update. We will send you an email to the email address associated with
-                        your
-                        account or send you an in-product notification. Please note that the updated terms will take
-                        effect no
-                        less than 30 days from when we notify you.</p>
-                    <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button>
-                </div>
-            </div>
-        </div>
-                            </div>
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className="d-flex justify-content-end">
                       <button
                         onClick={handleNext}
@@ -5206,17 +6426,14 @@ const callFilesCom = async () => {
         return (
           <div className="step step-2 ">
             <div className="container ">
-              <div className="row toi justify-content-center">
+              <div className="row  justify-content-center" style={{marginTop: -40}}>
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div
-                      className="row roww"
-                      
-                    >
+                    <div className="row roww">
                       <div className="col-lg-12 col-md-12 col-sm-12">
                         <div class="img-applic-content border-0">
                           <div class="step2_content w-100 pb-2">
-                          {/* <LinearProgress
+                            {/* <LinearProgress
                       variant="determinate"
                       sx={{
                         height: "14px",
@@ -5425,27 +6642,23 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "14px",
-                        borderRadius: "6px",
-                        marginBottom: 5,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={getProgressPercentage()}
-                    />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={getProgressPercentage()}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
-                     
-
                         <div className="img-applic-content">
-                       
-
                           <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -5574,25 +6787,23 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "14px",
-                        borderRadius: "6px",
-                        marginBottom: 5,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={getProgressPercentage()}
-                    />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={getProgressPercentage()}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-
-          
                           <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -5616,7 +6827,9 @@ const callFilesCom = async () => {
                                 color: "rgb(13, 189, 243)",
                               }}
                             >
-                              Did you file your 1040 Schedule SE (Self-Employment Tax) for the years of 2020 or 2021?
+                              Did you file your 1040 Schedule SE
+                              (Self-Employment Tax) for the years of 2020 or
+                              2021?
                             </h1>
 
                             <div className="optio mb-2">
@@ -5724,25 +6937,23 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "14px",
-                        borderRadius: "6px",
-                        marginBottom: 5,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={getProgressPercentage()}
-                    />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={getProgressPercentage()}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-
-                      
                           <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -5780,7 +6991,7 @@ const callFilesCom = async () => {
                               >
                                 line 6 of your 1040 Schedule SE.
                               </span>
-                               (If this line is blank or negative, select No.)
+                              (If this line is blank or negative, select No.)
                             </label>
 
                             <div className="optio mb-2">
@@ -5886,25 +7097,23 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "14px",
-                        borderRadius: "6px",
-                        marginBottom: 5,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={getProgressPercentage()}
-                    />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={getProgressPercentage()}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content">
-
-                      
                           <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -5934,10 +7143,12 @@ const callFilesCom = async () => {
                                   data-bs-toggle="modal"
                                   data-bs-target="#exampleModal_step_6"
                                   className="d-none d-md-inline"
-                                  style={{  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 23,
-                                  textDecoration: "underline",}}
+                                  style={{
+                                    color: "red",
+                                    cursor: "pointer",
+                                    fontSize: 23,
+                                    textDecoration: "underline",
+                                  }}
                                 >
                                   Click here for examples
                                 </a>
@@ -5945,15 +7156,17 @@ const callFilesCom = async () => {
                                   data-bs-toggle="modal"
                                   data-bs-target="#exampleModalS_step_6"
                                   className="d-inline d-md-none"
-                                  style={{  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 23,
-                                  textDecoration: "underline", }}
+                                  style={{
+                                    color: "red",
+                                    cursor: "pointer",
+                                    fontSize: 23,
+                                    textDecoration: "underline",
+                                  }}
                                 >
                                   Click here for examples
                                 </a>
-                              </span>
-                              {" "} From 4/1/2020-9/30/2021
+                              </span>{" "}
+                              From 4/1/2020-9/30/2021
                             </label>
 
                             <div className="optio mb-2">
@@ -6284,26 +7497,23 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "14px",
-                        borderRadius: "6px",
-                        marginBottom: 5,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={getProgressPercentage()}
-                    />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={getProgressPercentage()}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content-congrts border-0">
-
-                       
-
                           <div
                             style={boxStyle}
                             className="desktop-box"
@@ -6334,8 +7544,10 @@ const callFilesCom = async () => {
                                   textAlign: "center !important",
                                 }}
                               >
-                                Based on the answers you provided you are prequalified to receive the Self 
-                                Employed Tax Credit. Click below to continue your application!
+                                Based on the answers you provided you are
+                                prequalified to receive the Self Employed Tax
+                                Credit. Click below to continue your
+                                application!
                               </label>
                             </div>
                           </div>
@@ -6365,8 +7577,10 @@ const callFilesCom = async () => {
                                   fontSize: "13px !important",
                                 }}
                               >
-                                Based on the answers you provided you are prequalified to receive the Self 
-                                Employed Tax Credit. Click below to continue your application!
+                                Based on the answers you provided you are
+                                prequalified to receive the Self Employed Tax
+                                Credit. Click below to continue your
+                                application!
                               </label>
                               <p>Click below to continue your application!</p>
                             </div>
@@ -6398,18 +7612,14 @@ const callFilesCom = async () => {
             </div>
           </div>
         );
-       case 7:
+      case 7:
         return (
           <div className="step step-8 ">
             <div className="container ">
-              <div className="row toi justify-content-center">
+              <div className="row  justify-content-center" style={{marginTop: -40}}>
                 <div className="col-lg-12">
                   <div className="start-application">
-                    <div
-                  
-                      className="row ROWW"
-                     
-                    >
+                    <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12 ">
                         <div className="img-applic-content border-0">
                           <div
@@ -6446,7 +7656,8 @@ const callFilesCom = async () => {
                                             class="step2_h5"
                                             style={{ color: "#00b6ff" }}
                                           >
-                                            Answer 13 questions of the questionnaire
+                                            Answer 13 questions of the
+                                            questionnaire
                                           </h5>
                                         </div>
 
@@ -6524,8 +7735,8 @@ const callFilesCom = async () => {
                                             class="step2_h5"
                                             style={{ color: "#00b6ff" }}
                                           >
-                                            Our Tex professinals will process and file your return
-
+                                            Our Tex professinals will process
+                                            and file your return
                                           </h5>
                                         </div>
                                       </div>
@@ -6689,120 +7900,121 @@ const callFilesCom = async () => {
             </div>
           </div>
         );
-        case 8:
-          return (
-            <div className="step step-4">
-              <div className="container ">
-                <div className="row justify-content-center">
-                  <div className="col-lg-10">
+      case 8:
+        return (
+          <div className="step step-4">
+            <div className="container ">
+              <div className="row justify-content-center">
+                <div className="col-lg-10">
                   <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={7.69}
-                      />
-                    <div className="start-application">
-                      <div className="row ROWW">
-                        <div className="col-lg-8 col-md-8 col-sm-12">
-                          <div className="img-applic-content">
-  
-            
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={7.69}
+                  />
+                  <div className="start-application">
+                    <div className="row ROWW">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
+                        <div className="img-applic-content">
+                          <h1
+                            className="text-center"
+                            style={{ color: "rgb(13, 189, 243)" }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          {/* <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                            }}
+                            className="text-center"
+                          >
+                            Question 1 of 13
+                          </h3> */}
+                          <div style={{ marginTop: 40 }}>
                             <h1
-                              className="text-center"
-                              style={{ color: "rgb(13, 189, 243)" }}
-                            >
-                              Are you eligible?
-                            </h1>
-                            <h3
                               style={{
-                                fontWeight: 300,
-                                lineHeight: 0.2,
+                                fontSize: "24px",
                                 color: "rgb(13, 189, 243)",
                               }}
-                              className="text-center"
                             >
-                              Question 1 of 13
-                            </h3>
-                            <div style={{ marginTop: 40 }}>
-                              <h1
-                                style={{
-                                  fontSize: "24px",
-                                  color: "rgb(13, 189, 243)",
-                                }}
-                              >
-                               Did you receive unemployment
-                              from April 1st, 2020 - December 31st, 2020?
-                              </h1>
-  
-                              <div className="optio mb-2">
-                                <label for="did_receive_unemployement20_yes">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.did_receive_unemployement20 === "Yes"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.did_receive_unemployement20
+                              Did you receive unemployment from April 1st, 2020
+                              - December 31st, 2020?
+                            </h1>
 
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="did_receive_unemployement20"
-                                      checked={
-                                        formData.did_receive_unemployement20 === "Yes"
-                                      }
-                                      value="Yes"
-                                      id="did_receive_unemployement20_yes"
-                                      onChange={handleInputChange}
-                                    />
-                                    Yes
-                                  </p>
-                                </label>
-                              </div>
-  
-                              <div className="optio">
-                                <label for="did_receive_unemployement20_no">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.did_receive_unemployement20 === "No"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.did_receive_unemployement20
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="did_receive_unemployement20"
-                                      checked={
-                                        formData.did_receive_unemployement20 === "No"
-                                      }
-                                      value="No"
-                                      id="did_receive_unemployement20_no"
-                                      onChange={handleInputChange}
-                                    />
-                                    No
-                                  </p>
-                                </label>
-                              </div>
-  
-                              {/* {formData.scheduleSelfEmployement === "No" &&
+                            <div className="optio mb-2">
+                              <label for="did_receive_unemployement20_yes">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.did_receive_unemployement20 ===
+                                      "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.did_receive_unemployement20
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="did_receive_unemployement20"
+                                    checked={
+                                      formData.did_receive_unemployement20 ===
+                                      "Yes"
+                                    }
+                                    value="Yes"
+                                    id="did_receive_unemployement20_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
+                            </div>
+
+                            <div className="optio">
+                              <label for="did_receive_unemployement20_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.did_receive_unemployement20 ===
+                                      "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.did_receive_unemployement20
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="did_receive_unemployement20"
+                                    checked={
+                                      formData.did_receive_unemployement20 ===
+                                      "No"
+                                    }
+                                    value="No"
+                                    id="did_receive_unemployement20_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
+                            </div>
+
+                            {/* {formData.scheduleSelfEmployement === "No" &&
                                 activeErrorQualifyTwoo && (
                                   <div>
                                     <h4 style={{ color: "#e62e2d" }}>
@@ -6813,24 +8025,23 @@ const callFilesCom = async () => {
                                   </div>
                                 )}
    */}
-                              <div className="d-flex justify-content-end mt-3">
-                                <button
-                                  onClick={handlePrevious}
-                                  type="button"
-                                  className="px-3 py-2 prev-step"
-                                >
-                                  Previous
-                                </button>
-                                <button
-                                  onClick={handleNext}
-                                  type="button"
-                                  className="px-3 py-2 next-step"
-                                >
-                                  {activeStep === steps.length - 1
-                                    ? "Submit"
-                                    : "Next"}
-                                </button>
-                              </div>
+                            <div className="d-flex justify-content-end mt-3">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                className="px-3 py-2 prev-step"
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                className="px-3 py-2 next-step"
+                              >
+                                {activeStep === steps.length - 1
+                                  ? "Submit"
+                                  : "Next"}
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -6840,152 +8051,149 @@ const callFilesCom = async () => {
                 </div>
               </div>
             </div>
-          );
-        case 9:
-          return (
-            <div className="step step-4">
-              <div className="container ">
-                <div className="row justify-content-center">
-                  <div className="col-lg-10">
+          </div>
+        );
+      case 9:
+        return (
+          <div className="step step-4">
+            <div className="container ">
+              <div className="row justify-content-center">
+                <div className="col-lg-10">
                   <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={15.38}
-                      />
-                    <div className="start-application">
-                      <div className="row ROWW">
-                        <div className="col-lg-8 col-md-8 col-sm-12">
-                          <div className="img-applic-content">
-  
-            
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={15.38}
+                  />
+                  <div className="start-application">
+                    <div className="row ROWW">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
+                        <div className="img-applic-content">
+                          <h1
+                            className="text-center"
+                            style={{ color: "rgb(13, 189, 243)" }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          {/* <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                            }}
+                            className="text-center"
+                          >
+                            Question 2 of 13
+                          </h3> */}
+                          <div style={{ marginTop: 40 }}>
                             <h1
-                              className="text-center"
-                              style={{ color: "rgb(13, 189, 243)" }}
-                            >
-                              Are you eligible?
-                            </h1>
-                            <h3
                               style={{
-                                fontWeight: 300,
-                                lineHeight: 0.2,
+                                fontSize: "24px",
                                 color: "rgb(13, 189, 243)",
                               }}
-                              className="text-center"
                             >
-                              Question 2 of 13
-                            </h3>
-                            <div style={{ marginTop: 40 }}>
-                              <h1
-                                style={{
-                                  fontSize: "24px",
-                                  color: "rgb(13, 189, 243)",
-                                }}
+                              Did you receive unemployment from January 1st,
+                              2021 - September 30th, 2021?
+                            </h1>
+
+                            <div className="optio mb-2">
+                              <label for="did_receive_unemployement21_yes">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.did_receive_unemployement21 ===
+                                      "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.did_receive_unemployement21
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="did_receive_unemployement21"
+                                    checked={
+                                      formData.did_receive_unemployement21 ===
+                                      "Yes"
+                                    }
+                                    value="Yes"
+                                    id="did_receive_unemployement21_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
+                            </div>
+
+                            <div className="optio">
+                              <label for="did_receive_unemployement21_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.did_receive_unemployement21 ===
+                                      "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.did_receive_unemployement21
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="did_receive_unemployement21"
+                                    checked={
+                                      formData.did_receive_unemployement21 ===
+                                      "No"
+                                    }
+                                    value="No"
+                                    id="did_receive_unemployement21_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
+                            </div>
+
+                            {formData.did_receive_unemployement21 === "Yes" &&
+                              formData.did_receive_unemployement20 === "Yes" &&
+                              activeErrorDidRecieveUnemployement && (
+                                <div>
+                                  <h4 style={{ color: "#e62e2d" }}>
+                                   Based on your answers, we will not be able to help you claim the credit.
+                                  </h4>
+                                </div>
+                              )}
+
+                            <div className="d-flex justify-content-end mt-3">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                className="px-3 py-2 prev-step"
                               >
-                               Did you receive unemployment
-                    from January 1st, 2021 - September 30th, 2021?
-                              </h1>
-  
-                              <div className="optio mb-2"> 
-
-                                <label for="did_receive_unemployement21_yes">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.did_receive_unemployement21 === "Yes"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.did_receive_unemployement21
-
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="did_receive_unemployement21"
-                                      checked={
-                                        formData.did_receive_unemployement21 === "Yes"
-                                      }
-                                      value="Yes"
-                                      id="did_receive_unemployement21_yes"
-                                      onChange={handleInputChange}
-                                    />
-                                    Yes
-                                  </p>
-                                </label>
-                              </div>
-  
-                              <div className="optio">
-                                <label for="did_receive_unemployement21_no">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.did_receive_unemployement21 === "No"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.did_receive_unemployement21
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="did_receive_unemployement21"
-                                      checked={
-                                        formData.did_receive_unemployement21 === "No"
-                                      }
-                                      value="No"
-                                      id="did_receive_unemployement21_no"
-                                      onChange={handleInputChange}
-                                    />
-                                    No
-                                  </p>
-                                </label>
-                              </div>
-  
-                            {formData.did_receive_unemployement21 === "No" && 
-                            formData.did_receive_unemployement20 === "No" &&
-                             activeErrorDidRecieveUnemployement && 
-                                (
-                                  <div>
-                                    <h4 style={{ color: "#e62e2d" }}>
-                                      We are sorry. By answering “No” to the previous
-                                      questions, you will not be eligible for the
-                                      SETC program.
-                                    </h4>
-                                  </div>
-                                )}
-  
-                              <div className="d-flex justify-content-end mt-3">
-                                <button
-                                  onClick={handlePrevious}
-                                  type="button"
-                                  className="px-3 py-2 prev-step"
-                                >
-                                  Previous
-                                </button>
-                                <button
-                                  onClick={handleNext}
-                                  type="button"
-                                  className="px-3 py-2 next-step"
-                                >
-                                  {activeStep === steps.length - 1
-                                    ? "Submit"
-                                    : "Next"}
-                                </button>
-                              </div>
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                className="px-3 py-2 next-step"
+                              >
+                                {activeStep === steps.length - 1
+                                  ? "Submit"
+                                  : "Next"}
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -6995,27 +8203,28 @@ const callFilesCom = async () => {
                 </div>
               </div>
             </div>
-          );
-        
+          </div>
+        );
+
       case 10:
         return (
           <div className="step step-9">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={23.07}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={23.07}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -7029,7 +8238,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -7039,7 +8248,7 @@ const callFilesCom = async () => {
                             className=" mb-4"
                           >
                             Question 3 of 13
-                          </h3>
+                          </h3> */}
                           {/* </div> */}
                           <label
                             for="self_employed_from"
@@ -7048,18 +8257,17 @@ const callFilesCom = async () => {
                           >
                             Were you personally sick with Covid, experienced
                             Covid like symptoms, needed to quarantine, underwent
-                            testing, and took time off of work in 2020? {" "}
+                            testing, and took time off of work in 2020? 4/1/2020-3/31/21 {" "}
                             <span
-                                style={{
-                                  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 21,
-                                  textDecoration: "underline",
-                                }}
-                                
-                              >
-                                4/1/2020-3/31/21 (Max 10 days)
-                              </span>
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: 21,
+                                textDecoration: "underline",
+                              }}
+                            >
+                              (Max 10 days)
+                            </span>
                           </label>
 
                           <div>
@@ -7135,19 +8343,70 @@ const callFilesCom = async () => {
                                 className="date-picker-container"
                                 style={{ marginTop: 20 }}
                               >
-                                <DatePicker
-                                  selectsRange={true}
-                                  startDate={personal_startdate2020}
-                                  endDate={personal_enddate2020}
-                                  onChange={handleDateChange}
-                                  isClearable={true}
-                                  minDate={minDate}
-                                  maxDate={maxDate}
-                                  filterDate={filterWeekends} 
-                                  placeholderText="Select date range"
-                                  openToDate={initialOpenDate}
-                                  className="custom-date-picker-input" // Add a custom class name
-                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <DatePicker
+                                    selectsRange={true}
+                                    startDate={personal_startdate2020}
+                                    endDate={personal_enddate2020}
+                                    onChange={handleDateChange}
+                                    isClearable={true}
+                                    minDate={minDate}
+                                    maxDate={maxDate}
+                                    // filterDate={filterWeekends}
+                                    filterDate={(date) =>
+                                      !isDateDisabledOne(date)
+                                    }
+                                    placeholderText="Select date range"
+                                    openToDate={initialOpenDate}
+                                    className="custom-date-picker-input" // Add a custom class name
+                                  />
+
+                                  <div className="">
+                                    <button
+                                      onClick={handleMerge}
+                                      type="button"
+                                      className="px-3 py-2 next-step"
+                                    >
+                                      Add Dates
+                                    </button>
+                                  </div>
+                                </div>
+                                 <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                               
+                                <div style={{ marginTop: 20 }}>
+                                  <MultiplePicker
+                                    style={{ padding: "20px 6px" }}
+                                    multiple
+                                    currentDate={specificDate1}
+                                    value={selectedDates}
+                                    minDate={new Date(2020, 3, 1)} // April 1, 2020
+                                    maxDate={new Date(2020, 11, 31)} // December 31, 2020
+                                    onChange={(dates) =>
+                                      setSelectedDates(dates)
+                                    }
+                                    mapDays={({ date }) => {
+                                      let props = {};
+
+                                      // Check if the day is a weekend (Sunday or Saturday)
+                                      if (isWeekend(date)) {
+                                        props.disabled = true;
+                                      }
+
+                                      // Check if the day is in the selectedDates array and is a weekend
+                                      //  if (selectedDated.includes(date.format('YYYY-MM-DD'))){
+                                      //   props.disabled = true
+                                      //  }
+                                      return props;
+                                    }}
+                                    plugins={[<DatePanel />]}
+                                  />
+                                </div>
                                 {/* <p>Start Date: {personal_startdate2020 ? personal_startdate2020.toLocaleDateString() : 'Not selected'}</p>
                             <p>End Date: {personal_enddate2020 ? personal_enddate2020.toLocaleDateString() : 'Not selected'}</p> */}
                                 <div style={{ marginTop: 10, marginLeft: 2 }}>
@@ -7160,7 +8419,7 @@ const callFilesCom = async () => {
                             />
                              {' days'} */}
                                   {/* /> */}
-                                  You have selected {numberOffDays} days
+                                  You have selected <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDates?.length} days</span> 
                                 </div>
 
                                 <Modal
@@ -7185,85 +8444,85 @@ const callFilesCom = async () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {personal_startdate2020 &&
-                                      personal_enddate2020 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            You have selected {numberOffDays}{" "}
-                                            days. Please select 10 days or less.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseModal}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
-                                    {!personal_startdate2020 &&
-                                      !personal_enddate2020 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            Please select start and end dates.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseModal}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
+                                    {selectedDates?.length > 10 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p  id="modal-description">
+                                          You have selected{" "}
+                                          {selectedDates?.length} days. Please
+                                          select 10 days or less.
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseModal}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
+                                    {selectedDates?.length == 0 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                           Please select dates! If you are selecting date range then you should
+ press "Add Dates" button
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseModal}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
                                   </Box>
                                 </Modal>
                               </div>
@@ -7303,19 +8562,19 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={30.7}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={30.7}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -7329,7 +8588,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -7339,7 +8598,7 @@ const callFilesCom = async () => {
                             className=" mb-4"
                           >
                             Question 4 of 13
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -7347,20 +8606,18 @@ const callFilesCom = async () => {
                           >
                             Were you personally sick with Covid, experienced
                             Covid like symptoms, needed to quarantine, underwent
-                            testing, and took time off of work in 2021? {" "}
+                            testing, and took time off of work in 2021? 4/1/2020-3/31/21{" "}
                             <span
-                                style={{
-                                  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 21,
-                                  textDecoration: "underline",
-                                }}
-                                
-                              >
-                                4/1/2020-3/31/21 (Max 10 days)
-                              </span>
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: 21,
+                                textDecoration: "underline",
+                              }}
+                            >
+                               (Max 10 days)
+                            </span>
                           </label>
-
 
                           <div>
                             <div
@@ -7435,19 +8692,68 @@ const callFilesCom = async () => {
                                 className="date-picker-container"
                                 style={{ marginTop: 20 }}
                               >
-                                <DatePicker
-                                  selectsRange={true}
-                                  startDate={personal_startdate2021}
-                                  endDate={personal_enddate2021}
-                                  onChange={handleDateChangeTwo}
-                                  isClearable={true}
-                                  minDate={minDateTwo}
-                                  maxDate={maxDateTwo}
-                                  filterDate={filterWeekends} 
-                                  placeholderText="Select date range"
-                                  openToDate={initialOpenDateTwo}
-                                  className="custom-date-picker-input" // Add a custom class name
-                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <DatePicker
+                                    selectsRange={true}
+                                    startDate={personal_startdate2021}
+                                    endDate={personal_enddate2021}
+                                    onChange={handleDateChangeTwo}
+                                    isClearable={true}
+                                    minDate={minDateTwo}
+                                    maxDate={maxDateTwo}
+                                    filterDate={(date) =>
+                                      !isDateDisabledTwoo(date)
+                                    }
+                                    placeholderText="Select date range"
+                                    openToDate={initialOpenDateTwo}
+                                    className="custom-date-picker-input" // Add a custom class name
+                                  />
+                                  <div className="">
+                                    <button
+                                      onClick={handleMergeTwo}
+                                      type="button"
+                                      className="px-3 py-2 next-step"
+                                    >
+                                      Add Dates
+                                    </button>
+                                  </div>
+                                </div>
+                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <div style={{ marginTop: 20 }}>
+                                  <MultiplePicker
+                                    multiple
+                                    style={{ padding: "20px 6px" }}
+
+                                    value={selectedDatesTwo}
+                                    currentDate={specificDate2}
+                                    minDate={new Date(2021, 0, 1)} // April 1, 2020
+                                    maxDate={new Date(2021, 8, 30)} // December 31, 2020
+                                    onChange={(dates) =>
+                                      setSelectedDatesTwo(dates)
+                                    }
+                                    mapDays={({ date }) => {
+                                      let props = {};
+
+                                      // Check if the day is a weekend (Sunday or Saturday)
+                                      if (isWeekend(date)) {
+                                        props.disabled = true;
+                                      }
+
+                                      //   // Check if the day is in the selectedDates array and is a weekend
+                                      //  if (selectedDatesTwo.includes(date.format('YYYY-MM-DD'))){
+                                      //   props.disabled = true
+                                      //  }
+                                      return props;
+                                    }}
+                                    plugins={[<DatePanel />]}
+                                  />
+                                </div>
                                 {/* <p>Start Date: {personal_startdate2020 ? personal_startdate2020.toLocaleDateString() : 'Not selected'}</p>
                             <p>End Date: {personal_enddate2020 ? personal_enddate2020.toLocaleDateString() : 'Not selected'}</p> */}
                                 <div style={{ marginTop: 10, marginLeft: 2 }}>
@@ -7458,7 +8764,9 @@ const callFilesCom = async () => {
                               className="custom-date-picker-input"
                               placeholder="Number of days"
                             /> */}
-                                  You have selected {numberOffDaysTwo} days
+                                  You have selected {" "}
+                                 
+                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesTwo?.length} days</span> 
                                 </div>
 
                                 <Modal
@@ -7483,85 +8791,86 @@ const callFilesCom = async () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {personal_startdate2021 &&
-                                      personal_enddate2021 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            You have selected {numberOffDaysTwo}{" "}
-                                            days. Please select 10 days or less.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseModalTwo}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
-                                    {!personal_startdate2021 &&
-                                      !personal_enddate2021 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            Please select start and end dates.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseModalTwo}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
+                                    {selectedDatesTwo?.length > 10 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          You have selected{" "}
+                                          {selectedDatesTwo?.length} days.
+                                          Please select 10 days or less.
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseModalTwo}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
+                                    {selectedDatesTwo?.length == 0 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          Please select dates! If you are
+                                          selecting date range then you should
+                                          press "Add Dates" button
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseModalTwo}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
                                   </Box>
                                 </Modal>
                               </div>
@@ -7602,19 +8911,19 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={38.46}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={38.46}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -7628,7 +8937,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -7638,7 +8947,7 @@ const callFilesCom = async () => {
                             className=" mb-4"
                           >
                             Question 5 of 13
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -7647,18 +8956,17 @@ const callFilesCom = async () => {
                             Did you care for someone else who was affected by
                             Covid, experienced Covid like symptoms, needed to
                             quarantine, underwent testing, and took time off of
-                            work in 2020? {" "}
+                            work in 2020? 4/1/2020-3/31/21 {" "}
                             <span
-                                style={{
-                                  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 21,
-                                  textDecoration: "underline",
-                                }}
-                                
-                              >
-                               4/1/2020-3/31/21 (Max 10 days)
-                              </span>
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: 21,
+                                textDecoration: "underline",
+                              }}
+                            >
+                              (Max 10 days)
+                            </span>
                           </label>
 
                           <div>
@@ -7730,19 +9038,70 @@ const callFilesCom = async () => {
                                 className="date-picker-container"
                                 style={{ marginTop: 20 }}
                               >
-                                <DatePicker
-                                  selectsRange={true}
-                                  startDate={cared_startdate2020}
-                                  endDate={cared_enddate2020}
-                                  onChange={handleCaredDateChange}
-                                  isClearable={true}
-                                  minDate={minSymptomsDate}
-                                  maxDate={maxSymptomsDate}
-                                  filterDate={(date) => !isDateDisabled(date)}
-                                  placeholderText="Select date range for symptoms"
-                                  openToDate={initialOpenSymptomsDate}
-                                  className="custom-date-picker-input"
-                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <DatePicker
+                                    selectsRange={true}
+                                    startDate={cared_startdate2020}
+                                    endDate={cared_enddate2020}
+                                    onChange={handleCaredDateChange}
+                                    isClearable={true}
+                                    minDate={minSymptomsDate}
+                                    maxDate={maxSymptomsDate}
+                                    filterDate={(date) => !isDateDisabled(date)}
+                                    placeholderText="Select date range for symptoms"
+                                    openToDate={initialOpenSymptomsDate}
+                                    className="custom-date-picker-input"
+                                  />
+
+                                  <div className="">
+                                    <button
+                                      onClick={handleMergeCared2020}
+                                      type="button"
+                                      className="px-3 py-2 next-step"
+                                    >
+                                      Add Dates
+                                    </button>
+                                  </div>
+                                </div>
+                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <div style={{ marginTop: 20 }}>
+                                  <MultiplePicker
+                                    multiple
+                                    style={{ padding: "20px 6px" }}
+                                    value={selectedDatesCared2020}
+                                    currentDate={specificDate1}
+                                    minDate={new Date(2020, 3, 1)} // April 1, 2020
+                                    maxDate={new Date(2020, 11, 31)} // December 31, 2020
+                                    onChange={(dates) =>
+                                      setSelectedDatesCared2020(dates)
+                                    }
+                                    mapDays={({ date }) => {
+                                      let props = {};
+
+                                      // Check if the day is a weekend (Sunday or Saturday)
+                                      if (isWeekend(date)) {
+                                        props.disabled = true;
+                                      }
+
+                                      // Check if the day is in the selectedDates array and is a weekend
+                                      if (
+                                        datesFormatCared2020.includes(
+                                          date.format("YYYY-MM-DD")
+                                        )
+                                      ) {
+                                        props.disabled = true;
+                                      }
+                                      return props;
+                                    }}
+                                    plugins={[<DatePanel />]}
+                                  />
+                                </div>
                                 <div style={{ marginTop: 10, marginLeft: 2 }}>
                                   {/* <input
                                 type="number"
@@ -7751,7 +9110,9 @@ const callFilesCom = async () => {
                                 className="custom-date-picker-input"
                                 placeholder="Number of days"
                               /> */}
-                                  You have selected {symptomsDays} days
+                                  You have selected{" "}
+                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesCared2020?.length} days</span> 
+                                  
                                 </div>
 
                                 <Modal
@@ -7776,85 +9137,86 @@ const callFilesCom = async () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {cared_startdate2020 &&
-                                      cared_enddate2020 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            You have selected {symptomsDays}{" "}
-                                            days. Please select 10 days or less.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseSymptomsModal}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
-                                    {!cared_startdate2020 &&
-                                      !cared_enddate2020 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            Please select start and end dates.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseSymptomsModal}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
+                                    {selectedDatesCared2020?.length > 10 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          You have selected{" "}
+                                          {selectedDatesCared2020?.length} days.
+                                          Please select 10 days or less.
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseSymptomsModal}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
+                                    {selectedDatesCared2020?.length == 0 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          Please select dates! If you are
+                                          selecting date range then you should
+                                          press "Add Dates" button
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseSymptomsModal}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
                                   </Box>
                                 </Modal>
                               </div>
@@ -7894,19 +9256,19 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={46.15}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={46.15}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -7920,7 +9282,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -7930,7 +9292,7 @@ const callFilesCom = async () => {
                             className=" mb-4"
                           >
                             Question 6 of 13
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -7939,18 +9301,17 @@ const callFilesCom = async () => {
                             Did you care for someone else who was affected by
                             Covid, experienced Covid like symptoms, needed to
                             quarantine, underwent testing, and took time off of
-                            work in 2021? {" "}
+                            work in 2021? 4/1/2021-9/30/21{" "}
                             <span
-                                style={{
-                                  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 21,
-                                  textDecoration: "underline",
-                                }}
-                                
-                              >
-                                4/1/2021-9/30/21 (Max 10 days)
-                              </span>
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: 21,
+                                textDecoration: "underline",
+                              }}
+                            >
+                               (Max 10 days)
+                            </span>
                           </label>
 
                           <div>
@@ -8022,21 +9383,73 @@ const callFilesCom = async () => {
                                 className="date-picker-container"
                                 style={{ marginTop: 20 }}
                               >
-                                <DatePicker
-                                  selectsRange={true}
-                                  startDate={cared_startdate2021}
-                                  endDate={cared_enddate2021}
-                                  onChange={handleCaredDateChangeTwo}
-                                  isClearable={true}
-                                  minDate={minSymptomsDateTwo}
-                                  maxDate={maxSymptomsDateTwo}
-                                  filterDate={(date) =>
-                                    !isDateDisabledTwo(date)
-                                  }
-                                  placeholderText="Select date range for symptoms"
-                                  openToDate={initialOpenSymptomsDateTwo}
-                                  className="custom-date-picker-input"
-                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <DatePicker
+                                    selectsRange={true}
+                                    startDate={cared_startdate2021}
+                                    endDate={cared_enddate2021}
+                                    onChange={handleCaredDateChangeTwo}
+                                    isClearable={true}
+                                    minDate={minSymptomsDateTwo}
+                                    maxDate={maxSymptomsDateTwo}
+                                    filterDate={(date) =>
+                                      !isDateDisabledTwo(date)
+                                    }
+                                    placeholderText="Select date range for symptoms"
+                                    openToDate={initialOpenSymptomsDateTwo}
+                                    className="custom-date-picker-input"
+                                  />
+                   
+                                  <div className="">
+                                    <button
+                                      onClick={handleMergeCared2021}
+                                      type="button"
+                                      className="px-3 py-2 next-step"
+                                    >
+                                      Add Dates
+                                    </button>
+                                  </div>
+                                </div>
+                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <div style={{ marginTop: 20 }}>
+                                  <MultiplePicker
+                                    multiple
+                                    style={{ padding: "20px 6px" }}
+                                    value={selectedDatesCared2021}
+                                    currentDate={specificDate2}
+                                    minDate={new Date(2021, 0, 1)} // April 1, 2020
+                                    maxDate={new Date(2021, 8, 30)} // December 31, 2020
+                                    onChange={(dates) =>
+                                      setSelectedDatesCared2021(dates)
+                                    }
+                                    mapDays={({ date }) => {
+                                      let props = {};
+
+                                      // Check if the day is a weekend (Sunday or Saturday)
+                                      if (isWeekend(date)) {
+                                        props.disabled = true;
+                                      }
+
+                                      // Check if the day is in the selectedDates array and is a weekend
+                                      if (
+                                        datesFormatCared2021.includes(
+                                          date.format("YYYY-MM-DD")
+                                        )
+                                      ) {
+                                        props.disabled = true;
+                                      }
+                                      return props;
+                                    }}
+                                    plugins={[<DatePanel />]}
+                                  />
+                                </div>
+
                                 <div style={{ marginTop: 10, marginLeft: 2 }}>
                                   {/* <input
                                                           type="number"
@@ -8045,7 +9458,9 @@ const callFilesCom = async () => {
                                                           className="custom-date-picker-input"
                                                           placeholder="Number of days"
                                                         /> */}
-                                  You have selected {symptomsDaysTwo} days
+                                  You have selected{" "}
+                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesCared2021?.length} days</span> 
+                                 
                                 </div>
 
                                 <Modal
@@ -8070,89 +9485,86 @@ const callFilesCom = async () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {cared_startdate2021 &&
-                                      cared_enddate2021 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            You have selected {symptomsDaysTwo}{" "}
-                                            days. Please select 10 days or less.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={
-                                              handleCloseSymptomsModalTwo
-                                            }
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
-                                    {!cared_startdate2021 &&
-                                      !cared_enddate2021 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            Please select start and end dates.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={
-                                              handleCloseSymptomsModalTwo
-                                            }
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
+                                    {selectedDatesCared2021?.length > 10 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          You have selected{" "}
+                                          {selectedDatesCared2021?.length} days.
+                                          Please select 10 days or less.
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseSymptomsModalTwo}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
+                                    {selectedDatesCared2021?.length == 0 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          Please select dates! If you are
+                                          selecting date range then you should
+                                          press "Add Dates" button
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseSymptomsModalTwo}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
                                   </Box>
                                 </Modal>
                               </div>
@@ -8186,113 +9598,116 @@ const callFilesCom = async () => {
             </div>
           </div>
         );
-        case 14:
+      case 14:
         return (
           <div className="step step-16">
-          <div className="container ">
-            <div className="row justify-content-center">
-              <div className="col-lg-10">
-              <LinearProgress
-                      variant="determinate"
-                      sx={{
-                        height: "14px",
-                        borderRadius: "6px",
-                        marginBottom: 5,
-                        backgroundColor: "#f0f0f0",
-                        "& .MuiLinearProgress-bar": {
-                          backgroundColor: "rgb(13, 189, 243);",
-                        },
-                      }}
-                      value={53.84}
-                    />
-                <div className="start-application">
-                  <div className="row ROWW">
-                    <div className="col-lg-8 col-md-8 col-sm-12">
-                      <div className="img-applic-content">
-                        <h1
-                          className="text-center"
-                          style={{ color: "rgb(13, 189, 243)" }}
-                        >
-                          Are you eligible?
-                        </h1>
-                        <h3
-                          style={{
-                            fontWeight: 300,
-                            lineHeight: 0.2,
-                            color: "rgb(13, 189, 243)",
-                          }}
-                          className="text-center"
-                        >
-                          Question 7 of 13
-                        </h3>
-                        <div style={{ marginTop: 40 }}>
-                          <label
-                            for="setc_program"
-                            className="form-label headng "
-                            style={{ fontWeight: "600" }}
+            <div className="container ">
+              <div className="row justify-content-center">
+                <div className="col-lg-10">
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={53.84}
+                  />
+                  <div className="start-application">
+                    <div className="row ROWW">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
+                        <div className="img-applic-content">
+                          <h1
+                            className="text-center"
+                            style={{ color: "rgb(13, 189, 243)" }}
                           >
-                            Were you affected by the closure of your child’s school/daycare
-                        due to covid restrictions, or did you care for your minor child
-                        who was affected by covid, which impacted your work?
-                          </label>
+                            Are you eligible?
+                          </h1>
+                          {/* <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                            }}
+                            className="text-center"
+                          >
+                            Question 7 of 13
+                          </h3> */}
+                          <div style={{ marginTop: 40 }}>
+                            <label
+                              for="setc_program"
+                              className="form-label headng "
+                              style={{ fontWeight: "600" }}
+                            >
+                              Did you claim your minor child/children in your
+                              taxes for 2020?
+                            </label>
 
-                          <div className="optio mb-2">
-                            <label for="care_for_minor_child_yes">
-                              <p
-                                style={{
-                                  backgroundColor:
-                                    formData.care_for_minor_child === "Yes"
-                                      ? "lightblue"
-                                      : "initial",
-                                }}
-                              >
-                                <input
-                                  className="form-check-input"
-                                  class={`form-check-input ${
-                                    errors.care_for_minor_child
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  type="radio"
-                                  name="care_for_minor_child"
-                                  checked={formData.care_for_minor_child === "Yes"}
-                                  value="Yes"
-                                  id="care_for_minor_child_yes"
-                                  onChange={handleInputChange}
-                                />
-                                Yes
-                              </p>
-                            </label>
-                          </div>
-                          <div className="optio">
-                            <label for="care_for_minor_child_no">
-                              <p
-                                style={{
-                                  backgroundColor:
-                                    formData.care_for_minor_child === "No"
-                                      ? "lightblue"
-                                      : "initial",
-                                }}
-                              >
-                                <input
-                                  className="form-check-input"
-                                  class={`form-check-input ${
-                                    errors.care_for_minor_child
-                                      ? "border-danger"
-                                      : ""
-                                  }`}
-                                  type="radio"
-                                  name="care_for_minor_child"
-                                  checked={formData.care_for_minor_child === "No"}
-                                  value="No"
-                                  id="care_for_minor_child_no"
-                                  onChange={handleInputChange}
-                                />
-                                No
-                              </p>
-                            </label>
-                          </div>
-                          {formData.care_for_minor_child === "Yes" && (
+                            <div className="optio mb-2">
+                              <label for=" minor_child_tax_20_yes">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.minor_child_tax_20 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className="form-check-input"
+                                    class={`form-check-input ${
+                                      errors.minor_child_tax_20
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="minor_child_tax_20"
+                                    checked={
+                                      formData.minor_child_tax_20 === "Yes"
+                                    }
+                                    value="Yes"
+                                    id=" minor_child_tax_20_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
+                            </div>
+                            <div className="optio">
+                              <label for="minor_child_tax_20_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.minor_child_tax_20 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className="form-check-input"
+                                    class={`form-check-input ${
+                                      errors.minor_child_tax_20
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="minor_child_tax_20"
+                                    checked={
+                                      formData.minor_child_tax_20 === "No"
+                                    }
+                                    value="No"
+                                    id="minor_child_tax_20_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
+                            </div>
+                            {/* {formData.care_for_minor_child === "Yes" && (
                             <>
                               <div id="additional">
                                 <label
@@ -8365,24 +9780,25 @@ const callFilesCom = async () => {
                               </div>
                              
                             </>
-                          )}
-                          <div className="d-flex justify-content-end mt-3">
-                            <button
-                              onClick={handlePrevious}
-                              type="button"
-                              className="px-3 py-2 prev-step"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={handleNext}
-                              type="button"
-                              className="px-3 py-2 next-step"
-                            >
-                              {activeStep === steps.length - 1
-                                ? "Submit"
-                                : "Next"}
-                            </button>
+                          )} */}
+                            <div className="d-flex justify-content-end mt-3">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                className="px-3 py-2 prev-step"
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                className="px-3 py-2 next-step"
+                              >
+                                {activeStep === steps.length - 1
+                                  ? "Submit"
+                                  : "Next"}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -8392,7 +9808,6 @@ const callFilesCom = async () => {
               </div>
             </div>
           </div>
-        </div>
         );
       case 15:
         return (
@@ -8400,19 +9815,19 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={61.53}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={61.53}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -8426,7 +9841,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -8436,7 +9851,7 @@ const callFilesCom = async () => {
                             className=" mb-4"
                           >
                             Question 8 of 13
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -8446,19 +9861,17 @@ const callFilesCom = async () => {
                             school/daycare due to COVID restrictions, or how
                             many days did you care for your minor child who was
                             affected by COVID, which impacted your work in
-                            2020?(50 days max) {" "}
+                            2020? 4/1/2020-3/31/21 {" "}
                             <span
-                                style={{
-                                  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 21,
-                                  textDecoration: "underline",
-                                }}
-                                
-                              >
-                                4/1/2020-3/31/21 (50 days max)
-                              </span>
-                            
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: 21,
+                                textDecoration: "underline",
+                              }}
+                            >
+                               (50 days max)
+                            </span>
                           </label>
 
                           <div>
@@ -8530,22 +9943,81 @@ const callFilesCom = async () => {
                                 className="date-picker-container"
                                 style={{ marginTop: 20 }}
                               >
-                                {/* Closure Date Picker */}
-                                <DatePicker
-                                  selectsRange={true}
-                                  startDate={minor_startdate2020}
-                                  endDate={minor_enddate2020}
-                                  onChange={handleMinorDateChange}
-                                  isClearable={true}
-                                  minDate={minClosureDate}
-                                  maxDate={maxClosureDate}
-                                  filterDate={(date) =>
-                                    !isDateDisabledThree(date)
-                                  }
-                                  placeholderText="Select date range for closure"
-                                  openToDate={initialOpenClosureDate}
-                                  className="custom-date-picker-input"
-                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  {/* Closure Date Picker */}
+                                  <DatePicker
+                                    selectsRange={true}
+                                    startDate={minor_startdate2020}
+                                    endDate={minor_enddate2020}
+                                    onChange={handleMinorDateChange}
+                                    isClearable={true}
+                                    minDate={minClosureDate}
+                                    maxDate={maxClosureDate}
+                                    filterDate={(date) =>
+                                      !isDateDisabledThree(date)
+                                    }
+                                    placeholderText="Select date range for closure"
+                                    openToDate={initialOpenClosureDate}
+                                    className="custom-date-picker-input"
+                                  />
+
+                                  <div className="">
+                                    <button
+                                      onClick={handleMergeClosure2020}
+                                      type="button"
+                                      className="px-3 py-2 next-step"
+                                    >
+                                      Add Dates
+                                    </button>
+                                  </div>
+                                </div>
+                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <div style={{ marginTop: 20 }}>
+                                  <MultiplePicker
+                                    multiple
+                                    style={{ padding: "20px 6px" }}
+                                    currentDate={specificDate1}
+                                    value={selectedDatesClosure2020}
+                                    minDate={new Date(2020, 3, 1)} // April 1, 2020
+                                    maxDate={new Date(2020, 11, 31)} // December 31, 2020
+                                    onChange={(dates) =>
+                                      setSelectedDatesClosure2020(dates)
+                                    }
+                                    mapDays={({ date }) => {
+                                      let props = {};
+
+                                      // Check if the day is a weekend (Sunday or Saturday)
+                                      if (isWeekend(date)) {
+                                        props.disabled = true;
+                                      }
+
+                                      // Check if the day is in the selectedDates array and is a weekend
+                                      if (
+                                        datesFormatCared2020.includes(
+                                          date.format("YYYY-MM-DD")
+                                        )
+                                      ) {
+                                        props.disabled = true;
+                                      }
+                                      if (
+                                        datesFormatClosure2020.includes(
+                                          date.format("YYYY-MM-DD")
+                                        )
+                                      ) {
+                                        props.disabled = true;
+                                      }
+                                      return props;
+                                    }}
+                                    plugins={[<DatePanel />]}
+                                  />
+                                </div>
+
                                 <div style={{ marginTop: 10, marginLeft: 2 }}>
                                   {/* Closure Days Input */}
                                   {/* <input
@@ -8555,7 +10027,9 @@ const callFilesCom = async () => {
                         className="custom-date-picker-input"
                         placeholder="Number of days"
                       /> */}
-                                  You have selected {minordays2020} days
+                                  You have selected{" "}
+                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesClosure2020?.length} days</span> 
+
                                 </div>
                                 <Modal
                                   open={openModalClosure}
@@ -8579,85 +10053,86 @@ const callFilesCom = async () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {minor_startdate2020 &&
-                                      minor_enddate2020 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            You have selected {minordays2020}{" "}
-                                            days. Please select 50 days or less.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseClosureModal}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
-                                    {!minor_startdate2020 &&
-                                      !minor_enddate2020 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            Please select start and end dates.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseClosureModal}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
+                                    {selectedDatesClosure2020?.length > 50 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          You have selected{" "}
+                                          {selectedDatesClosure2020?.length}{" "}
+                                          days. Please select 50 days or less.
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseClosureModal}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
+                                    {selectedDatesClosure2020?.length == 0 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          Please select dates! If you are
+                                          selecting date range then you should
+                                          press "Add Dates" button
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseClosureModal}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
                                   </Box>
                                 </Modal>
                               </div>
@@ -8691,155 +10166,154 @@ const callFilesCom = async () => {
             </div>
           </div>
         );
-        case 16:
+      case 16:
         return (
           <div className="step step-8 ">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-12">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={69.23}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={69.23}
+                  />
                   <div className="start-application">
-                      <div className="row ROWW">
-                        <div className="col-lg-8 col-md-8 col-sm-12">
-                          <div className="img-applic-content">
-  
-            
+                    <div className="row ROWW">
+                      <div className="col-lg-8 col-md-8 col-sm-12">
+                        <div className="img-applic-content">
+                          <h1
+                            className="text-center"
+                            style={{ color: "rgb(13, 189, 243)" }}
+                          >
+                            Are you eligible?
+                          </h1>
+                          {/* <h3
+                            style={{
+                              fontWeight: 300,
+                              lineHeight: 0.2,
+                              color: "rgb(13, 189, 243)",
+                            }}
+                            className="text-center"
+                          >
+                            Question 9 of 13
+                          </h3> */}
+                          <div style={{ marginTop: 40 }}>
                             <h1
-                              className="text-center"
-                              style={{ color: "rgb(13, 189, 243)" }}
-                            >
-                              Are you eligible?
-                            </h1>
-                            <h3
                               style={{
-                                fontWeight: 300,
-                                lineHeight: 0.2,
+                                fontSize: "24px",
                                 color: "rgb(13, 189, 243)",
                               }}
-                              className="text-center"
                             >
-                              Question 9 of 13
-                            </h3>
-                            <div style={{ marginTop: 40 }}>
-                              <h1
-                                style={{
-                                  fontSize: "24px",
-                                  color: "rgb(13, 189, 243)",
-                                }}
+                              Did you claim your minor child/children in your
+                              taxes for 2021?
+                            </h1>
+
+                            <div className="optio mb-2">
+                              <label for="minor_child_tax_21_yes">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.minor_child_tax_21 === "Yes"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.minor_child_tax_21
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="minor_child_tax_21"
+                                    checked={
+                                      formData.minor_child_tax_21 === "Yes"
+                                    }
+                                    value="Yes"
+                                    id="minor_child_tax_21_yes"
+                                    onChange={handleInputChange}
+                                  />
+                                  Yes
+                                </p>
+                              </label>
+                            </div>
+
+                            <div className="optio">
+                              <label for="minor_child_tax_21_no">
+                                <p
+                                  style={{
+                                    backgroundColor:
+                                      formData.minor_child_tax_21 === "No"
+                                        ? "lightblue"
+                                        : "initial",
+                                  }}
+                                >
+                                  <input
+                                    className={`form-check-input ${
+                                      errors.minor_child_tax_21
+                                        ? "border-danger"
+                                        : ""
+                                    }`}
+                                    type="radio"
+                                    name="minor_child_tax_21"
+                                    checked={
+                                      formData.minor_child_tax_21 === "No"
+                                    }
+                                    value="No"
+                                    id="minor_child_tax_21_no"
+                                    onChange={handleInputChange}
+                                  />
+                                  No
+                                </p>
+                              </label>
+                            </div>
+
+                            {/* {formData.minor_child_tax_20 === "No" &&
+                              formData.minor_child_tax_21 === "No" &&
+                              activeErrorStep16 && (
+                                <div>
+                                  <h4 style={{ color: "#e62e2d" }}>
+                                    we are sorry, by selecting “No” for both of
+                                    the years of 2020 & 2021 you are not
+                                    eligible for this particular portion of the
+                                    SETC Tax credit. Please select “No “ on
+                                    question 6 of 9 and proceed to the next
+                                    page.
+                                  </h4>
+                                </div>
+                              )} */}
+
+                            <div className="d-flex justify-content-end mt-3">
+                              <button
+                                onClick={handlePrevious}
+                                type="button"
+                                className="px-3 py-2 prev-step"
                               >
-                               Did you claim your minor child/children in your taxes for 2021?
-
-                              </h1>
-  
-                              <div className="optio mb-2">
-                                <label for="minor_child_tax_21_yes">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.minor_child_tax_21 === "Yes"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.minor_child_tax_21
-
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="minor_child_tax_21"
-                                      checked={
-                                        formData.minor_child_tax_21 === "Yes"
-                                      }
-                                      value="Yes"
-                                      id="minor_child_tax_21_yes"
-                                      onChange={handleInputChange}
-                                    />
-                                    Yes
-                                  </p>
-                                </label>
-                              </div>
-  
-                              <div className="optio">
-                                <label for="minor_child_tax_21_no">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.minor_child_tax_21 === "No"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.minor_child_tax_21
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="minor_child_tax_21"
-                                      checked={
-                                        formData.minor_child_tax_21 === "No"
-                                      }
-                                      value="No"
-                                      id="minor_child_tax_21_no"
-                                      onChange={handleInputChange}
-                                    />
-                                    No
-                                  </p>
-                                </label>
-                              </div>
-  
-                              {formData.minor_child_tax_20 === "No" &&
-                              formData.minor_child_tax_21 === "No" && 
-                                activeErrorStep16 && (
-                                  <div>
-                                    <h4 style={{ color: "#e62e2d" }}>
-                                    we are sorry, by selecting “No” for both
-                                  of the years of 2020 & 2021 you are not eligible for this particular portion of the SETC Tax credit. Please
-                                  select “No “ on question 6
-                                  of 9 and proceed to the next page.
-                                    </h4>
-                                  </div>
-                                )}
-  
-                              <div className="d-flex justify-content-end mt-3">
-                                <button
-                                  onClick={handlePrevious}
-                                  type="button"
-                                  className="px-3 py-2 prev-step"
-                                >
-                                  Previous
-                                </button>
-                                <button
-                                  onClick={handleNext}
-                                  type="button"
-                                  className="px-3 py-2 next-step"
-                                >
-                                  {activeStep === steps.length - 1
-                                    ? "Submit"
-                                    : "Next"}
-                                </button>
-                              </div>
+                                Previous
+                              </button>
+                              <button
+                                onClick={handleNext}
+                                type="button"
+                                className="px-3 py-2 next-step"
+                              >
+                                {activeStep === steps.length - 1
+                                  ? "Submit"
+                                  : "Next"}
+                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -8852,19 +10326,19 @@ const callFilesCom = async () => {
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={76.92}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={76.92}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -8878,7 +10352,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -8888,7 +10362,7 @@ const callFilesCom = async () => {
                             className=" mb-4"
                           >
                             Question 10 of 13
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -8897,20 +10371,17 @@ const callFilesCom = async () => {
                             Were you affected by the closure of your child's
                             school/daycare due to COVID restrictions, or how
                             many days did you care for your minor child who was
-                            affected by COVID, which impacted your work in 2021?
-                            {" "}
+                            affected by COVID, which impacted your work in 2021? 4/1/2021-9/30/21{" "}
                             <span
-                                style={{
-                                  color: "red",
-                                  cursor: "pointer",
-                                  fontSize: 21,
-                                  textDecoration: "underline",
-                                }}
-                                
-                              >
-                                4/1/2021-9/30/21 (60 days max)
-                              </span>
-                            
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                                fontSize: 21,
+                                textDecoration: "underline",
+                              }}
+                            >
+                               (60 days max)
+                            </span>
                           </label>
 
                           <div>
@@ -8983,21 +10454,81 @@ const callFilesCom = async () => {
                                 style={{ marginTop: 20 }}
                               >
                                 {/* Closure Date Picker */}
-                                <DatePicker
-                                  selectsRange={true}
-                                  startDate={minor_startdate2021}
-                                  endDate={minor_enddate2021}
-                                  onChange={handleMinorDateChangeTwo}
-                                  isClearable={true}
-                                  minDate={minClosureDateTwo}
-                                  maxDate={maxClosureDateTwo}
-                                  filterDate={(date) =>
-                                    !isDateDisabledFour(date)
-                                  }
-                                  placeholderText="Select date range for closure"
-                                  openToDate={initialOpenClosureDateTwo}
-                                  className="custom-date-picker-input"
-                                />
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <DatePicker
+                                    selectsRange={true}
+                                    startDate={minor_startdate2021}
+                                    endDate={minor_enddate2021}
+                                    onChange={handleMinorDateChangeTwo}
+                                    isClearable={true}
+                                    minDate={minClosureDateTwo}
+                                    maxDate={maxClosureDateTwo}
+                                    filterDate={(date) =>
+                                      !isDateDisabledFour(date)
+                                    }
+                                    placeholderText="Select date range for closure"
+                                    openToDate={initialOpenClosureDateTwo}
+                                    className="custom-date-picker-input"
+                                  />
+
+                                  <div className="">
+                                    <button
+                                      onClick={handleMergeClosure2021}
+                                      type="button"
+                                      className="px-3 py-2 next-step"
+                                    >
+                                      Add Dates
+                                    </button>
+                                  </div>
+                                </div>
+
+                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <div style={{ marginTop: 20 }}>
+                                  <MultiplePicker
+                                    multiple
+                                    style={{ padding: "20px 6px" }}
+                                    currentDate={specificDate2}
+                                    value={selectedDatesClosure2021}
+                                    minDate={new Date(2021, 0, 1)} // April 1, 2020
+                                    maxDate={new Date(2021, 8, 30)} // December 31, 2020
+                                    onChange={(dates) =>
+                                      setSelectedDatesClosure2021(dates)
+                                    }
+                                    mapDays={({ date }) => {
+                                      let props = {};
+
+                                      // Check if the day is a weekend (Sunday or Saturday)
+                                      if (isWeekend(date)) {
+                                        props.disabled = true;
+                                      }
+
+                                      // Check if the day is in the selectedDates array and is a weekend
+                                      if (
+                                        datesFormatCared2021.includes(
+                                          date.format("YYYY-MM-DD")
+                                        )
+                                      ) {
+                                        props.disabled = true;
+                                      }
+                                      if (
+                                        datesFormatClosure2021.includes(
+                                          date.format("YYYY-MM-DD")
+                                        )
+                                      ) {
+                                        props.disabled = true;
+                                      }
+                                      return props;
+                                    }}
+                                    plugins={[<DatePanel />]}
+                                  />
+                                </div>
                                 <div style={{ marginTop: 10, marginLeft: 2 }}>
                                   {/* Closure Days Input */}
                                   {/* <input
@@ -9007,7 +10538,9 @@ const callFilesCom = async () => {
                                 className="custom-date-picker-input"
                                 placeholder="Number of days"
                               /> */}
-                                  You have selected {minordays2021} days
+                                  You have selected{" "}
+                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesClosure2021?.length} days</span> 
+                                 
                                 </div>
                                 <Modal
                                   open={openModalClosureTwo}
@@ -9031,85 +10564,86 @@ const callFilesCom = async () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {minor_startdate2021 &&
-                                      minor_enddate2021 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            You have selected {minordays2021}{" "}
-                                            days. Please select 60 days or less.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseClosureModalTwo}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
-                                    {!minor_startdate2021 &&
-                                      !minor_enddate2021 && (
-                                        <>
-                                          <Clear
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              color: "orangered",
-                                              marginBottom: 3,
-                                            }}
-                                          />
-                                          <Typography
-                                            style={{
-                                              fontSize: 20,
-                                              color: "black",
-                                              fontWeight: "600",
-                                              color: "#192c57",
-                                            }}
-                                          >
-                                            Oops...
-                                          </Typography>
-                                          <p id="modal-description">
-                                            Please select start and end dates.
-                                          </p>
-                                          <button
-                                            style={{
-                                              padding: "5px 16px",
-                                              borderRadius: "5px",
-                                              color: "white",
-                                              backgroundColor: "#467A8A",
-                                              border: "1px solid #467A8A",
-                                            }}
-                                            className="mt-3"
-                                            onClick={handleCloseClosureModalTwo}
-                                          >
-                                            OK
-                                          </button>
-                                        </>
-                                      )}
+                                    {selectedDatesClosure2021?.length > 60 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          You have selected{" "}
+                                          {selectedDatesClosure2021?.length}{" "}
+                                          days. Please select 60 days or less.
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseClosureModalTwo}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
+                                    {selectedDatesClosure2021?.length == 0 && (
+                                      <>
+                                        <Clear
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                            color: "orangered",
+                                            marginBottom: 3,
+                                          }}
+                                        />
+                                        <Typography
+                                          style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            fontWeight: "600",
+                                            color: "#192c57",
+                                          }}
+                                        >
+                                          Oops...
+                                        </Typography>
+                                        <p id="modal-description">
+                                          Please select dates! If you are
+                                          selecting date range then you should
+                                          press "Add Dates" button
+                                        </p>
+                                        <button
+                                          style={{
+                                            padding: "5px 16px",
+                                            borderRadius: "5px",
+                                            color: "white",
+                                            backgroundColor: "#467A8A",
+                                            border: "1px solid #467A8A",
+                                          }}
+                                          className="mt-3"
+                                          onClick={handleCloseClosureModalTwo}
+                                        >
+                                          OK
+                                        </button>
+                                      </>
+                                    )}
                                   </Box>
                                 </Modal>
                               </div>
@@ -9144,201 +10678,61 @@ const callFilesCom = async () => {
           </div>
         );
       case 18:
-
-      if ((userData?.onedays == "" || userData?.onedays == "0") &&
-      (userData?.twodays == "" || userData?.twodays == "0") &&
-      (userData?.threedays == "" || userData?.threedays == "0") &&
-      (userData?.fourdays == "" || userData?.fourdays == "0") &&
-      (userData?.fivedays == "" || userData?.fivedays == "0") &&
-      (userData?.sixdays == "" || userData?.sixdays == "0")) 
-      {
-        // Display error message and prevent progressing further
-        return (
-          <div className="step step-17">
-          <div className="container ">
-            <div className="row justify-content-center">
-              <div className="col-lg-10">
-              <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={100}
-                      />
-                <div className="start-application">
-                  <div className="row ROWW">
-                    <div className="col-lg-8 col-md-8 col-sm-12">
-                      <div className="img-applic-content">
-                      <label
-                              for="net_income_2019"
-                              className="form-label fs-5"
-                              style={{ color: "red", }}
-                            >
-                              Oops...!
-                            </label>
-                            <br/>
-                      <label
+        if (
+          (userData?.onedays == "" || userData?.onedays == "0") &&
+          (userData?.twodays == "" || userData?.twodays == "0") &&
+          (userData?.threedays == "" || userData?.threedays == "0") &&
+          (userData?.fourdays == "" || userData?.fourdays == "0") &&
+          (userData?.fivedays == "" || userData?.fivedays == "0") &&
+          (userData?.sixdays == "" || userData?.sixdays == "0")
+        ) {
+          // Display error message and prevent progressing further
+          return (
+            <div className="step step-17">
+              <div className="container ">
+                <div className="row justify-content-center">
+                  <div className="col-lg-10">
+                    <LinearProgress
+                      variant="determinate"
+                      sx={{
+                        height: "14px",
+                        borderRadius: "6px",
+                        marginBottom: 5,
+                        backgroundColor: "#f0f0f0",
+                        "& .MuiLinearProgress-bar": {
+                          backgroundColor: "rgb(13, 189, 243);",
+                        },
+                      }}
+                      value={100}
+                    />
+                    <div className="start-application">
+                      <div className="row ROWW">
+                        <div className="col-lg-8 col-md-8 col-sm-12">
+                          <div className="img-applic-content">
+                            <label
                               for="net_income_2019"
                               className="form-label fs-5"
                               style={{ color: "red" }}
                             >
-                              "Based on the previous response, you are not eligible as your value does not meet our criteria."
+                              Oops...!
+                            </label>
+                            <br />
+                            <label
+                              for="net_income_2019"
+                              className="form-label fs-5"
+                              style={{ color: "red" }}
+                            >
+                              "Based on the previous response, you are not
+                              eligible as your value does not meet our
+                              criteria."
                             </label>
                             <div className="d-flex justify-content-center mt-3">
-                                  <button
-                                    onClick={handlePrevious}
-                                    type="button"
-                                    className="px-3 py-2 prev-step"
-                                  >
-                                    Previous
-                                  </button>
-                                 
-                                </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        );
-      } else {
-        // Regular form content for Step 2
-        return (
-        
-          <div className="step step-15">
-            <div className="container ">
-              <div className="row justify-content-center">
-                <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={84.61}
-                      />
-                  <div className="start-application">
-                    <div className="row ROWW">
-                      <div className="col-lg-8 col-md-8 col-sm-12">
-                        <div className="img-applic-content">
-                          <h1
-                            className="text-center"
-                            style={{ color: "rgb(13, 189, 243)" }}
-                          >
-                            Are you eligible?
-                          </h1>
-                          <h3
-                            style={{
-                              fontWeight: 300,
-                              lineHeight: 0.2,
-                              color: "rgb(13, 189, 243)",
-                            }}
-                            className="text-center"
-                          >
-                            Question 11 of 13
-                          </h3>
-                          <div style={{ marginTop: 40 }}>
-                            <label
-                              for="setc_program"
-                              className="form-label headng "
-                              style={{ fontWeight: "600" }}
-                            >
-                              Have you already filed for the SETC program/FFCRA
-                              for the years of 2020 and 2021?
-                            </label>
-
-                            <div className="optio mb-2">
-                              <label for="setc_program_yes">
-                                <p
-                                  style={{
-                                    backgroundColor:
-                                      formData.setc_program === "Yes"
-                                        ? "lightblue"
-                                        : "initial",
-                                  }}
-                                >
-                                  <input
-                                    className={`form-check-input ${
-                                      errors.setc_program ? "border-danger" : ""
-                                    }`}
-                                    type="radio"
-                                    name="setc_program"
-                                    checked={formData.setc_program === "Yes"}
-                                    value="Yes"
-                                    id="setc_program_yes"
-                                    onChange={handleInputChange}
-                                  />
-                                  Yes
-                                </p>
-                              </label>
-                            </div>
-                            <div className="optio">
-                              <label for="setc_program_no">
-                                <p
-                                  style={{
-                                    backgroundColor:
-                                      formData.setc_program === "No"
-                                        ? "lightblue"
-                                        : "initial",
-                                  }}
-                                >
-                                  <input
-                                    className={`form-check-input ${
-                                      errors.setc_program ? "border-danger" : ""
-                                    }`}
-                                    type="radio"
-                                    name="setc_program"
-                                    checked={formData.setc_program === "No"}
-                                    value="No"
-                                    id="setc_program_no"
-                                    onChange={handleInputChange}
-                                  />
-                                  No
-                                </p>
-                              </label>
-                            </div>
-
-                            {formData.setc_program === "Yes" &&
-                              activeErrorQualifySix && (
-                                <div>
-                                  <h4 style={{ color: "#e62e2d" }}>
-                                    We are sorry. By answering “YES” to the above
-                                    question, you will not be eligible for the
-                                    SETC program.
-                                  </h4>
-                                </div>
-                              )}
-
-                            <div className="d-flex justify-content-end mt-3">
                               <button
                                 onClick={handlePrevious}
                                 type="button"
                                 className="px-3 py-2 prev-step"
                               >
                                 Previous
-                              </button>
-                              <button
-                                onClick={handleNext}
-                                type="button"
-                                className="px-3 py-2 next-step"
-                              >
-                                {activeStep === steps.length - 1
-                                  ? "Submit"
-                                  : "Next"}
                               </button>
                             </div>
                           </div>
@@ -9349,30 +10743,172 @@ const callFilesCom = async () => {
                 </div>
               </div>
             </div>
-          </div>
-            );
-          }
+          );
+        } else {
+          // Regular form content for Step 2
+          return (
+            <div className="step step-15">
+              <div className="container ">
+                <div className="row justify-content-center">
+                  <div className="col-lg-10">
+                    <LinearProgress
+                      variant="determinate"
+                      sx={{
+                        height: "14px",
+                        borderRadius: "6px",
+                        marginBottom: 5,
+                        backgroundColor: "#f0f0f0",
+                        "& .MuiLinearProgress-bar": {
+                          backgroundColor: "rgb(13, 189, 243);",
+                        },
+                      }}
+                      value={84.61}
+                    />
+                    <div className="start-application">
+                      <div className="row ROWW">
+                        <div className="col-lg-8 col-md-8 col-sm-12">
+                          <div className="img-applic-content">
+                            <h1
+                              className="text-center"
+                              style={{ color: "rgb(13, 189, 243)" }}
+                            >
+                              Are you eligible?
+                            </h1>
+                            {/* <h3
+                              style={{
+                                fontWeight: 300,
+                                lineHeight: 0.2,
+                                color: "rgb(13, 189, 243)",
+                              }}
+                              className="text-center"
+                            >
+                              Question 11 of 13
+                            </h3> */}
+                            <div style={{ marginTop: 40 }}>
+                              <label
+                                for="setc_program"
+                                className="form-label headng "
+                                style={{ fontWeight: "600" }}
+                              >
+                                Have you already filed for the SETC
+                                program/FFCRA for the years of 2020 and 2021?
+                              </label>
 
-       
+                              <div className="optio mb-2">
+                                <label for="setc_program_yes">
+                                  <p
+                                    style={{
+                                      backgroundColor:
+                                        formData.setc_program === "Yes"
+                                          ? "lightblue"
+                                          : "initial",
+                                    }}
+                                  >
+                                    <input
+                                      className={`form-check-input ${
+                                        errors.setc_program
+                                          ? "border-danger"
+                                          : ""
+                                      }`}
+                                      type="radio"
+                                      name="setc_program"
+                                      checked={formData.setc_program === "Yes"}
+                                      value="Yes"
+                                      id="setc_program_yes"
+                                      onChange={handleInputChange}
+                                    />
+                                    Yes
+                                  </p>
+                                </label>
+                              </div>
+                              <div className="optio">
+                                <label for="setc_program_no">
+                                  <p
+                                    style={{
+                                      backgroundColor:
+                                        formData.setc_program === "No"
+                                          ? "lightblue"
+                                          : "initial",
+                                    }}
+                                  >
+                                    <input
+                                      className={`form-check-input ${
+                                        errors.setc_program
+                                          ? "border-danger"
+                                          : ""
+                                      }`}
+                                      type="radio"
+                                      name="setc_program"
+                                      checked={formData.setc_program === "No"}
+                                      value="No"
+                                      id="setc_program_no"
+                                      onChange={handleInputChange}
+                                    />
+                                    No
+                                  </p>
+                                </label>
+                              </div>
+
+                              {formData.setc_program === "Yes" &&
+                                activeErrorQualifySix && (
+                                  <div>
+                                    <h4 style={{ color: "#e62e2d" }}>
+                                      We are sorry. By answering “YES” to the
+                                      above question, you will not be eligible
+                                      for the SETC program.
+                                    </h4>
+                                  </div>
+                                )}
+
+                              <div className="d-flex justify-content-end mt-3">
+                                <button
+                                  onClick={handlePrevious}
+                                  type="button"
+                                  className="px-3 py-2 prev-step"
+                                >
+                                  Previous
+                                </button>
+                                <button
+                                  onClick={handleNext}
+                                  type="button"
+                                  className="px-3 py-2 next-step"
+                                >
+                                  {activeStep === steps.length - 1
+                                    ? "Submit"
+                                    : "Next"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
       case 19:
         return (
           <div className="step step-16">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={92.30}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={92.3}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
@@ -9383,7 +10919,7 @@ const callFilesCom = async () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -9392,14 +10928,15 @@ const callFilesCom = async () => {
                             className="text-center"
                           >
                             Question 12 of 13
-                          </h3>
+                          </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <label
                               for="setc_program"
                               className="form-label headng "
                               style={{ fontWeight: "600" }}
                             >
-                              Were you self-employed and employed as a W2 during 4/1/2020-9/30/2021?*
+                              Were you self-employed and employed as a W2 during
+                              4/1/2020-9/30/2021?*
                             </label>
 
                             <div className="optio mb-2">
@@ -9599,92 +11136,91 @@ const callFilesCom = async () => {
         );
       case 20:
         return (
+          //           <>
+          //           {
+          //             ( userData?.onedays == "0" &&
+          //             userData?.twodays == "0" &&
+          //             userData?.threedays == "0" &&
+          //             userData?.fourdays == "0" &&
+          //             userData?.fivedays == "0" &&
+          //             userData?.sixdays == "0" )  ?
+          //             (
 
-//           <>
-//           { 
-//             ( userData?.onedays == "0" &&
-//             userData?.twodays == "0" &&
-//             userData?.threedays == "0" &&
-//             userData?.fourdays == "0" &&
-//             userData?.fivedays == "0" &&
-//             userData?.sixdays == "0" )  ?
-//             (
+          // <div className="step step-17">
+          //         <div className="container ">
+          //           <div className="row justify-content-center">
+          //             <div className="col-lg-10">
 
-// <div className="step step-17">
-//         <div className="container ">
-//           <div className="row justify-content-center">
-//             <div className="col-lg-10">
-          
-//               <div className="start-application">
-//                 <div className="row ROWW">
-//                   <div className="col-lg-8 col-md-8 col-sm-12">
-//                     <div className="img-applic-content">
-//                     <label
-//                             for="net_income_2019"
-//                             className="form-label fs-5"
-//                             style={{ color: "red", }}
-//                           >
-//                             Oops...!
-//                           </label>
-//                           <br/>
-//                     <label
-//                             for="net_income_2019"
-//                             className="form-label fs-5"
-//                             style={{ color: "red" }}
-//                           >
-//                             "Based on the previous response, you are not eligible as your value does not meet our criteria."
-//                           </label>
-//                           <div className="d-flex justify-content-center mt-3">
-//                                 <button
-//                                   onClick={handlePrevious}
-//                                   type="button"
-//                                   className="px-3 py-2 prev-step"
-//                                 >
-//                                   Previous
-//                                 </button>
-                              
-//                               </div>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
+          //               <div className="start-application">
+          //                 <div className="row ROWW">
+          //                   <div className="col-lg-8 col-md-8 col-sm-12">
+          //                     <div className="img-applic-content">
+          //                     <label
+          //                             for="net_income_2019"
+          //                             className="form-label fs-5"
+          //                             style={{ color: "red", }}
+          //                           >
+          //                             Oops...!
+          //                           </label>
+          //                           <br/>
+          //                     <label
+          //                             for="net_income_2019"
+          //                             className="form-label fs-5"
+          //                             style={{ color: "red" }}
+          //                           >
+          //                             "Based on the previous response, you are not eligible as your value does not meet our criteria."
+          //                           </label>
+          //                           <div className="d-flex justify-content-center mt-3">
+          //                                 <button
+          //                                   onClick={handlePrevious}
+          //                                   type="button"
+          //                                   className="px-3 py-2 prev-step"
+          //                                 >
+          //                                   Previous
+          //                                 </button>
 
-//             ) :
+          //                               </div>
+          //                     </div>
+          //                   </div>
+          //                 </div>
+          //               </div>
+          //             </div>
+          //           </div>
+          //         </div>
+          //       </div>
 
-// (
+          //             ) :
+
+          // (
 
           <div className="step step-17">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-lg-10">
-                <LinearProgress
-                        variant="determinate"
-                        sx={{
-                          height: "14px",
-                          borderRadius: "6px",
-                          marginBottom: 5,
-                          backgroundColor: "#f0f0f0",
-                          "& .MuiLinearProgress-bar": {
-                            backgroundColor: "rgb(13, 189, 243);",
-                          },
-                        }}
-                        value={100}
-                      />
+                  <LinearProgress
+                    variant="determinate"
+                    sx={{
+                      height: "14px",
+                      borderRadius: "6px",
+                      marginBottom: 5,
+                      backgroundColor: "#f0f0f0",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "rgb(13, 189, 243);",
+                      },
+                    }}
+                    value={100}
+                  />
                   <div className="start-application">
                     <div className="row ROWW">
                       <div className="col-lg-8 col-md-8 col-sm-12">
                         <div className="img-applic-content ">
-                        <h1
+                          <h1
                             className="text-center"
                             style={{ color: "rgb(13, 189, 243)" }}
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -9693,43 +11229,86 @@ const callFilesCom = async () => {
                             className="text-center"
                           >
                             Question 13 of 13
-                          </h3>
+                          </h3> */}
                           <h4
                             className="text-center "
                             style={{ color: "rgb(13, 189, 243)" }}
                           >
-                            What was my the Net Income for the years of 2019,2020,2021?
-
+                            What was my the Net Income for the years of
+                            2019,2020,2021?
                           </h4>
                           <h5
-                                 
-                                  className="text-center mb-3"
-                                  data-bs-toggle="modal" data-bs-target="#exampleModal_step_17" 
-                                  style={{ color: "red", textDecoration: 'underline', cursor: 'pointer' }}
-                                > Located on your Schedule C (Form 1040)</h5>
+                            className="text-center mb-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal_step_17"
+                            style={{
+                              color: "red",
+                              textDecoration: "underline",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {" "}
+                            Located on your Schedule C (Form 1040)
+                          </h5>
                           {/* <a class="w-100 text-center fs-3 mb-3"  style={{color:"red"}}
                           href="" 
                           
                           > Located on your Schedule C (Form 1040) </a> */}
 
-                 <div class="modal fade" id="exampleModal_step_17" tabindex="-1" aria-labelledby="exampleModalLabel" style={{display: "none"}} aria-hidden="true">
-                                      <div class="modal-dialog modal-dialog-centered" style={{maxWidth: "800px"}}>
-                                        <div class="modal-content">
-                                          <div class="modal-header border-0">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                          </div>
-                                          <div class="modal-body text-center">
-                                          <img class="img-fluid mb-2 p-2" src="http://localhost:5000/storage/pdf-2019.png" style={{border: "1px solid black"}}/>
-                                          <img class="img-fluid mb-2 p-2" src="http://localhost:5000/storage/pdf-2020.png" style={{border: "1px solid black"}}/>
-                                          <img class="img-fluid mb-2 p-2" src="http://localhost:5000/storage/pdf-2021.png" style={{border: "1px solid black"}}/>
-                                          <div class="row justify-content-end mb-3">
-                                              <button class="next-ste w-auto mx-3" data-bs-dismiss="modal" aria-label="Close">Ok</button>
-                                          </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
+                          <div
+                            class="modal fade"
+                            id="exampleModal_step_17"
+                            tabindex="-1"
+                            aria-labelledby="exampleModalLabel"
+                            style={{ display: "none" }}
+                            aria-hidden="true"
+                          >
+                            <div
+                              class="modal-dialog modal-dialog-centered"
+                              style={{ maxWidth: "800px" }}
+                            >
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h1
+                                    class="modal-title fs-5"
+                                    id="exampleModalLabel"
+                                  ></h1>
+                                  <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                  ></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                  <img
+                                    class="img-fluid mb-2 p-2"
+                                    src="https://agree.setczone.comstorage/pdf-2019.png"
+                                    style={{ border: "1px solid black" }}
+                                  />
+                                  <img
+                                    class="img-fluid mb-2 p-2"
+                                    src="https://agree.setczone.comstorage/pdf-2020.png"
+                                    style={{ border: "1px solid black" }}
+                                  />
+                                  <img
+                                    class="img-fluid mb-2 p-2"
+                                    src="https://agree.setczone.comstorage/pdf-2021.png"
+                                    style={{ border: "1px solid black" }}
+                                  />
+                                  <div class="row justify-content-end mb-3">
+                                    <button
+                                      class="next-ste w-auto mx-3"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    >
+                                      Ok
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <div>
                             <label
                               for="net_income_2019"
@@ -9793,70 +11372,112 @@ const callFilesCom = async () => {
                             </div>
 
                             <div class="mt-3 mb-3">
-                            <label
-                              for="net_income_2021"
-                              className="form-label fs-5"
-                              style={{ color: "#00B6FF" }}
-                            >Did you E-file or mail in your taxes for the following years? {" "}
-                            <p style={{fontSize: '16px', fontWeight: 600, marginLeft: 1, color: 'red'}}>(If so, please check & verify the exact year.)</p>
-                            </label>
-       <table border="0">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th className="table-cell">E-filed my taxes</th>
-            <th className="table-cell">Mailed in my taxes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {taxYears.map(({ year, eFiled, mailed }) => (
-            <tr key={year}>
-              <td style={{fontWeight: '600'}}>{year}</td>
-              <td
-                className={` 
+                              <label
+                                for="net_income_2021"
+                                className="form-label fs-5"
+                                style={{ color: "#00B6FF" }}
+                              >
+                                Did you E-file or mail in your taxes for the
+                                following years?{" "}
+                                <p
+                                  style={{
+                                    fontSize: "16px",
+                                    fontWeight: 600,
+                                    marginLeft: 1,
+                                    color: "red",
+                                  }}
+                                >
+                                  (If so, please check & verify the exact year.)
+                                </p>
+                              </label>
+                              <table border="0">
+                                <thead>
+                                  <tr>
+                                    <th>Year</th>
+                                    <th className="table-cell">
+                                      E-filed my taxes
+                                    </th>
+                                    <th className="table-cell">
+                                      Mailed in my taxes
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {taxYears.map(({ year, eFiled, mailed }) => (
+                                    <tr key={year}>
+                                      <td style={{ fontWeight: "600" }}>
+                                        {year}
+                                      </td>
+                                      <td
+                                        className={` 
                
                 table-cell`}
-                onClick={() => {
-                  toggleBackground(year, 'eFiled');
-                  updateDatabase(year, 'eFiled', !eFiled);
-                }}
-              >
-
-                <div style={{    display: 'flex',
-    width: '90px',
-    color: 'white',
-    backgroundColor: eFiled ? 'rgb(0, 182, 255)': 'gray',
-    justifyContent: 'center',
-    borderRadius: '3px'}}> E-filed</div>
-               
-              </td>
-              <td
-                className={` 
+                                        onClick={() => {
+                                          toggleBackground(year, "eFiled");
+                                          updateDatabase(
+                                            year,
+                                            "eFiled",
+                                            !eFiled
+                                          );
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            width: "90px",
+                                            color: "white",
+                                            backgroundColor: eFiled
+                                              ? "rgb(0, 182, 255)"
+                                              : "gray",
+                                            justifyContent: "center",
+                                            borderRadius: "3px",
+                                          }}
+                                        >
+                                          {" "}
+                                          E-filed
+                                        </div>
+                                      </td>
+                                      <td
+                                        className={` 
                 
                 table-cell`}
-                onClick={() => {
-                  toggleBackground(year, 'mailed');
-                  updateDatabase(year, 'mailed', !mailed);
-                }}
-              >
-                 <div style={{    display: 'flex',
-    width: '90px',
-    color: 'white',
-    backgroundColor: mailed ? 'rgb(0, 182, 255)': 'gray',
-    justifyContent: 'center',
-    borderRadius: '3px'}}> Mailed</div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
+                                        onClick={() => {
+                                          toggleBackground(year, "mailed");
+                                          updateDatabase(
+                                            year,
+                                            "mailed",
+                                            !mailed
+                                          );
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            width: "90px",
+                                            color: "white",
+                                            backgroundColor: mailed
+                                              ? "rgb(0, 182, 255)"
+                                              : "gray",
+                                            justifyContent: "center",
+                                            borderRadius: "3px",
+                                          }}
+                                        >
+                                          {" "}
+                                          Mailed
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
 
                             {activeErrorQualify17 && (
                               <div>
                                 <h4 style={{ color: "#e62e2d" }}>
-                                We're sorry, but unfortunately you do not meet the minimum threshold of $10,000.00 for two out of the three years.
+                                  We're sorry, but unfortunately you do not meet
+                                  the minimum threshold of $10,000.00 for two
+                                  out of the three years.
                                 </h4>
                               </div>
                             )}
@@ -9889,168 +11510,114 @@ const callFilesCom = async () => {
             </div>
           </div>
 
-// )
-//                                 }
-//                                 </>
+          // )
+          //                                 }
+          //                                 </>
         );
       case 21:
+        return (
+          <div className="step step-18">
+            <input type="hidden" name="record_id" id="record_id" value="" />
+            <div className="container">
+              <div className="row justify-content-center">
+                {/* <canvas id="confetti"></canvas> */}
+                <div className="col-lg-12">
+                  <div className="start-application">
+                    <div className="customRow">
+                      <div
+                        className="col-lg-6 col-md-6 col-sm-12 pe-0 backGround"
+                        style={{
+                          backgroundImage: "linear-gradient(#dff5fc, #dff5fc)",
+                          borderRadius: "12px",
+                        }}
+                      >
+                        <div
+                          className="img-applci sd h-100"
+                          style={{ backgroundImage: "none " }}
+                        >
+                          <div className="col-lg-12">
+                            <div
+                              style={boxSttyle}
+                              className="desktop-box"
+                              css={styles[mediaQuery]}
+                            >
+                              <Confetti
+                                width={width}
+                                height={height}
+                                style={confettiStyle}
+                              />
+                              <div style={{ textAlign: "center" }}>
+                                <h1>Congratulations!</h1>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6 col-sm-12 ">
+                        <div
+                          className="img-applic-content d-flex align-items-center"
+                          style={{ padding: "14px" }}
+                        >
+                          <div className="row justify-content-center align-items-center">
+                            <div className="col-lg-12">
+                              <div className="h-100 d-flex align-items-center flex-column">
+                                <div className="h-90">
+                                  <h3 className="text-success text-center fs-1 mb-3">
+                                    Hurray!
+                                  </h3>
 
-                        
-          if (finalIncomeValue  == null || finalIncomeValue  == "$0") {
-                            // Display error message and prevent progressing further
-                            return (
-                              <div className="step step-17">
-                              <div className="container ">
-                                <div className="row justify-content-center">
-                                  <div className="col-lg-10">
-                                 
-                                    <div className="start-application">
-                                      <div className="row ROWW">
-                                        <div className="col-lg-8 col-md-8 col-sm-12">
-                                          <div className="img-applic-content">
-                                          <label
-                                                  for="net_income_2019"
-                                                  className="form-label fs-5"
-                                                  style={{ color: "red", }}
-                                                >
-                                                  Oops...!
-                                                </label>
-                                                <br/>
-                                          <label
-                                                  for="net_income_2019"
-                                                  className="form-label fs-5"
-                                                  style={{ color: "red" }}
-                                                >
-                                                  "Based on the previous response, you are not eligible as your value does not meet our criteria."
-                                                </label>
-                                                <div className="d-flex justify-content-center mt-3">
-                                                      <button
-                                                        onClick={handlePrevious}
-                                                        type="button"
-                                                        className="px-3 py-2 prev-step"
-                                                      >
-                                                        Previous
-                                                      </button>
-                                                     
-                                                    </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                                  <h3 className="fs-4">
+                                    Based on the information you provided, we’ve
+                                    estimated that you might be eligible for up
+                                    to
+                                    <span
+                                      className="text-success text-success text-center h3 fs-1 mb-3"
+                                      id="final_amount"
+                                    >
+                                      {" "}
+                                      {finalIncomeValue ||
+                                        finalCreditAmountStorage}
+                                    </span>
+                                    <br />
+                                  </h3>
+
+                                  <h3 className="mt-4">
+                                    The next step is to upload your documents
+                                    for our tax professionals to calculate your exact credit
+                                    amount.
+                                  </h3>
+                                </div>
+                                <div className="d-flex justify-content-end mt-3">
+                                  <button
+                                    onClick={handlePrevious}
+                                    type="button"
+                                    className="px-3 py-2 prev-step"
+                                  >
+                                    Previous
+                                  </button>
+                                  <button
+                                    onClick={handleNext}
+                                    type="button"
+                                    className="px-3 py-2 next-step"
+                                  >
+                                    {activeStep === steps.length - 1
+                                      ? "Submit"
+                                      : "Next"}
+                                  </button>
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
 
-                            );
-                          } else {
-                            // Regular form content for Step 2
-                            return (
-                            
-                              <div className="step step-18">
-                              <input type="hidden" name="record_id" id="record_id" value="" />
-                              <div className="container">
-                                <div className="row justify-content-center">
-                                  {/* <canvas id="confetti"></canvas> */}
-                                  <div className="col-lg-12">
-                                    <div className="start-application">
-                                      <div className="customRow">
-                                        <div
-                                          className="col-lg-6 col-md-6 col-sm-12 pe-0 backGround"
-                                          style={{
-                                            backgroundImage: "linear-gradient(#dff5fc, #dff5fc)",
-                                            borderRadius: "12px",
-                                          }}
-                                        >
-                                          <div
-                                            className="img-applci sd h-100"
-                                            style={{ backgroundImage: "none " }}
-                                          >
-                                            <div className="col-lg-12">
-                                              <div
-                                                style={boxSttyle}
-                                                className="desktop-box"
-                                                css={styles[mediaQuery]}
-                                              >
-                                                <Confetti
-                                                  width={width}
-                                                  height={height}
-                                                  style={confettiStyle}
-                                                />
-                                                <div style={{ textAlign: "center" }}>
-                                                  <h1>Congratulations!</h1>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="col-lg-6 col-md-6 col-sm-12 ">
-                                          <div
-                                            className="img-applic-content d-flex align-items-center"
-                                            style={{ padding: "14px" }}
-                                          >
-                                            <div className="row justify-content-center align-items-center">
-                                              <div className="col-lg-12">
-                                                <div className="h-100 d-flex align-items-center flex-column">
-                                                  <div className="h-90">
-                                                    <h3 className="text-success text-center fs-1 mb-3">
-                                                      Hurray!
-                                                    </h3>
-  
-                                                    <h3 className="fs-4">
-                                                      Based on the information you provided, we’ve
-                                                      estimated that you might be eligible for up
-                                                      to
-                                                      <span
-                                                        className="text-success text-success text-center h3 fs-1 mb-3"
-                                                        id="final_amount"
-                                                      >
-                                                        {" "}
-                                                        {finalIncomeValue ||
-                                                          finalCreditAmountStorage}
-                                                      </span>
-                                                      <br />
-                                                    </h3>
-  
-                                                    <h3 className="mt-4">
-                                                      The next step is to upload your documents
-                                                      for our CPAs to calculate your exact credit
-                                                      amount.
-                                                    </h3>
-                                                  </div>
-                                                  <div className="d-flex justify-content-end mt-3">
-                                                    <button
-                                                      onClick={handlePrevious}
-                                                      type="button"
-                                                      className="px-3 py-2 prev-step"
-                                                    >
-                                                      Previous
-                                                    </button>
-                                                    <button
-                                                      onClick={handleNext}
-                                                      type="button"
-                                                      className="px-3 py-2 next-step"
-                                                    >
-                                                      {activeStep === steps.length - 1
-                                                        ? "Submit"
-                                                        : "Next"}
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                                );
-                              }
-              
-       
       case 22:
         return (
           <div className="step step-19">
@@ -10139,33 +11706,37 @@ const callFilesCom = async () => {
                                       style={{ fontSize: 20 }}
                                     >
                                       Great
-                                    </span> {' '}
-                                    
-        Your identification process is complete.
-        <br />
-        <div class="mt-2">
-        {userData?.verified_first && (
-          <>
-            Your legal first name {userData?.verified_first},{' '}
-          </>
-        )}
-        {userData?.verified_middleName && (
-          <>
-            middle name {userData?.verified_middleName},{' '}
-          </>
-        )}
-        {userData?.verified_last && (
-          <>
-            last name {userData?.verified_last} {' '}
-          </>
-        )}
-        </div>
-        <br/>
-        Please review and verify the provided information. If you wish to proceed with your application, click the button below to move to the next step.
-      </h5>
+                                    </span>{" "}
+                                    Your identification process is complete.
+                                    <br />
+                                    <div class="mt-2">
+                                      {userData?.verified_first && (
+                                        <>
+                                          Your legal first name{" "}
+                                          {userData?.verified_first},{" "}
+                                        </>
+                                      )}
+                                      {userData?.verified_middleName && (
+                                        <>
+                                          middle name{" "}
+                                          {userData?.verified_middleName},{" "}
+                                        </>
+                                      )}
+                                      {userData?.verified_last && (
+                                        <>
+                                          last name {userData?.verified_last}{" "}
+                                        </>
+                                      )}
+                                    </div>
+                                    <br />
+                                    Please review and verify the provided
+                                    information. If you wish to proceed with
+                                    your application, click the button below to
+                                    move to the next step.
+                                  </h5>
                                 </div>
                               </div>
-                             )} 
+                            )}
 
                             <div class="text-center">
                               <img
@@ -10233,7 +11804,6 @@ const callFilesCom = async () => {
                     />
 
                     <div className="row mt-4 ">
-                    
                       {/* <div className="col-sm-6 mb-3">
                               <input
                                 type="text"
@@ -10283,12 +11853,12 @@ const callFilesCom = async () => {
                               )}
                             </div> */}
                       <div className="col-sm-6 mb-3">
-                      <label
-                        for="id_first_name"
-                        className="form-label requiredField"
-                      >
-                        Your Legal First Name
-                      </label>
+                        <label
+                          for="id_first_name"
+                          className="form-label requiredField"
+                        >
+                          Your Legal First Name
+                        </label>
                         <div
                           className={`textinput form-control ${
                             userData?.verified_first ? "" : "empty-name"
@@ -10298,12 +11868,12 @@ const callFilesCom = async () => {
                         </div>
                       </div>
                       <div className="col-sm-6 mb-3">
-                      <label
-                        for="id_last_name"
-                        className="form-label requiredField"
-                      >
-                        Your Legal Middle Name
-                      </label>
+                        <label
+                          for="id_last_name"
+                          className="form-label requiredField"
+                        >
+                          Your Legal Middle Name
+                        </label>
                         <div
                           className={`textinput form-control ${
                             userData?.verified_middleName ? "" : "empty-name"
@@ -10314,12 +11884,12 @@ const callFilesCom = async () => {
                       </div>
 
                       <div className="col-sm-6 mb-3">
-                      <label
-                        for="id_last_name"
-                        className="form-label requiredField"
-                      >
-                        Your Legal Last Name
-                      </label>
+                        <label
+                          for="id_last_name"
+                          className="form-label requiredField"
+                        >
+                          Your Legal Last Name
+                        </label>
                         <div
                           className={`textinput form-control ${
                             userData?.verified_last ? "" : "empty-name"
@@ -10630,8 +12200,6 @@ const callFilesCom = async () => {
                         )}
                       </div> */}
                     </div>
-                    
-          
 
                     {/* <div className="mb-2 mt-3">
                             <label
@@ -10817,232 +12385,380 @@ const callFilesCom = async () => {
 
                       <p class="mb-3 mt-0">
                         By checking the box, you agree to our{" "}
-                        <a  style={{textDecoration: 'underline', cursor: 'pointer', color: 'blue'}}
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#exampleModal_step_19"
-
-                                >
-                                 terms & conditions
-                                </a> {" "}
+                        <a
+                          style={{
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            color: "blue",
+                          }}
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal_step_19"
+                        >
+                          terms & conditions
+                        </a>{" "}
                         and will allow SETC Zone and its partners to contact you
                         via phone, text, and/or email.
                       </p>
                     </div>
 
                     <div
-                              className="modal fade"
-                              id="exampleModal_step_19"
-                             
-                              style={{
-                                display: "none",
-                                // padding: "0px 40px 20px 40px",
-                              }}
-                              aria-hidden="true"
-                            >
-                              <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h4 class="modal-title" style={{color: 'white'}}>
-                        <i class="fas fa-check-circle" style={{color: 'white'}}></i> Terms and conditions
-                    </h4>
-                    <button
-                                      type="button"
-                                      className="btn-close"
-                                      data-bs-dismiss="modal"
-                                      aria-label="Close"
-                                    ></button>
-                </div>
-                <div class="modal-body">
-                    <p><span>Terms of Service</span></p>
-                    <p><span>Effective: November 1st, 2023</span></p>
-                    <p>Thank you for using our services! These terms of service (“Terms”) cover your use and access to
-                        our
-                        services, client software, and websites ("Services"). By using our Services, you agree to be
-                        bound by these
-                        Terms and our Privacy Policy. If you are using our Services for an organization, you are
-                        agreeing to these
-                        Terms on behalf of that organization.</p>
-                    <p><b>Your Information and Your Permissions</b></p>
-                    <p>When you use our Services, you provide us with things like your files, content, messages,
-                        contacts, and so
-                        on (your information). Your information is yours. These Terms do not give us any rights to your
-                        information
-                        except
-                        for the limited rights that enable us to offer the Services.</p>
-                    <p>Our Services also provide you with features like eSign, file sharing, email newsletters,
-                        appointment
-                        setting, and more. These and other features may require our systems to access, store, and scan
-                        your
-                        information. You give us permission to do those things,
-                        and this permission extends to our affiliates and trusted third parties we work with.</p>
-                    <p><b>Your Responsibilities</b></p>
-                    <p>You are responsible for your conduct. Your information and you must comply with applicable laws.
-                        Content in
-                        the Services may be protected by others’ intellectual property rights. Please do not copy,
-                        upload, download,
-                        or share content unless you have the right to do so. We may review your conduct and content for
-                        compliance
-                        with these Terms. With that said, we have no obligation
-                        to do so. We are not responsible for the content people post and share via the Services.</p>
-                    <p>Help us keep you informed and your information protected. Safeguard your password to the
-                        Services, and keep
-                        your account information current.
-                        Do not share your account credentials or give others access to your account.</p>
-                    <p>You may use our Services only as permitted by applicable law, including export control laws and
-                        regulations.</p>
-                    <p><b>Our Information</b></p>
-                    <p>The Services are protected by copyright, trademark, and other US and foreign laws. These Terms do
-                        not grant
-                        you any right, title, or interest in the Services, others’ content in the Services, SETC Zone,
-                        and our
-                        trademarks, logos, and other brand features. We welcome feedback,
-                        but note that we may use comments or suggestions without any obligation to you.</p>
-                    <p><b>Copyright</b></p>
-                    <p>We respect the intellectual property of others and ask that you do too.
-                        We respond to notices of alleged copyright infringement if they comply with
-                        the law, and such notices should be reported to <a href="mailto:info@setczone.com">info@setczone.com</a>. We
-                        reserve the right to delete or disable content alleged to be infringing and terminate accounts
-                        of repeat
-                        infringers.</p>
-                    <p><b>Termination</b></p>
-                    <p>You are free to stop using our Services at any time. We reserve the right to suspend or terminate
-                        your
-                        access to the Services with notice to you if:</p>
-                    <p>(a) you are in breach of these Terms,</p>
-                    <p>(b) you are using the Services in a manner that would cause a real risk of harm or loss to us or
-                        other
-                        users, or</p>
-                    <p>We will provide you with reasonable advance notice via the email address associated with your
-                        account to
-                        remedy the activity that prompted us to contact you and give you the opportunity to export your
-                        information
-                        from our Services. If after such notice you fail to take
-                        the steps we ask of you, we will terminate or suspend your access to the Services.</p>
-                    <p>We will not provide notice before termination where:</p>
-                    <p>(a) you are in material breach of these Terms,</p>
-                    <p>(b) doing so would cause us legal liability or compromise our ability to provide the Services to
-                        our other
-                        users, or</p>
-                    <p>(c) we are prohibited from doing so by law.</p>
-                    <p><b>Discontinuation of Services</b></p>
-                    <p>We may decide to discontinue the Services in response to unforeseen circumstances beyond SETC
-                        Zone’s
-                        control or to comply with a legal requirement. If we do so, we will
-                        give you reasonable prior notice so that you can export your information from our systems.</p>
-                    <p><b>Services “AS IS”</b></p>
-                    <p>We strive to provide great Services, but there are certain things that we cannot guarantee.
-                        TO THE FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS AFFILIATES, SUPPLIERS, AND
-                        DISTRIBUTORS MAKE
-                        NO WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE SERVICES. THE SERVICES ARE PROVIDED "AS IS."
-                        WE ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-                        AND NON-INFRINGEMENT. Some places do not allow the disclaimers in this paragraph, so they may
-                        not apply to
-                        you.</p>
-                    <p><b>Limitation of Liability</b></p>
-                    <p>WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
-                        ANY
-                        LIABILITY FOR SETC Zone OR ITS AFFILIATES’ FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
-                        THE SERVICES.
-                        IN COUNTRIES WHERE THE FOLLOWING TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE RESPONSIBLE TO YOU
-                        ONLY FOR
-                        LOSSES AND DAMAGES THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR FAILURE TO USE REASONABLE
-                        CARE AND SKILL
-                        OR OUR BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH DOES NOT AFFECT CONSUMER RIGHTS THAT
-                        CANNOT BE WAIVED
-                        OR LIMITED BY ANY CONTRACT OR AGREEMENT.</p>
-                    <p>IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:</p>
-                    <ol>
-                        <li>ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR</li>
-                        <li>ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS, REGARDLESS OF LEGAL THEORY.</li>
-                    </ol>
-                    <p>THESE EXCLUSIONS OR LIMITATIONS WILL APPLY REGARDLESS OF WHETHER OR NOT SETC Zone
-                        OR ANY OF ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
-                    <p>IF YOU USE THE SERVICES FOR ANY COMMERCIAL, BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
-                        AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL HAVE NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS OF
-                        BUSINESS, BUSINESS
-                        INTERRUPTION, OR LOSS OF BUSINESS OPPORTUNITY. SETC Zones AND ITS AFFILIATES
-                        ARE NOT RESPONSIBLE FOR THE CONDUCT, WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE SERVICES.</p>
-                    <p><b>Resolving Disputes</b></p>
-                    <p>Let’s Try To Sort Things Out First. We want to address your concerns without needing a formal
-                        legal case.
-                        Before filing a claim against SETC Zone or our affiliates, you agree to try to resolve the
-                        dispute
-                        informally by contacting <a href="mailto:info@setczone.com">info@setczone.com</a>. We will try
-                        to resolve
-                        the dispute informally by contacting you via email.</p>
-                    <p>Judicial forum for disputes. You and SETC Zone agree that any judicial proceeding to resolve
-                        claims
-                        relating to these Terms or the Services will be brought in the federal or state courts of Texas,
-                        subject to
-                        the mandatory arbitration provisions below. Both you and SETC Zone consent to venue and personal
-                        jurisdiction in such courts.</p>
-                    <p>We Both Agree To Arbitrate. You and SETC Zone agree to resolve any claims relating to these Terms
-                        or the
-                        Services through final and binding arbitration by a single arbitrator. This includes disputes
-                        arising out of
-                        or relating to interpretation or application of this “Mandatory Arbitration Provisions” section,
-                        including
-                        its enforceability, revocability, or validity.</p>
-                    <p>Arbitration Procedures. The American Arbitration Association (AAA) will administer the
-                        arbitration under
-                        its Commercial Arbitration Rules and the Supplementary Procedures for Consumer Related Disputes.
-                        The
-                        arbitration will be held in the United States county where you live or work, Texas, or any other
-                        location we
-                        agree to.</p>
-                    <p>NO CLASS ACTIONS. You may only resolve disputes with us on an individual basis and may not bring
-                        a claim as
-                        a plaintiff or a class member in a class, consolidated, or representative action. Class
-                        arbitrations, class
-                        actions, private attorney general actions, and consolidation with other arbitrations are not
-                        allowed. If
-                        this specific paragraph is held unenforceable, then the entirety of this “Mandatory Arbitration
-                        Provisions”
-                        section will be deemed void.</p>
-                    <p><b>Controlling Law</b></p>
-                    <p>These Terms will be governed by California law except for its conflicts of laws principles.
-                        However, some
-                        countries (including those in the European Union) have laws that require agreements to be
-                        governed by the
-                        local laws of the consumer's country. This paragraph does not override those laws.</p>
-                    <p><b>Entire Agreement</b></p>
-                    <p>These Terms constitute the entire agreement between you and SETC Zone with respect to the subject
-                        matter of
-                        these Terms and supersede and replace any other prior or contemporaneous agreements or terms and
-                        conditions
-                        applicable to the subject matter of these Terms. These Terms create no third-party beneficiary
-                        rights.</p>
-                    <p><b>Revised Waiver, Severability &amp; Assignment Terms</b></p>
-                    <p>At SETC Zone, failure to enforce a particular provision does not mean that we waive our right to
-                        enforce it
-                        later. If a provision is deemed unenforceable, the remaining terms of the agreement will
-                        continue to remain
-                        in effect, and we will substitute the unenforceable provision with one that reflects our
-                        intentions as
-                        closely as possible. Please note that you cannot assign any of your rights under these Terms,
-                        and any
-                        attempt to do so will be considered invalid. However, we reserve the right to assign our rights
-                        to any
-                        affiliates, subsidiaries, or any successor in interest of any business associated with the
-                        Services.</p>
-                    <p><b>Modifications Terms</b></p>
-                    <p>We are committed to providing the best possible services to our users, which may require
-                        us to revise these Terms from time to time. Such revisions may be made to reflect changes
-                        in the law, new regulatory requirements, or improvements and enhancements made to our Services.
-                        If any modification affects your use of the Services or your legal rights, we will notify you
-                        before
-                        the effective date of the update. We will send you an email to the email address associated with
-                        your
-                        account or send you an in-product notification. Please note that the updated terms will take
-                        effect no
-                        less than 30 days from when we notify you.</p>
-                    {/* <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button> */}
-                </div>
-            </div>
-        </div>
-                            </div>
+                      className="modal fade"
+                      id="exampleModal_step_19"
+                      style={{
+                        display: "none",
+                        // padding: "0px 40px 20px 40px",
+                      }}
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header bg-success text-white">
+                            <h4 class="modal-title" style={{ color: "white" }}>
+                              <i
+                                class="fas fa-check-circle"
+                                style={{ color: "white" }}
+                              ></i>{" "}
+                              Terms and conditions
+                            </h4>
+                            <button
+                              type="button"
+                              className="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>
+                              <span>Terms of Service</span>
+                            </p>
+                            <p>
+                              <span>Effective: November 1st, 2023</span>
+                            </p>
+                            <p>
+                              Thank you for using our services! These terms of
+                              service (“Terms”) cover your use and access to our
+                              services, client software, and websites
+                              ("Services"). By using our Services, you agree to
+                              be bound by these Terms and our Privacy Policy. If
+                              you are using our Services for an organization,
+                              you are agreeing to these Terms on behalf of that
+                              organization.
+                            </p>
+                            <p>
+                              <b>Your Information and Your Permissions</b>
+                            </p>
+                            <p>
+                              When you use our Services, you provide us with
+                              things like your files, content, messages,
+                              contacts, and so on (your information). Your
+                              information is yours. These Terms do not give us
+                              any rights to your information except for the
+                              limited rights that enable us to offer the
+                              Services.
+                            </p>
+                            <p>
+                              Our Services also provide you with features like
+                              eSign, file sharing, email newsletters,
+                              appointment setting, and more. These and other
+                              features may require our systems to access, store,
+                              and scan your information. You give us permission
+                              to do those things, and this permission extends to
+                              our affiliates and trusted third parties we work
+                              with.
+                            </p>
+                            <p>
+                              <b>Your Responsibilities</b>
+                            </p>
+                            <p>
+                              You are responsible for your conduct. Your
+                              information and you must comply with applicable
+                              laws. Content in the Services may be protected by
+                              others’ intellectual property rights. Please do
+                              not copy, upload, download, or share content
+                              unless you have the right to do so. We may review
+                              your conduct and content for compliance with these
+                              Terms. With that said, we have no obligation to do
+                              so. We are not responsible for the content people
+                              post and share via the Services.
+                            </p>
+                            <p>
+                              Help us keep you informed and your information
+                              protected. Safeguard your password to the
+                              Services, and keep your account information
+                              current. Do not share your account credentials or
+                              give others access to your account.
+                            </p>
+                            <p>
+                              You may use our Services only as permitted by
+                              applicable law, including export control laws and
+                              regulations.
+                            </p>
+                            <p>
+                              <b>Our Information</b>
+                            </p>
+                            <p>
+                              The Services are protected by copyright,
+                              trademark, and other US and foreign laws. These
+                              Terms do not grant you any right, title, or
+                              interest in the Services, others’ content in the
+                              Services, SETC Zone, and our trademarks, logos,
+                              and other brand features. We welcome feedback, but
+                              note that we may use comments or suggestions
+                              without any obligation to you.
+                            </p>
+                            <p>
+                              <b>Copyright</b>
+                            </p>
+                            <p>
+                              We respect the intellectual property of others and
+                              ask that you do too. We respond to notices of
+                              alleged copyright infringement if they comply with
+                              the law, and such notices should be reported to{" "}
+                              <a href="mailto:info@setczone.com">
+                                info@setczone.com
+                              </a>
+                              . We reserve the right to delete or disable
+                              content alleged to be infringing and terminate
+                              accounts of repeat infringers.
+                            </p>
+                            <p>
+                              <b>Termination</b>
+                            </p>
+                            <p>
+                              You are free to stop using our Services at any
+                              time. We reserve the right to suspend or terminate
+                              your access to the Services with notice to you if:
+                            </p>
+                            <p>(a) you are in breach of these Terms,</p>
+                            <p>
+                              (b) you are using the Services in a manner that
+                              would cause a real risk of harm or loss to us or
+                              other users, or
+                            </p>
+                            <p>
+                              We will provide you with reasonable advance notice
+                              via the email address associated with your account
+                              to remedy the activity that prompted us to contact
+                              you and give you the opportunity to export your
+                              information from our Services. If after such
+                              notice you fail to take the steps we ask of you,
+                              we will terminate or suspend your access to the
+                              Services.
+                            </p>
+                            <p>
+                              We will not provide notice before termination
+                              where:
+                            </p>
+                            <p>
+                              (a) you are in material breach of these Terms,
+                            </p>
+                            <p>
+                              (b) doing so would cause us legal liability or
+                              compromise our ability to provide the Services to
+                              our other users, or
+                            </p>
+                            <p>(c) we are prohibited from doing so by law.</p>
+                            <p>
+                              <b>Discontinuation of Services</b>
+                            </p>
+                            <p>
+                              We may decide to discontinue the Services in
+                              response to unforeseen circumstances beyond SETC
+                              Zone’s control or to comply with a legal
+                              requirement. If we do so, we will give you
+                              reasonable prior notice so that you can export
+                              your information from our systems.
+                            </p>
+                            <p>
+                              <b>Services “AS IS”</b>
+                            </p>
+                            <p>
+                              We strive to provide great Services, but there are
+                              certain things that we cannot guarantee. TO THE
+                              FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS
+                              AFFILIATES, SUPPLIERS, AND DISTRIBUTORS MAKE NO
+                              WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE
+                              SERVICES. THE SERVICES ARE PROVIDED "AS IS." WE
+                              ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY,
+                              FITNESS FOR A PARTICULAR PURPOSE, AND
+                              NON-INFRINGEMENT. Some places do not allow the
+                              disclaimers in this paragraph, so they may not
+                              apply to you.
+                            </p>
+                            <p>
+                              <b>Limitation of Liability</b>
+                            </p>
+                            <p>
+                              WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU
+                              WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
+                              ANY LIABILITY FOR SETC Zone OR ITS AFFILIATES’
+                              FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
+                              THE SERVICES. IN COUNTRIES WHERE THE FOLLOWING
+                              TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE
+                              RESPONSIBLE TO YOU ONLY FOR LOSSES AND DAMAGES
+                              THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR
+                              FAILURE TO USE REASONABLE CARE AND SKILL OR OUR
+                              BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH
+                              DOES NOT AFFECT CONSUMER RIGHTS THAT CANNOT BE
+                              WAIVED OR LIMITED BY ANY CONTRACT OR AGREEMENT.
+                            </p>
+                            <p>
+                              IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF
+                              LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
+                              SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:
+                            </p>
+                            <ol>
+                              <li>
+                                ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE,
+                                EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR
+                              </li>
+                              <li>
+                                ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS,
+                                REGARDLESS OF LEGAL THEORY.
+                              </li>
+                            </ol>
+                            <p>
+                              THESE EXCLUSIONS OR LIMITATIONS WILL APPLY
+                              REGARDLESS OF WHETHER OR NOT SETC Zone OR ANY OF
+                              ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY
+                              OF SUCH DAMAGES.
+                            </p>
+                            <p>
+                              IF YOU USE THE SERVICES FOR ANY COMMERCIAL,
+                              BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
+                              AFFILIATES, SUPPLIERS, OR DISTRIBUTORS WILL HAVE
+                              NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS
+                              OF BUSINESS, BUSINESS INTERRUPTION, OR LOSS OF
+                              BUSINESS OPPORTUNITY. SETC Zones AND ITS
+                              AFFILIATES ARE NOT RESPONSIBLE FOR THE CONDUCT,
+                              WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE
+                              SERVICES.
+                            </p>
+                            <p>
+                              <b>Resolving Disputes</b>
+                            </p>
+                            <p>
+                              Let’s Try To Sort Things Out First. We want to
+                              address your concerns without needing a formal
+                              legal case. Before filing a claim against SETC
+                              Zone or our affiliates, you agree to try to
+                              resolve the dispute informally by contacting{" "}
+                              <a href="mailto:info@setczone.com">
+                                info@setczone.com
+                              </a>
+                              . We will try to resolve the dispute informally by
+                              contacting you via email.
+                            </p>
+                            <p>
+                              Judicial forum for disputes. You and SETC Zone
+                              agree that any judicial proceeding to resolve
+                              claims relating to these Terms or the Services
+                              will be brought in the federal or state courts of
+                              Texas, subject to the mandatory arbitration
+                              provisions below. Both you and SETC Zone consent
+                              to venue and personal jurisdiction in such courts.
+                            </p>
+                            <p>
+                              We Both Agree To Arbitrate. You and SETC Zone
+                              agree to resolve any claims relating to these
+                              Terms or the Services through final and binding
+                              arbitration by a single arbitrator. This includes
+                              disputes arising out of or relating to
+                              interpretation or application of this “Mandatory
+                              Arbitration Provisions” section, including its
+                              enforceability, revocability, or validity.
+                            </p>
+                            <p>
+                              Arbitration Procedures. The American Arbitration
+                              Association (AAA) will administer the arbitration
+                              under its Commercial Arbitration Rules and the
+                              Supplementary Procedures for Consumer Related
+                              Disputes. The arbitration will be held in the
+                              United States county where you live or work,
+                              Texas, or any other location we agree to.
+                            </p>
+                            <p>
+                              NO CLASS ACTIONS. You may only resolve disputes
+                              with us on an individual basis and may not bring a
+                              claim as a plaintiff or a class member in a class,
+                              consolidated, or representative action. Class
+                              arbitrations, class actions, private attorney
+                              general actions, and consolidation with other
+                              arbitrations are not allowed. If this specific
+                              paragraph is held unenforceable, then the entirety
+                              of this “Mandatory Arbitration Provisions” section
+                              will be deemed void.
+                            </p>
+                            <p>
+                              <b>Controlling Law</b>
+                            </p>
+                            <p>
+                              These Terms will be governed by California law
+                              except for its conflicts of laws principles.
+                              However, some countries (including those in the
+                              European Union) have laws that require agreements
+                              to be governed by the local laws of the consumer's
+                              country. This paragraph does not override those
+                              laws.
+                            </p>
+                            <p>
+                              <b>Entire Agreement</b>
+                            </p>
+                            <p>
+                              These Terms constitute the entire agreement
+                              between you and SETC Zone with respect to the
+                              subject matter of these Terms and supersede and
+                              replace any other prior or contemporaneous
+                              agreements or terms and conditions applicable to
+                              the subject matter of these Terms. These Terms
+                              create no third-party beneficiary rights.
+                            </p>
+                            <p>
+                              <b>
+                                Revised Waiver, Severability &amp; Assignment
+                                Terms
+                              </b>
+                            </p>
+                            <p>
+                              At SETC Zone, failure to enforce a particular
+                              provision does not mean that we waive our right to
+                              enforce it later. If a provision is deemed
+                              unenforceable, the remaining terms of the
+                              agreement will continue to remain in effect, and
+                              we will substitute the unenforceable provision
+                              with one that reflects our intentions as closely
+                              as possible. Please note that you cannot assign
+                              any of your rights under these Terms, and any
+                              attempt to do so will be considered invalid.
+                              However, we reserve the right to assign our rights
+                              to any affiliates, subsidiaries, or any successor
+                              in interest of any business associated with the
+                              Services.
+                            </p>
+                            <p>
+                              <b>Modifications Terms</b>
+                            </p>
+                            <p>
+                              We are committed to providing the best possible
+                              services to our users, which may require us to
+                              revise these Terms from time to time. Such
+                              revisions may be made to reflect changes in the
+                              law, new regulatory requirements, or improvements
+                              and enhancements made to our Services. If any
+                              modification affects your use of the Services or
+                              your legal rights, we will notify you before the
+                              effective date of the update. We will send you an
+                              email to the email address associated with your
+                              account or send you an in-product notification.
+                              Please note that the updated terms will take
+                              effect no less than 30 days from when we notify
+                              you.
+                            </p>
+                            {/* <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button> */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     <div className="d-flex justify-content-end mt-3">
                       <button
@@ -11278,6 +12994,7 @@ const callFilesCom = async () => {
                           fontWeight: "bold",
                           color: "white",
                           background: "#3c4d77",
+                          padding: '3px 5px'
                         }}
                         onClick={() => handleAddFileClick("schedule_pdf")}
                       >
@@ -11374,6 +13091,7 @@ const callFilesCom = async () => {
                           fontWeight: "bold",
                           color: "white",
                           background: "#3c4d77",
+                          padding: '3px 5px'
                         }}
                         onClick={() => handleAddFileClick("Tax_Return_2020")}
                       >
@@ -11467,6 +13185,7 @@ const callFilesCom = async () => {
                           fontWeight: "bold",
                           color: "white",
                           background: "#3c4d77",
+                          padding: '3px 5px'
                         }}
                         onClick={() => handleAddFileClick("Tax_Return_2021")}
                       >
@@ -11586,6 +13305,7 @@ const callFilesCom = async () => {
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
+                                padding: '3px 5px'
                               }}
                               onClick={() =>
                                 handleAddFileClick(
@@ -11706,6 +13426,7 @@ const callFilesCom = async () => {
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
+                                padding: '3px 5px'
                               }}
                               onClick={() =>
                                 handleAddFileClick(
@@ -11804,6 +13525,7 @@ const callFilesCom = async () => {
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
+                                padding: '3px 5px'
                               }}
                               onClick={() => handleAddFileClick("FormA1099")}
                             >
@@ -11898,6 +13620,7 @@ const callFilesCom = async () => {
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
+                                padding: '3px 5px'
                               }}
                               onClick={() => handleAddFileClick("FormB1099")}
                             >
@@ -11989,6 +13712,7 @@ const callFilesCom = async () => {
                               fontWeight: "bold",
                               color: "white",
                               background: "#3c4d77",
+                              padding: '3px 5px'
                             }}
                             onClick={() => handleAddFileClick("ks2020")}
                           >
@@ -12080,6 +13804,7 @@ const callFilesCom = async () => {
                               fontWeight: "bold",
                               color: "white",
                               background: "#3c4d77",
+                              padding: '3px 5px'
                             }}
                             onClick={() => handleAddFileClick("ks22020")}
                           >
@@ -12117,232 +13842,361 @@ const callFilesCom = async () => {
                     information provided are true and accurate to the best of
                     your knowledge, and understand that once submitted your
                     responses cannot be changed. You agree to our{" "}
-                    <a  style={{textDecoration: 'underline', cursor: 'pointer', color: 'blue'}}
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#exampleModal_step_20"
-
-                                >
-                                 terms & conditions
-                                </a>
+                    <a
+                      style={{
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                        color: "blue",
+                      }}
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal_step_20"
+                    >
+                      terms & conditions
+                    </a>
                     , and also agree to keep documentation on file that
                     substantiates claims made in this application.
                   </p>
                 </div>
 
                 <div
-                              className="modal fade"
-                              id="exampleModal_step_20"
-                             
-                              style={{
-                                display: "none",
-                                // padding: "0px 40px 20px 40px",
-                              }}
-                              aria-hidden="true"
-                            >
-                              <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h4 class="modal-title" style={{color: 'white'}}>
-                        <i class="fas fa-check-circle" style={{color: 'white'}}></i> Terms and conditions
-                    </h4>
-                    <button
-                                      type="button"
-                                      className="btn-close"
-                                      data-bs-dismiss="modal"
-                                      aria-label="Close"
-                                    ></button>
+                  className="modal fade"
+                  id="exampleModal_step_20"
+                  style={{
+                    display: "none",
+                    // padding: "0px 40px 20px 40px",
+                  }}
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header bg-success text-white">
+                        <h4 class="modal-title" style={{ color: "white" }}>
+                          <i
+                            class="fas fa-check-circle"
+                            style={{ color: "white" }}
+                          ></i>{" "}
+                          Terms and conditions
+                        </h4>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>
+                          <span>Terms of Service</span>
+                        </p>
+                        <p>
+                          <span>Effective: November 1st, 2023</span>
+                        </p>
+                        <p>
+                          Thank you for using our services! These terms of
+                          service (“Terms”) cover your use and access to our
+                          services, client software, and websites ("Services").
+                          By using our Services, you agree to be bound by these
+                          Terms and our Privacy Policy. If you are using our
+                          Services for an organization, you are agreeing to
+                          these Terms on behalf of that organization.
+                        </p>
+                        <p>
+                          <b>Your Information and Your Permissions</b>
+                        </p>
+                        <p>
+                          When you use our Services, you provide us with things
+                          like your files, content, messages, contacts, and so
+                          on (your information). Your information is yours.
+                          These Terms do not give us any rights to your
+                          information except for the limited rights that enable
+                          us to offer the Services.
+                        </p>
+                        <p>
+                          Our Services also provide you with features like
+                          eSign, file sharing, email newsletters, appointment
+                          setting, and more. These and other features may
+                          require our systems to access, store, and scan your
+                          information. You give us permission to do those
+                          things, and this permission extends to our affiliates
+                          and trusted third parties we work with.
+                        </p>
+                        <p>
+                          <b>Your Responsibilities</b>
+                        </p>
+                        <p>
+                          You are responsible for your conduct. Your information
+                          and you must comply with applicable laws. Content in
+                          the Services may be protected by others’ intellectual
+                          property rights. Please do not copy, upload, download,
+                          or share content unless you have the right to do so.
+                          We may review your conduct and content for compliance
+                          with these Terms. With that said, we have no
+                          obligation to do so. We are not responsible for the
+                          content people post and share via the Services.
+                        </p>
+                        <p>
+                          Help us keep you informed and your information
+                          protected. Safeguard your password to the Services,
+                          and keep your account information current. Do not
+                          share your account credentials or give others access
+                          to your account.
+                        </p>
+                        <p>
+                          You may use our Services only as permitted by
+                          applicable law, including export control laws and
+                          regulations.
+                        </p>
+                        <p>
+                          <b>Our Information</b>
+                        </p>
+                        <p>
+                          The Services are protected by copyright, trademark,
+                          and other US and foreign laws. These Terms do not
+                          grant you any right, title, or interest in the
+                          Services, others’ content in the Services, SETC Zone,
+                          and our trademarks, logos, and other brand features.
+                          We welcome feedback, but note that we may use comments
+                          or suggestions without any obligation to you.
+                        </p>
+                        <p>
+                          <b>Copyright</b>
+                        </p>
+                        <p>
+                          We respect the intellectual property of others and ask
+                          that you do too. We respond to notices of alleged
+                          copyright infringement if they comply with the law,
+                          and such notices should be reported to{" "}
+                          <a href="mailto:info@setczone.com">
+                            info@setczone.com
+                          </a>
+                          . We reserve the right to delete or disable content
+                          alleged to be infringing and terminate accounts of
+                          repeat infringers.
+                        </p>
+                        <p>
+                          <b>Termination</b>
+                        </p>
+                        <p>
+                          You are free to stop using our Services at any time.
+                          We reserve the right to suspend or terminate your
+                          access to the Services with notice to you if:
+                        </p>
+                        <p>(a) you are in breach of these Terms,</p>
+                        <p>
+                          (b) you are using the Services in a manner that would
+                          cause a real risk of harm or loss to us or other
+                          users, or
+                        </p>
+                        <p>
+                          We will provide you with reasonable advance notice via
+                          the email address associated with your account to
+                          remedy the activity that prompted us to contact you
+                          and give you the opportunity to export your
+                          information from our Services. If after such notice
+                          you fail to take the steps we ask of you, we will
+                          terminate or suspend your access to the Services.
+                        </p>
+                        <p>
+                          We will not provide notice before termination where:
+                        </p>
+                        <p>(a) you are in material breach of these Terms,</p>
+                        <p>
+                          (b) doing so would cause us legal liability or
+                          compromise our ability to provide the Services to our
+                          other users, or
+                        </p>
+                        <p>(c) we are prohibited from doing so by law.</p>
+                        <p>
+                          <b>Discontinuation of Services</b>
+                        </p>
+                        <p>
+                          We may decide to discontinue the Services in response
+                          to unforeseen circumstances beyond SETC Zone’s control
+                          or to comply with a legal requirement. If we do so, we
+                          will give you reasonable prior notice so that you can
+                          export your information from our systems.
+                        </p>
+                        <p>
+                          <b>Services “AS IS”</b>
+                        </p>
+                        <p>
+                          We strive to provide great Services, but there are
+                          certain things that we cannot guarantee. TO THE
+                          FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS
+                          AFFILIATES, SUPPLIERS, AND DISTRIBUTORS MAKE NO
+                          WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE
+                          SERVICES. THE SERVICES ARE PROVIDED "AS IS." WE ALSO
+                          DISCLAIM ANY WARRANTIES OF MERCHANTABILITY, FITNESS
+                          FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. Some
+                          places do not allow the disclaimers in this paragraph,
+                          so they may not apply to you.
+                        </p>
+                        <p>
+                          <b>Limitation of Liability</b>
+                        </p>
+                        <p>
+                          WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU WHERE
+                          IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES ANY
+                          LIABILITY FOR SETC Zone OR ITS AFFILIATES’ FRAUD OR
+                          FRAUDULENT MISREPRESENTATION IN PROVIDING THE
+                          SERVICES. IN COUNTRIES WHERE THE FOLLOWING TYPES OF
+                          EXCLUSIONS ARE NOT ALLOWED, WE ARE RESPONSIBLE TO YOU
+                          ONLY FOR LOSSES AND DAMAGES THAT ARE A REASONABLY
+                          FORESEEABLE RESULT OF OUR FAILURE TO USE REASONABLE
+                          CARE AND SKILL OR OUR BREACH OF OUR CONTRACT WITH YOU.
+                          THIS PARAGRAPH DOES NOT AFFECT CONSUMER RIGHTS THAT
+                          CANNOT BE WAIVED OR LIMITED BY ANY CONTRACT OR
+                          AGREEMENT.
+                        </p>
+                        <p>
+                          IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF
+                          LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
+                          SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:
+                        </p>
+                        <ol>
+                          <li>
+                            ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE,
+                            EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR
+                          </li>
+                          <li>
+                            ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS,
+                            REGARDLESS OF LEGAL THEORY.
+                          </li>
+                        </ol>
+                        <p>
+                          THESE EXCLUSIONS OR LIMITATIONS WILL APPLY REGARDLESS
+                          OF WHETHER OR NOT SETC Zone OR ANY OF ITS AFFILIATES
+                          HAS BEEN WARNED OF THE POSSIBILITY OF SUCH DAMAGES.
+                        </p>
+                        <p>
+                          IF YOU USE THE SERVICES FOR ANY COMMERCIAL, BUSINESS,
+                          OR RE-SALE PURPOSE, SETC Zone, ITS AFFILIATES,
+                          SUPPLIERS, OR DISTRIBUTORS WILL HAVE NO LIABILITY TO
+                          YOU FOR ANY LOSS OF PROFIT, LOSS OF BUSINESS, BUSINESS
+                          INTERRUPTION, OR LOSS OF BUSINESS OPPORTUNITY. SETC
+                          Zones AND ITS AFFILIATES ARE NOT RESPONSIBLE FOR THE
+                          CONDUCT, WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE
+                          SERVICES.
+                        </p>
+                        <p>
+                          <b>Resolving Disputes</b>
+                        </p>
+                        <p>
+                          Let’s Try To Sort Things Out First. We want to address
+                          your concerns without needing a formal legal case.
+                          Before filing a claim against SETC Zone or our
+                          affiliates, you agree to try to resolve the dispute
+                          informally by contacting{" "}
+                          <a href="mailto:info@setczone.com">
+                            info@setczone.com
+                          </a>
+                          . We will try to resolve the dispute informally by
+                          contacting you via email.
+                        </p>
+                        <p>
+                          Judicial forum for disputes. You and SETC Zone agree
+                          that any judicial proceeding to resolve claims
+                          relating to these Terms or the Services will be
+                          brought in the federal or state courts of Texas,
+                          subject to the mandatory arbitration provisions below.
+                          Both you and SETC Zone consent to venue and personal
+                          jurisdiction in such courts.
+                        </p>
+                        <p>
+                          We Both Agree To Arbitrate. You and SETC Zone agree to
+                          resolve any claims relating to these Terms or the
+                          Services through final and binding arbitration by a
+                          single arbitrator. This includes disputes arising out
+                          of or relating to interpretation or application of
+                          this “Mandatory Arbitration Provisions” section,
+                          including its enforceability, revocability, or
+                          validity.
+                        </p>
+                        <p>
+                          Arbitration Procedures. The American Arbitration
+                          Association (AAA) will administer the arbitration
+                          under its Commercial Arbitration Rules and the
+                          Supplementary Procedures for Consumer Related
+                          Disputes. The arbitration will be held in the United
+                          States county where you live or work, Texas, or any
+                          other location we agree to.
+                        </p>
+                        <p>
+                          NO CLASS ACTIONS. You may only resolve disputes with
+                          us on an individual basis and may not bring a claim as
+                          a plaintiff or a class member in a class,
+                          consolidated, or representative action. Class
+                          arbitrations, class actions, private attorney general
+                          actions, and consolidation with other arbitrations are
+                          not allowed. If this specific paragraph is held
+                          unenforceable, then the entirety of this “Mandatory
+                          Arbitration Provisions” section will be deemed void.
+                        </p>
+                        <p>
+                          <b>Controlling Law</b>
+                        </p>
+                        <p>
+                          These Terms will be governed by California law except
+                          for its conflicts of laws principles. However, some
+                          countries (including those in the European Union) have
+                          laws that require agreements to be governed by the
+                          local laws of the consumer's country. This paragraph
+                          does not override those laws.
+                        </p>
+                        <p>
+                          <b>Entire Agreement</b>
+                        </p>
+                        <p>
+                          These Terms constitute the entire agreement between
+                          you and SETC Zone with respect to the subject matter
+                          of these Terms and supersede and replace any other
+                          prior or contemporaneous agreements or terms and
+                          conditions applicable to the subject matter of these
+                          Terms. These Terms create no third-party beneficiary
+                          rights.
+                        </p>
+                        <p>
+                          <b>
+                            Revised Waiver, Severability &amp; Assignment Terms
+                          </b>
+                        </p>
+                        <p>
+                          At SETC Zone, failure to enforce a particular
+                          provision does not mean that we waive our right to
+                          enforce it later. If a provision is deemed
+                          unenforceable, the remaining terms of the agreement
+                          will continue to remain in effect, and we will
+                          substitute the unenforceable provision with one that
+                          reflects our intentions as closely as possible. Please
+                          note that you cannot assign any of your rights under
+                          these Terms, and any attempt to do so will be
+                          considered invalid. However, we reserve the right to
+                          assign our rights to any affiliates, subsidiaries, or
+                          any successor in interest of any business associated
+                          with the Services.
+                        </p>
+                        <p>
+                          <b>Modifications Terms</b>
+                        </p>
+                        <p>
+                          We are committed to providing the best possible
+                          services to our users, which may require us to revise
+                          these Terms from time to time. Such revisions may be
+                          made to reflect changes in the law, new regulatory
+                          requirements, or improvements and enhancements made to
+                          our Services. If any modification affects your use of
+                          the Services or your legal rights, we will notify you
+                          before the effective date of the update. We will send
+                          you an email to the email address associated with your
+                          account or send you an in-product notification. Please
+                          note that the updated terms will take effect no less
+                          than 30 days from when we notify you.
+                        </p>
+                        {/* <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button> */}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="modal-body">
-                    <p><span>Terms of Service</span></p>
-                    <p><span>Effective: November 1st, 2023</span></p>
-                    <p>Thank you for using our services! These terms of service (“Terms”) cover your use and access to
-                        our
-                        services, client software, and websites ("Services"). By using our Services, you agree to be
-                        bound by these
-                        Terms and our Privacy Policy. If you are using our Services for an organization, you are
-                        agreeing to these
-                        Terms on behalf of that organization.</p>
-                    <p><b>Your Information and Your Permissions</b></p>
-                    <p>When you use our Services, you provide us with things like your files, content, messages,
-                        contacts, and so
-                        on (your information). Your information is yours. These Terms do not give us any rights to your
-                        information
-                        except
-                        for the limited rights that enable us to offer the Services.</p>
-                    <p>Our Services also provide you with features like eSign, file sharing, email newsletters,
-                        appointment
-                        setting, and more. These and other features may require our systems to access, store, and scan
-                        your
-                        information. You give us permission to do those things,
-                        and this permission extends to our affiliates and trusted third parties we work with.</p>
-                    <p><b>Your Responsibilities</b></p>
-                    <p>You are responsible for your conduct. Your information and you must comply with applicable laws.
-                        Content in
-                        the Services may be protected by others’ intellectual property rights. Please do not copy,
-                        upload, download,
-                        or share content unless you have the right to do so. We may review your conduct and content for
-                        compliance
-                        with these Terms. With that said, we have no obligation
-                        to do so. We are not responsible for the content people post and share via the Services.</p>
-                    <p>Help us keep you informed and your information protected. Safeguard your password to the
-                        Services, and keep
-                        your account information current.
-                        Do not share your account credentials or give others access to your account.</p>
-                    <p>You may use our Services only as permitted by applicable law, including export control laws and
-                        regulations.</p>
-                    <p><b>Our Information</b></p>
-                    <p>The Services are protected by copyright, trademark, and other US and foreign laws. These Terms do
-                        not grant
-                        you any right, title, or interest in the Services, others’ content in the Services, SETC Zone,
-                        and our
-                        trademarks, logos, and other brand features. We welcome feedback,
-                        but note that we may use comments or suggestions without any obligation to you.</p>
-                    <p><b>Copyright</b></p>
-                    <p>We respect the intellectual property of others and ask that you do too.
-                        We respond to notices of alleged copyright infringement if they comply with
-                        the law, and such notices should be reported to <a href="mailto:info@setczone.com">info@setczone.com</a>. We
-                        reserve the right to delete or disable content alleged to be infringing and terminate accounts
-                        of repeat
-                        infringers.</p>
-                    <p><b>Termination</b></p>
-                    <p>You are free to stop using our Services at any time. We reserve the right to suspend or terminate
-                        your
-                        access to the Services with notice to you if:</p>
-                    <p>(a) you are in breach of these Terms,</p>
-                    <p>(b) you are using the Services in a manner that would cause a real risk of harm or loss to us or
-                        other
-                        users, or</p>
-                    <p>We will provide you with reasonable advance notice via the email address associated with your
-                        account to
-                        remedy the activity that prompted us to contact you and give you the opportunity to export your
-                        information
-                        from our Services. If after such notice you fail to take
-                        the steps we ask of you, we will terminate or suspend your access to the Services.</p>
-                    <p>We will not provide notice before termination where:</p>
-                    <p>(a) you are in material breach of these Terms,</p>
-                    <p>(b) doing so would cause us legal liability or compromise our ability to provide the Services to
-                        our other
-                        users, or</p>
-                    <p>(c) we are prohibited from doing so by law.</p>
-                    <p><b>Discontinuation of Services</b></p>
-                    <p>We may decide to discontinue the Services in response to unforeseen circumstances beyond SETC
-                        Zone’s
-                        control or to comply with a legal requirement. If we do so, we will
-                        give you reasonable prior notice so that you can export your information from our systems.</p>
-                    <p><b>Services “AS IS”</b></p>
-                    <p>We strive to provide great Services, but there are certain things that we cannot guarantee.
-                        TO THE FULLEST EXTENT PERMITTED BY LAW, SETC Zone AND ITS AFFILIATES, SUPPLIERS, AND
-                        DISTRIBUTORS MAKE
-                        NO WARRANTIES, EITHER EXPRESS OR IMPLIED, ABOUT THE SERVICES. THE SERVICES ARE PROVIDED "AS IS."
-                        WE ALSO DISCLAIM ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-                        AND NON-INFRINGEMENT. Some places do not allow the disclaimers in this paragraph, so they may
-                        not apply to
-                        you.</p>
-                    <p><b>Limitation of Liability</b></p>
-                    <p>WE DO NOT EXCLUDE OR LIMIT OUR LIABILITY TO YOU WHERE IT WOULD BE ILLEGAL TO DO SO—THIS INCLUDES
-                        ANY
-                        LIABILITY FOR SETC Zone OR ITS AFFILIATES’ FRAUD OR FRAUDULENT MISREPRESENTATION IN PROVIDING
-                        THE SERVICES.
-                        IN COUNTRIES WHERE THE FOLLOWING TYPES OF EXCLUSIONS ARE NOT ALLOWED, WE ARE RESPONSIBLE TO YOU
-                        ONLY FOR
-                        LOSSES AND DAMAGES THAT ARE A REASONABLY FORESEEABLE RESULT OF OUR FAILURE TO USE REASONABLE
-                        CARE AND SKILL
-                        OR OUR BREACH OF OUR CONTRACT WITH YOU. THIS PARAGRAPH DOES NOT AFFECT CONSUMER RIGHTS THAT
-                        CANNOT BE WAIVED
-                        OR LIMITED BY ANY CONTRACT OR AGREEMENT.</p>
-                    <p>IN COUNTRIES WHERE EXCLUSIONS OR LIMITATIONS OF LIABILITY ARE ALLOWED, SETC Zone, ITS AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL NOT BE LIABLE FOR:</p>
-                    <ol>
-                        <li>ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, OR</li>
-                        <li>ANY LOSS OF USE, DATA, BUSINESS, OR PROFITS, REGARDLESS OF LEGAL THEORY.</li>
-                    </ol>
-                    <p>THESE EXCLUSIONS OR LIMITATIONS WILL APPLY REGARDLESS OF WHETHER OR NOT SETC Zone
-                        OR ANY OF ITS AFFILIATES HAS BEEN WARNED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
-                    <p>IF YOU USE THE SERVICES FOR ANY COMMERCIAL, BUSINESS, OR RE-SALE PURPOSE, SETC Zone, ITS
-                        AFFILIATES,
-                        SUPPLIERS, OR DISTRIBUTORS WILL HAVE NO LIABILITY TO YOU FOR ANY LOSS OF PROFIT, LOSS OF
-                        BUSINESS, BUSINESS
-                        INTERRUPTION, OR LOSS OF BUSINESS OPPORTUNITY. SETC Zones AND ITS AFFILIATES
-                        ARE NOT RESPONSIBLE FOR THE CONDUCT, WHETHER ONLINE OR OFFLINE, OF ANY USER OF THE SERVICES.</p>
-                    <p><b>Resolving Disputes</b></p>
-                    <p>Let’s Try To Sort Things Out First. We want to address your concerns without needing a formal
-                        legal case.
-                        Before filing a claim against SETC Zone or our affiliates, you agree to try to resolve the
-                        dispute
-                        informally by contacting <a href="mailto:info@setczone.com">info@setczone.com</a>. We will try
-                        to resolve
-                        the dispute informally by contacting you via email.</p>
-                    <p>Judicial forum for disputes. You and SETC Zone agree that any judicial proceeding to resolve
-                        claims
-                        relating to these Terms or the Services will be brought in the federal or state courts of Texas,
-                        subject to
-                        the mandatory arbitration provisions below. Both you and SETC Zone consent to venue and personal
-                        jurisdiction in such courts.</p>
-                    <p>We Both Agree To Arbitrate. You and SETC Zone agree to resolve any claims relating to these Terms
-                        or the
-                        Services through final and binding arbitration by a single arbitrator. This includes disputes
-                        arising out of
-                        or relating to interpretation or application of this “Mandatory Arbitration Provisions” section,
-                        including
-                        its enforceability, revocability, or validity.</p>
-                    <p>Arbitration Procedures. The American Arbitration Association (AAA) will administer the
-                        arbitration under
-                        its Commercial Arbitration Rules and the Supplementary Procedures for Consumer Related Disputes.
-                        The
-                        arbitration will be held in the United States county where you live or work, Texas, or any other
-                        location we
-                        agree to.</p>
-                    <p>NO CLASS ACTIONS. You may only resolve disputes with us on an individual basis and may not bring
-                        a claim as
-                        a plaintiff or a class member in a class, consolidated, or representative action. Class
-                        arbitrations, class
-                        actions, private attorney general actions, and consolidation with other arbitrations are not
-                        allowed. If
-                        this specific paragraph is held unenforceable, then the entirety of this “Mandatory Arbitration
-                        Provisions”
-                        section will be deemed void.</p>
-                    <p><b>Controlling Law</b></p>
-                    <p>These Terms will be governed by California law except for its conflicts of laws principles.
-                        However, some
-                        countries (including those in the European Union) have laws that require agreements to be
-                        governed by the
-                        local laws of the consumer's country. This paragraph does not override those laws.</p>
-                    <p><b>Entire Agreement</b></p>
-                    <p>These Terms constitute the entire agreement between you and SETC Zone with respect to the subject
-                        matter of
-                        these Terms and supersede and replace any other prior or contemporaneous agreements or terms and
-                        conditions
-                        applicable to the subject matter of these Terms. These Terms create no third-party beneficiary
-                        rights.</p>
-                    <p><b>Revised Waiver, Severability &amp; Assignment Terms</b></p>
-                    <p>At SETC Zone, failure to enforce a particular provision does not mean that we waive our right to
-                        enforce it
-                        later. If a provision is deemed unenforceable, the remaining terms of the agreement will
-                        continue to remain
-                        in effect, and we will substitute the unenforceable provision with one that reflects our
-                        intentions as
-                        closely as possible. Please note that you cannot assign any of your rights under these Terms,
-                        and any
-                        attempt to do so will be considered invalid. However, we reserve the right to assign our rights
-                        to any
-                        affiliates, subsidiaries, or any successor in interest of any business associated with the
-                        Services.</p>
-                    <p><b>Modifications Terms</b></p>
-                    <p>We are committed to providing the best possible services to our users, which may require
-                        us to revise these Terms from time to time. Such revisions may be made to reflect changes
-                        in the law, new regulatory requirements, or improvements and enhancements made to our Services.
-                        If any modification affects your use of the Services or your legal rights, we will notify you
-                        before
-                        the effective date of the update. We will send you an email to the email address associated with
-                        your
-                        account or send you an in-product notification. Please note that the updated terms will take
-                        effect no
-                        less than 30 days from when we notify you.</p>
-                    {/* <button type="button" class="btn btn-primary px-4 py-1" id="flexCheckDefault" data-bs-dismiss="modal" aria-label="Close">Done</button> */}
-                </div>
-            </div>
-        </div>
-                            </div>
                 <div className="d-flex justify-content-center flex-wrap">
                   <button
                     onClick={handlePrevious}
@@ -12626,9 +14480,9 @@ const callFilesCom = async () => {
       }}
     >
       {loading && <LoadingScreen />}
-      {activeStep > 20 && 
-      (finalIncomeValue != null && finalIncomeValue !== "$0")
-      &&
+      {activeStep > 20 &&
+        finalIncomeValue != null &&
+        finalIncomeValue !== "$0" &&
         activeStep !== 24 &&
         userData?.applicationWithDocument !== true &&
         userData?.applicationStatus !== true && (
@@ -12668,7 +14522,7 @@ const callFilesCom = async () => {
           </Stepper>
         )}
 
-{activeStep === 24 &&
+      {activeStep === 24 &&
         userData?.applicationWithDocument !== true &&
         userData?.applicationStatus !== true && (
           <Stepper

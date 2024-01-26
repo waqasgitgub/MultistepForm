@@ -17,11 +17,12 @@ const LandingPage = () => {
   return (
     <div>
       <Navbar />
-      <div class="row justify-content-center">
+     <div className="container">
+     <div class="row justify-content-center">
         <div class="col-lg-11" style={{ marginTop: 52.5 }}>
           <div class="start-application">
             <div class="row">
-              <div class="col-lg-6 col-md-6 col-sm-12 pe-0 d-none d-md-block">
+              <div class="col-lg-6 col-md-6 col-sm-12 pe-md-0 d-none d-md-block">
                 <div
                   class="img-applci h-100 ahme"
                   style={{ backgroundSize: "100% 100%" }}
@@ -31,7 +32,7 @@ const LandingPage = () => {
                 </div>
               </div>
 
-              <div class="col-lg-6 col-md-6 col-sm-12 ps-0">
+              <div class="col-lg-6 col-md-6 col-sm-12 ps-md-0">
                 <div
                   class="img-applic-content align-items-center ahm"
                   style={{ border: "2px solid #dff5fc" }}
@@ -222,6 +223,7 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
+     </div>
       <Footer />
     </div>
   );

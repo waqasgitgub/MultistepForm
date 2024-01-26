@@ -28,7 +28,7 @@ const Login = () => {
     event.preventDefault();
    
       try {
-        const response = await axios.post('https://agree.setczone.com/apiuser/send-invitation', {
+        const response = await axios.post('http://localhost:5000user/send-invitation', {
          email: formData.email
         });
     

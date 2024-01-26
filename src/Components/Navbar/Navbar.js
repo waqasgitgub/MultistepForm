@@ -176,8 +176,24 @@ const Navbar = () => {
                         Support
                       </NavLink>
                     </li>
-
-                    <Button
+                    <li>
+                    <div class="dropdown">
+  <a class="nav-link  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{textDecoration:"none" , color:"#192c57 ", fontWeight: 400}}>
+  <AccountCircleRounded
+                        style={{
+                          color: isHovered ? "#1a2c57" : "#908c8c",
+                          fontSize: 30,
+                          marginLeft: 3,
+                        }}
+                      />{firstName} {lastName}
+  </a>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#" onClick={handleClose}> Logout</a></li>
+    
+  </ul>
+</div>
+                    </li>
+                    {/* <Button
                      disableRipple
                       id="basic-button"
                       aria-controls={open ? "basic-menu" : undefined}
@@ -187,7 +203,7 @@ const Navbar = () => {
                       onMouseEnter={handleHover}
                       onMouseLeave={handleHover}
                     >
-                      {/* Dashboard */}
+                      Dashboard
                       <span
                         style={{
                           color: isHovered ? "#192c57" : "#192c57",
@@ -207,8 +223,8 @@ const Navbar = () => {
                           marginLeft: 3,
                         }}
                       />
-                    </Button>
-                    <Menu
+                    </Button> */}
+                    {/* <Menu
                       id="basic-menu"
                       anchorEl={anchorEl}
                       open={open}
@@ -218,7 +234,7 @@ const Navbar = () => {
                       }}
                     >
                       <MenuItem onClick={handleClose}>Logout</MenuItem>
-                    </Menu>
+                    </Menu> */}
                   </ul>
                 </div>
               </div>

@@ -37,7 +37,7 @@ const VerifyOtp = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("https://agree.setczone.com/apiuser/verify", {
+      const response = await axios.post("http://localhost:5000user/verify", {
         otp: formData.email,
       });
 

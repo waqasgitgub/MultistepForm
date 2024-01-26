@@ -164,7 +164,7 @@ export default function ApplicationStatus({}) {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("https://agree.setczone.com/api/getUser", {
+        const response = await fetch("https://app.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -209,7 +209,7 @@ export default function ApplicationStatus({}) {
         };
 
         const response = await axios.put(
-          "https://agree.setczone.com/api/multiple-form-data",
+          "https://app.setczone.com/api/user/multiple-form-data",
           formData,
           config
         );
@@ -229,16 +229,23 @@ export default function ApplicationStatus({}) {
             response.data.user.schedule_pdf_name.length - 1;
           lastFileName =
             response.data.user.schedule_pdf_name[lastScheduleIndex];
+
+            uploadVasabi(response.data.user.schedule_pdf_name)
+
         } else if (inputName === "Tax_Return_2020") {
           const lastScheduleIndex =
             response.data.user.Tax_Return_2020_name.length - 1;
           lastFileName =
             response.data.user.Tax_Return_2020_name[lastScheduleIndex];
+
+            uploadVasabi(response.data.user.Tax_Return_2020_name)
         } else if (inputName === "Tax_Return_2021") {
           const lastScheduleIndex =
             response.data.user.Tax_Return_2021_name.length - 1;
           lastFileName =
             response.data.user.Tax_Return_2021_name[lastScheduleIndex];
+
+            uploadVasabi(response.data.user.Tax_Return_2021_name)
         } else if (inputName === "supplemental_attachment_2020") {
           const lastScheduleIndex =
             response.data.user.supplemental_attachment_2020_name.length - 1;
@@ -246,6 +253,7 @@ export default function ApplicationStatus({}) {
             response.data.user.supplemental_attachment_2020_name[
               lastScheduleIndex
             ];
+            uploadVasabi(response.data.user.supplemental_attachment_2020_name)
         } else if (inputName === "supplemental_attachment_2021") {
           const lastScheduleIndex =
             response.data.user.supplemental_attachment_2021_name.length - 1;
@@ -253,20 +261,30 @@ export default function ApplicationStatus({}) {
             response.data.user.supplemental_attachment_2021_name[
               lastScheduleIndex
             ];
+
+            uploadVasabi(response.data.user.supplemental_attachment_2021_name)
         } else if (inputName === "FormA1099") {
           const lastScheduleIndex =
             response.data.user.FormA1099_name.length - 1;
           lastFileName = response.data.user.FormA1099_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.FormA1099_name)
         } else if (inputName === "FormB1099") {
           const lastScheduleIndex =
             response.data.user.FormB1099_name.length - 1;
           lastFileName = response.data.user.FormB1099_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.FormB1099_name)
         } else if (inputName === "ks2020") {
           const lastScheduleIndex = response.data.user.ks2020_name.length - 1;
           lastFileName = response.data.user.ks2020_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.ks2020_name)
         } else if (inputName === "ks22020") {
           const lastScheduleIndex = response.data.user.ks22020_name.length - 1;
           lastFileName = response.data.user.ks22020_name[lastScheduleIndex];
+
+          uploadVasabi(response.data.user.ks22020_name)
         }
 
         await handleSuccessfulUpload(inputName, lastFileName);
@@ -283,6 +301,62 @@ export default function ApplicationStatus({}) {
       }
     }
   };
+
+
+  const uploadVasabi = async (files) => {
+   
+    const lastIndex = files.length - 1;
+
+
+    const lastFilename = files[lastIndex];
+
+
+    const parts = lastFilename.split('\\');
+
+    // Get the last part of the resulting array, which is the filename
+    const filenameFinal = parts[parts.length - 1];
+   
+
+  const apiUrl = "https://app.setczone.com/api/user/sendfiletosawabi";
+
+  const data = {
+    email: userData?.email,
+    fileName: filenameFinal,
+  };
+
+  try {
+    // Set loading state here, if needed
+    setLoading(true);
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Success Files.com uploaded:", responseData);
+
+    // Reset loading state here, if needed
+    // setLoading(false);
+  } catch (error) {
+    console.error("Error:", error.message);
+
+    // Handle errors or set error state here, if needed
+    // setError(true);
+
+    // Reset loading state here, if needed
+    // setLoading(false);
+  } finally {
+    setLoading(false); // Hide the loader when the request is completed (either success or failure)
+  }
+};
 
   const handleSuccessfulUpload = (inputName, fileName) => {
     const currentTime = Date.now(); // Get the current time in milliseconds
@@ -366,23 +440,79 @@ export default function ApplicationStatus({}) {
     return ((activeStep + 1) / steps.length) * 100; // Calculate progress percentage
   };
 
-  const openFileInNewTab = (fileKey, index, originalFileName) => {
-    // if (fileKey && userData) {
-    //   const fileUrls = userData[fileKey]; // Array of file URLs
-    //   if (fileUrls && fileUrls[index]) {
-    //     window.open(`http://localhost:5000/${fileUrls[index]}`, "_blank");
-    //   } else {
-    //     console.error("File URL not found for the provided index");
-    //   }
-    // } else {
-    //   console.error("Invalid fileKey or userData is missing");
-    // }
-    if (fileKey && userData && originalFileName) {
-      window.open(`http://localhost:5000/${originalFileName}`, "_blank");
-    } else {
-      console.error("File URL not found for the provided index");
-    }
+  // const openFileInNewTab = (fileKey, index, originalFileName) => {
+  //   // if (fileKey && userData) {
+  //   //   const fileUrls = userData[fileKey]; // Array of file URLs
+  //   //   if (fileUrls && fileUrls[index]) {
+  //   //     window.open(`https://agree.setczone.com${fileUrls[index]}`, "_blank");
+  //   //   } else {
+  //   //     console.error("File URL not found for the provided index");
+  //   //   }
+  //   // } else {
+  //   //   console.error("Invalid fileKey or userData is missing");
+  //   // }
+  //   if (fileKey && userData && originalFileName) {
+  //     window.open(`https://app.setczone.com/api/${originalFileName}`, "_blank");
+  //   } else {
+  //     console.error("File URL not found for the provided index");
+  //   }
+  // };
+
+  const openFileInNewTab = async (fileKey, index, originalFileName) => {
+     
+    // Split the original file name using the backslash as the separator
+    const parts = originalFileName.split('\\');
+     
+    // Get the last part of the resulting array, which is the filename
+    const filenameView = parts[parts.length - 1];
+   
+
+  const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
+
+  const data = {
+    email: userData?.email,
+    fileName: filenameView,
   };
+
+  try {
+    // Set loading state here, if needed
+    setLoading(true);
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+   
+    const responseData = await response.json();
+    console.log(responseData)
+    const viewUrl = responseData.url;
+
+    window.open(viewUrl, "_blank");
+
+    
+
+    // Reset loading state here, if needed
+    // setLoading(false);
+  } catch (error) {
+    console.error("Error:", error.message);
+
+    // Handle errors or set error state here, if needed
+    // setError(true);
+
+    // Reset loading state here, if needed
+    // setLoading(false);
+  } finally {
+    setLoading(false); // Hide the loader when the request is completed (either success or failure)
+  }
+};
 
   const removeFile = async (fileKey, index, originalFileName) => {
     const token = localStorage.getItem("token");
@@ -399,7 +529,7 @@ export default function ApplicationStatus({}) {
         alert("Are you sure to remove file");
 
         try {
-          const url = "https://agree.setczone.com/api/deleteFile";
+          const url = "https://app.setczone.com/api/user/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -421,7 +551,7 @@ export default function ApplicationStatus({}) {
           });
 
           if (response.ok) {
-
+            removeFileVasabi(originalFileName);
             // await deleteFilesComFile(fileKey);
             await fetchUserDataa();
 
@@ -441,13 +571,66 @@ export default function ApplicationStatus({}) {
       }
     }
   };
+          
+
+  const removeFileVasabi = async (originalFileName) => {
+
+
+    // Split the original file name using the backslash as the separator
+    const parts = originalFileName.split('\\');
+    
+    // Get the last part of the resulting array, which is the filename
+    const filename = parts[parts.length - 1];
+      
+    
+
+    const apiUrl = "https://app.setczone.com/api/user/deleteFilesawabi";
+  
+    const data = {
+      email: userData?.email,
+      fileName: filename,
+    };
+  
+    try {
+      // Set loading state here, if needed
+      setLoading(true);
+  
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("Remove File from swabi successfully:", responseData);
+  
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } catch (error) {
+      console.error("Error:", error.message);
+  
+      // Handle errors or set error state here, if needed
+      // setError(true);
+  
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    }
+  };
 
   const downloadLink = async (index) => {
 
     try {
         // setLoading(true);
 
-        const apiUrl = "https://agree.setczone.com/api/downloadfile";
+        const apiUrl = "https://app.setczone.com/api/user/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -502,7 +685,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "https://agree.setczone.com/api/deletefilecom";
+    const apiUrl = "https://app.setczone.com/api/user/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -601,7 +784,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://agree.setczone.com/api/digisign";
+      const apiUrl = "https://app.setczone.com/api/user/digisign";
 
       const formData = {
         name: userData?.first_name,
@@ -650,7 +833,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("https://agree.setczone.com/api/getUser", {
+          const response = await fetch("https://app.setczone.com/api/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -1436,6 +1619,7 @@ const deleteFilesComFile = async (fileKey) => {
                                         fontWeight: "bold",
                                         color: "white",
                                         background: "#3c4d77",
+                                        padding: '3px 5px'
                                       }}
                                       onClick={() =>
                                         handleAddFileClick("schedule_pdf")
@@ -1554,6 +1738,7 @@ const deleteFilesComFile = async (fileKey) => {
                                         fontWeight: "bold",
                                         color: "white",
                                         background: "#3c4d77",
+                                        padding: '3px 5px'
                                       }}
                                       onClick={() =>
                                         handleAddFileClick("Tax_Return_2020")
@@ -1673,6 +1858,7 @@ const deleteFilesComFile = async (fileKey) => {
                                         fontWeight: "bold",
                                         color: "white",
                                         background: "#3c4d77",
+                                        padding: '3px 5px'
                                       }}
                                       onClick={() =>
                                         handleAddFileClick("Tax_Return_2021")
@@ -1811,6 +1997,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               fontWeight: "bold",
                                               color: "white",
                                               background: "#3c4d77",
+                                              padding: '3px 5px'
                                             }}
                                             onClick={() =>
                                               handleAddFileClick(
@@ -1951,6 +2138,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               fontWeight: "bold",
                                               color: "white",
                                               background: "#3c4d77",
+                                              padding: '3px 5px'
                                             }}
                                             onClick={() =>
                                               handleAddFileClick(
@@ -2079,6 +2267,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               fontWeight: "bold",
                                               color: "white",
                                               background: "#3c4d77",
+                                              padding: '3px 5px'
                                             }}
                                             onClick={() =>
                                               handleAddFileClick("FormA1099")
@@ -2200,6 +2389,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               fontWeight: "bold",
                                               color: "white",
                                               background: "#3c4d77",
+                                              padding: '3px 5px'
                                             }}
                                             onClick={() =>
                                               handleAddFileClick("FormB1099")
@@ -2314,6 +2504,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               fontWeight: "bold",
                                               color: "white",
                                               background: "#3c4d77",
+                                              padding: '3px 5px'
                                             }}
                                             onClick={() =>
                                               handleAddFileClick("ks2020")
@@ -2428,6 +2619,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               fontWeight: "bold",
                                               color: "white",
                                               background: "#3c4d77",
+                                              padding: '3px 5px'
                                             }}
                                             onClick={() =>
                                               handleAddFileClick("ks22020")

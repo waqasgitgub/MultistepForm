@@ -96,12 +96,23 @@ body {
   justify-content: center;
   margin-bottom: 0px;
 }
-
+@media screen and (max-width: 500px) {
+  .containerr {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between;
+    align-items: center;
+    margin-top: 20px; */
+    color: #2e8a5f;
+gap: 10px;
+    /* Add additional styling as needed */
+  }
+}
 @media screen and (max-width: 768px) {
 
 .containerr {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   /* justify-content: space-between;
   align-items: center;
   margin-top: 20px; */
@@ -1142,18 +1153,38 @@ h3.plain {
 .css-1rcbby2::before{
   display: none !important;
 }
+
+.rmdp-panel {
+ width: 180px;
+  border: 1px solid #1c921c;
+}
+
+.custom-date-picker-input {
+  width: 180px;
+  margin-bottom: 14px;
+}
 .css-1oa1nt{
   margin: 0px !important;
 }
 .checkBoxStepOne {
   margin-bottom: 18px;
 }
-.toi{
+/* .toi{
   margin-top: -40px;
-}
+} */
+/* .rmdp-input{
+  padding: 10px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    font-size: 14px;
+} */
 @media (max-width: 767px) {
   .desktop-box {
     padding: 110px 20px !important;
+  }
+  .custom-date-picker-input {
+    width: 180px;
+    margin-bottom: 14px;
   }
   .ss{
     font-size: 27px !important;
