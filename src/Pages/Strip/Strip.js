@@ -9,7 +9,7 @@
 
 // const fetchData = async () => {
 //   try {
-//     const apiUrl = 'http://localhost:5000user/sessions';
+//     const apiUrl = 'https://agree.setczone.com/apiuser/sessions';
 
 //     // Make an API call using fetch or Axios
 //     const response = await fetch(apiUrl, {
@@ -86,7 +86,7 @@ const fetchDataWithoutEvent = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const apiUrl = 'http://localhost:5000/user/sessions';
+    const apiUrl = 'https://agree.setczone.com/api/user/sessions';
 
     // Make an API call using fetch or Axios
     const response = await fetch(apiUrl, {
@@ -130,7 +130,7 @@ const fetchUserDataa = async () => {
   const token = localStorage.getItem("token");
   if (token) {
     try {
-      const response = await fetch("http://localhost:5000/user/getUser", {
+      const response = await fetch("https://agree.setczone.com/api/user/getUser", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -158,7 +158,7 @@ const fetchData = async (eventValue) => {
   console.log("signing conditions  true")
 
     try {
-      const apiUrl = 'http://localhost:5000/user/sessions';
+      const apiUrl = 'https://agree.setczone.com/api/user/sessions';
       // Make an API call using fetch or Axios
       const response = await fetch(apiUrl, {
         method: 'POST', // or 'GET' depending on your API

@@ -31,7 +31,6 @@ const Navbar = () => {
   
 
 
-  console.log(firstName, lastName, 'reduxxxxxxxxx')
 
 
   const token = useSelector((state) => state.user.token);
@@ -43,7 +42,6 @@ const Navbar = () => {
 
   // const [firstName, setFirstName] = useState("");
   // const [lastName, setLastName] = useState("");
-  console.log(firstName, lastName, "format");
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     if (event.currentTarget) {

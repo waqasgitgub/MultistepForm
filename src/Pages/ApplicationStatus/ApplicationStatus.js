@@ -168,7 +168,7 @@ export default function ApplicationStatus({}) {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("http://localhost:5000/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ export default function ApplicationStatus({}) {
         };
 
         const response = await axios.put(
-          "http://localhost:5000/user/multiple-form-data",
+          "https://agree.setczone.com/api/user/multiple-form-data",
           formData,
           config
         );
@@ -321,7 +321,7 @@ export default function ApplicationStatus({}) {
     const filenameFinal = parts[parts.length - 1];
    
 
-  const apiUrl = "http://localhost:5000/user/sendfiletosawabi";
+  const apiUrl = "https://agree.setczone.com/api/user/sendfiletosawabi";
 
   const data = {
     email: userData?.email,
@@ -456,7 +456,7 @@ export default function ApplicationStatus({}) {
   //   //   console.error("Invalid fileKey or userData is missing");
   //   // }
   //   if (fileKey && userData && originalFileName) {
-  //     window.open(`http://localhost:5000/${originalFileName}`, "_blank");
+  //     window.open(`https://agree.setczone.com/api/${originalFileName}`, "_blank");
   //   } else {
   //     console.error("File URL not found for the provided index");
   //   }
@@ -477,7 +477,7 @@ export default function ApplicationStatus({}) {
       return;
   }
 
-  const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
+  const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
 
   const data = {
     email: userData?.email,
@@ -539,7 +539,7 @@ export default function ApplicationStatus({}) {
         alert("Are you sure to remove file");
 
         try {
-          const url = "http://localhost:5000/user/deleteFile";
+          const url = "https://agree.setczone.com/api/user/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -594,7 +594,7 @@ export default function ApplicationStatus({}) {
       
     
 
-    const apiUrl = "http://localhost:5000/user/deleteFilesawabi";
+    const apiUrl = "https://agree.setczone.com/api/user/deleteFilesawabi";
   
     const data = {
       email: userData?.email,
@@ -640,7 +640,7 @@ export default function ApplicationStatus({}) {
     try {
         // setLoading(true);
 
-        const apiUrl = "http://localhost:5000/user/downloadfile";
+        const apiUrl = "https://agree.setczone.com/api/user/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -695,7 +695,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "http://localhost:5000/user/deletefilecom";
+    const apiUrl = "https://agree.setczone.com/api/user/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -794,7 +794,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "http://localhost:5000/user/digisign";
+      const apiUrl = "https://agree.setczone.com/api/user/digisign";
 
       const formData = {
         name: userData?.first_name,
@@ -843,7 +843,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("http://localhost:5000/user/getUser", {
+          const response = await fetch("https://agree.setczone.com/api/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

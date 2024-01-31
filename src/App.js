@@ -14,8 +14,8 @@ import VerifyOtp from "./Pages/VerifyOtp/VerifyOtp";
 import { useEffect, useState } from "react";
 import Strip from "./Pages/Strip/Strip";
 import { setUserDetails } from "./Redux/Slices/userSlice";
-import CacheBuster from 'react-cache-buster';
-const version = 3;
+// import CacheBuster from 'react-cache-buster';
+// const version = 3;
 
 
 const App = () => {
@@ -44,7 +44,7 @@ const App = () => {
       const token = localStorage.getItem("token");
 
       if (token) {
-        const response = await fetch("http://localhost:5000/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,13 +78,13 @@ const App = () => {
 
 
   return (
-    <CacheBuster
-    currentVersion={version}
-    isEnabled={true} //If false, the library is disabled.
-    isVerboseMode={false} //If true, the library writes verbose logs to console.
-    loadingComponent={<div>loading ..</div>} //If not pass, nothing appears at the time of new version check.
-    metaFileDirectory={'.'} //If public assets are hosted somewhere other than root on your server.
-  >
+  //   <CacheBuster
+  //   currentVersion={version}
+  //   isEnabled={true} //If false, the library is disabled.
+  //   isVerboseMode={false} //If true, the library writes verbose logs to console.
+  //   // loadingComponent={<div>loading ..</div>} //If not pass, nothing appears at the time of new version check.
+  //   metaFileDirectory={'.'} //If public assets are hosted somewhere other than root on your server.
+  // >
     <Router>
       <Switch>
         {/* Route to ApplicationForm component if token exists */}
@@ -110,7 +110,7 @@ const App = () => {
         <Redirect to="/" />
       </Switch>
     </Router>
-    </CacheBuster>
+    // </CacheBuster>
   );
 };
 

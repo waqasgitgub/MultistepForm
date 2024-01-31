@@ -46,7 +46,7 @@ const Login = () => {
   //     try {
   //       setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-  //       const response = await axios.post('http://localhost:5000/user/send-invitation', {
+  //       const response = await axios.post('https://agree.setczone.com/api/user/send-invitation', {
   //        email: formData.email
   //       });
     
@@ -84,11 +84,14 @@ const Login = () => {
   // };
   const handleSendLink = async (event) => {
     event.preventDefault();
+          if(!formData.email){
+      return;
+          }
   
     try {
       setLoading(true);
   
-      const response = await axios.post('http://localhost:5000/user/send-invitation', {
+      const response = await axios.post('https://agree.setczone.com/api/user/send-invitation', {
         email: formData.email
       });
   

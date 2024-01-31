@@ -1095,7 +1095,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "http://localhost:5000/user/updateApplication",
+        "https://agree.setczone.com/api/user/updateApplication",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -1129,7 +1129,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "http://localhost:5000/user/updateDocumentStatus",
+        "https://agree.setczone.com/api/user/updateDocumentStatus",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -1287,7 +1287,7 @@ const MultiStepForm = () => {
   const formDataPreparing = async (step) => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/user/create", {
+      const response = await fetch("https://agree.setczone.com/api/user/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1355,7 +1355,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1471,7 +1471,7 @@ const MultiStepForm = () => {
 
   const callVeriffAPI = (token) => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
-    const apiEndpoint = "http://localhost:5000/user/createSession"; // Replace with your actual API endpoint
+    const apiEndpoint = "https://agree.setczone.com/api/user/createSession"; // Replace with your actual API endpoint
 
     // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
 
@@ -1572,7 +1572,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${stepToSend}/updateuser`,
+        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1806,7 +1806,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${stepToSend}/updateuser`,
+        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2086,7 +2086,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2272,7 +2272,7 @@ const MultiStepForm = () => {
       // }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2403,7 +2403,7 @@ const MultiStepForm = () => {
   const callSetcformData = async (token, formData) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/user/setcformData", {
+      const response = await fetch("https://agree.setczone.com/api/user/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2568,7 +2568,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${stepToSend}/updateuser`,
+        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2667,7 +2667,7 @@ const MultiStepForm = () => {
 
   const callSetcformDataWithoutLoader = async (token, formData) => {
     try {
-      const response = await fetch("http://localhost:5000/user/setcformData", {
+      const response = await fetch("https://agree.setczone.com/api/user/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2752,7 +2752,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2805,7 +2805,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2958,7 +2958,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -3101,7 +3101,7 @@ const MultiStepForm = () => {
   const checkEmailAvailability = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/user/checkMail",
+        "https://agree.setczone.com/api/user/checkMail",
         {
           email: formData.email,
         }
@@ -4169,23 +4169,18 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      if (
-        formData.setc_program === "No" ||
-        formData.setc_program2021 === "No"
-      ) {
-        setActiveErrorQualifySix(false);
-        hasErrors = false;
+      if (!formData.setc_program || !formData.setc_program2021) {
+        // Set errors for individual fields if needed
+        if (!formData.setc_program) {
+          errorsObj.setc_program = "Please select an option";
+        }
+        if (!formData.setc_program2021) {
+          errorsObj.setc_program2021 = "Please select an option";
+        }
+        hasErrors = true;
       }
 
-      // if (formData.setc_program === "Yes" && formData.setc_program !== "No") {
-      //   setActiveErrorQualifySix(true);
-      //   formDataUpdateWithoutNextStep(activeStep);
-      //   hasErrors = true;
-      // }
-      // if (formData.setc_program === "No") {
-      //   setActiveErrorQualifySix(false);
-      //   hasErrors = false;
-      // }
+     
     }
 
     // if (activeStep === 20) {
@@ -4224,6 +4219,7 @@ const MultiStepForm = () => {
     //     setActiveErrorQualify17(false);
     //   }
     // }
+    
     if (activeStep === 20) {
       // Check netIncome2019
       if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
@@ -4231,7 +4227,8 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      // Check netIncome2020
+
+      
       if (!formData.netIncome2020 || formData.netIncome2020 === "$") {
         errorsObj.netIncome2020 = "Please enter a value";
         hasErrors = true;
@@ -4258,12 +4255,15 @@ const MultiStepForm = () => {
         netIncome2019Amount,
         netIncome2020Amount,
         netIncome2021Amount,
-      ].filter((amount) => amount < 10000).length;
+      ].filter((amount) => amount < 10000 && amount !== 0).length;
 
-      if (countGreaterThanOrEqualTo10K >= 2) {
+      if (countGreaterThanOrEqualTo10K >= 2 ) {
+      alert(netIncome2019Amount, netIncome2020Amount, netIncome2021Amount);
         setActiveErrorQualify17(true);
         hasErrors = true;
-      } else {
+      }
+       else 
+       {
         setActiveErrorQualify17(false);
       }
     }
@@ -4374,7 +4374,7 @@ const MultiStepForm = () => {
       if (token) {
         //  alert(token, 'useeffect tokeeeeeeeeeeeennnnnnnnnnnnnn')
         try {
-          const response = await fetch("http://localhost:5000/user/getUser", {
+          const response = await fetch("https://agree.setczone.com/api/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -4678,7 +4678,7 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const response = await fetch("http://localhost:5000/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -4700,7 +4700,7 @@ const MultiStepForm = () => {
   };
 
   const submitHubspotForm = async () => {
-    const apiUrl = "http://localhost:5000/user/dataPosttoHubspot";
+    const apiUrl = "https://agree.setczone.com/api/user/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
     const data = {
@@ -4739,7 +4739,7 @@ const MultiStepForm = () => {
   };
 
   //   const callFilesCom = async () => {
-  //     const apiUrl = "http://localhost:5000/user/multiupload";
+  //     const apiUrl = "https://agree.setczone.com/api/user/multiupload";
 
   //     const payload = {
   //         path: [...userData?.driving_licence_name, ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
@@ -4782,7 +4782,7 @@ const MultiStepForm = () => {
   //     }
   // };
   const callFilesCom = async () => {
-    const apiUrl = "http://localhost:5000/user/multiupload";
+    const apiUrl = "https://agree.setczone.com/api/user/multiupload";
 
     const payload = {
       path: [
@@ -4857,7 +4857,7 @@ const MultiStepForm = () => {
   //   // // Get the last part of the resulting array, which is the filename
   //   // const filenameView = parts[parts.length - 1];
 
-  //   // const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
+  //   // const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
 
   //   //  const data = {
   //   //    email: userData?.email,
@@ -4900,7 +4900,7 @@ const MultiStepForm = () => {
   //   //    setLoading(false); // Hide the loader when the request is completed (either success or failure)
   //   //  }
   //    if (fileKey && userData && originalFileName) {
-  //      window.open(`http://localhost:5000/${originalFileName}`, "_blank");
+  //      window.open(`https://agree.setczone.com/api/${originalFileName}`, "_blank");
   //    } else {
   //      console.error("File URL not found for the provided index");
   //    }
@@ -4920,7 +4920,7 @@ const MultiStepForm = () => {
       return;
   }
 
-    const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
+    const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
 
     const data = {
       email: userData?.email,
@@ -4979,7 +4979,7 @@ const MultiStepForm = () => {
         alert("Are you sure to remove file");
 
         try {
-          const url = "http://localhost:5000/user/deleteFile";
+          const url = "https://agree.setczone.com/api/user/deleteFile";
           const payload = {
             fieldName: `${fileKey}_name`,
             fileName: originalFileName,
@@ -5028,7 +5028,7 @@ const MultiStepForm = () => {
     // Get the last part of the resulting array, which is the filename
     const filename = parts[parts.length - 1];
 
-    const apiUrl = "http://localhost:5000/user/deleteFilesawabi";
+    const apiUrl = "https://agree.setczone.com/api/user/deleteFilesawabi";
 
     const data = {
       email: userData?.email,
@@ -5094,7 +5094,7 @@ const MultiStepForm = () => {
         };
 
         const response = await axios.put(
-          "http://localhost:5000/user/multiple-form-data",
+          "https://agree.setczone.com/api/user/multiple-form-data",
           formData,
           config
         );
@@ -5187,7 +5187,7 @@ const MultiStepForm = () => {
     // Get the last part of the resulting array, which is the filename
     const filenameFinal = parts[parts.length - 1];
 
-    const apiUrl = "http://localhost:5000/user/sendfiletosawabi";
+    const apiUrl = "https://agree.setczone.com/api/user/sendfiletosawabi";
 
     const data = {
       email: userData?.email,
