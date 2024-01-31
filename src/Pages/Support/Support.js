@@ -51,9 +51,9 @@ const Support = () => {
           <div class="container">
             <div class="row align-items-center">
               <div class="col-lg-5">
-                <div>
+                {/* <div>
                   <h3>Actions</h3>
-                </div>
+                </div> */}
                 <div class="actions_div">
                   <a
                     href="/status"
@@ -240,9 +240,9 @@ const Support = () => {
                           />
                         </svg>
                         <span>
-                          Check the current application status of
+                          Check the current application status of {" "}
                           <a
-                            href="http://localhost:5000panel"
+                            href="/status"
                             style={{ color: "#29abe2", fontWeight: "500" }}
                           >
                             Setczone

@@ -4,9 +4,24 @@ import Footer from '../../Components/Footer/Footer'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import { useState } from 'react'
+import LoadingScreen from '../../Components/LoadingScreen'
+import CommonSnackbar from '../../Components/CommonSnackbar/CommonSnackbar'
 
 const Login = () => {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+
   const [formData, setFormData] = useState({
 
     email: '',
@@ -23,38 +38,99 @@ const Login = () => {
     };
 
 
-  const handleSendLink = async (event) => {
+  // const handleSendLink = async (event) => {
     
-    event.preventDefault();
+  //   event.preventDefault();
    
-      try {
-        const response = await axios.post('http://localhost:5000user/send-invitation', {
-         email: formData.email
-        });
-    
-        if (response.status === 200) {
-          const { data } = response;
-          // handleToken(data.user.token);
-          // alert(data.user.token)
-          // dispatch(createUser({ user: data.user }));
-          history.push("/verifyOtp");
-          alert("Check your eamil, verification code successfully send")
-        } else {
-          console.error('Error in API call');
-          // dispatch(loginFailure());
-        }
-      } catch (error) {
-        console.error('Network error', error);
-        alert("Something went wrong, please check your email & try again...")
-        // dispatch(loginFailure());
-      }
    
-  };
+  //     try {
+  //       setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
+  //       const response = await axios.post('http://localhost:5000/user/send-invitation', {
+  //        email: formData.email
+  //       });
+    
+  //       if (response.status === 200) {
+  //         const { data } = response;
+  //         // handleToken(data.user.token);
+  //         // alert(data.user.token)
+  //         // dispatch(createUser({ user: data.user }));
+  //         // history.push("/verifyOtp");
+  //         setSnackbarMessage('OTP sent successfully. Check your email.');
+  //         setSnackbarSeverity('success');
+  //         setSnackbarOpen(true);
+  //         history.push({
+  //           pathname: "/verifyOtp",
+  //            search: `?userEmail=${formData?.email}`
+  //         });
+         
+  //         // alert("Check your eamil, verification code successfully send")
+  //       } else {
+  //         console.error('Error in API call');
+  //       setSnackbarMessage('Something went wrong. Please check your email & try again.');
+  //       setSnackbarSeverity('error');
+  //       setSnackbarOpen(true);
+  //       }
+  //     } catch (error) {
+  //       console.error('Network error', error);
+  //       setSnackbarMessage('Something went wrong. Please check your email & try again.');
+  //       setSnackbarSeverity('error');
+  //       setSnackbarOpen(true);
+  //     } finally {
+
+  //       setLoading(false); // Hide the loader when the request is completed (either success or failure)
+  //     }
+   
+  // };
+  const handleSendLink = async (event) => {
+    event.preventDefault();
+  
+    try {
+      setLoading(true);
+  
+      const response = await axios.post('http://localhost:5000/user/send-invitation', {
+        email: formData.email
+      });
+  
+      if (response.status === 200) {
+        const { data } = response;
+        setLoading(false);
+        setSnackbarOpen(true);
+        setSnackbarSeverity('success');
+        setSnackbarMessage('OTP sent successfully. Check your email.');
+       
+    
+        // Move the history.push after setting the snackbar state
+        setTimeout(()=>{
+          history.push({
+            pathname: "/verifyOtp",
+            search: `?userEmail=${formData?.email}`
+          });
+        },3000);
+        
+
+      } else {
+        console.error('Error in API call');
+        setSnackbarMessage('Something went wrong. Please check your email & try again.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Network error', error);
+      setSnackbarMessage('Something went wrong. Please check your email & try again.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   return (
     <div>
         <Navbar/>
+        {loading && <LoadingScreen />}
+
 
           <section class="login-form">
       <div class="d-flex justify-content-center container my-5 py-3">
@@ -93,7 +169,7 @@ const Login = () => {
                     class="btn btn-primary"
                     id="submit-button"
                   >
-                    Send me a link
+                    Send Otp
                   </button>
                 </div>
               </form>
@@ -102,6 +178,14 @@ const Login = () => {
         </div>
       </div>
     </section>
+
+    <CommonSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+        autoHideDuration={6000} // You can customize this value
+      />
     <Footer/>
     </div>
   )

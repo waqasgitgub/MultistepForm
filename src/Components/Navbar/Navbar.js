@@ -25,6 +25,15 @@ const Navbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const firstName = useSelector((state) => state.user.firstName);
+  const lastName = useSelector((state) => state.user.lastName);
+  const middleName = useSelector((state) => state.user.middleName);
+  
+
+
+  console.log(firstName, lastName, 'reduxxxxxxxxx')
+
+
   const token = useSelector((state) => state.user.token);
   const localToken = localStorage.getItem("token");
 
@@ -32,8 +41,8 @@ const Navbar = () => {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  // const [firstName, setFirstName] = useState("");
+  // const [lastName, setLastName] = useState("");
   console.log(firstName, lastName, "format");
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -49,7 +58,8 @@ const Navbar = () => {
     event.preventDefault();
     setAnchorEl(null);
     dispatch(removeToken());
-
+    localStorage.removeItem("lName")
+    localStorage.removeItem("fName")
     localStorage.removeItem("activeTab");
     localStorage.removeItem("isModalOpened");
     history.push("/login");
@@ -67,7 +77,7 @@ const Navbar = () => {
   };
 
   const handleNewApp = () => {
-    history.push("/application-form");
+    history.push("/application");
   };
   const handleLogout = () => {
     dispatch(removeToken());
@@ -79,17 +89,15 @@ const Navbar = () => {
 
   useEffect(() => {
     if (token || localToken) {
-      const storedFirstName = localStorage.getItem("fName");
-      const storedLastName = localStorage.getItem("lName");
+      
 
-      console.log(
-        storedFirstName,
-        storedLastName,
-        "storedFirstName&storedLastName"
-      );
+      // console.log(
+      //   storedFirstName,
+      //   storedLastName,
+      //   "storedFirstName&storedLastName"
+      // );
 
-      setFirstName(storedFirstName);
-      setLastName(storedLastName);
+     
     }
   }, [token, localToken]);
 
@@ -146,7 +154,7 @@ const Navbar = () => {
                     <li className="about nav-item me-1">
                       <NavLink
                         className="nav-link cool-link"
-                        to="/application-form"
+                        to="/application"
                         activeClassName="active"
                         style={{ marginTop: 4 }}
                       >
@@ -185,7 +193,7 @@ const Navbar = () => {
                           fontSize: 30,
                           marginLeft: 3,
                         }}
-                      />{firstName} {lastName}
+                      />{firstName} {middleName} {lastName} 
   </a>
   <ul class="dropdown-menu">
     <li><a class="dropdown-item" href="#" onClick={handleClose}> Logout</a></li>
@@ -308,7 +316,7 @@ const Navbar = () => {
                     >
                       <NavLink
                         className="nav-link cool-link"
-                        to="/application-form"
+                        to="/application"
                         activeClassName="active"
                         style={{ marginTop: 4 }}
                       >

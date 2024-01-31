@@ -47,27 +47,35 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   token: null,
-
+  firstName: '',
+  lastName: '',
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
-  
+    setUserDetails: (state, action) => {
+      state.firstName = action.payload.firstName;
+      state.middleName = action.payload.middleName;
+        state.lastName = action.payload.lastName;
+    },
     setToken: (state, action) => {
       state.token = action.payload;
       localStorage.setItem('token', action.payload);
     },
     removeToken: (state) => {
-     
       state.token = null;
+      state.firstName = ''; // Clear firstName
+      state.middleName = '';  // Clear lastName
+      state.lastName = '';  // Clear lastName
       localStorage.removeItem('token');
     },
   },
 });
 
 export const {
+  setUserDetails,
   setToken,
   removeToken
   

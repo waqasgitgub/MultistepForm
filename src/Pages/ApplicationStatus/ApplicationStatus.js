@@ -26,6 +26,8 @@ import axios from "axios";
 import FileInputComponent from "../../Components/FileInputComponent";
 import LoadingScreen from "../../Components/LoadingScreen";
 import { Modal } from "@mui/material";
+import { setUserDetails } from "../../Redux/Slices/userSlice";
+import { useDispatch } from "react-redux";
 
 function LinearProgressWithLabel(props) {
   return (
@@ -48,6 +50,8 @@ function LinearProgressWithLabel(props) {
   );
 }
 export default function ApplicationStatus({}) {
+
+  const dispatch = useDispatch();
   const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -164,7 +168,7 @@ export default function ApplicationStatus({}) {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("https://app.setczone.com/api/user/getUser", {
+        const response = await fetch("http://localhost:5000/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -209,7 +213,7 @@ export default function ApplicationStatus({}) {
         };
 
         const response = await axios.put(
-          "https://app.setczone.com/api/user/multiple-form-data",
+          "http://localhost:5000/user/multiple-form-data",
           formData,
           config
         );
@@ -317,7 +321,7 @@ export default function ApplicationStatus({}) {
     const filenameFinal = parts[parts.length - 1];
    
 
-  const apiUrl = "https://app.setczone.com/api/user/sendfiletosawabi";
+  const apiUrl = "http://localhost:5000/user/sendfiletosawabi";
 
   const data = {
     email: userData?.email,
@@ -452,7 +456,7 @@ export default function ApplicationStatus({}) {
   //   //   console.error("Invalid fileKey or userData is missing");
   //   // }
   //   if (fileKey && userData && originalFileName) {
-  //     window.open(`https://app.setczone.com/api/${originalFileName}`, "_blank");
+  //     window.open(`http://localhost:5000/${originalFileName}`, "_blank");
   //   } else {
   //     console.error("File URL not found for the provided index");
   //   }
@@ -465,9 +469,15 @@ export default function ApplicationStatus({}) {
      
     // Get the last part of the resulting array, which is the filename
     const filenameView = parts[parts.length - 1];
-   
 
-  const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
+
+    if (filenameView.includes("pdf_file_changeable")) {
+      const directUrl = `https://beta.ccalerc.com/storage/app/pdfs/${filenameView}`;
+      window.open(directUrl, "_blank");
+      return;
+  }
+
+  const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
 
   const data = {
     email: userData?.email,
@@ -529,7 +539,7 @@ export default function ApplicationStatus({}) {
         alert("Are you sure to remove file");
 
         try {
-          const url = "https://app.setczone.com/api/user/deleteFile";
+          const url = "http://localhost:5000/user/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -584,7 +594,7 @@ export default function ApplicationStatus({}) {
       
     
 
-    const apiUrl = "https://app.setczone.com/api/user/deleteFilesawabi";
+    const apiUrl = "http://localhost:5000/user/deleteFilesawabi";
   
     const data = {
       email: userData?.email,
@@ -630,7 +640,7 @@ export default function ApplicationStatus({}) {
     try {
         // setLoading(true);
 
-        const apiUrl = "https://app.setczone.com/api/user/downloadfile";
+        const apiUrl = "http://localhost:5000/user/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -685,7 +695,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "https://app.setczone.com/api/user/deletefilecom";
+    const apiUrl = "http://localhost:5000/user/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -724,7 +734,7 @@ const deleteFilesComFile = async (fileKey) => {
   const [steps, setSteps] = useState([
     {
       title: "Application Started",
-      description: "Started 30 Nov.",
+      description: "",
       isCompleted: true,
     },
     {
@@ -733,7 +743,7 @@ const deleteFilesComFile = async (fileKey) => {
     },
     {
       title: "Application in Process",
-      description: "2-3 Days",
+      description: "",
       isCompleted: false,
     },
     {
@@ -750,7 +760,7 @@ const deleteFilesComFile = async (fileKey) => {
     // },
     {
       title: "Awaiting SETC Payment (12-20 weeks)",
-      description: "6-9 weeks",
+      description: "",
       isCompleted: false,
     },
   ]);
@@ -784,7 +794,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://app.setczone.com/api/user/digisign";
+      const apiUrl = "http://localhost:5000/user/digisign";
 
       const formData = {
         name: userData?.first_name,
@@ -833,7 +843,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("https://app.setczone.com/api/user/getUser", {
+          const response = await fetch("http://localhost:5000/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -841,9 +851,12 @@ const deleteFilesComFile = async (fileKey) => {
           });
   
           if (response.ok) {
+
+
             const isModalAlreadyOpened = localStorage.getItem("isModalOpened");
             const userData = await response.json();
-  
+            // dispatch(setUserDetails({ firstName: userData?.first_name, lastName: userData?.last_name }));
+
             if (userData?.strip_payment !== null && !isModalAlreadyOpened) {
               setOpenModalDate(true);
               localStorage.setItem("isModalOpened", "true");
@@ -975,7 +988,7 @@ const deleteFilesComFile = async (fileKey) => {
                             </a>
                           </li>
 
-                          <li class="tab-item me-3">
+                          {/* <li class="tab-item me-3">
                             <a
                               className={`status-heading nav-link ${
                                 activeTab === "document_tab" ? "active" : ""
@@ -990,8 +1003,8 @@ const deleteFilesComFile = async (fileKey) => {
                             >
                               Documents
                             </a>
-                          </li>
-
+                          </li> */}
+                          {userData && userData?.pre_signature_document !== null && (
                           <li class="tab-item me-3">
                             <a
                               className={`status-heading nav-link ${
@@ -1008,6 +1021,7 @@ const deleteFilesComFile = async (fileKey) => {
                               E-Signature
                             </a>
                           </li>
+                                  )}
 
                     {userData && userData?.strip_payment !== null && (
                           <li class="tab-item me-3">
@@ -1148,9 +1162,14 @@ const deleteFilesComFile = async (fileKey) => {
                                   >
                                     Name
                                   </div>
-                                  <div class="status-inform">
-                                    {userData?.first_name} {userData?.last_name}
+                              
+                              {/* {verified_middleName !== null && ( */}
+                                <div class="status-inform">
+                                    {userData?.first_name} {userData?.verified_middleName} {userData?.last_name}
                                   </div>
+                              {/* )} */}
+                                  
+
                                 </div>
                                 <div class="mb-3">
                                   <div
@@ -1247,7 +1266,7 @@ const deleteFilesComFile = async (fileKey) => {
                                       fontWeight: "500",
                                     }}
                                   >
-                                    Provice
+                                    State
                                   </div>
                                   <div class="status-inform">
                                     {userData?.state}
@@ -1543,7 +1562,7 @@ const deleteFilesComFile = async (fileKey) => {
                                         <div className="itemm">
                                           <TaskAlt />
                                           <span className="namee">
-                                            {userData.schedule_pdf_name[index]}
+                                            {userData.schedule_pdf[index]}
                                           </span>
                                         </div>
                                         <div
@@ -1664,7 +1683,7 @@ const deleteFilesComFile = async (fileKey) => {
                                             <TaskAlt />
                                             <span className="namee">
                                               {
-                                                userData.Tax_Return_2020_name[
+                                                userData.Tax_Return_2020[
                                                   index
                                                 ]
                                               }
@@ -1784,7 +1803,7 @@ const deleteFilesComFile = async (fileKey) => {
                                             <TaskAlt />
                                             <span className="namee">
                                               {
-                                                userData.Tax_Return_2021_name[
+                                                userData.Tax_Return_2021[
                                                   index
                                                 ]
                                               }
@@ -1914,13 +1933,13 @@ const deleteFilesComFile = async (fileKey) => {
                                               <div className="itemm">
                                                 <TaskAlt />
                                                 <span className="namee">
-                                                  {/* {
+                                                  {
                                                     userData
-                                                      .supplemental_attachment_2020_name[
+                                                      .supplemental_attachment_2020[
                                                       index
                                                     ]
-                                                  } */}
-                                                  <p>waqas</p>
+                                                  }
+                                                  
                                                 </span>
                                               </div>
                                               <div
@@ -2058,7 +2077,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   <span className="namee">
                                                     {
                                                       userData
-                                                        .supplemental_attachment_2021_name[
+                                                        .supplemental_attachment_2021[
                                                         index
                                                       ]
                                                     }
@@ -2192,7 +2211,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   <TaskAlt />
                                                   <span className="namee">
                                                     {
-                                                      userData.FormA1099_name[
+                                                      userData.FormA1099[
                                                         index
                                                       ]
                                                     }
@@ -2314,7 +2333,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   <TaskAlt />
                                                   <span className="namee">
                                                     {
-                                                      userData.FormB1099_name[
+                                                      userData.FormB1099[
                                                         index
                                                       ]
                                                     }
@@ -2434,7 +2453,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               <div className="itemm">
                                                 <TaskAlt />
                                                 <span className="namee">
-                                                  {userData.ks2020_name[index]}
+                                                  {userData.ks2020[index]}
                                                 </span>
                                               </div>
                                               <div
@@ -2549,7 +2568,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               <div className="itemm">
                                                 <TaskAlt />
                                                 <span className="namee">
-                                                  {userData.ks22020_name[index]}
+                                                  {userData.ks22020[index]}
                                                 </span>
                                               </div>
                                               <div
@@ -2720,10 +2739,13 @@ const deleteFilesComFile = async (fileKey) => {
                                 : "white",
                           }}
                         >
-                          {step.title === "Documents Uploaded" ? 
+                          {/* {step.title === "Documents Uploaded" ? 
             (userData && userData?.is_docs_verify !== 'not verified' ? "Documents Uploaded" : "Documents Uploading") :
             step.title
-          }
+          }         */}
+                            {
+                              step.title
+                            }
                         </h4>
                         {step.description && <p>{step.description}</p>}
                       </TimelineContent>

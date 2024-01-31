@@ -1,15 +1,17 @@
 import React from 'react'
  import MultiStepForm from '../../Components/MultiStepForm'
 import Navbar from '../../Components/Navbar/Navbar'
-import Footer from '../../Components/Footer/Footer'
 // import Footer from '../../Components/Footer/Footer'
+
+
+// import Rough from '../../Components/Rough/Rough';
 
 const ApplicationForm = () => {
   return (
     <div>
       <Navbar/>
-      <MultiStepForm/>
-
+ <MultiStepForm/>
+      {/* <Rough/> */}
  
       {/* <Footer/> */}
     </div>

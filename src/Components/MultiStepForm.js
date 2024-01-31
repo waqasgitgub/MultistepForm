@@ -17,7 +17,7 @@ import Pdf2019 from "../../src/Pdf/2019Step2.pdf";
 import Pdf2020 from "../../src/Pdf/2020Step2.pdf";
 import Pdf2021 from "../../src/Pdf/2021Step2.pdf";
 import PdfNetEarning from "../../src/Pdf/netEarn.pdf";
-import { removeToken, setToken } from "../Redux/Slices/userSlice";
+import { removeToken, setToken, setUserDetails } from "../Redux/Slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import gifTick from "./GlobalImages/gif-submit.gif";
@@ -1069,16 +1069,16 @@ const MultiStepForm = () => {
   };
 
   const shouldDisableButtons = () => {
-    return !(checkboxChecked && allFilesSelected());
+    return !( allFilesSelected());
   };
 
   const shouldDisableButtonsAdditional = () => {
-    return !(checkboxChecked && allFilesSelectedAdditional());
+    return !( allFilesSelectedAdditional());
   };
 
-  const shouldDisableButtonLater = () => {
-    return !checkboxChecked;
-  };
+  // const shouldDisableButtonLater = () => {
+  //   return !checkboxChecked;
+  // };
 
   useEffect(() => {
     // Fetch final_roundedValue from local storage when the component mounts
@@ -1095,7 +1095,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "https://app.setczone.com/api/user/updateApplication",
+        "http://localhost:5000/user/updateApplication",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -1129,7 +1129,7 @@ const MultiStepForm = () => {
       setLoading(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "https://app.setczone.com/api/user/updateDocumentStatus",
+        "http://localhost:5000/user/updateDocumentStatus",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -1179,6 +1179,7 @@ const MultiStepForm = () => {
     accounting_professional: "",
     accounting_partnership: "",
     isChecked: false,
+    isCheckedLast: false,
 
     selfEmployedFrom: "",
     isCheckedStepThree: false,
@@ -1186,7 +1187,11 @@ const MultiStepForm = () => {
     scheduleSelfEmployement: "",
     positive_net_earning: "",
     covid_related_issues: "",
+    covid_related_issues2021: "",
+
     setc_program: "",
+    setc_program2021: "",
+
     isCheckedStepNine: false,
     mandatory_questions: "",
 
@@ -1252,13 +1257,16 @@ const MultiStepForm = () => {
 
   const toggleBackground = (year, option) => {
     setTaxYears((prevTaxYears) =>
-      prevTaxYears.map((taxYear) =>
-        taxYear.year === year
-          ? { ...taxYear, [option]: !taxYear[option] }
-          : taxYear
-      )
+      prevTaxYears.map((taxYear) => {
+        if (taxYear.year === year) {
+          return { ...taxYear, eFiled: option === "eFiled", mailed: option === "mailed" };
+        } else {
+          return taxYear;
+        }
+      })
     );
   };
+  
 
   const updateDatabase = (year, option, isActive) => {
     // Here you can send the values (year, option, isActive) to your server or database
@@ -1279,7 +1287,7 @@ const MultiStepForm = () => {
   const formDataPreparing = async (step) => {
     try {
       setLoading(true);
-      const response = await fetch("https://app.setczone.com/api/user/create", {
+      const response = await fetch("http://localhost:5000/user/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1301,17 +1309,23 @@ const MultiStepForm = () => {
           know_about_us: formData.knowAbout,
           accounting_professional: formData.accounting_professional,
           accounting_partnership: formData.accounting_partnership,
+    
         }),
       });
       if (response.ok) {
         // alert(selectToken)
         const data = await response.json();
         handleToken(data.user.token);
+        
+        dispatch(setUserDetails({ firstName: data.user?.first_name, 
+          middleName: data.user?.verified_middleName,
+          
+          lastName: data.user?.last_name }));
 
-        console.log(data.user.first_name, data.user.last_name, "hamzawaqas");
+        // console.log(data.user.first_name, data.user.last_name, "hamzawaqas");
 
-        localStorage.setItem("fName", data.user.first_name);
-        localStorage.setItem("lName", data.user.last_name);
+        // localStorage.setItem("fName", data.user.first_name);
+        // localStorage.setItem("lName", data.user.last_name);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         // setActiveStep((prevActiveStep) => prevActiveStep + 1);
       } else {
@@ -1341,7 +1355,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1371,8 +1385,7 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-
-             personally_sick_symptoms_2020_dates: selectedDates,
+            personally_sick_symptoms_2020_dates: selectedDates,
             onedays: selectedDates?.length,
 
             personally_sick_symptoms_2021_dates: selectedDatesTwo,
@@ -1389,7 +1402,6 @@ const MultiStepForm = () => {
 
             childs_daycare_2021_dates: selectedDatesClosure2021,
             sixdays: selectedDatesClosure2021?.length,
-
 
             // personal_startdate2020: formData.personal_startdate2020,
             // personal_enddate2020: formData.personal_enddate2020,
@@ -1459,7 +1471,7 @@ const MultiStepForm = () => {
 
   const callVeriffAPI = (token) => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
-    const apiEndpoint = "https://app.setczone.com/api/user/createSession"; // Replace with your actual API endpoint
+    const apiEndpoint = "http://localhost:5000/user/createSession"; // Replace with your actual API endpoint
 
     // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
 
@@ -1560,7 +1572,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1633,7 +1645,9 @@ const MultiStepForm = () => {
 
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
-
+            have_you_filed_already_for_setc_2021: formData.setc_program2021,
+            did_you_miss_SEWDTC_2021: formData.covid_related_issues2021,
+            accounting_partnership: formData.accounting_partnership,
             amount2020: formData.amount2020,
             amount2021: formData.amount2021,
 
@@ -1660,7 +1674,10 @@ const MultiStepForm = () => {
       if (response.ok) {
         // alert(`success ${step}`);
         const data = await response.json();
-
+  dispatch(setUserDetails({ firstName: data.user?.first_name, 
+            middleName: data.user?.verified_middleName,
+            
+            lastName: data.user?.last_name }));
         console.log(data);
         await fetchUserDataa();
 
@@ -1769,12 +1786,18 @@ const MultiStepForm = () => {
 
       let stepToSend = step; // Default step value to send
 
-      // if (
-      //   formData.care_for_minor_child === "No"  && activeStep === 14 ) {
-      //   stepToSend = 18; // Set step to 11 based on conditions
+      if (formData.did_receive_unemployement20 === "Yes" && activeStep === 9) {
+        stepToSend = 11; // Set step to 11 based on conditions
+      }
+      // else if (formData.did_receive_unemployement20 === "Yes" && activeStep === 11) {
+      //   stepToSend = 13;
       // }
-      // else
-      if ((formData.minor_child_tax_20 === "No" && activeStep === 14 && formData.did_receive_unemployement21 === "Yes") || (formData.minor_child_tax_21 === "No" && activeStep === 16)) {
+      else if (
+        (formData.minor_child_tax_20 === "No" &&
+          activeStep === 14 &&
+          formData.did_receive_unemployement21 === "Yes") ||
+        (formData.minor_child_tax_21 === "No" && activeStep === 16)
+      ) {
         stepToSend = 18;
       } else if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
         stepToSend = 16;
@@ -1783,7 +1806,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1873,7 +1896,6 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-
             personally_sick_symptoms_2020_dates: selectedDates,
             onedays: selectedDates?.length,
 
@@ -1945,19 +1967,21 @@ const MultiStepForm = () => {
             covid_experienced_symptoms_2021: formData.symptoms2021,
             childs_daycare_2020: formData.closure2020,
             childs_daycare_2021: formData.closure2021,
-
             employed_as_W2: formData.employed_as_W2,
             Family_Sick_Leave: formData.family_sick,
 
             amount2020: formData.amount2020,
             amount2021: formData.amount2021,
-
             your_file_schedule: formData.scheduleSelfEmployement,
             mandatory_questions: formData.mandatory_questions,
             if_you_have_positive_earning: formData.positive_net_earning,
             did_you_miss_SEWDTC: formData.covid_related_issues,
-            have_you_filed_already_for_setc: formData.setc_program,
+            
 
+            have_you_filed_already_for_setc: formData.setc_program,
+            have_you_filed_already_for_setc_2021: formData.setc_program2021,
+            did_you_miss_SEWDTC_2021: formData.covid_related_issues2021,
+            accounting_partnership: formData.accounting_partnership,
             did_receive_unemployement20: formData.did_receive_unemployement20,
             did_receive_unemployement21: formData.did_receive_unemployement21,
             // care_for_minor_child: formData.care_for_minor_child,
@@ -1993,8 +2017,21 @@ const MultiStepForm = () => {
         // } else {
         //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
         // }
-
-        if ((formData.minor_child_tax_20 === "No" && activeStep === 14 && formData.did_receive_unemployement21 === "Yes") || (formData.minor_child_tax_21 === "No" && activeStep === 16)) {
+        if (
+          formData.did_receive_unemployement20 === "Yes" &&
+          activeStep === 9
+        ) {
+          setActiveStep(11); // Set step to 11 based on conditions
+        }
+        //  else if (formData.did_receive_unemployement20 === "Yes" && activeStep === 11) {
+        //   setActiveStep(13);
+        // }
+        else if (
+          (formData.minor_child_tax_20 === "No" &&
+            activeStep === 14 &&
+            formData.did_receive_unemployement21 === "Yes") ||
+          (formData.minor_child_tax_21 === "No" && activeStep === 16)
+        ) {
           setActiveStep(18);
         } else if (formData.minor_child_tax_20 === "No" && activeStep === 14) {
           setActiveStep(16);
@@ -2049,7 +2086,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2060,6 +2097,8 @@ const MultiStepForm = () => {
             step: step,
             first_name: userData?.verified_first,
             last_name: userData?.verified_last,
+         
+            // verified_middleName: 'kil',
             phone: formData.phone,
             email: formData.email,
             business_name: formData.bussinessName,
@@ -2095,7 +2134,6 @@ const MultiStepForm = () => {
 
             childs_daycare_2021_dates: selectedDatesClosure2021,
             sixdays: selectedDatesClosure2021?.length,
-
 
             // personal_startdate2020: formData.personal_startdate2020,
             // personal_enddate2020: formData.personal_enddate2020,
@@ -2140,9 +2178,12 @@ const MultiStepForm = () => {
         // alert(`success ${step}`);
         const data = await response.json();
         // console.log(data.user.first_name, data.user.last_name, "hamzawaqas");
-
-        localStorage.setItem("fName", data?.user?.first_name);
-        localStorage.setItem("lName", data?.user?.last_name);
+  dispatch(setUserDetails({ firstName: data.user?.first_name, 
+            middleName: data.user?.verified_middleName,
+            
+            lastName: data.user?.last_name }));
+        // localStorage.setItem("fName", data?.user?.first_name);
+        // localStorage.setItem("lName", data?.user?.last_name);
         console.log(data);
         await fetchUserDataa();
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -2231,7 +2272,7 @@ const MultiStepForm = () => {
       // }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2362,7 +2403,7 @@ const MultiStepForm = () => {
   const callSetcformData = async (token, formData) => {
     setLoading(true);
     try {
-      const response = await fetch("https://app.setczone.com/api/user/setcformData", {
+      const response = await fetch("http://localhost:5000/user/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2499,31 +2540,35 @@ const MultiStepForm = () => {
       let stepToSend = step;
 
       const { did_receive_unemployement20, did_receive_unemployement21 } =
-      formData;
+        formData;
 
-    // Check the conditions in a more organized way
-    if (activeStep === 13) {
-      if (did_receive_unemployement20 === "No") {
-       
+      // Check the conditions in a more organized way
+
+      if (did_receive_unemployement20 === "Yes" && activeStep === 11) {
+        stepToSend = 13;
+      } else if (did_receive_unemployement21 === "Yes" && activeStep === 10) {
+        stepToSend = 12;
+      } else if (did_receive_unemployement21 === "Yes" && activeStep === 12) {
         stepToSend = 14;
-      } else if (did_receive_unemployement20 === "Yes") {
-       
-        stepToSend = 16;
+      } else if (activeStep === 13) {
+        if (did_receive_unemployement20 === "No") {
+          stepToSend = 14;
+        } else if (did_receive_unemployement20 === "Yes") {
+          stepToSend = 16;
+        }
+      } else if (activeStep === 15) {
+        if (did_receive_unemployement21 === "No") {
+          stepToSend = 16;
+        } else if (did_receive_unemployement21 === "Yes") {
+          stepToSend = 18;
+        }
+      } else {
+        // Default case if none of the specific conditions are met
+        stepToSend = step;
       }
-    } else if (activeStep === 15) {
-      if (did_receive_unemployement21 === "No") {
-        stepToSend = 16
-      } else if (did_receive_unemployement21 === "Yes") {
-       
-        stepToSend = 18
-      }
-    } else {
-      // Default case if none of the specific conditions are met
-      stepToSend = step;
-    }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2622,7 +2667,7 @@ const MultiStepForm = () => {
 
   const callSetcformDataWithoutLoader = async (token, formData) => {
     try {
-      const response = await fetch("https://app.setczone.com/api/user/setcformData", {
+      const response = await fetch("http://localhost:5000/user/setcformData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2648,7 +2693,13 @@ const MultiStepForm = () => {
           formData;
 
         // Check the conditions in a more organized way
-        if (activeStep === 13) {
+        if (did_receive_unemployement20 === "Yes" && activeStep === 11) {
+          setActiveStep(13);
+        } else if (did_receive_unemployement21 === "Yes" && activeStep === 10) {
+          setActiveStep(12);
+        } else if (did_receive_unemployement21 === "Yes" && activeStep === 12) {
+          setActiveStep(14);
+        } else if (activeStep === 13) {
           if (did_receive_unemployement20 === "No") {
             setActiveStep(14);
           } else if (did_receive_unemployement20 === "Yes") {
@@ -2701,7 +2752,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2754,7 +2805,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2763,7 +2814,7 @@ const MultiStepForm = () => {
           },
           body: JSON.stringify({
             step: step,
-           first_name: formData.firstName,
+            first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
             email: formData.email,
@@ -2781,7 +2832,6 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            
             personally_sick_symptoms_2020_dates: selectedDates,
             onedays: selectedDates?.length,
 
@@ -2908,7 +2958,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2935,7 +2985,6 @@ const MultiStepForm = () => {
             net_income_2021: formData.netIncome2021,
             business_negatively_impacted: formData.bussinessNegatively,
 
-            
             personally_sick_symptoms_2020_dates: selectedDates,
             onedays: selectedDates?.length,
 
@@ -3052,7 +3101,7 @@ const MultiStepForm = () => {
   const checkEmailAvailability = async () => {
     try {
       const response = await axios.post(
-        "https://app.setczone.com/api/user/checkMail",
+        "http://localhost:5000/user/checkMail",
         {
           email: formData.email,
         }
@@ -3422,9 +3471,8 @@ const MultiStepForm = () => {
       formDataUpdateWithoutLoader(activeStep);
     }
     if (activeStep === 22) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
-      // handleVerification(activeStep);
+    //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
+     handleVerification(activeStep);
     }
 
     if (activeStep === 23) {
@@ -3448,43 +3496,65 @@ const MultiStepForm = () => {
   //   window.scrollTo(0, 0);
   // };
 
- const handlePrevious = () => {
+  const handlePrevious = () => {
+    // else if (did_receive_unemployement21 === "Yes" && activeStep === 12) {
+    //   setActiveStep(10);
+    //  }
+    //  else if (did_receive_unemployement21 === "Yes" && activeStep === 14) {
+    //   setActiveStep(12);
+    //  }
 
-if(
-  formData.did_receive_unemployement20 === "No" 
-  &&  activeStep === 14)
-  {
-    setActiveStep(13); 
-  } else if(  formData.did_receive_unemployement20 === "Yes" 
- && activeStep === 16)
-  {
-    setActiveStep(13); 
-  } else if(  formData.did_receive_unemployement21 === "No" && formData.minor_child_tax_20 === "Yes"
-  && activeStep === 16)
-   {
-     setActiveStep(15); 
-   } else if(  formData.did_receive_unemployement21 === "Yes" && formData.minor_child_tax_20 === "Yes" 
-   && activeStep === 18)
-    {
-      setActiveStep(15); 
-    }  else if (formData.minor_child_tax_20 === "No" && activeStep === 18 && formData.did_receive_unemployement21 === "Yes")
-       {
-        setActiveStep(14); 
-      } else if (
-      formData.minor_child_tax_20 === "No" && activeStep === 16)
-       {
-        setActiveStep(14); 
-      } else if( formData.minor_child_tax_21 === "No" && activeStep === 18)
-      {
-        setActiveStep(16); 
-      } 
-       else {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-      }
-    
+    if (formData.did_receive_unemployement20 === "Yes" && activeStep === 11) {
+      setActiveStep(9);
+    } else if (
+      formData.did_receive_unemployement21 === "Yes" &&
+      activeStep === 12
+    ) {
+      setActiveStep(10);
+    } else if (
+      formData.did_receive_unemployement20 === "Yes" &&
+      activeStep === 13
+    ) {
+      setActiveStep(11);
+    } else if (
+      formData.did_receive_unemployement20 === "No" &&
+      formData.did_receive_unemployement21 === "Yes" &&
+      activeStep === 14
+    ) {
+      setActiveStep(12);
+    } else if (
+      formData.did_receive_unemployement20 === "Yes" &&
+      activeStep === 16
+    ) {
+      setActiveStep(13);
+    } else if (
+      formData.did_receive_unemployement21 === "No" &&
+      formData.minor_child_tax_20 === "Yes" &&
+      activeStep === 16
+    ) {
+      setActiveStep(15);
+    } else if (
+      formData.did_receive_unemployement21 === "Yes" &&
+      formData.minor_child_tax_20 === "Yes" &&
+      activeStep === 18
+    ) {
+      setActiveStep(15);
+    } else if (
+      formData.minor_child_tax_20 === "No" &&
+      activeStep === 18 &&
+      formData.did_receive_unemployement21 === "Yes"
+    ) {
+      setActiveStep(14);
+    } else if (formData.minor_child_tax_20 === "No" && activeStep === 16) {
+      setActiveStep(14);
+    } else if (formData.minor_child_tax_21 === "No" && activeStep === 18) {
+      setActiveStep(16);
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    }
+
     window.scrollTo(0, 0);
   };
-  
 
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
@@ -3542,11 +3612,15 @@ if(
         [name]: inputValue,
       }));
     }
-    if ( (name === "minor_child_tax_20" && inputValue === "No") 
-    || (formData.did_receive_unemployement20 === "Yes")) {
+    if (
+      (name === "minor_child_tax_20" && inputValue === "No") ||
+      formData.did_receive_unemployement20 === "Yes"
+    ) {
       // setClosureDateRange(["", ""]);
       // setMinordays2020("");
       setSelectedDatesClosure2020([]);
+      // setSelectedDates([]);
+      // setSelectedDatesCared2020([]);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -3554,8 +3628,24 @@ if(
       }));
     }
 
-    if ((name === "minor_child_tax_21" && inputValue === "No") ||
-     (formData.did_receive_unemployement20 === "Yes") ) {
+    // if ( formData.did_receive_unemployement20 === "Yes" && formData.did_receive_unemployement21 === "No") {
+    //   // setClosureDateRange(["", ""]);
+    //   // setMinordays2020("");
+    //   alert("q1 yes")
+    //   setSelectedDatesClosure2020([]);
+    //   setSelectedDates([]);
+    //   setSelectedDatesCared2020([]);
+    // } else {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     [name]: inputValue,
+    //   }));
+    // }
+
+    if (
+      (name === "minor_child_tax_21" && inputValue === "No") ||
+      formData.did_receive_unemployement21 === "Yes"
+    ) {
       // setClosureDateRangeTwo(["", ""]);
       // setMinordays2021("");
       setSelectedDatesClosure2021([]);
@@ -3565,6 +3655,20 @@ if(
         [name]: inputValue,
       }));
     }
+
+    // if ( formData.did_receive_unemployement21 === "Yes" && formData.did_receive_unemployement20 === "No") {
+    //   // setClosureDateRange(["", ""]);
+    //   // setMinordays2020("");
+    //   alert("q2 yes")
+    //   setSelectedDatesClosure2021([]);
+    //   setSelectedDatesTwo([]);
+    //   setSelectedDatesCared2021([]);
+    // } else {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     [name]: inputValue,
+    //   }));
+    // }
 
     if (name === "symptoms2020" && inputValue === "No") {
       // Clear values for 2020 if "No" is selected
@@ -3666,6 +3770,37 @@ if(
     //   }));
     // }
   };
+
+  useEffect(() => {
+    // Logic that depends on the updated state for 2021
+    if (
+      formData.did_receive_unemployement21 === "Yes" &&
+      formData.did_receive_unemployement20 === "No"
+    ) {
+      setSelectedDatesClosure2021([]);
+      setSelectedDatesTwo([]);
+      setSelectedDatesCared2021([]);
+    }
+  }, [
+    formData.did_receive_unemployement21,
+    formData.did_receive_unemployement20,
+  ]);
+
+  useEffect(() => {
+    // Logic that depends on the updated state for 2020
+    if (
+      formData.did_receive_unemployement20 === "Yes" &&
+      formData.did_receive_unemployement21 === "No"
+    ) {
+      setSelectedDatesClosure2020([]);
+      setSelectedDates([]);
+      setSelectedDatesCared2020([]);
+    }
+  }, [
+    formData.did_receive_unemployement20,
+    formData.did_receive_unemployement21,
+  ]);
+
   const handleEmailBlur = async () => {
     const token = localStorage.getItem("token");
     const email = formData.email.trim();
@@ -3715,15 +3850,15 @@ if(
         errorsObj.bussinessName = "Bussiness name cannot be empty";
         hasErrors = true;
       }
-      if (!formData.employees) {
-        errorsObj.employees = "Please enter employess number";
-        hasErrors = true;
-      }
+      // if (!formData.employees) {
+      //   errorsObj.employees = "Please enter employess number";
+      //   hasErrors = true;
+      // }
 
-      if (formData.tradeName.trim() === "") {
-        errorsObj.tradeName = "Trade name cannot be empty";
-        hasErrors = true;
-      }
+      // if (formData.tradeName.trim() === "") {
+      //   errorsObj.tradeName = "Trade name cannot be empty";
+      //   hasErrors = true;
+      // }
 
       if (formData.streetAddressOne.trim() === "") {
         errorsObj.streetAddressOne = "Street address cannot be empty";
@@ -3755,13 +3890,13 @@ if(
         hasErrors = true;
       }
 
-      // if (
-      //   !formData.accounting_partnership &&
-      //   formData.accounting_professional === "Yes"
-      // ) {
-      //   errorsObj.accounting_partnership = "Please select an option";
-      //   hasErrors = true;
-      // }
+      if (
+        !formData.accounting_partnership &&
+        formData.accounting_professional === "Yes"
+      ) {
+        errorsObj.accounting_partnership = "Please select an option";
+        hasErrors = true;
+      }
 
       if (!formData.isChecked) {
         errorsObj.isChecked = "Please check the terms & conditions policy";
@@ -3802,10 +3937,10 @@ if(
         hasErrors = true;
       }
 
-      if (formData.tradeName.trim() === "") {
-        errorsObj.tradeName = "Trade name cannot be empty";
-        hasErrors = true;
-      }
+      // if (formData.tradeName.trim() === "") {
+      //   errorsObj.tradeName = "Trade name cannot be empty";
+      //   hasErrors = true;
+      // }
 
       if (formData.streetAddressOne.trim() === "") {
         errorsObj.streetAddressOne = "Street address cannot be empty";
@@ -3834,6 +3969,11 @@ if(
 
       if (!formData.isChecked) {
         errorsObj.isChecked = "Please check the box";
+        hasErrors = true;
+      }
+
+      if (!formData.isCheckedLast) {
+        errorsObj.isCheckedLast = "Please check the terms & conditions policy";
         hasErrors = true;
       }
     }
@@ -3921,18 +4061,36 @@ if(
         errorsObj.covid_related_issues = "Please select an option";
         hasErrors = true;
       }
+      if (!formData.covid_related_issues2021) {
+        errorsObj.covid_related_issues2021 = "Please select an option";
+        hasErrors = true;
+      }
       if (
         formData.covid_related_issues === "No" &&
-        formData.covid_related_issues !== "Yes"
+        formData.covid_related_issues2021 === "No"
       ) {
         setActiveErrorQualifyFive(true);
         formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
-      if (formData.covid_related_issues === "Yes") {
-        setActiveErrorQualifyFive(false);
-        hasErrors = false;
+      // if (
+      //   formData.covid_related_issues === "Yes" ||
+      //   formData.covid_related_issues2021 === "Yes"
+      // ) {
+      //   setActiveErrorQualifyFive(false);
+      //   hasErrors = false;
+      // }
+      if (!formData.covid_related_issues || !formData.covid_related_issues2021) {
+        // Set errors for individual fields if needed
+        if (!formData.covid_related_issues) {
+          errorsObj.covid_related_issues = "Please select an option";
+        }
+        if (!formData.covid_related_issues2021) {
+          errorsObj.covid_related_issues2021 = "Please select an option";
+        }
+        hasErrors = true;
       }
+      
     }
 
     if (activeStep === 8) {
@@ -3997,50 +4155,115 @@ if(
         errorsObj.setc_program = "Please select an option";
         hasErrors = true;
       }
-      if (formData.setc_program === "Yes" && formData.setc_program !== "No") {
+      if (!formData.setc_program2021) {
+        errorsObj.setc_program2021 = "Please select an option";
+        hasErrors = true;
+      }
+
+      if (
+        formData.setc_program === "Yes" &&
+        formData.setc_program2021 === "Yes"
+      ) {
         setActiveErrorQualifySix(true);
         formDataUpdateWithoutNextStep(activeStep);
         hasErrors = true;
       }
-      if (formData.setc_program === "No") {
+
+      if (
+        formData.setc_program === "No" ||
+        formData.setc_program2021 === "No"
+      ) {
         setActiveErrorQualifySix(false);
         hasErrors = false;
       }
+
+      // if (formData.setc_program === "Yes" && formData.setc_program !== "No") {
+      //   setActiveErrorQualifySix(true);
+      //   formDataUpdateWithoutNextStep(activeStep);
+      //   hasErrors = true;
+      // }
+      // if (formData.setc_program === "No") {
+      //   setActiveErrorQualifySix(false);
+      //   hasErrors = false;
+      // }
     }
 
+    // if (activeStep === 20) {
+    //   if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
+    //     errorsObj.netIncome2019 = "Please enter a value";
+    //     hasErrors = true;
+    //   }
+
+    //   if (Number(formData.netIncome2019.replace(/\D/g, "")) < 10000) {
+    //     largerThan25KCount++;
+    //   }
+
+    //   if (!formData.netIncome2020 || formData.netIncome2020 === "$") {
+    //     errorsObj.netIncome2020 = "Please enter a value";
+    //     hasErrors = true;
+    //   }
+
+    //   if (Number(formData.netIncome2020.replace(/\D/g, "")) < 10000) {
+    //     largerThan25KCount++;
+    //   }
+
+    //   if (!formData.netIncome2021 || formData.netIncome2021 === "$") {
+    //     errorsObj.netIncome2021 = "Please enter a value";
+    //     hasErrors = true;
+    //   }
+
+    //   if (Number(formData.netIncome2021.replace(/\D/g, "")) < 10000) {
+    //     largerThan25KCount++;
+    //   }
+
+    //   if (largerThan25KCount >= 2) {
+    //     hasErrors = true;
+    //     setActiveErrorQualify17(true);
+    //   } else {
+    //     hasErrors = false;
+    //     setActiveErrorQualify17(false);
+    //   }
+    // }
     if (activeStep === 20) {
+      // Check netIncome2019
       if (!formData.netIncome2019 || formData.netIncome2019 === "$") {
         errorsObj.netIncome2019 = "Please enter a value";
         hasErrors = true;
       }
 
-      if (Number(formData.netIncome2019.replace(/\D/g, "")) < 10000) {
-        largerThan25KCount++;
-      }
-
+      // Check netIncome2020
       if (!formData.netIncome2020 || formData.netIncome2020 === "$") {
         errorsObj.netIncome2020 = "Please enter a value";
         hasErrors = true;
       }
 
-      if (Number(formData.netIncome2020.replace(/\D/g, "")) < 10000) {
-        largerThan25KCount++;
-      }
-
+      // Check netIncome2021
       if (!formData.netIncome2021 || formData.netIncome2021 === "$") {
         errorsObj.netIncome2021 = "Please enter a value";
         hasErrors = true;
       }
 
-      if (Number(formData.netIncome2021.replace(/\D/g, "")) < 10000) {
-        largerThan25KCount++;
-      }
+      // Check if at least two fields have amounts greater than or equal to 10,000
+      const netIncome2019Amount = Number(
+        formData.netIncome2019.replace(/\D/g, "")
+      );
+      const netIncome2020Amount = Number(
+        formData.netIncome2020.replace(/\D/g, "")
+      );
+      const netIncome2021Amount = Number(
+        formData.netIncome2021.replace(/\D/g, "")
+      );
 
-      if (largerThan25KCount >= 2) {
-        hasErrors = true;
+      const countGreaterThanOrEqualTo10K = [
+        netIncome2019Amount,
+        netIncome2020Amount,
+        netIncome2021Amount,
+      ].filter((amount) => amount < 10000).length;
+
+      if (countGreaterThanOrEqualTo10K >= 2) {
         setActiveErrorQualify17(true);
+        hasErrors = true;
       } else {
-        hasErrors = false;
         setActiveErrorQualify17(false);
       }
     }
@@ -4151,7 +4374,7 @@ if(
       if (token) {
         //  alert(token, 'useeffect tokeeeeeeeeeeeennnnnnnnnnnnnn')
         try {
-          const response = await fetch("https://app.setczone.com/api/user/getUser", {
+          const response = await fetch("http://localhost:5000/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -4159,13 +4382,27 @@ if(
           });
           if (response.ok) {
             const userData = await response.json();
-           setUserData(userData);
-          
+            setUserData(userData);
+            // dispatch(setUserDetails({ firstName: userData?.first_name, lastName: userData?.last_name }));
+
             // alert(userData.self_employed_from);
 
             const currentStep = userData.step;
             setActiveStep(currentStep || 0);
-          
+
+            // Check conditions to set active step to 18
+            // if (
+            //   (userData?.onedays === "" || userData?.onedays === "0") &&
+            //   (userData?.twodays === "" || userData?.twodays === "0") &&
+            //   (userData?.threedays === "" || userData?.threedays === "0") &&
+            //   (userData?.fourdays === "" || userData?.fourdays === "0") &&
+            //   (userData?.fivedays === "" || userData?.fivedays === "0") &&
+            //   (userData?.sixdays === "" || userData?.sixdays === "0") &&
+            //   userData?.step > 17
+            // ) {
+            //   setActiveStep(17);
+            // }
+
             // setActiveStep(24);
 
             // Extract personal start date and end date from userData
@@ -4334,6 +4571,12 @@ if(
 
               accounting_partnership: userData.accounting_partnership || "",
 
+
+
+              setc_program2021: userData?.have_you_filed_already_for_setc_2021 || "",
+              covid_related_issues2021: userData?.did_you_miss_SEWDTC_2021 || "",
+              
+
               did_receive_unemployement20:
                 userData.did_receive_unemployement20 || "",
               did_receive_unemployement21:
@@ -4429,12 +4672,13 @@ if(
 
     fetchUserData();
   }, []);
-
+  
+  
   const fetchUserDataa = async () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const response = await fetch("https://app.setczone.com/api/user/getUser", {
+        const response = await fetch("http://localhost:5000/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -4456,7 +4700,7 @@ if(
   };
 
   const submitHubspotForm = async () => {
-    const apiUrl = "https://app.setczone.com/api/user/dataPosttoHubspot";
+    const apiUrl = "http://localhost:5000/user/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
     const data = {
@@ -4495,7 +4739,7 @@ if(
   };
 
   //   const callFilesCom = async () => {
-  //     const apiUrl = "https://app.setczone.com/api/user/multiupload";
+  //     const apiUrl = "http://localhost:5000/user/multiupload";
 
   //     const payload = {
   //         path: [...userData?.driving_licence_name, ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
@@ -4538,7 +4782,7 @@ if(
   //     }
   // };
   const callFilesCom = async () => {
-    const apiUrl = "https://app.setczone.com/api/user/multiupload";
+    const apiUrl = "http://localhost:5000/user/multiupload";
 
     const payload = {
       path: [
@@ -4609,25 +4853,21 @@ if(
 
   //   // // Split the original file name using the backslash as the separator
   //   // const parts = originalFileName.split('\\');
-     
+
   //   // // Get the last part of the resulting array, which is the filename
   //   // const filenameView = parts[parts.length - 1];
-      
-   
-   
- 
- 
-  //   // const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
-   
+
+  //   // const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
+
   //   //  const data = {
   //   //    email: userData?.email,
   //   //    fileName: filenameView,
   //   //  };
-   
+
   //   //  try {
   //   //    // Set loading state here, if needed
   //   //    setLoading(true);
-   
+
   //   //    const response = await fetch(apiUrl, {
   //   //      method: "POST",
   //   //      headers: {
@@ -4635,96 +4875,94 @@ if(
   //   //      },
   //   //      body: JSON.stringify(data),
   //   //    });
-   
+
   //   //    if (!response.ok) {
   //   //      throw new Error(`HTTP error! Status: ${response.status}`);
   //   //    }
-      //  const responseData = await response.json();
-      //  const viewUrl = responseData.viewUrl;
-      //  window.open(viewUrl, "_blank");
-       
+  //  const responseData = await response.json();
+  //  const viewUrl = responseData.viewUrl;
+  //  window.open(viewUrl, "_blank");
+
   //   //    alert("hello")
   //   //    console.log("View :", responseData);
-   
+
   //   //    // Reset loading state here, if needed
   //   //    // setLoading(false);
   //   //  } catch (error) {
   //   //    console.error("Error:", error.message);
-   
+
   //   //    // Handle errors or set error state here, if needed
   //   //    // setError(true);
-   
+
   //   //    // Reset loading state here, if needed
   //   //    // setLoading(false);
   //   //  } finally {
   //   //    setLoading(false); // Hide the loader when the request is completed (either success or failure)
   //   //  }
   //    if (fileKey && userData && originalFileName) {
-  //      window.open(`https://app.setczone.com/api/${originalFileName}`, "_blank");
+  //      window.open(`http://localhost:5000/${originalFileName}`, "_blank");
   //    } else {
   //      console.error("File URL not found for the provided index");
   //    }
   //  };
 
-   const openFileInNewTab = async (fileKey, index, originalFileName) => {
-     
+  const openFileInNewTab = async (fileKey, index, originalFileName) => {
     // Split the original file name using the backslash as the separator
-    const parts = originalFileName.split('\\');
-     
+    const parts = originalFileName.split("\\");
+
     // Get the last part of the resulting array, which is the filename
     const filenameView = parts[parts.length - 1];
-   
 
-  const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
 
-  const data = {
-    email: userData?.email,
-    fileName: filenameView,
-  };
-
-  try {
-    // Set loading state here, if needed
-    setLoading(true);
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-   
-    const responseData = await response.json();
-    console.log(responseData)
-    const viewUrl = responseData.url;
-
-    window.open(viewUrl, "_blank");
-
-    
-
-    // Reset loading state here, if needed
-    // setLoading(false);
-  } catch (error) {
-    console.error("Error:", error.message);
-
-    // Handle errors or set error state here, if needed
-    // setError(true);
-
-    // Reset loading state here, if needed
-    // setLoading(false);
-  } finally {
-    setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    if (filenameView.includes("pdf_file_changeable")) {
+      const directUrl = `https://beta.ccalerc.com/storage/app/pdfs/${filenameView}`;
+      window.open(directUrl, "_blank");
+      return;
   }
-};
 
+    const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
 
- 
- 
+    const data = {
+      email: userData?.email,
+      fileName: filenameView,
+    };
+
+    try {
+      // Set loading state here, if needed
+      setLoading(true);
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log(responseData);
+      const viewUrl = responseData.url;
+
+      window.open(viewUrl, "_blank");
+
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } catch (error) {
+      console.error("Error:", error.message);
+
+      // Handle errors or set error state here, if needed
+      // setError(true);
+
+      // Reset loading state here, if needed
+      // setLoading(false);
+    } finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    }
+  };
 
   const removeFile = async (fileKey, index, originalFileName) => {
     // removeFileVasabi(originalFileName);
@@ -4741,7 +4979,7 @@ if(
         alert("Are you sure to remove file");
 
         try {
-          const url = "https://app.setczone.com/api/user/deleteFile";
+          const url = "http://localhost:5000/user/deleteFile";
           const payload = {
             fieldName: `${fileKey}_name`,
             fileName: originalFileName,
@@ -4761,7 +4999,7 @@ if(
           if (response.ok) {
             // Call fetchData() upon successful response
 
-             removeFileVasabi(originalFileName);
+            removeFileVasabi(originalFileName);
 
             await fetchUserDataa();
 
@@ -4784,27 +5022,23 @@ if(
   };
 
   const removeFileVasabi = async (originalFileName) => {
-
-
     // Split the original file name using the backslash as the separator
-    const parts = originalFileName.split('\\');
-    
+    const parts = originalFileName.split("\\");
+
     // Get the last part of the resulting array, which is the filename
     const filename = parts[parts.length - 1];
-      
- 
 
-    const apiUrl = "https://app.setczone.com/api/user/deleteFilesawabi";
-  
+    const apiUrl = "http://localhost:5000/user/deleteFilesawabi";
+
     const data = {
       email: userData?.email,
       fileName: filename,
     };
-  
+
     try {
       // Set loading state here, if needed
       setLoading(true);
-  
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -4812,22 +5046,22 @@ if(
         },
         body: JSON.stringify(data),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const responseData = await response.json();
       console.log("Remove File from swabi successfully:", responseData);
-  
+
       // Reset loading state here, if needed
       // setLoading(false);
     } catch (error) {
       console.error("Error:", error.message);
-  
+
       // Handle errors or set error state here, if needed
       // setError(true);
-  
+
       // Reset loading state here, if needed
       // setLoading(false);
     } finally {
@@ -4860,36 +5094,34 @@ if(
         };
 
         const response = await axios.put(
-          "https://app.setczone.com/api/user/multiple-form-data",
+          "http://localhost:5000/user/multiple-form-data",
           formData,
           config
         );
 
         let lastFileName = "";
 
-      
         if (inputName === "schedule_pdf") {
           const lastScheduleIndex =
             response.data.user.schedule_pdf_name.length - 1;
           lastFileName =
             response.data.user.schedule_pdf_name[lastScheduleIndex];
 
-             uploadVasabi(response.data.user.schedule_pdf_name)
-
+          uploadVasabi(response.data.user.schedule_pdf_name);
         } else if (inputName === "Tax_Return_2020") {
           const lastScheduleIndex =
             response.data.user.Tax_Return_2020_name.length - 1;
           lastFileName =
             response.data.user.Tax_Return_2020_name[lastScheduleIndex];
 
-            uploadVasabi(response.data.user.Tax_Return_2020_name)
+          uploadVasabi(response.data.user.Tax_Return_2020_name);
         } else if (inputName === "Tax_Return_2021") {
           const lastScheduleIndex =
             response.data.user.Tax_Return_2021_name.length - 1;
           lastFileName =
             response.data.user.Tax_Return_2021_name[lastScheduleIndex];
 
-            uploadVasabi(response.data.user.Tax_Return_2021_name)
+          uploadVasabi(response.data.user.Tax_Return_2021_name);
         } else if (inputName === "supplemental_attachment_2020") {
           const lastScheduleIndex =
             response.data.user.supplemental_attachment_2020_name.length - 1;
@@ -4897,7 +5129,7 @@ if(
             response.data.user.supplemental_attachment_2020_name[
               lastScheduleIndex
             ];
-            uploadVasabi(response.data.user.supplemental_attachment_2020_name)
+          uploadVasabi(response.data.user.supplemental_attachment_2020_name);
         } else if (inputName === "supplemental_attachment_2021") {
           const lastScheduleIndex =
             response.data.user.supplemental_attachment_2021_name.length - 1;
@@ -4905,29 +5137,29 @@ if(
             response.data.user.supplemental_attachment_2021_name[
               lastScheduleIndex
             ];
-            uploadVasabi(response.data.user.supplemental_attachment_2021_name)
+          uploadVasabi(response.data.user.supplemental_attachment_2021_name);
         } else if (inputName === "FormA1099") {
           const lastScheduleIndex =
             response.data.user.FormA1099_name.length - 1;
           lastFileName = response.data.user.FormA1099_name[lastScheduleIndex];
 
-          uploadVasabi(response.data.user.FormA1099_name)
+          uploadVasabi(response.data.user.FormA1099_name);
         } else if (inputName === "FormB1099") {
           const lastScheduleIndex =
             response.data.user.FormB1099_name.length - 1;
           lastFileName = response.data.user.FormB1099_name[lastScheduleIndex];
 
-          uploadVasabi(response.data.user.FormB1099_name)
+          uploadVasabi(response.data.user.FormB1099_name);
         } else if (inputName === "ks2020") {
           const lastScheduleIndex = response.data.user.ks2020_name.length - 1;
           lastFileName = response.data.user.ks2020_name[lastScheduleIndex];
 
-          uploadVasabi(response.data.user.ks2020_name)
+          uploadVasabi(response.data.user.ks2020_name);
         } else if (inputName === "ks22020") {
           const lastScheduleIndex = response.data.user.ks22020_name.length - 1;
           lastFileName = response.data.user.ks22020_name[lastScheduleIndex];
 
-          uploadVasabi(response.data.user.ks22020_name)
+          uploadVasabi(response.data.user.ks22020_name);
         }
 
         await handleSuccessfulUpload(inputName, lastFileName);
@@ -4945,32 +5177,27 @@ if(
     }
   };
 
-
   const uploadVasabi = async (files) => {
-   
-      const lastIndex = files.length - 1;
+    const lastIndex = files.length - 1;
 
+    const lastFilename = files[lastIndex];
 
-      const lastFilename = files[lastIndex];
-  
+    const parts = lastFilename.split("\\");
 
-      const parts = lastFilename.split('\\');
+    // Get the last part of the resulting array, which is the filename
+    const filenameFinal = parts[parts.length - 1];
 
-      // Get the last part of the resulting array, which is the filename
-      const filenameFinal = parts[parts.length - 1];
-     
-  
-    const apiUrl = "https://app.setczone.com/api/user/sendfiletosawabi";
-  
+    const apiUrl = "http://localhost:5000/user/sendfiletosawabi";
+
     const data = {
       email: userData?.email,
       fileName: filenameFinal,
     };
-  
+
     try {
       // Set loading state here, if needed
       setLoading(true);
-  
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -4978,29 +5205,28 @@ if(
         },
         body: JSON.stringify(data),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const responseData = await response.json();
       console.log("Success Files.com uploaded:", responseData);
-  
+
       // Reset loading state here, if needed
       // setLoading(false);
     } catch (error) {
       console.error("Error:", error.message);
-  
+
       // Handle errors or set error state here, if needed
       // setError(true);
-  
+
       // Reset loading state here, if needed
       // setLoading(false);
     } finally {
       setLoading(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
-  
 
   const handleSuccessfulUpload = (inputName, fileName) => {
     const currentTime = Date.now(); // Get the current time in milliseconds
@@ -5169,7 +5395,7 @@ if(
                           for="id_phone_number"
                           className="form-label requiredField"
                         >
-                          Owners Phone Number
+                          Phone Number
                         </label>
                         <input
                           type="tel"
@@ -5271,7 +5497,7 @@ if(
                           </div>
                         )}
                       </div>
-                      <div className="col-sm-6">
+                      {/* <div className="col-sm-6">
                         <input
                           type="text"
                           value={formData.employees}
@@ -5294,10 +5520,10 @@ if(
                         )}
 
                         <div className="invalid-feedback emailError"></div>
-                      </div>
+                      </div> */}
                     </div>
 
-                    <div className="mb-2">
+                    {/* <div className="mb-2">
                       <div className="col-sm-6">
                         <label for="Trade-Name" className="form-label">
                           Trade Name, if any(indicate none, if none)
@@ -5326,11 +5552,10 @@ if(
 
                         <div className="invalid-feedback emailError"></div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="mb-2">
                       <label for="Self-employed" className="form-label">
-                        Self-employed business address. This may likely be your
-                        home address unless you use a separate business address
+                        Self-employed business address
                       </label>
                       <input
                         type="text"
@@ -5395,7 +5620,7 @@ if(
                           for="State_Province"
                           className="form-label requiredField"
                         >
-                          State/Province
+                          State
                         </label>
                         <input
                           type="text"
@@ -5422,7 +5647,7 @@ if(
                           for="zipcode"
                           className="form-label requiredField"
                         >
-                          Postal / Zip Code
+                          Zip Code
                         </label>
                         <input
                           type="Number"
@@ -5480,8 +5705,8 @@ if(
                         className="form-label requiredField "
                         style={{ fontWeight: "600" }}
                       >
-                        Are you an accounting professional? (Bookkeeper, CPA,
-                        Accountant, Payroll Specialists)?
+                        Are you an accounting professional? (Bookkeeper, Tax
+                        professionals, Accountant, Payroll Specialists)?
                       </label>
 
                       <div className="optio mb-2">
@@ -5548,7 +5773,7 @@ if(
                           </p>
                         </label>
                       </div>
-                      {/* {formData.accounting_professional === "Yes" && (
+                      {formData.accounting_professional === "Yes" && (
                         <>
                           <div id="additional">
                             <label
@@ -5556,9 +5781,8 @@ if(
                               // className="form-label bg-light py-3 px-1 fs-5"
                               className="form-label requiredField"
                             >
-                              Are you interested in our accounting partnership
-                              that would allow you to purchase the downloadable
-                              calculation?
+                              Would you be interested in learning about our referral program?
+
                             </label>
                             <div className="optio mb-2">
                               <label for="accounting_partnership_yes">
@@ -5626,10 +5850,10 @@ if(
                             </div>
                           </div>
                         </>
-                      )} */}
+                      )}
                     </div>
 
-                    <div className="impot mt-3">
+                    {/* <div className="impot mt-3">
                       <p>
                         The address you provide above will be used as the
                         mailing address for your SETC refund check. If you meet
@@ -5640,7 +5864,7 @@ if(
                         months. This will help guarantee accurate and timely
                         delivery to the correct address.
                       </p>
-                    </div>
+                    </div> */}
                     <div
                       className="d-flex mt-3"
                       style={{ alignItems: "start " }}
@@ -5657,7 +5881,11 @@ if(
                       />
 
                       <p class="mb-3 mt-0">
-                        By checking the box, you agree to our{" "}
+                        By checking this box you attest that the answers and
+                        information you will provide shall be true and accurate
+                        to the best of your knowledge, and understand that once
+                        submitted your responses cannot be changed. You agree to
+                        our{" "}
                         <a
                           style={{
                             textDecoration: "underline",
@@ -5669,14 +5897,16 @@ if(
                         >
                           terms & conditions
                         </a>{" "}
-                        and will allow SETC Zone and its partners to contact you
-                        via phone, text, and/or email.
+                        to keep documentation on file that substantiates claims
+                        made in this application, and will allow SETC Zone and
+                        its partners to contact you via phone, text, and/or
+                        email.
                       </p>
                     </div>
                     {errors.isChecked && (
                       <div
                         className="text-danger"
-                        style={{ fontSize: "13px", fontWeight: 600 }}
+                        style={{ fontSize: "15px", fontWeight: 600 }}
                       >
                         {errors.isChecked}
                       </div>
@@ -6424,14 +6654,17 @@ if(
         );
       case 1:
         return (
-          <div className="step step-2 ">
+          <div className="step step-2 mt-3">
             <div className="container ">
-              <div className="row  justify-content-center" style={{marginTop: -40}}>
+              <div
+                className="row  justify-content-center"
+                style={{ marginTop: -40 }}
+              >
                 <div className="col-lg-12">
                   <div className="start-application">
                     <div className="row roww">
                       <div className="col-lg-12 col-md-12 col-sm-12">
-                        <div class="img-applic-content border-0">
+                        <div class="img-applic-content border-0 pb-0" style={{height:'100vh',display:'flex',justiftContent:'center',flexDirection:'column'}}> 
                           <div class="step2_content w-100 pb-2">
                             {/* <LinearProgress
                       variant="determinate"
@@ -6455,7 +6688,7 @@ if(
                                   margin: "auto",
                                 }}
                               >
-                                How Does The Pre-Qualification Application Work?
+                                What is the Application Process?
                               </h1>
                             </div>
                             <div class="row justify-content-center">
@@ -6484,7 +6717,7 @@ if(
                                         >
                                           {" "}
                                           Answer 4 questions to determine
-                                          Pre-qualifications for upto:
+                                          Pre-qualifications for up to
                                         </h5>
                                       </div>
                                       <div class="d-flex align-items-start justify-content-center">
@@ -6507,8 +6740,8 @@ if(
                               </div>
                             </div>
                           </div>
-                          <div class="step2_content mt-4 w-100">
-                            <div class="text-center d-flex justify-content-center">
+                          <div class="step2_content mt-1 w-100">
+                            {/* <div class="text-center d-flex justify-content-center">
                               <h1
                                 class="mb-3 text-center"
                                 style={{
@@ -6519,7 +6752,7 @@ if(
                               >
                                 What if I am pre-qualified?
                               </h1>
-                            </div>
+                            </div> */}
                             <div class="row justify-content-center mt-md-4 mt-sm-3">
                               <div class="col-lg-12">
                                 <div class="row align-items-center">
@@ -6541,8 +6774,7 @@ if(
                                           class="step2_h5"
                                           style={{ color: "#00b6ff" }}
                                         >
-                                          Continue the application by answering
-                                          4 additional questions.
+                                          Complete questionnaire
                                         </h5>
                                       </div>
 
@@ -6600,8 +6832,8 @@ if(
                                           class="step2_h5"
                                           style={{ color: "#00b6ff" }}
                                         >
-                                          Our professinal Team will process and
-                                          file your return
+                                          Our Tax Professionals will process and
+                                          amend your return
                                         </h5>
                                       </div>
                                     </div>
@@ -6746,9 +6978,8 @@ if(
                               activeErrorQualifyOne && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    We are sorry. By answering “No” to the above
-                                    question, you will not be eligible for the
-                                    SETC program.
+                                    Based on your response, we are unable to
+                                    help you file for the SETC
                                   </h4>
                                 </div>
                               )}
@@ -6827,7 +7058,21 @@ if(
                                 color: "rgb(13, 189, 243)",
                               }}
                             >
-                              Did you file your 1040 Schedule SE
+                              Did you file your{" "}  
+                              <span
+                                style={{
+                                  color: "red",
+                                  cursor: "pointer",
+                                  fontSize: 23,
+                                  textDecoration: "underline",
+                                }}
+                                onClick={() =>
+                                  window.open(Pdf2019, "_blank")
+                                }
+                              >
+                                1040 Schedule SE
+                              </span>{" "} 
+                              
                               (Self-Employment Tax) for the years of 2020 or
                               2021?
                             </h1>
@@ -7165,75 +7410,262 @@ if(
                                 >
                                   Click here for examples
                                 </a>
-                              </span>{" "}
-                              From 4/1/2020-9/30/2021
+                              </span>
+                              {/* {" "}
+                              From 4/1/2020-9/30/2021 */}
                             </label>
 
-                            <div className="optio mb-2">
-                              <label for="covid_related_issues_yes">
-                                <p
+                            <div 
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: 'center'
+
+                               
+                              }}
+                            >
+                              <div className="col-md-2">
+                                <h3
                                   style={{
-                                    backgroundColor:
-                                      formData.covid_related_issues === "Yes"
-                                        ? "lightblue"
-                                        : "initial",
+                                    display: "flex",
+                                    alignItems: "center",
                                   }}
                                 >
-                                  <input
-                                    class={`form-check-input ${
-                                      errors.covid_related_issues
-                                        ? "border-danger"
-                                        : ""
-                                    }`}
-                                    type="radio"
-                                    name="covid_related_issues"
-                                    checked={
-                                      formData.covid_related_issues === "Yes"
-                                    }
-                                    value="Yes"
-                                    id="covid_related_issues_yes"
-                                    onChange={handleInputChange}
-                                  />
-                                  Yes
-                                </p>
-                              </label>
+                                  <span
+                                    style={{
+                                      marginRight: "7px",
+                                      fontSize: 20,
+                                      color: "#172B4D",
+                                    }}
+                                  >
+                                    1.
+                                  </span>
+                                  2020
+                                </h3>
+                              </div>
+                              <div className="col-md-3">
+                                <div className="optio">
+                                  <label
+                                    htmlFor="covid_related_issues_yes"
+                                    style={{
+                                      width: "120px",
+                                    }}
+                                  >
+                                    <p
+                                      className={` ${
+                                        errors.covid_related_issues
+                                          ? "border-danger"
+                                          : ""
+                                      }`}
+                                      style={{
+                                        backgroundColor:
+                                          formData.covid_related_issues ===
+                                          "Yes"
+                                            ? "lightblue"
+                                            : "initial",
+                                        width: "120px",
+                                        // fontSize:'25px',
+                                        fontWeight: "600",
+                                      }}
+                                    >
+                                      <input
+                                        style={{ border: "1px solid red" }}
+                                        className={`form-check-input form_dd ${
+                                          errors.covid_related_issues
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        type="radio"
+                                        name="covid_related_issues"
+                                        checked={
+                                          formData.covid_related_issues ===
+                                          "Yes"
+                                        }
+                                        value="Yes"
+                                        id="covid_related_issues_yes"
+                                        onChange={handleInputChange}
+                                      />{" "}
+                                      Yes
+                                    </p>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className="col-md-3">
+                                <div className="optio">
+                                  <label
+                                    htmlFor="covid_related_issues_no"
+                                    style={{
+                                      width: "120px",
+                                    }}
+                                  >
+                                    <p
+                                      className={` ${
+                                        errors.covid_related_issues
+                                          ? "border-danger"
+                                          : ""
+                                      }`}
+                                      style={{
+                                        backgroundColor:
+                                          formData.covid_related_issues === "No"
+                                            ? "lightblue"
+                                            : "initial",
+                                        width: "120px",
+                                        // fontSize:'25px',
+                                        fontWeight: "600",
+                                      }}
+                                    >
+                                      <input
+                                        className={`form-check-input form_dd ${
+                                          errors.covid_related_issues
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        type="radio"
+                                        name="covid_related_issues"
+                                        checked={
+                                          formData.covid_related_issues === "No"
+                                        }
+                                        value="No"
+                                        id="covid_related_issues_no"
+                                        onChange={handleInputChange}
+                                      />{" "}
+                                      No
+                                    </p>
+                                  </label>
+                                </div>
+                              </div>
                             </div>
-                            <div className="optio">
-                              <label for="covid_related_issues_no">
-                                <p
+
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: 'center'
+
+                              }}
+                            >
+                              <div className="col-md-2">
+                                <h3
                                   style={{
-                                    backgroundColor:
-                                      formData.covid_related_issues === "No"
-                                        ? "lightblue"
-                                        : "initial",
+                                    display: "flex",
+                                    alignItems: "center",
                                   }}
                                 >
-                                  <input
-                                    class={`form-check-input ${
-                                      errors.covid_related_issues
-                                        ? "border-danger"
-                                        : ""
-                                    }`}
-                                    type="radio"
-                                    name="covid_related_issues"
-                                    checked={
-                                      formData.covid_related_issues === "No"
-                                    }
-                                    value="No"
-                                    id="covid_related_issues_no"
-                                    onChange={handleInputChange}
-                                  />
-                                  No
-                                </p>
-                              </label>
+                                  <span
+                                    style={{
+                                      marginRight: "7px",
+                                      fontSize: 20,
+                                      color: "#172B4D",
+                                    }}
+                                  >
+                                    2.
+                                  </span>
+                                  2021
+                                </h3>
+                              </div>
+                              <div className="col-md-3">
+                                <div className="optio">
+                                  <label
+                                    htmlFor="covid_related_issues2021_yes"
+                                    style={{
+                                      width: "120px",
+                                    }}
+                                  >
+                                    <p
+                                      className={` ${
+                                        errors.covid_related_issues2021
+                                          ? "border-danger"
+                                          : ""
+                                      }`}
+                                      style={{
+                                        backgroundColor:
+                                          formData.covid_related_issues2021 ===
+                                          "Yes"
+                                            ? "lightblue"
+                                            : "initial",
+                                        width: "120px",
+                                        // fontSize:'25px',
+                                        fontWeight: "600",
+                                      }}
+                                    >
+                                      <input
+                                        className={`form-check-input form_dd ${
+                                          errors.covid_related_issues2021
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        type="radio"
+                                        name="covid_related_issues2021"
+                                        checked={
+                                          formData.covid_related_issues2021 ===
+                                          "Yes"
+                                        }
+                                        value="Yes"
+                                        id="covid_related_issues2021_yes"
+                                        onChange={handleInputChange}
+                                      />{" "}
+                                      Yes
+                                    </p>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className="col-md-3">
+                                <div className="optio">
+                                  <label
+                                    htmlFor="covid_related_issues2021_no"
+                                    style={{
+                                      width: "120px",
+                                    }}
+                                  >
+                                    <p
+                                      className={` ${
+                                        errors.covid_related_issues2021
+                                          ? "border-danger"
+                                          : ""
+                                      }`}
+                                      style={{
+                                        backgroundColor:
+                                          formData.covid_related_issues2021 ===
+                                          "No"
+                                            ? "lightblue"
+                                            : "initial",
+                                        width: "120px",
+                                        // fontSize:'25px',
+                                        fontWeight: "600",
+                                      }}
+                                    >
+                                      <input
+                                        className={`form-check-input form_dd ${
+                                          errors.covid_related_issues2021
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        type="radio"
+                                        name="covid_related_issues2021"
+                                        checked={
+                                          formData.covid_related_issues2021 ===
+                                          "No"
+                                        }
+                                        value="No"
+                                        id="covid_related_issues2021_no"
+                                        onChange={handleInputChange}
+                                      />{" "}
+                                      No
+                                    </p>
+                                  </label>
+                                </div>
+                              </div>
                             </div>
+
                             {formData.covid_related_issues === "No" &&
+                              formData.covid_related_issues2021 === "No" &&
                               activeErrorQualifyFive && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                    We are sorry. By answering “No” to the above
-                                    question, you will not be eligible for the
-                                    SETC program.
+                                    Based on your responses, we are unable to
+                                    help you file for the SETC.
                                   </h4>
                                 </div>
                               )}
@@ -7526,7 +7958,7 @@ if(
                             />
                             <div style={{ textAlign: "center" }}>
                               <h1>Congratulations!</h1>
-                              <p
+                              {/* <p
                                 style={{
                                   color: "green",
                                   fontSize: 25,
@@ -7535,7 +7967,7 @@ if(
                                 }}
                               >
                                 Your Pre-Qualified for up to $32,220.00!!!
-                              </p>
+                              </p> */}
                               <label
                                 htmlFor="congrats"
                                 className="form-label headng text-center mt-3"
@@ -7545,9 +7977,8 @@ if(
                                 }}
                               >
                                 Based on the answers you provided you are
-                                prequalified to receive the Self Employed Tax
-                                Credit. Click below to continue your
-                                application!
+                                potentially eligible for up to $32,220.00!!!
+                                Click below to continue your application!
                               </label>
                             </div>
                           </div>
@@ -7565,9 +7996,9 @@ if(
                               <h1 style={{ fontSize: "22px !important" }}>
                                 Congratulations!
                               </h1>
-                              <p style={{ fontSize: "14px !important" }}>
+                              {/* <p style={{ fontSize: "14px !important" }}>
                                 Your Pre-Qualified for up to $32,220.00!!!
-                              </p>
+                              </p> */}
                               <label
                                 htmlFor="congrats"
                                 className="form-label headng text-center"
@@ -7578,11 +8009,10 @@ if(
                                 }}
                               >
                                 Based on the answers you provided you are
-                                prequalified to receive the Self Employed Tax
-                                Credit. Click below to continue your
-                                application!
+                                potentially eligible for up to $32,220.00!!!
+                                Click below to continue your application!
                               </label>
-                              <p>Click below to continue your application!</p>
+                              {/* <p>Click below to continue your application!</p> */}
                             </div>
                           </div>
                           <div style={{ marginTop: 40 }}>
@@ -7616,7 +8046,10 @@ if(
         return (
           <div className="step step-8 ">
             <div className="container ">
-              <div className="row  justify-content-center" style={{marginTop: -40}}>
+              <div
+                className="row  justify-content-center"
+                style={{ marginTop: -40 }}
+              >
                 <div className="col-lg-12">
                   <div className="start-application">
                     <div className="row ROWW">
@@ -7629,7 +8062,7 @@ if(
                             <h2 style={{ color: "#DC3545" }}>
                               Welcome To the SETC Eligibility Application!
                             </h2>
-                            <h1 class="wee">How does this work?</h1>
+                            <h1 class="wee my-3">How does this work?</h1>
 
                             <div class="step2_content mt-0 w-100">
                               <div class="row justify-content-center mt-md-4 mt-sm-3">
@@ -7656,8 +8089,7 @@ if(
                                             class="step2_h5"
                                             style={{ color: "#00b6ff" }}
                                           >
-                                            Answer 13 questions of the
-                                            questionnaire
+                                            Complete questionnaire
                                           </h5>
                                         </div>
 
@@ -7735,7 +8167,7 @@ if(
                                             class="step2_h5"
                                             style={{ color: "#00b6ff" }}
                                           >
-                                            Our Tex professinals will process
+                                            Our Tax professionals will process
                                             and file your return
                                           </h5>
                                         </div>
@@ -7757,7 +8189,7 @@ if(
                                   color: "#1A2C57",
                                 }}
                               >
-                                What if I am pre-qualified?
+                                Documents needed:
                               </h1>
                             </div>
                             <div class="row justify-content-center mt-md-4 mt-sm-3">
@@ -7888,7 +8320,7 @@ if(
                               type="button"
                               class="btn btn-primary next-step step2_next mx-1"
                             >
-                              Let's Get Started
+                              Next
                             </button>
                           </div>
                         </div>
@@ -7937,7 +8369,7 @@ if(
                             }}
                             className="text-center"
                           >
-                            Question 1 of 13
+                            Question 1 of 13 step = {activeStep}
                           </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <h1
@@ -7946,8 +8378,8 @@ if(
                                 color: "rgb(13, 189, 243)",
                               }}
                             >
-                              Did you receive unemployment from April 1st, 2020
-                              - December 31st, 2020?
+                              Did you receive any unemployment income during April 1st, 2020 - December
+31st, 2020?
                             </h1>
 
                             <div className="optio mb-2">
@@ -8090,7 +8522,7 @@ if(
                             }}
                             className="text-center"
                           >
-                            Question 2 of 13
+                            Question 2 of 13 step = {activeStep}
                           </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <h1
@@ -8099,8 +8531,8 @@ if(
                                 color: "rgb(13, 189, 243)",
                               }}
                             >
-                              Did you receive unemployment from January 1st,
-                              2021 - September 30th, 2021?
+                              Did you receive any unemployment income during January 1st,2021 - September 30th,
+                                      2021?
                             </h1>
 
                             <div className="optio mb-2">
@@ -8172,7 +8604,8 @@ if(
                               activeErrorDidRecieveUnemployement && (
                                 <div>
                                   <h4 style={{ color: "#e62e2d" }}>
-                                   Based on your answers, we will not be able to help you claim the credit.
+                                    Based on your answers, we will not be able
+                                    to help you claim the credit.
                                   </h4>
                                 </div>
                               )}
@@ -8247,7 +8680,7 @@ if(
                             }}
                             className=" mb-4"
                           >
-                            Question 3 of 13
+                            Question 3 of 13 step = {activeStep}
                           </h3> */}
                           {/* </div> */}
                           <label
@@ -8255,9 +8688,10 @@ if(
                             className="form-label headng"
                             style={{ fontWeight: "600" }}
                           >
-                            Were you personally sick with Covid, experienced
-                            Covid like symptoms, needed to quarantine, underwent
-                            testing, and took time off of work in 2020? 4/1/2020-3/31/21 {" "}
+                            Did you miss work because you were personally sick with
+                            Covid, experienced Covid like symptoms, needed to
+                            quarantine, or underwent testing from April 1st, 2020 -
+                            December 31st, 2020?{" "}
                             <span
                               style={{
                                 color: "red",
@@ -8350,7 +8784,7 @@ if(
                                     justifyContent: "space-between",
                                   }}
                                 >
-                                  <DatePicker
+                                  {/* <DatePicker
                                     selectsRange={true}
                                     startDate={personal_startdate2020}
                                     endDate={personal_enddate2020}
@@ -8375,10 +8809,18 @@ if(
                                     >
                                       Add Dates
                                     </button>
-                                  </div>
+                                  </div> */}
                                 </div>
-                                 <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
-                               
+                                <Typography
+                                  style={{
+                                    color: "orangered",
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Mark to add individual dates below
+                                </Typography>
+
                                 <div style={{ marginTop: 20 }}>
                                   <MultiplePicker
                                     style={{ padding: "20px 6px" }}
@@ -8419,7 +8861,16 @@ if(
                             />
                              {' days'} */}
                                   {/* /> */}
-                                  You have selected <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDates?.length} days</span> 
+                                  You have selected{" "}
+                                  <span
+                                    style={{
+                                      color: "green",
+                                      fontSize: 16,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {selectedDates?.length} days
+                                  </span>
                                 </div>
 
                                 <Modal
@@ -8464,7 +8915,7 @@ if(
                                         >
                                           Oops...
                                         </Typography>
-                                        <p  id="modal-description">
+                                        <p id="modal-description">
                                           You have selected{" "}
                                           {selectedDates?.length} days. Please
                                           select 10 days or less.
@@ -8505,8 +8956,7 @@ if(
                                           Oops...
                                         </Typography>
                                         <p id="modal-description">
-                                           Please select dates! If you are selecting date range then you should
- press "Add Dates" button
+                                          Please select dates!
                                         </p>
                                         <button
                                           style={{
@@ -8597,16 +9047,17 @@ if(
                             }}
                             className=" mb-4"
                           >
-                            Question 4 of 13
+                            Question 4 of 13 step = {activeStep}
                           </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
-                            Were you personally sick with Covid, experienced
-                            Covid like symptoms, needed to quarantine, underwent
-                            testing, and took time off of work in 2021? 4/1/2020-3/31/21{" "}
+                            Did you miss work because you were personally sick with
+                            Covid, experienced Covid like symptoms, needed to
+                            quarantine, or underwent testing from January 1st -
+                            September 30th 2021?{" "}
                             <span
                               style={{
                                 color: "red",
@@ -8615,7 +9066,7 @@ if(
                                 textDecoration: "underline",
                               }}
                             >
-                               (Max 10 days)
+                              (Max 10 days)
                             </span>
                           </label>
 
@@ -8699,7 +9150,7 @@ if(
                                     justifyContent: "space-between",
                                   }}
                                 >
-                                  <DatePicker
+                                  {/* <DatePicker
                                     selectsRange={true}
                                     startDate={personal_startdate2021}
                                     endDate={personal_enddate2021}
@@ -8722,14 +9173,21 @@ if(
                                     >
                                       Add Dates
                                     </button>
-                                  </div>
+                                  </div> */}
                                 </div>
-                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <Typography
+                                  style={{
+                                    color: "orangered",
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Mark to add individual dates below
+                                </Typography>
                                 <div style={{ marginTop: 20 }}>
                                   <MultiplePicker
                                     multiple
                                     style={{ padding: "20px 6px" }}
-
                                     value={selectedDatesTwo}
                                     currentDate={specificDate2}
                                     minDate={new Date(2021, 0, 1)} // April 1, 2020
@@ -8764,9 +9222,16 @@ if(
                               className="custom-date-picker-input"
                               placeholder="Number of days"
                             /> */}
-                                  You have selected {" "}
-                                 
-                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesTwo?.length} days</span> 
+                                  You have selected{" "}
+                                  <span
+                                    style={{
+                                      color: "green",
+                                      fontSize: 16,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {selectedDatesTwo?.length} days
+                                  </span>
                                 </div>
 
                                 <Modal
@@ -8852,9 +9317,7 @@ if(
                                           Oops...
                                         </Typography>
                                         <p id="modal-description">
-                                          Please select dates! If you are
-                                          selecting date range then you should
-                                          press "Add Dates" button
+                                          Please select dates!
                                         </p>
                                         <button
                                           style={{
@@ -8946,17 +9409,17 @@ if(
                             }}
                             className=" mb-4"
                           >
-                            Question 5 of 13
+                            Question 5 of 13 step = {activeStep}
                           </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
-                            Did you care for someone else who was affected by
-                            Covid, experienced Covid like symptoms, needed to
-                            quarantine, underwent testing, and took time off of
-                            work in 2020? 4/1/2020-3/31/21 {" "}
+                            Did you miss work because you cared for someone else who
+                            was affected by Covid, experienced Covid like symptoms,
+                            needed to quarantine or underwent testing from April 1st -
+                            December 31st, 2020?{" "}
                             <span
                               style={{
                                 color: "red",
@@ -9045,7 +9508,7 @@ if(
                                     justifyContent: "space-between",
                                   }}
                                 >
-                                  <DatePicker
+                                  {/* <DatePicker
                                     selectsRange={true}
                                     startDate={cared_startdate2020}
                                     endDate={cared_enddate2020}
@@ -9067,9 +9530,17 @@ if(
                                     >
                                       Add Dates
                                     </button>
-                                  </div>
+                                  </div> */}
                                 </div>
-                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <Typography
+                                  style={{
+                                    color: "orangered",
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Mark to add individual dates below
+                                </Typography>
                                 <div style={{ marginTop: 20 }}>
                                   <MultiplePicker
                                     multiple
@@ -9111,8 +9582,15 @@ if(
                                 placeholder="Number of days"
                               /> */}
                                   You have selected{" "}
-                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesCared2020?.length} days</span> 
-                                  
+                                  <span
+                                    style={{
+                                      color: "green",
+                                      fontSize: 16,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {selectedDatesCared2020?.length} days
+                                  </span>
                                 </div>
 
                                 <Modal
@@ -9198,9 +9676,7 @@ if(
                                           Oops...
                                         </Typography>
                                         <p id="modal-description">
-                                          Please select dates! If you are
-                                          selecting date range then you should
-                                          press "Add Dates" button
+                                          Please select dates!
                                         </p>
                                         <button
                                           style={{
@@ -9291,17 +9767,17 @@ if(
                             }}
                             className=" mb-4"
                           >
-                            Question 6 of 13
+                            Question 6 of 13 step = {activeStep}
                           </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
-                            Did you care for someone else who was affected by
-                            Covid, experienced Covid like symptoms, needed to
-                            quarantine, underwent testing, and took time off of
-                            work in 2021? 4/1/2021-9/30/21{" "}
+                           Did you miss work because you cared for someone else who
+                            was affected by Covid, experienced Covid like symptoms,
+                            needed to quarantine or underwent testing from January 1st,
+                            2021 - September 30th, 2021?{" "}
                             <span
                               style={{
                                 color: "red",
@@ -9310,7 +9786,7 @@ if(
                                 textDecoration: "underline",
                               }}
                             >
-                               (Max 10 days)
+                              (Max 10 days)
                             </span>
                           </label>
 
@@ -9390,7 +9866,7 @@ if(
                                     justifyContent: "space-between",
                                   }}
                                 >
-                                  <DatePicker
+                                  {/* <DatePicker
                                     selectsRange={true}
                                     startDate={cared_startdate2021}
                                     endDate={cared_enddate2021}
@@ -9414,9 +9890,17 @@ if(
                                     >
                                       Add Dates
                                     </button>
-                                  </div>
+                                  </div> */}
                                 </div>
-                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <Typography
+                                  style={{
+                                    color: "orangered",
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Mark to add individual dates below
+                                </Typography>
                                 <div style={{ marginTop: 20 }}>
                                   <MultiplePicker
                                     multiple
@@ -9459,8 +9943,15 @@ if(
                                                           placeholder="Number of days"
                                                         /> */}
                                   You have selected{" "}
-                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesCared2021?.length} days</span> 
-                                 
+                                  <span
+                                    style={{
+                                      color: "green",
+                                      fontSize: 16,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {selectedDatesCared2021?.length} days
+                                  </span>
                                 </div>
 
                                 <Modal
@@ -9546,9 +10037,7 @@ if(
                                           Oops...
                                         </Typography>
                                         <p id="modal-description">
-                                          Please select dates! If you are
-                                          selecting date range then you should
-                                          press "Add Dates" button
+                                          Please select dates!
                                         </p>
                                         <button
                                           style={{
@@ -9635,7 +10124,7 @@ if(
                             }}
                             className="text-center"
                           >
-                            Question 7 of 13
+                            Question 7 of 13 step = {activeStep}
                           </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <label
@@ -9643,7 +10132,7 @@ if(
                               className="form-label headng "
                               style={{ fontWeight: "600" }}
                             >
-                              Did you claim your minor child/children in your
+                              Did you claim your minor child/children on your
                               taxes for 2020?
                             </label>
 
@@ -9850,18 +10339,18 @@ if(
                             }}
                             className=" mb-4"
                           >
-                            Question 8 of 13
+                            Question 8 of 13 step = {activeStep}
                           </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
-                            Were you affected by the closure of your child's
-                            school/daycare due to COVID restrictions, or how
-                            many days did you care for your minor child who was
-                            affected by COVID, which impacted your work in
-                            2020? 4/1/2020-3/31/21 {" "}
+                            Did you miss work because you were affected by the
+                            closure of your child‘s school/daycare due to COVID
+                            restrictions or because you cared for your minor
+                            child who was affected by covid during April 1st, 2020 - March 31st,
+                            2021 ?{" "}
                             <span
                               style={{
                                 color: "red",
@@ -9870,7 +10359,7 @@ if(
                                 textDecoration: "underline",
                               }}
                             >
-                               (50 days max)
+                              (50 days max)
                             </span>
                           </label>
 
@@ -9977,7 +10466,15 @@ if(
                                     </button>
                                   </div>
                                 </div>
-                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <Typography
+                                  style={{
+                                    color: "orangered",
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Mark to add individual dates below
+                                </Typography>
                                 <div style={{ marginTop: 20 }}>
                                   <MultiplePicker
                                     multiple
@@ -10028,8 +10525,15 @@ if(
                         placeholder="Number of days"
                       /> */}
                                   You have selected{" "}
-                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesClosure2020?.length} days</span> 
-
+                                  <span
+                                    style={{
+                                      color: "green",
+                                      fontSize: 16,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {selectedDatesClosure2020?.length} days
+                                  </span>
                                 </div>
                                 <Modal
                                   open={openModalClosure}
@@ -10203,7 +10707,7 @@ if(
                             }}
                             className="text-center"
                           >
-                            Question 9 of 13
+                            Question 9 of 13 step = {activeStep}
                           </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <h1
@@ -10212,7 +10716,7 @@ if(
                                 color: "rgb(13, 189, 243)",
                               }}
                             >
-                              Did you claim your minor child/children in your
+                              Did you claim your minor child/children on your
                               taxes for 2021?
                             </h1>
 
@@ -10361,17 +10865,17 @@ if(
                             }}
                             className=" mb-4"
                           >
-                            Question 10 of 13
+                            Question 10 of 13 step = {activeStep}
                           </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
                             style={{ fontWeight: "600" }}
                           >
-                            Were you affected by the closure of your child's
-                            school/daycare due to COVID restrictions, or how
-                            many days did you care for your minor child who was
-                            affected by COVID, which impacted your work in 2021? 4/1/2021-9/30/21{" "}
+                            Did you miss work because you were affected by the closure
+                            of your child’s school/daycare due to Covid restrictions or
+                            because you cared for your minor child who was affected by
+                            Covid during April 1st - September 30th 2021?{" "}
                             <span
                               style={{
                                 color: "red",
@@ -10380,7 +10884,7 @@ if(
                                 textDecoration: "underline",
                               }}
                             >
-                               (60 days max)
+                              (60 days max)
                             </span>
                           </label>
 
@@ -10489,7 +10993,15 @@ if(
                                   </div>
                                 </div>
 
-                                <Typography style={{color: 'orangered', fontSize: 16, fontWeight: 600}}>Click to add individual dates below...</Typography>
+                                <Typography
+                                  style={{
+                                    color: "orangered",
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Mark to add individual dates below
+                                </Typography>
                                 <div style={{ marginTop: 20 }}>
                                   <MultiplePicker
                                     multiple
@@ -10539,8 +11051,15 @@ if(
                                 placeholder="Number of days"
                               /> */}
                                   You have selected{" "}
-                                  <span style={{color: 'green', fontSize: 16, fontWeight: 600}}>{selectedDatesClosure2021?.length} days</span> 
-                                 
+                                  <span
+                                    style={{
+                                      color: "green",
+                                      fontSize: 16,
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {selectedDatesClosure2021?.length} days
+                                  </span>
                                 </div>
                                 <Modal
                                   open={openModalClosureTwo}
@@ -10709,22 +11228,25 @@ if(
                       <div className="row ROWW">
                         <div className="col-lg-8 col-md-8 col-sm-12">
                           <div className="img-applic-content">
-                            <label
+                            {/* <label
                               for="net_income_2019"
                               className="form-label fs-5"
                               style={{ color: "red" }}
                             >
                               Oops...!
                             </label>
-                            <br />
+                            <br /> */}
                             <label
                               for="net_income_2019"
                               className="form-label fs-5"
-                              style={{ color: "red" }}
+                              style={{
+                                color: "red",
+                                fontSize: 18,
+                                alignItems: "center",
+                              }}
                             >
-                              "Based on the previous response, you are not
-                              eligible as your value does not meet our
-                              criteria."
+                              Based on the previous response, you are not
+                              eligible as your value does not meet our criteria.
                             </label>
                             <div className="d-flex justify-content-center mt-3">
                               <button
@@ -10782,7 +11304,7 @@ if(
                               }}
                               className="text-center"
                             >
-                              Question 11 of 13
+                              Question 11 of 13 step = {activeStep}
                             </h3> */}
                             <div style={{ marginTop: 40 }}>
                               <label
@@ -10794,7 +11316,7 @@ if(
                                 program/FFCRA for the years of 2020 and 2021?
                               </label>
 
-                              <div className="optio mb-2">
+                              {/* <div className="optio mb-2">
                                 <label for="setc_program_yes">
                                   <p
                                     style={{
@@ -10847,15 +11369,251 @@ if(
                                     No
                                   </p>
                                 </label>
+                              </div> */}
+
+                              <div 
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                   justifyContent: "center",
+                                }}
+                              >
+                                <div className="col-md-2">
+                                  <h3
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        marginRight: "7px",
+                                        fontSize: 20,
+                                        color: "#172B4D",
+                                      }}
+                                    >
+                                      1)
+                                    </span>
+                                    2020
+                                  </h3>
+                                </div>
+                                <div className="col-md-3">
+                                  <div className="optio">
+                                    <label
+                                      htmlFor="setc_program_yes"
+                                      style={{
+                                        width: "120px",
+                                      }}
+                                    >
+                                      <p
+                                        className={` ${
+                                          errors.setc_program
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        style={{
+                                          backgroundColor:
+                                            formData.setc_program === "Yes"
+                                              ? "lightblue"
+                                              : "initial",
+                                          width: "120px",
+                                          // fontSize:'25px',
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        <input
+                                          style={{ border: "1px solid red" }}
+                                          className={`form-check-input form_dd ${
+                                            errors.setc_program
+                                              ? "border-danger"
+                                              : ""
+                                          }`}
+                                          type="radio"
+                                          name="setc_program"
+                                          checked={
+                                            formData.setc_program === "Yes"
+                                          }
+                                          value="Yes"
+                                          id="setc_program_yes"
+                                          onChange={handleInputChange}
+                                        />{" "}
+                                        Yes
+                                      </p>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="col-md-3">
+                                  <div className="optio">
+                                    <label
+                                      htmlFor="setc_program_no"
+                                      style={{
+                                        width: "120px",
+                                      }}
+                                    >
+                                      <p
+                                        className={` ${
+                                          errors.setc_program
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        style={{
+                                          backgroundColor:
+                                            formData.setc_program === "No"
+                                              ? "lightblue"
+                                              : "initial",
+                                          width: "120px",
+                                          // fontSize:'25px',
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        <input
+                                          className={`form-check-input form_dd ${
+                                            errors.setc_program
+                                              ? "border-danger"
+                                              : ""
+                                          }`}
+                                          type="radio"
+                                          name="setc_program"
+                                          checked={
+                                            formData.setc_program === "No"
+                                          }
+                                          value="No"
+                                          id="setc_program_no"
+                                          onChange={handleInputChange}
+                                        />{" "}
+                                        No
+                                      </p>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <div className="col-md-2">
+                                  <h3
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        marginRight: "7px",
+                                        fontSize: 20,
+                                        color: "#172B4D",
+                                      }}
+                                    >
+                                      2)
+                                    </span>
+                                    2021
+                                  </h3>
+                                </div>
+                                <div className="col-md-3">
+                                  <div className="optio">
+                                    <label
+                                      htmlFor="setc_program2021_yes"
+                                      style={{
+                                        width: "120px",
+                                      }}
+                                    >
+                                      <p
+                                        className={` ${
+                                          errors.setc_program2021
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        style={{
+                                          backgroundColor:
+                                            formData.setc_program2021 === "Yes"
+                                              ? "lightblue"
+                                              : "initial",
+                                          width: "120px",
+                                          // fontSize:'25px',
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        <input
+                                          style={{ border: "1px solid red" }}
+                                          className={`form-check-input form_dd ${
+                                            errors.setc_program2021
+                                              ? "border-danger"
+                                              : ""
+                                          }`}
+                                          type="radio"
+                                          name="setc_program2021"
+                                          checked={
+                                            formData.setc_program2021 === "Yes"
+                                          }
+                                          value="Yes"
+                                          id="setc_program2021_yes"
+                                          onChange={handleInputChange}
+                                        />{" "}
+                                        Yes
+                                      </p>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="col-md-3">
+                                  <div className="optio">
+                                    <label
+                                      htmlFor="setc_program2021_no"
+                                      style={{
+                                        width: "120px",
+                                      }}
+                                    >
+                                      <p
+                                        className={` ${
+                                          errors.setc_program2021
+                                            ? "border-danger"
+                                            : ""
+                                        }`}
+                                        style={{
+                                          backgroundColor:
+                                            formData.setc_program2021 === "No"
+                                              ? "lightblue"
+                                              : "initial",
+                                          width: "120px",
+                                          // fontSize:'25px',
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        <input
+                                          className={`form-check-input form_dd ${
+                                            errors.setc_program2021
+                                              ? "border-danger"
+                                              : ""
+                                          }`}
+                                          type="radio"
+                                          name="setc_program2021"
+                                          checked={
+                                            formData.setc_program2021 === "No"
+                                          }
+                                          value="No"
+                                          id="setc_program2021_no"
+                                          onChange={handleInputChange}
+                                        />{" "}
+                                        No
+                                      </p>
+                                    </label>
+                                  </div>
+                                </div>
                               </div>
 
                               {formData.setc_program === "Yes" &&
+                                formData.setc_program2021 === "Yes" &&
                                 activeErrorQualifySix && (
                                   <div>
                                     <h4 style={{ color: "#e62e2d" }}>
-                                      We are sorry. By answering “YES” to the
-                                      above question, you will not be eligible
-                                      for the SETC program.
+                                      Based on your responses, we are unable to
+                                      help you file for the SETC.
                                     </h4>
                                   </div>
                                 )}
@@ -10927,7 +11685,7 @@ if(
                             }}
                             className="text-center"
                           >
-                            Question 12 of 13
+                            Question 12 of 13 step = {activeStep}
                           </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <label
@@ -10935,8 +11693,8 @@ if(
                               className="form-label headng "
                               style={{ fontWeight: "600" }}
                             >
-                              Were you self-employed and employed as a W2 during
-                              4/1/2020-9/30/2021?*
+                              Were you also employed as a W2 from April
+                              1st, 2020-September 30th, 2021?
                             </label>
 
                             <div className="optio mb-2">
@@ -11082,7 +11840,7 @@ if(
                                             ? "border-danger"
                                             : ""
                                         }`}
-                                        placeholder="2021 Income"
+                                        placeholder="2020 Income"
                                         onChange={handleInputChange}
                                         id="amount2020"
                                       />
@@ -11228,14 +11986,13 @@ if(
                             }}
                             className="text-center"
                           >
-                            Question 13 of 13
+                            Question 13 of 13 step = {activeStep}
                           </h3> */}
                           <h4
                             className="text-center "
                             style={{ color: "rgb(13, 189, 243)" }}
                           >
-                            What was my the Net Income for the years of
-                            2019,2020,2021?
+                            What was my Net Income for the following year(s)?
                           </h4>
                           <h5
                             className="text-center mb-3"
@@ -11283,17 +12040,17 @@ if(
                                 <div class="modal-body text-center">
                                   <img
                                     class="img-fluid mb-2 p-2"
-                                    src="https://agree.setczone.comstorage/pdf-2019.png"
+                                    src="https://beta.setczone.com/storage/2019-%201040%20FORM%20SCHEDULE%20C.pdf"
                                     style={{ border: "1px solid black" }}
                                   />
                                   <img
                                     class="img-fluid mb-2 p-2"
-                                    src="https://agree.setczone.comstorage/pdf-2020.png"
+                                    src="https://beta.setczone.com/storage/2020-%201040%20FORM%20SCHEDULE%20C.pdf"
                                     style={{ border: "1px solid black" }}
                                   />
                                   <img
                                     class="img-fluid mb-2 p-2"
-                                    src="https://agree.setczone.comstorage/pdf-2021.png"
+                                    src="https://beta.setczone.com/storage/2021-%201040%20FORM%20SCHEDULE%20C.pdf"
                                     style={{ border: "1px solid black" }}
                                   />
                                   <div class="row justify-content-end mb-3">
@@ -11405,7 +12162,7 @@ if(
                                 <tbody>
                                   {taxYears.map(({ year, eFiled, mailed }) => (
                                     <tr key={year}>
-                                      <td style={{ fontWeight: "600" }}>
+                                      <td style={{ fontWeight: "600", fontSize: 22 }}>
                                         {year}
                                       </td>
                                       <td
@@ -11425,6 +12182,7 @@ if(
                                           style={{
                                             display: "flex",
                                             width: "90px",
+                                            fontSize: 20,
                                             color: "white",
                                             backgroundColor: eFiled
                                               ? "rgb(0, 182, 255)"
@@ -11455,6 +12213,7 @@ if(
                                             display: "flex",
                                             width: "90px",
                                             color: "white",
+                                            fontSize: 20,
                                             backgroundColor: mailed
                                               ? "rgb(0, 182, 255)"
                                               : "gray",
@@ -11583,8 +12342,8 @@ if(
 
                                   <h3 className="mt-4">
                                     The next step is to upload your documents
-                                    for our tax professionals to calculate your exact credit
-                                    amount.
+                                    for our tax professionals to calculate your
+                                    exact credit amount.
                                   </h3>
                                 </div>
                                 <div className="d-flex justify-content-end mt-3">
@@ -11648,7 +12407,7 @@ if(
                                     process
                                   </div>
 
-                                  <p class="mb-3">
+                                  {/* <p class="mb-3">
                                     In order to reduce fraudulant claims we need
                                     to verify your identify. We use a
                                     third-party service called Persona to
@@ -11656,7 +12415,7 @@ if(
                                     and is used by some of the largest companies
                                     in the world to handle identity
                                     verification.
-                                  </p>
+                                  </p> */}
                                 </>
                               )}
 
@@ -11758,7 +12517,9 @@ if(
                               <button
                                 onClick={handleNext}
                                 type="button"
-                                className="px-3 py-2 next-step"
+                                style={{fontSize: userData?.approval_status ? "20px" : ""}}
+                                // className="px-3 py-2 next-step"
+                                 class="btn btn-primary next-step step2_next mx-1"
                               >
                                 {userData?.approval_status === "declined"
                                   ? "Retry"
@@ -11857,7 +12618,7 @@ if(
                           for="id_first_name"
                           className="form-label requiredField"
                         >
-                          Your Legal First Name
+                         First Name
                         </label>
                         <div
                           className={`textinput form-control ${
@@ -11872,7 +12633,7 @@ if(
                           for="id_last_name"
                           className="form-label requiredField"
                         >
-                          Your Legal Middle Name
+                         Middle Name
                         </label>
                         <div
                           className={`textinput form-control ${
@@ -11888,7 +12649,7 @@ if(
                           for="id_last_name"
                           className="form-label requiredField"
                         >
-                          Your Legal Last Name
+                          Last Name
                         </label>
                         <div
                           className={`textinput form-control ${
@@ -11904,7 +12665,7 @@ if(
                           for="id_phone_number"
                           className="form-label requiredField"
                         >
-                          Owners Phone Number
+                          Phone Number
                         </label>
                         <input
                           type="tel"
@@ -11998,7 +12759,7 @@ if(
                           </div>
                         )}
                       </div>
-                      <div className="col-sm-6">
+                      {/* <div className="col-sm-6">
                         <input
                           type="text"
                           value={formData.employees}
@@ -12021,10 +12782,10 @@ if(
                         )}
 
                         <div className="invalid-feedback emailError"></div>
-                      </div>
+                      </div> */}
                     </div>
 
-                    <div className="mb-2">
+                    {/* <div className="mb-2">
                       <div className="col-sm-6">
                         <label for="Trade-Name" className="form-label">
                           Trade Name, if any(indicate none, if none)
@@ -12053,11 +12814,10 @@ if(
 
                         <div className="invalid-feedback emailError"></div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="mb-2">
                       <label for="Self-employed" className="form-label">
-                        Self-employed business address. This may likely be your
-                        home address unless you use a separate business address
+                        Self-employed business address
                       </label>
                       <input
                         type="text"
@@ -12122,7 +12882,7 @@ if(
                           for="State_Province"
                           className="form-label requiredField"
                         >
-                          State/Province
+                          State
                         </label>
                         <input
                           type="text"
@@ -12149,7 +12909,7 @@ if(
                           for="zipcode"
                           className="form-label requiredField"
                         >
-                          Postal / Zip Code
+                          Zip Code
                         </label>
                         <input
                           type="Number"
@@ -12368,13 +13128,14 @@ if(
                         delivery to the correct address.
                       </p>
                     </div> */}
-                    <div
-                      className="d-flex mt-3"
-                      style={{ alignItems: "start " }}
-                    >
-                      <input
-                        checked={formData.isChecked}
-                        class={`checkBoxStepOne form-check-input me-1 mt-1 ${
+                   
+
+                     <div className="data-p py-2 mt-2">
+                  <p>
+                    <input
+                       checked={formData.isChecked}
+                       style={{fontSize: 18}}
+                        class={` form-check-input me-1 mt-1 ${
                           errors.isChecked ? "border-danger" : ""
                         }`}
                         type="checkbox"
@@ -12382,11 +13143,9 @@ if(
                         name="isChecked"
                         onChange={handleInputChange}
                       />
-
-                      <p class="mb-3 mt-0">
-                        By checking the box, you agree to our{" "}
-                        <a
-                          style={{
+                    By checking the box, you agree to our{" "}
+                    <a
+                      style={{
                             textDecoration: "underline",
                             cursor: "pointer",
                             color: "blue",
@@ -12394,12 +13153,55 @@ if(
                           data-bs-toggle="modal"
                           data-bs-target="#exampleModal_step_19"
                         >
-                          terms & conditions
-                        </a>{" "}
-                        and will allow SETC Zone and its partners to contact you
+                      terms & conditions
+                    </a>{" "}
+                     and will allow SETC Zone and its partners to contact you
                         via phone, text, and/or email.
-                      </p>
-                    </div>
+                  </p>
+                </div>
+
+                    <div className="data-p py-2 mb-2">
+                  <p>
+                    <input
+                                           style={{fontSize: 18}}
+
+                        checked={formData.isCheckedLast}
+                        class={` form-check-input me-1 mt-1 ${
+                          errors.isCheckedLast ? "border-danger" : ""
+                        }`}
+                        type="checkbox"
+                        id="flexCheckDefault1"
+                        name="isCheckedLast"
+                        onChange={handleInputChange}
+                      />
+                    By checking this box you attest that the answers and
+                    information provided are true and accurate to the best of
+                    your knowledge, and understand that once submitted your
+                    responses cannot be changed. You agree to our{" "}
+                    <a
+                      style={{
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                        color: "blue",
+                      }}
+                       data-bs-toggle="modal"
+                          data-bs-target="#exampleModal_step_19"
+                    >
+                      terms & conditions
+                    </a>
+                    , and also agree to keep documentation on file that
+                    substantiates claims made in this application.
+                  </p>
+                </div>
+                
+                 {errors.isCheckedLast  && (
+                      <div
+                        className="text-danger"
+                        style={{ fontSize: "18px", fontWeight: 600 }}
+                      >
+                        {errors.isCheckedLast}
+                      </div>
+                    )}
 
                     <div
                       className="modal fade"
@@ -12804,7 +13606,7 @@ if(
                     <span style={{ color: "#e62e2d", fontWeight: "bold" }}>
                       Notice:{" "}
                     </span>{" "}
-                    Kindly make sure that each document is uploaded before
+                    Please make sure that each document is uploaded before
                     selecting the "submit now" button to prevent any loss of
                     data. If you don't have all the paperwork completed and
                     would like to submit them again at a later time. Please
@@ -12930,7 +13732,7 @@ if(
                           <div className="itemm">
                             <TaskAlt />
                             <span className="namee">
-                              {userData.schedule_pdf_name[index]}
+                              {userData.schedule_pdf[index]}
                             </span>
                           </div>
                           <div
@@ -12994,7 +13796,7 @@ if(
                           fontWeight: "bold",
                           color: "white",
                           background: "#3c4d77",
-                          padding: '3px 5px'
+                          padding: "3px 5px",
                         }}
                         onClick={() => handleAddFileClick("schedule_pdf")}
                       >
@@ -13031,7 +13833,7 @@ if(
                         <div className="itemm">
                           <TaskAlt />
                           <span className="namee">
-                            {userData.Tax_Return_2020_name[index]}
+                            {userData.Tax_Return_2020[index]}
                           </span>
                         </div>
                         <div
@@ -13091,7 +13893,7 @@ if(
                           fontWeight: "bold",
                           color: "white",
                           background: "#3c4d77",
-                          padding: '3px 5px'
+                          padding: "3px 5px",
                         }}
                         onClick={() => handleAddFileClick("Tax_Return_2020")}
                       >
@@ -13125,7 +13927,7 @@ if(
                         <div className="itemm">
                           <TaskAlt />
                           <span className="namee">
-                            {userData.Tax_Return_2021_name[index]}
+                            {userData.Tax_Return_2021[index]}
                           </span>
                         </div>
                         <div
@@ -13185,7 +13987,7 @@ if(
                           fontWeight: "bold",
                           color: "white",
                           background: "#3c4d77",
-                          padding: '3px 5px'
+                          padding: "3px 5px",
                         }}
                         onClick={() => handleAddFileClick("Tax_Return_2021")}
                       >
@@ -13305,7 +14107,7 @@ if(
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
-                                padding: '3px 5px'
+                                padding: "3px 5px",
                               }}
                               onClick={() =>
                                 handleAddFileClick(
@@ -13351,7 +14153,7 @@ if(
                                   <span className="namee">
                                     {
                                       userData
-                                        .supplemental_attachment_2021_name[
+                                        .supplemental_attachment_2021[
                                         index
                                       ]
                                     }
@@ -13426,7 +14228,7 @@ if(
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
-                                padding: '3px 5px'
+                                padding: "3px 5px",
                               }}
                               onClick={() =>
                                 handleAddFileClick(
@@ -13465,7 +14267,7 @@ if(
                               <div className="itemm">
                                 <TaskAlt />
                                 <span className="namee">
-                                  {userData.FormA1099_name[index]}
+                                  {userData.FormA1099[index]}
                                 </span>
                               </div>
                               <div
@@ -13525,7 +14327,7 @@ if(
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
-                                padding: '3px 5px'
+                                padding: "3px 5px",
                               }}
                               onClick={() => handleAddFileClick("FormA1099")}
                             >
@@ -13560,7 +14362,7 @@ if(
                               <div className="itemm">
                                 <TaskAlt />
                                 <span className="namee">
-                                  {userData.FormB1099_name[index]}
+                                  {userData.FormB1099[index]}
                                 </span>
                               </div>
                               <div
@@ -13620,7 +14422,7 @@ if(
                                 fontWeight: "bold",
                                 color: "white",
                                 background: "#3c4d77",
-                                padding: '3px 5px'
+                                padding: "3px 5px",
                               }}
                               onClick={() => handleAddFileClick("FormB1099")}
                             >
@@ -13653,7 +14455,7 @@ if(
                               <div className="itemm">
                                 <TaskAlt />
                                 <span className="namee">
-                                  {userData.ks2020_name[index]}
+                                  {userData.ks2020[index]}
                                 </span>
                               </div>
                               <div
@@ -13712,7 +14514,7 @@ if(
                               fontWeight: "bold",
                               color: "white",
                               background: "#3c4d77",
-                              padding: '3px 5px'
+                              padding: "3px 5px",
                             }}
                             onClick={() => handleAddFileClick("ks2020")}
                           >
@@ -13745,7 +14547,7 @@ if(
                               <div className="itemm">
                                 <TaskAlt />
                                 <span className="namee">
-                                  {userData.ks22020_name[index]}
+                                  {userData.ks22020[index]}
                                 </span>
                               </div>
                               <div
@@ -13804,7 +14606,7 @@ if(
                               fontWeight: "bold",
                               color: "white",
                               background: "#3c4d77",
-                              padding: '3px 5px'
+                              padding: "3px 5px",
                             }}
                             onClick={() => handleAddFileClick("ks22020")}
                           >
@@ -13829,34 +14631,7 @@ if(
                     </div>
                   )}
 
-                <div className="data-p py-2 mb-2">
-                  <p>
-                    <input
-                      className="form-check-input me-1"
-                      type="checkbox"
-                      value=""
-                      id="flexCheckD"
-                      onChange={handleCheckboxChange}
-                    />
-                    By checking this box you attest that the answers and
-                    information provided are true and accurate to the best of
-                    your knowledge, and understand that once submitted your
-                    responses cannot be changed. You agree to our{" "}
-                    <a
-                      style={{
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                        color: "blue",
-                      }}
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal_step_20"
-                    >
-                      terms & conditions
-                    </a>
-                    , and also agree to keep documentation on file that
-                    substantiates claims made in this application.
-                  </p>
-                </div>
+               
 
                 <div
                   className="modal fade"
@@ -14210,7 +14985,7 @@ if(
                     id="confirmSubmitModalLaterBtn"
                     data-bs-target="#confirmSubmitModalwithout"
                     className="btn btn-primary px-5 py-2 me-2 mb-2 next-step"
-                    disabled={shouldDisableButtonLater()}
+                    // disabled={shouldDisableButtonLater()}
                     onClick={handleSubmitLater}
                   >
                     Submit Documents Later

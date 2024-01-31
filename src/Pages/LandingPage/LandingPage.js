@@ -9,8 +9,11 @@ import { useHistory } from "react-router-dom";
 const LandingPage = () => {
   const history = useHistory();
   const handleClickNewApp = () => {
-    history.push("/login");
+    history.push("/application");
   };
+  const handleClickPickUpLeft = () => {
+    history.push("/login");
+  }
   const handleLogin = () => {
     history.push("/login");
   };
@@ -72,7 +75,7 @@ const LandingPage = () => {
                         <button
                           type="button"
                           class="apli-button-1"
-                          onClick={handleClickNewApp}
+                          onClick={(handleClickPickUpLeft)}
                         >
                           Pick up where I left off
                           <span class="ms-1">
@@ -194,11 +197,11 @@ const LandingPage = () => {
                                 support@setczone.com
                               </a>
                             </p>
-                            <div class="d-flex">
+                            {/* <div class="d-flex">
                                 <p class="text-white">
                                  AppSetczone 
                                 </p>
-                              </div>
+                              </div> */}
                             {/* <a
                               class="text-white"
                               href="https://calendly.com/setc-expert-kayembe/book-an-appointment-with-an-setc-expert-today"
