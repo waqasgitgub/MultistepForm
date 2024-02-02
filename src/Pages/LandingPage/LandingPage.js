@@ -12,10 +12,12 @@ const LandingPage = () => {
     history.push("/application");
   };
   const handleClickPickUpLeft = () => {
-    history.push("/login");
+     history.push("/login");
+    // history.push("/application");
   }
   const handleLogin = () => {
-    history.push("/login");
+   history.push("/login");
+  //  history.push("/application");
   };
   return (
     <div>

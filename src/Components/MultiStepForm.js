@@ -137,6 +137,13 @@ const MultiStepForm = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
+  const [loader, setLoader] = useState(false);
+  const [consentConfirmationLoader, setConfirmationLoader] = useState(false);
+
+  const redirectToVeriff = () => {
+    window.location.href = 'https://www.veriff.com/';
+  };
+
   // personal start date 2020
 
   // const [dateRange, setDateRange] = useState([null, null]);
@@ -1286,7 +1293,7 @@ const MultiStepForm = () => {
 
   const formDataPreparing = async (step) => {
     try {
-      setLoading(true);
+      setLoader(true);
       const response = await fetch("https://agree.setczone.com/api/user/create", {
         method: "POST",
         headers: {
@@ -1318,7 +1325,7 @@ const MultiStepForm = () => {
         handleToken(data.user.token);
         
         dispatch(setUserDetails({ firstName: data.user?.first_name, 
-          middleName: data.user?.verified_middleName,
+          middleName: data.user?.middle_name,
           
           lastName: data.user?.last_name }));
 
@@ -1337,13 +1344,13 @@ const MultiStepForm = () => {
       console.error("Network error", error);
     } finally {
       // Reset loading to false after the API call is completed or errored
-      setLoading(false);
+      setLoader(false);
     }
   };
 
   const handleVerification = async (step) => {
     try {
-      setLoading(true);
+      setLoader(true);
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -1465,40 +1472,76 @@ const MultiStepForm = () => {
       console.error("Network error", error);
     } finally {
       // Reset loading to false after the API call is completed or errored
-      setLoading(false);
+      setLoader(false);
     }
   };
 
-  const callVeriffAPI = (token) => {
+  // const callVeriffAPI = (token) => {
+  //   // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
+  //   const apiEndpoint = "https://agree.setczone.com/api/user/createSession"; // Replace with your actual API endpoint
+
+  //   // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
+
+  //   // Set up the headers for the API request
+  //   const headers = {
+  //     Authorization: `Bearer ${token}`,
+  //   };
+
+  //   // Make the API call
+  //   fetch(apiEndpoint, {
+  //     method: "GET",
+  //     headers: headers,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       if (data.status === "success") {
+  //         console.log("Veriff API Response:", data);
+
+  //         // Get the verification URL from the response
+  //         const verificationUrl = data.verification.url;
+
+  //         window.location.href = verificationUrl;
+  //       } else {
+  //         console.error("Veriff API call failed:", data);
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error:", error));
+  // };
+  const callVeriffAPI = async (token) => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
     const apiEndpoint = "https://agree.setczone.com/api/user/createSession"; // Replace with your actual API endpoint
-
+  
     // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
-
+  
     // Set up the headers for the API request
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+  
+    try {
+      // Set loader to true when starting the API call
+      setLoader(true);
+  
+      // Make the API call using axios
+      const response = await axios.get(apiEndpoint, { headers });
+  
+      if (response.data.status === "success") {
+        console.log("Veriff API Response:", response.data);
+  
+        // Get the verification URL from the response
+        const verificationUrl = response.data.verification.url;
+  
+        window.location.href = verificationUrl;
+      } else {
+        console.error("Veriff API call failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      // Set loader to false regardless of success or failure
+      setLoader(false);
+    }
 
-    // Make the API call
-    fetch(apiEndpoint, {
-      method: "GET",
-      headers: headers,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "success") {
-          console.log("Veriff API Response:", data);
-
-          // Get the verification URL from the response
-          const verificationUrl = data.verification.url;
-
-          window.location.href = verificationUrl;
-        } else {
-          console.error("Veriff API call failed:", data);
-        }
-      })
-      .catch((error) => console.error("Error:", error));
   };
 
   const formDataUpdate = async (step) => {
@@ -1545,7 +1588,7 @@ const MultiStepForm = () => {
       : "";
 
     try {
-      setLoading(true);
+      setLoader(true);
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -1675,7 +1718,7 @@ const MultiStepForm = () => {
         // alert(`success ${step}`);
         const data = await response.json();
   dispatch(setUserDetails({ firstName: data.user?.first_name, 
-            middleName: data.user?.verified_middleName,
+            middleName: data.user?.middle_name,
             
             lastName: data.user?.last_name }));
         console.log(data);
@@ -1727,9 +1770,48 @@ const MultiStepForm = () => {
       console.error("Network error", error);
     } finally {
       // Reset loading to false after the API call is completed or errored
-      setLoading(false);
+      setLoader(false);
     }
   };
+
+  const handleConsentConfirmation = async () => {
+    const token = localStorage.getItem("token");
+    let step = 0;
+  
+    try {
+      setConfirmationLoader(true);
+      const response = await axios.put(
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        { isOldUser: false },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Fix: Use backticks for template literals
+            "Content-Type": "application/json",
+          },
+          onUploadProgress: (progressEvent) => {
+            // Update progress for each file
+            // Handle progress tracking for multiple files as needed
+          },
+        }
+      );
+  
+      if (response) {
+        setConfirmationLoader(false);
+      }
+  
+      console.log('Old user updated', response?.data);
+      if (response?.data?.isOldUser === false) {
+        alert("updated isOld status");
+      }
+  
+      await fetchUserDataa(); // Fix: Correct function name
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setConfirmationLoader(false);
+    }
+  };
+  
   const formDataUpdateWithoutLoader = async (step) => {
     const formattedStartDate = personal_startdate2020
       ? personal_startdate2020.toLocaleDateString()
@@ -1774,6 +1856,8 @@ const MultiStepForm = () => {
       : "";
 
     try {
+      setLoading(true);
+
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -2017,6 +2101,8 @@ const MultiStepForm = () => {
         // } else {
         //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
         // }
+
+
         if (
           formData.did_receive_unemployement20 === "Yes" &&
           activeStep === 9
@@ -2069,12 +2155,14 @@ const MultiStepForm = () => {
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
+    }  finally  {
+      setLoading(false);
     }
   };
 
   const formDataConfirmation = async (step) => {
     try {
-      setLoading(true);
+      setLoader(true);
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -2097,7 +2185,7 @@ const MultiStepForm = () => {
             step: step,
             first_name: userData?.verified_first,
             last_name: userData?.verified_last,
-         
+            middle_name: userData?.verified_middleName,
             // verified_middleName: 'kil',
             phone: formData.phone,
             email: formData.email,
@@ -2179,7 +2267,7 @@ const MultiStepForm = () => {
         const data = await response.json();
         // console.log(data.user.first_name, data.user.last_name, "hamzawaqas");
   dispatch(setUserDetails({ firstName: data.user?.first_name, 
-            middleName: data.user?.verified_middleName,
+            middleName: data.user?.middle_name,
             
             lastName: data.user?.last_name }));
         // localStorage.setItem("fName", data?.user?.first_name);
@@ -2196,7 +2284,7 @@ const MultiStepForm = () => {
       console.error("Network error", error);
     } finally {
       // Reset loading to false after the API call is completed or errored
-      setLoading(false);
+      setLoader(false);
     }
   };
 
@@ -2401,7 +2489,7 @@ const MultiStepForm = () => {
     }
   };
   const callSetcformData = async (token, formData) => {
-    setLoading(true);
+    setLoader(true);
     try {
       const response = await fetch("https://agree.setczone.com/api/user/setcformData", {
         method: "POST",
@@ -2463,7 +2551,7 @@ const MultiStepForm = () => {
       console.error("Network error", error);
     } finally {
       // Reset loading to false after the API call is completed or errored
-      setLoading(false);
+      setLoader(false);
     }
   };
   const formDataUpdateCalculationWithoutLoader = async (step) => {
@@ -2510,6 +2598,8 @@ const MultiStepForm = () => {
       : "";
 
     try {
+      setLoading(true);
+
       let token = localStorage.getItem("token");
 
       if (!token) {
@@ -2662,6 +2752,9 @@ const MultiStepForm = () => {
     } catch (error) {
       // Handle network error
       console.error("Network error", error);
+    } finally {
+      setLoading(false);
+
     }
   };
 
@@ -4258,7 +4351,6 @@ const MultiStepForm = () => {
       ].filter((amount) => amount < 10000 && amount !== 0).length;
 
       if (countGreaterThanOrEqualTo10K >= 2 ) {
-      alert(netIncome2019Amount, netIncome2020Amount, netIncome2021Amount);
         setActiveErrorQualify17(true);
         hasErrors = true;
       }
@@ -5471,7 +5563,7 @@ const MultiStepForm = () => {
                         for="Business-Legal-Name"
                         className="form-label requiredField"
                       >
-                        Business Legal Name
+                        Legal Business Name
                       </label>
                       <div className="col-sm-6 mb-3">
                         <input
@@ -6640,6 +6732,8 @@ const MultiStepForm = () => {
                         onClick={handleNext}
                         type="button"
                         className="px-3 py-2 next-step"
+                        disabled={loading} 
+
                       >
                         {activeStep === steps.length - 1
                           ? "Submit"
@@ -6855,6 +6949,7 @@ const MultiStepForm = () => {
                               onClick={handleNext}
                               type="button"
                               class="btn btn-primary next-step step2_next mx-1"
+                              disabled={loading} 
                             >
                               Let's Get Started!
                             </button>
@@ -6974,6 +7069,15 @@ const MultiStepForm = () => {
                               </label>
                             </div>
 
+                            {errors.selfEmployedFrom  &&  (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "16px" }}
+                          >
+                            {errors.selfEmployedFrom}
+                          </div>
+                        )}
+
                             {formData.selfEmployedFrom === "No" &&
                               activeErrorQualifyOne && (
                                 <div>
@@ -6996,6 +7100,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -7137,6 +7242,16 @@ const MultiStepForm = () => {
                               </label>
                             </div>
 
+
+                            {errors.scheduleSelfEmployement && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "16px" }}
+                          >
+                            {errors.scheduleSelfEmployement}
+                          </div>
+                        )}
+
                             {formData.scheduleSelfEmployement === "No" &&
                               activeErrorQualifyTwoo && (
                                 <div>
@@ -7160,6 +7275,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -7297,6 +7413,17 @@ const MultiStepForm = () => {
                                 </p>
                               </label>
                             </div>
+
+
+                            {errors.positive_net_earning && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "16px" }}
+                          >
+                            {errors.positive_net_earning}
+                          </div>
+                        )}
+
                             {formData.positive_net_earning === "No" &&
                               activeErrorQualifyThree && (
                                 <div>
@@ -7320,6 +7447,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -7415,7 +7543,7 @@ const MultiStepForm = () => {
                               From 4/1/2020-9/30/2021 */}
                             </label>
 
-                            <div 
+                            <div className=""
                               style={{
                                 display: "flex",
                                 flexDirection: "row",
@@ -7446,14 +7574,14 @@ const MultiStepForm = () => {
                               </div>
                               <div className="col-md-3">
                                 <div className="optio">
-                                  <label
+                                  <label className="wer"
                                     htmlFor="covid_related_issues_yes"
                                     style={{
                                       width: "120px",
                                     }}
                                   >
                                     <p
-                                      className={` ${
+                                      className={` wer ${
                                         errors.covid_related_issues
                                           ? "border-danger"
                                           : ""
@@ -7493,14 +7621,14 @@ const MultiStepForm = () => {
                               </div>
                               <div className="col-md-3">
                                 <div className="optio">
-                                  <label
+                                  <label className="wer"
                                     htmlFor="covid_related_issues_no"
                                     style={{
                                       width: "120px",
                                     }}
                                   >
                                     <p
-                                      className={` ${
+                                      className={` wer ${
                                         errors.covid_related_issues
                                           ? "border-danger"
                                           : ""
@@ -7567,14 +7695,14 @@ const MultiStepForm = () => {
                               </div>
                               <div className="col-md-3">
                                 <div className="optio">
-                                  <label
+                                  <label className="wer"
                                     htmlFor="covid_related_issues2021_yes"
                                     style={{
                                       width: "120px",
                                     }}
                                   >
                                     <p
-                                      className={` ${
+                                      className={` wer ${
                                         errors.covid_related_issues2021
                                           ? "border-danger"
                                           : ""
@@ -7613,14 +7741,14 @@ const MultiStepForm = () => {
                               </div>
                               <div className="col-md-3">
                                 <div className="optio">
-                                  <label
+                                  <label className="wer"
                                     htmlFor="covid_related_issues2021_no"
                                     style={{
                                       width: "120px",
                                     }}
                                   >
                                     <p
-                                      className={` ${
+                                      className={` wer ${
                                         errors.covid_related_issues2021
                                           ? "border-danger"
                                           : ""
@@ -7681,6 +7809,8 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading}
+
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -8319,6 +8449,7 @@ const MultiStepForm = () => {
                               onClick={handleNext}
                               type="button"
                               class="btn btn-primary next-step step2_next mx-1"
+                              disabled={loading} 
                             >
                               Next
                             </button>
@@ -8445,7 +8576,14 @@ const MultiStepForm = () => {
                                 </p>
                               </label>
                             </div>
-
+                            {errors.did_receive_unemployement20 && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "16px" }}
+                          >
+                            {errors.did_receive_unemployement20}
+                          </div>
+                        )}
                             {/* {formData.scheduleSelfEmployement === "No" &&
                                 activeErrorQualifyTwoo && (
                                   <div>
@@ -8469,6 +8607,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -8598,7 +8737,14 @@ const MultiStepForm = () => {
                                 </p>
                               </label>
                             </div>
-
+                            {errors.did_receive_unemployement21 && (
+                          <div
+                            className="text-danger"
+                            style={{ fontSize: "16px" }}
+                          >
+                            {errors.did_receive_unemployement21}
+                          </div>
+                        )}
                             {formData.did_receive_unemployement21 === "Yes" &&
                               formData.did_receive_unemployement20 === "Yes" &&
                               activeErrorDidRecieveUnemployement && (
@@ -8622,6 +8768,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -8990,6 +9137,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -9351,6 +9499,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -9710,6 +9859,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -10071,6 +10221,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -10282,6 +10433,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -10654,6 +10806,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -10807,6 +10960,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -11180,6 +11334,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -11630,6 +11785,7 @@ const MultiStepForm = () => {
                                   onClick={handleNext}
                                   type="button"
                                   className="px-3 py-2 next-step"
+                                  disabled={loading} 
                                 >
                                   {activeStep === steps.length - 1
                                     ? "Submit"
@@ -11876,6 +12032,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -12253,6 +12410,7 @@ const MultiStepForm = () => {
                                 onClick={handleNext}
                                 type="button"
                                 className="px-3 py-2 next-step"
+                                disabled={loading} 
                               >
                                 {activeStep === steps.length - 1
                                   ? "Submit"
@@ -12358,6 +12516,7 @@ const MultiStepForm = () => {
                                     onClick={handleNext}
                                     type="button"
                                     className="px-3 py-2 next-step"
+                                    disabled={loading} 
                                   >
                                     {activeStep === steps.length - 1
                                       ? "Submit"
@@ -12497,6 +12656,8 @@ const MultiStepForm = () => {
                               </div>
                             )}
 
+
+                
                             <div class="text-center">
                               <img
                                 class="mb-3 img-fluid"
@@ -12504,6 +12665,32 @@ const MultiStepForm = () => {
                                 style={{ height: "300px", width: "auto" }}
                               />
                             </div>
+
+
+                            <div class="title d-flex align-items-center justify-content-center mb-4 w-100 text-center"  
+                            onClick={redirectToVeriff}
+                        style={{ cursor: 'pointer' }}>
+<svg xmlns="http://www.w3.org/2000/svg" width="119" height="15" viewBox="0 0 119 15" fill="none">
+<path d="M75.0885 10.8948C74.9157 10.0469 74.527 8.88266 73.217 5.2608H71L74.0376 12.7776H76.1105L78.9898 5.26074H76.8159C75.5779 8.81071 75.2324 9.94621 75.0885 10.8948V10.8948Z" fill="#DEDEDE"/>
+<path d="M82.9026 5.10205C80.6281 5.10205 79.0156 6.78362 79.0156 9.04018C79.0156 11.3685 80.6856 12.9207 83.0177 12.9207C84.4994 12.9207 85.7658 12.1535 86.3678 11.0593L84.846 10.2331C84.5436 10.8223 83.9247 11.2391 83.0322 11.2391C81.9813 11.2391 81.1607 10.578 81.0599 9.65819H86.7751C86.8759 6.63989 85.1915 5.10205 82.9026 5.10205V5.10205ZM81.0456 8.23523C81.1175 7.35855 81.8805 6.74053 82.9026 6.74053C83.9247 6.74053 84.6589 7.35855 84.7021 8.23523H81.0456Z" fill="#DEDEDE"/>
+<path d="M94.9808 5.26074H92.9366V12.7776H94.9808V5.26074Z" fill="#DEDEDE"/>
+<path d="M104.915 3.59324C105.189 3.59324 105.506 3.63633 105.822 3.72252V2.08409C105.477 1.96916 105.002 1.88281 104.527 1.88281C103.173 1.88281 101.82 2.60147 101.82 4.72858V5.26041H98.8389V5.01604C98.7237 3.93809 99.1556 3.59324 99.8898 3.59324C100.163 3.59324 100.48 3.63633 100.797 3.72252V2.08409C100.451 1.96916 99.9762 1.88281 99.5012 1.88281C98.1479 1.88281 96.7947 2.60147 96.7947 4.72858V5.26041H95.9021V6.85514H96.7947V12.7772H98.8389V6.85514H101.82V12.7772H103.864V6.85514H105.822V5.26041H103.864V5.01604C103.749 3.93809 104.181 3.59324 104.915 3.59324V3.59324Z" fill="#DEDEDE"/>
+<path d="M89.8343 7.56383V7.27032L89.612 5.26056H87.8333V12.7773H89.8343V9.73128C89.8343 8.14238 90.9332 7.15698 92.139 7.15698V5.17432C90.7232 5.31497 89.8344 6.12866 89.8343 7.56388V7.56383Z" fill="#DEDEDE"/>
+<path d="M94.9973 2.54492H92.9201V4.18087H94.9973V2.54492Z" fill="#DEDEDE"/>
+<path d="M114.847 5.19443V10.2683L114.865 10.268C115.206 7.70505 116.725 6.02989 119 5.2325V0.0683594C116.383 0.524005 114.847 2.17572 114.847 5.19443Z" fill="#DEDEDE"/>
+<path d="M109.968 9.53373L114.12 12.9511V6.17321L109.968 2.75586V9.53373Z" fill="#DEDEDE"/>
+<path d="M0.134827 12.0002V3.27295H3.08369C3.76835 3.27295 4.32801 3.39653 4.76267 3.64369C5.20017 3.88801 5.52403 4.21897 5.73426 4.63659C5.94449 5.0542 6.0496 5.52011 6.0496 6.03431C6.0496 6.54852 5.94449 7.01585 5.73426 7.4363C5.52687 7.85676 5.20585 8.19198 4.77119 8.44198C4.33653 8.68914 3.77971 8.81272 3.10074 8.81272H0.987099V7.87522H3.06664C3.53539 7.87522 3.91182 7.79426 4.19591 7.63232C4.48 7.47039 4.68596 7.25164 4.8138 6.97607C4.94449 6.69767 5.00983 6.38374 5.00983 6.03431C5.00983 5.68488 4.94449 5.37238 4.8138 5.09681C4.68596 4.82124 4.47858 4.60534 4.19164 4.44909C3.90471 4.28999 3.52403 4.21045 3.0496 4.21045H1.19164V12.0002H0.134827Z" fill="#DEDEDE"/>
+<path d="M10.2044 12.1366C9.61352 12.1366 9.09505 11.996 8.64903 11.7147C8.20585 11.4335 7.85926 11.04 7.60926 10.5343C7.3621 10.0286 7.23852 9.43772 7.23852 8.76159C7.23852 8.07977 7.3621 7.4846 7.60926 6.97607C7.85926 6.46755 8.20585 6.07267 8.64903 5.79142C9.09505 5.51017 9.61352 5.36954 10.2044 5.36954C10.7953 5.36954 11.3124 5.51017 11.7556 5.79142C12.2016 6.07267 12.5482 6.46755 12.7953 6.97607C13.0453 7.4846 13.1703 8.07977 13.1703 8.76159C13.1703 9.43772 13.0453 10.0286 12.7953 10.5343C12.5482 11.04 12.2016 11.4335 11.7556 11.7147C11.3124 11.996 10.7953 12.1366 10.2044 12.1366ZM10.2044 11.2332C10.6533 11.2332 11.0226 11.1181 11.3124 10.888C11.6022 10.6579 11.8166 10.3553 11.9558 9.98034C12.0951 9.60534 12.1647 9.19909 12.1647 8.76159C12.1647 8.32409 12.0951 7.91642 11.9558 7.53857C11.8166 7.16073 11.6022 6.85534 11.3124 6.62238C11.0226 6.38943 10.6533 6.27295 10.2044 6.27295C9.75557 6.27295 9.38625 6.38943 9.09647 6.62238C8.8067 6.85534 8.59221 7.16073 8.45301 7.53857C8.3138 7.91642 8.2442 8.32409 8.2442 8.76159C8.2442 9.19909 8.3138 9.60534 8.45301 9.98034C8.59221 10.3553 8.8067 10.6579 9.09647 10.888C9.38625 11.1181 9.75557 11.2332 10.2044 11.2332Z" fill="#DEDEDE"/>
+<path d="M15.9658 12.0002L13.9715 5.45477H15.0283L16.4431 10.4661H16.5112L17.909 5.45477H18.9828L20.3635 10.4491H20.4317L21.8465 5.45477H22.9033L20.909 12.0002H19.9203L18.4885 6.97181H18.3862L16.9544 12.0002H15.9658Z" fill="#DEDEDE"/>
+<path d="M26.7545 12.1366C26.1238 12.1366 25.5798 11.9974 25.1224 11.719C24.6679 11.4377 24.317 11.0457 24.0698 10.5428C23.8255 10.0372 23.7034 9.44909 23.7034 8.77863C23.7034 8.10818 23.8255 7.51727 24.0698 7.0059C24.317 6.4917 24.6608 6.09113 25.1011 5.8042C25.5443 5.51443 26.0613 5.36954 26.6522 5.36954C26.9931 5.36954 27.3298 5.42636 27.6622 5.53999C27.9946 5.65363 28.2971 5.83829 28.5698 6.09397C28.8426 6.34681 29.0599 6.68204 29.2218 7.09965C29.3838 7.51727 29.4647 8.03147 29.4647 8.64227V9.0684H24.4193V8.19909H28.442C28.442 7.82977 28.3681 7.50022 28.2204 7.21045C28.0755 6.92068 27.8681 6.69198 27.5982 6.52437C27.3312 6.35676 27.0159 6.27295 26.6522 6.27295C26.2517 6.27295 25.9051 6.37238 25.6125 6.57124C25.3227 6.76727 25.0997 7.02295 24.9434 7.33829C24.7872 7.65363 24.709 7.9917 24.709 8.35249V8.93204C24.709 9.42636 24.7943 9.84539 24.9647 10.1891C25.138 10.5301 25.3781 10.79 25.6849 10.969C25.9917 11.1451 26.3482 11.2332 26.7545 11.2332C27.0187 11.2332 27.2573 11.1962 27.4704 11.1224C27.6863 11.0457 27.8724 10.932 28.0286 10.7815C28.1849 10.6281 28.3056 10.4377 28.3909 10.2104L29.3625 10.4832C29.2602 10.8127 29.0883 11.1025 28.8468 11.3525C28.6054 11.5997 28.3071 11.7928 27.9519 11.932C27.5968 12.0684 27.1977 12.1366 26.7545 12.1366Z" fill="#DEDEDE"/>
+<path d="M30.9946 12.0002V5.45477H31.9661V6.4434H32.0343C32.1536 6.11954 32.3696 5.85676 32.6821 5.65505C32.9946 5.45335 33.3468 5.35249 33.7389 5.35249C33.8127 5.35249 33.9051 5.35391 34.0159 5.35676C34.1267 5.3596 34.2105 5.36386 34.2673 5.36954V6.39227C34.2332 6.38374 34.1551 6.37096 34.0329 6.35392C33.9136 6.33403 33.7872 6.32409 33.6536 6.32409C33.3355 6.32409 33.0514 6.39085 32.8014 6.52437C32.5542 6.65505 32.3582 6.83687 32.2133 7.06982C32.0713 7.29994 32.0002 7.56272 32.0002 7.85818V12.0002H30.9946Z" fill="#DEDEDE"/>
+<path d="M38.0045 12.1366C37.3738 12.1366 36.8298 11.9974 36.3724 11.719C35.9178 11.4377 35.567 11.0457 35.3198 10.5428C35.0755 10.0372 34.9534 9.44909 34.9534 8.77863C34.9534 8.10818 35.0755 7.51727 35.3198 7.0059C35.567 6.4917 35.9107 6.09113 36.3511 5.8042C36.7943 5.51443 37.3113 5.36954 37.9022 5.36954C38.2431 5.36954 38.5798 5.42636 38.9122 5.53999C39.2446 5.65363 39.5471 5.83829 39.8198 6.09397C40.0926 6.34681 40.3099 6.68204 40.4718 7.09965C40.6338 7.51727 40.7147 8.03147 40.7147 8.64227V9.0684H35.6693V8.19909H39.692C39.692 7.82977 39.6181 7.50022 39.4704 7.21045C39.3255 6.92068 39.1181 6.69198 38.8482 6.52437C38.5812 6.35676 38.2659 6.27295 37.9022 6.27295C37.5017 6.27295 37.1551 6.37238 36.8625 6.57124C36.5727 6.76727 36.3497 7.02295 36.1934 7.33829C36.0372 7.65363 35.959 7.9917 35.959 8.35249V8.93204C35.959 9.42636 36.0443 9.84539 36.2147 10.1891C36.388 10.5301 36.6281 10.79 36.9349 10.969C37.2417 11.1451 37.5982 11.2332 38.0045 11.2332C38.2687 11.2332 38.5073 11.1962 38.7204 11.1224C38.9363 11.0457 39.1224 10.932 39.2786 10.7815C39.4349 10.6281 39.5556 10.4377 39.6409 10.2104L40.6125 10.4832C40.5102 10.8127 40.3383 11.1025 40.0968 11.3525C39.8554 11.5997 39.5571 11.7928 39.2019 11.932C38.8468 12.0684 38.4477 12.1366 38.0045 12.1366Z" fill="#DEDEDE"/>
+<path d="M44.7161 12.1366C44.1707 12.1366 43.6892 11.9988 43.2715 11.7232C42.8539 11.4448 42.5272 11.0528 42.2914 10.5471C42.0556 10.0386 41.9377 9.43772 41.9377 8.74454C41.9377 8.05704 42.0556 7.46045 42.2914 6.95477C42.5272 6.44909 42.8554 6.05846 43.2758 5.78289C43.6963 5.50732 44.1821 5.36954 44.7332 5.36954C45.1593 5.36954 45.496 5.44056 45.7431 5.58261C45.9931 5.72181 46.1835 5.8809 46.3142 6.05988C46.4477 6.23602 46.5514 6.3809 46.6252 6.49454H46.7105V3.27295H47.7161V12.0002H46.7446V10.9945H46.6252C46.5514 11.1139 46.4463 11.2644 46.3099 11.4462C46.1735 11.6252 45.9789 11.7857 45.7261 11.9278C45.4732 12.067 45.1366 12.1366 44.7161 12.1366ZM44.8525 11.2332C45.2559 11.2332 45.5968 11.1281 45.8752 10.9178C46.1536 10.7048 46.3653 10.4107 46.5102 10.0357C46.6551 9.65789 46.7275 9.22181 46.7275 8.72749C46.7275 8.23886 46.6565 7.8113 46.5144 7.44482C46.3724 7.07551 46.1622 6.78857 45.8838 6.58403C45.6053 6.37664 45.2616 6.27295 44.8525 6.27295C44.4264 6.27295 44.0713 6.38232 43.7872 6.60107C43.5059 6.81698 43.2943 7.11102 43.1522 7.48318C43.013 7.85249 42.9434 8.26727 42.9434 8.72749C42.9434 9.1934 43.0144 9.6167 43.1565 9.99738C43.3014 10.3752 43.5144 10.6764 43.7957 10.9008C44.0798 11.1224 44.4321 11.2332 44.8525 11.2332Z" fill="#DEDEDE"/>
+<path d="M53.209 12.0002V3.27295H54.2147V6.49454H54.3C54.3738 6.3809 54.4761 6.23602 54.6068 6.05988C54.7403 5.8809 54.9306 5.72181 55.1778 5.58261C55.4278 5.44056 55.7659 5.36954 56.192 5.36954C56.7431 5.36954 57.2289 5.50732 57.6494 5.78289C58.0698 6.05846 58.398 6.44909 58.6338 6.95477C58.8696 7.46045 58.9875 8.05704 58.9875 8.74454C58.9875 9.43772 58.8696 10.0386 58.6338 10.5471C58.398 11.0528 58.0713 11.4448 57.6536 11.7232C57.236 11.9988 56.7545 12.1366 56.209 12.1366C55.7886 12.1366 55.4519 12.067 55.1991 11.9278C54.9463 11.7857 54.7517 11.6252 54.6153 11.4462C54.4789 11.2644 54.3738 11.1139 54.3 10.9945H54.1806V12.0002H53.209ZM54.1977 8.72749C54.1977 9.22181 54.2701 9.65789 54.415 10.0357C54.5599 10.4107 54.7715 10.7048 55.05 10.9178C55.3284 11.1281 55.6693 11.2332 56.0727 11.2332C56.4931 11.2332 56.844 11.1224 57.1252 10.9008C57.4093 10.6764 57.6224 10.3752 57.7644 9.99738C57.9093 9.6167 57.9818 9.1934 57.9818 8.72749C57.9818 8.26727 57.9107 7.85249 57.7687 7.48318C57.6295 7.11102 57.4178 6.81698 57.1338 6.60107C56.8525 6.38232 56.4988 6.27295 56.0727 6.27295C55.6636 6.27295 55.3198 6.37664 55.0414 6.58403C54.763 6.78857 54.5528 7.07551 54.4107 7.44482C54.2687 7.8113 54.1977 8.23886 54.1977 8.72749Z" fill="#DEDEDE"/>
+<path d="M60.9392 14.4548C60.7687 14.4548 60.6167 14.4406 60.4832 14.4122C60.3497 14.3866 60.2573 14.361 60.2062 14.3354L60.4619 13.4491C60.7062 13.5116 60.9221 13.5343 61.1096 13.5173C61.2971 13.5002 61.4633 13.4164 61.6082 13.2658C61.7559 13.1181 61.8909 12.8781 62.013 12.5457L62.2005 12.0343L59.7801 5.45477H60.871L62.6778 10.6707H62.746L64.5528 5.45477H65.6437L62.8653 12.9548C62.7403 13.2928 62.5855 13.5727 62.4008 13.7943C62.2161 14.0187 62.0017 14.1849 61.7573 14.2928C61.5159 14.4008 61.2431 14.4548 60.9392 14.4548Z" fill="#DEDEDE"/>
+</svg>
+                                  </div>
+                                  
                             <div className="d-flex justify-content-center mt-3">
                               {userData?.approval_status !== "approved" && (
                                 <button
@@ -12733,7 +12920,7 @@ const MultiStepForm = () => {
                         for="Business-Legal-Name"
                         className="form-label requiredField"
                       >
-                        Business Legal Name
+                         Legal Business Name
                       </label>
                       <div className="col-sm-6 mb-3">
                         <input
@@ -14988,7 +15175,7 @@ const MultiStepForm = () => {
                     // disabled={shouldDisableButtonLater()}
                     onClick={handleSubmitLater}
                   >
-                    Submit Documents Later
+                    Add Documents later 
                   </button>
 
                   <button
@@ -15004,7 +15191,7 @@ const MultiStepForm = () => {
                     }
                     onClick={handleSubmiDocuments}
                   >
-                    Submit Now
+                    Submit Application
                   </button>
 
                   <div
@@ -15246,159 +15433,197 @@ const MultiStepForm = () => {
   );
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        marginTop: 15,
-        backgroundImage:
-          " linear-gradient(direction, color-stop1, color-stop2)",
-      }}
-    >
-      {loading && <LoadingScreen />}
-      {activeStep > 20 &&
-        finalIncomeValue != null &&
-        finalIncomeValue !== "$0" &&
-        activeStep !== 24 &&
-        userData?.applicationWithDocument !== true &&
-        userData?.applicationStatus !== true && (
-          <Stepper
-            className="container secondStepper"
-            style={{ width: "40px !important" }}
-            activeStep={activeStep - 21}
-            alternativeLabel
-            connector={<QontoConnector />}
-          >
-            {stepss.map((label, index) => (
-              <Step key={label}>
-                <StepLabel
-                  sx={{
-                    "& .MuiStepLabel-label.Mui-completed": {
-                      color: "#00b6ff", // Change label color based on active step
-                      fontWeight: "300",
-                      fontSize: 16,
-                    },
-                    "& .MuiStepLabel-label.Mui-active": {
-                      color: "#00b6ff", // Change label color based on active step
-                      fontWeight: "300",
-                      fontSize: 16,
-                    },
-                    "& .MuiStepLabel-label": {
-                      color: "gray", // Change label color based on active step
-                      fontWeight: "300",
-                      fontSize: 16,
-                    },
-                  }}
-                  StepIconComponent={QontoStepIcon}
-                >
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        )}
 
-      {activeStep === 24 &&
-        userData?.applicationWithDocument !== true &&
-        userData?.applicationStatus !== true && (
-          <Stepper
-            className="nineteenStepper container"
-            activeStep={1}
-            alternativeLabel
-            connector={<CustomConnector />}
-          >
-            {steps18.map((label, index) => (
-              <Step key={label}>
-                <StepLabel
-                  sx={{
-                    "& .MuiStepLabel-alternativeLabel": {
-                      color:
-                        index === 2
-                          ? "gray !important"
-                          : index === 1
-                          ? "red !important"
-                          : "#00b6ff !important",
-                      fontWeight: "500",
-                      fontSize: 17,
-                    },
-                  }}
-                  StepIconComponent={(props) => (
-                    <CustomStepIcon
-                      {...props}
-                      completed={index < 1}
-                      active={index === 1}
-                      // isIndex7={index === 7} // Change based on the current active step
-                    >
-                      {index === 2 ? (
-                        <Check style={{ color: "#00b6ff" }} />
-                      ) : (
-                        <Check style={{ color: "white" }} />
+
+<>
+      {!userData?.isOldUser ? (
+        <>
+          <div style={{ marginTop: "140px" }} className="container">
+            <div className="row">
+              <div className="col-md-6 offset-md-3">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">
+                      Important Update!
+                    </h5>
+                    <p className="card-text">
+                    We were down for maintenance, updated our system, and will now need you to verify your information. Thank you!
+                    </p>
+                    <button className="btn btn-primary mt-2" type="button" onClick={handleConsentConfirmation}>
+                      Confirm
+                      {consentConfirmationLoader && (
+                        <span
+                        className="spinner-border spinner-border-sm ml-3"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
                       )}
-                    </CustomStepIcon>
-                  )}
+                        </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <Box
+        sx={{
+          width: "100%",
+          marginTop: 15,
+          backgroundImage:
+            " linear-gradient(direction, color-stop1, color-stop2)",
+        }}
+      >
+        {loader && <LoadingScreen />}
+        {activeStep > 20 &&
+          finalIncomeValue != null &&
+          finalIncomeValue !== "$0" &&
+          activeStep !== 24 &&
+          userData?.applicationWithDocument !== true &&
+          userData?.applicationStatus !== true && (
+            <Stepper
+              className="container secondStepper"
+              style={{ width: "40px !important" }}
+              activeStep={activeStep - 21}
+              alternativeLabel
+              connector={<QontoConnector />}
+            >
+              {stepss.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel
+                    sx={{
+                      "& .MuiStepLabel-label.Mui-completed": {
+                        color: "#00b6ff", // Change label color based on active step
+                        fontWeight: "300",
+                        fontSize: 16,
+                      },
+                      "& .MuiStepLabel-label.Mui-active": {
+                        color: "#00b6ff", // Change label color based on active step
+                        fontWeight: "300",
+                        fontSize: 16,
+                      },
+                      "& .MuiStepLabel-label": {
+                        color: "gray", // Change label color based on active step
+                        fontWeight: "300",
+                        fontSize: 16,
+                      },
+                    }}
+                    StepIconComponent={QontoStepIcon}
+                  >
+                    {label}
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          )}
+  
+        {activeStep === 24 &&
+          userData?.applicationWithDocument !== true &&
+          userData?.applicationStatus !== true && (
+            <Stepper
+              className="nineteenStepper container"
+              activeStep={1}
+              alternativeLabel
+              connector={<CustomConnector />}
+            >
+              {steps18.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel
+                    sx={{
+                      "& .MuiStepLabel-alternativeLabel": {
+                        color:
+                          index === 2
+                            ? "gray !important"
+                            : index === 1
+                            ? "red !important"
+                            : "#00b6ff !important",
+                        fontWeight: "500",
+                        fontSize: 17,
+                      },
+                    }}
+                    StepIconComponent={(props) => (
+                      <CustomStepIcon
+                        {...props}
+                        completed={index < 1}
+                        active={index === 1}
+                        // isIndex7={index === 7} // Change based on the current active step
+                      >
+                        {index === 2 ? (
+                          <Check style={{ color: "#00b6ff" }} />
+                        ) : (
+                          <Check style={{ color: "white" }} />
+                        )}
+                      </CustomStepIcon>
+                    )}
+                  >
+                    {label}
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          )}
+  
+        {userData?.applicationStatus !== true &&
+          userData?.applicationWithDocument !== true && <>{getStepContent()}</>}
+  
+        {userData?.applicationStatus === true && (
+          <>
+            <div className="myClas2" style={{ marginBottom: 100 }}>
+              <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
+                <img src={gifTick} style={{ width: "120px" }} />
+                <h5 className="text-center pb-4">
+                  <span className="text-success">Great</span>, your application
+                  has been submitted. We will send you a personal upload link for
+                  your documents.
+                </h5>
+  
+                <button
+                  type="button"
+                  onClick={handleGo}
+                  className="btn btn-primary"
                 >
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+                  Check your application Status
+                </button>
+              </div>
+            </div>
+          </>
         )}
-
-      {userData?.applicationStatus !== true &&
-        userData?.applicationWithDocument !== true && <>{getStepContent()}</>}
-
-      {userData?.applicationStatus === true && (
-        <>
-          <div className="myClas2" style={{ marginBottom: 100 }}>
-            <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
-              <img src={gifTick} style={{ width: "120px" }} />
-              <h5 className="text-center pb-4">
-                <span className="text-success">Great</span>, your application
-                has been submitted. We will send you a personal upload link for
-                your documents.
-              </h5>
-
-              <button
-                type="button"
-                onClick={handleGo}
-                className="btn btn-primary"
-              >
-                Check your application Status
-              </button>
+  
+        {userData?.applicationWithDocument === true && (
+          <>
+            <div className="myClas2" style={{ marginBottom: 100 }}>
+              <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
+                <img src={gifTick} style={{ width: "120px" }} />
+                <h5 className="text-center">
+                  <span className="text-success">Congratulations!</span> Your
+                  application has been submitted!{" "}
+                </h5>
+                <h5 className="text-center">
+                  {" "}
+                  Our team will get back to you in 24-72 hours. Thank you.
+                </h5>
+  
+                <button
+                  style={{ marginTop: 33 }}
+                  onClick={handleGo}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Check you application status
+                </button>
+              </div>
             </div>
-          </div>
-        </>
-      )}
-
-      {userData?.applicationWithDocument === true && (
-        <>
-          <div className="myClas2" style={{ marginBottom: 100 }}>
-            <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
-              <img src={gifTick} style={{ width: "120px" }} />
-              <h5 className="text-center">
-                <span className="text-success">Congratulations!</span> Your
-                application has been submitted!{" "}
-              </h5>
-              <h5 className="text-center">
-                {" "}
-                Our team will get back to you in 24-72 hours. Thank you.
-              </h5>
-
-              <button
-                style={{ marginTop: 33 }}
-                onClick={handleGo}
-                type="button"
-                className="btn btn-primary"
-              >
-                Check you application status
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-      <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-        <Box sx={{ flex: "1 1 auto" }} />
+          </>
+        )}
+        <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Box sx={{ flex: "1 1 auto" }} />
+        </Box>
       </Box>
-    </Box>
+      )
+        }
+        </>
+
+   
   );
 };
 

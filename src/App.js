@@ -14,8 +14,11 @@ import VerifyOtp from "./Pages/VerifyOtp/VerifyOtp";
 import { useEffect, useState } from "react";
 import Strip from "./Pages/Strip/Strip";
 import { setUserDetails } from "./Redux/Slices/userSlice";
-// import CacheBuster from 'react-cache-buster';
-// const version = 3;
+import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
+
+import CacheBuster from 'react-cache-buster';
+import packageInfo from '../package.json'
+const version = packageInfo.version;
 
 
 const App = () => {
@@ -56,7 +59,7 @@ const App = () => {
 
           const userData = await response.json();
           dispatch(setUserDetails({ firstName: userData?.first_name, 
-            middleName: userData?.verified_middleName,
+            middleName: userData?.middle_name,
             
             lastName: userData?.last_name }));
 
@@ -72,19 +75,28 @@ const App = () => {
        // Hide the loader when the request is completed (either success or failure)
     }
 
-    }
+    };
 
-
+    const onCacheClear = async (refreshCacheAndReload) => {      
+      try {
+        let result = await refreshCacheAndReload();
+        console.log(result)
+        setToken(null)
+      } catch (error) {
+        console.error('Error during cache clearing or reloading:', error);
+      }
+    };
 
 
   return (
-  //   <CacheBuster
-  //   currentVersion={version}
-  //   isEnabled={true} //If false, the library is disabled.
-  //   isVerboseMode={false} //If true, the library writes verbose logs to console.
-  //   // loadingComponent={<div>loading ..</div>} //If not pass, nothing appears at the time of new version check.
-  //   metaFileDirectory={'.'} //If public assets are hosted somewhere other than root on your server.
-  // >
+    <CacheBuster
+    currentVersion={version}
+    isEnabled={true} //If false, the library is disabled.
+    isVerboseMode={true} //If true, the library writes verbose logs to console.
+    // loadingComponent={<div>loading ..</div>} //If not pass, nothing appears at the time of new version check.
+    metaFileDirectory={'.'} //If public assets are hosted somewhere other than root on your server.
+    onCacheClear={onCacheClear}
+    >
     <Router>
       <Switch>
         {/* Route to ApplicationForm component if token exists */}
@@ -105,12 +117,13 @@ const App = () => {
         <Route path="/status" exact component={ApplicationStatus} />
         <Route path="/support" component={Support} />
         <Route path="/strip" component={Strip} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
 
         {/* Redirect to LandingPage for any other undefined route */}
         <Redirect to="/" />
       </Switch>
     </Router>
-    // </CacheBuster>
+  </CacheBuster>
   );
 };
 

@@ -8,8 +8,11 @@ import "./Supportt.css";
 import Navbar from "../../Components/Navbar/Navbar";
 
 const Support = () => {
+
+
+
   return (
-    <>
+    <div  >
     {/* <Navbar/>
     <Container maxWidth="lg" style={{ backgroundColor: '#f7f7f7', padding: '20px' }}>
       <Grid container justifyContent="center" spacing={4} style={{marginTop: 65}}>
@@ -270,7 +273,7 @@ const Support = () => {
         </a>
       </div>
     </div>
-    </>
+    </div>
   );
 };
 

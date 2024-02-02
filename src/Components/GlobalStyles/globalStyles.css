@@ -744,6 +744,12 @@ h3.plain {
   padding: 4px 35px;
   border-radius: 5px;
 }
+.next-step:disabled {
+  background-color: #d3d3d3; /* Light gray background */
+  color: #808080; /* Dimmed text color */
+  cursor: not-allowed; /* Change cursor to indicate non-interactivity */
+  /* Add any other styles you want for the disabled state */
+}
 
 .next-step:hover {
   background-color: #1a2c5700;
@@ -1185,6 +1191,9 @@ h3.plain {
   .desktop-box {
     padding: 110px 20px !important;
   }
+  .wer{
+    width: 60px !important;
+  }
   .custom-date-picker-input {
     width: 180px;
     margin-bottom: 14px;
@@ -1201,6 +1210,39 @@ h3.plain {
   }
   .step2_content h1{
     margin-bottom: 10px !important;
+  }
+  .apli-button{
+    width: auto !important;
+    /* padding: 15px 25px !important; */
+    width: 245px !important;
+    text-align: center;
+    font-size: 18px !important;
+  }
+  .apli-button span{
+    display: none;
+  }
+  .apli-button-1{
+    width: auto !important;
+    /* padding: 15px 25px !important; */
+    width: 245px !important;
+    text-align: center;
+    font-size: 18px !important;
+  }
+  .apli-button-1 span{
+    display: none;
+  }
+  .apli-buttonn{
+    width: auto !important;
+    /* padding: 15px 18px !important; */
+    width: 245px !important;
+    text-align: center;
+    font-size: 18px !important;
+  }
+  .img-applic-content h2{
+    font-size: 22px !important;
+  }
+  .apli-buttonn span{
+    display: none;
   }
   .wee{
     margin-bottom: 30px;

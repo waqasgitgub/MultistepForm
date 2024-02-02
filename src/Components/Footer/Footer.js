@@ -17,7 +17,7 @@ const Footer = () => {
                     with the Internal Revenue Service (IRS) or any of its
                     subsidiaries or affiliates. For official IRS information,
                     please visit
-                    <a href="www.irs.gov">www.irs.gov</a>. The term "IRS," along
+                    <a href="https://www.irs.gov">www.irs.gov</a>. The term "IRS," along
                     with any related names, logos, symbols, and images, is the
                     property of their respective owners and is registered as
                     their trademark. Any mentions of the IRS on our website are
@@ -30,7 +30,7 @@ const Footer = () => {
                   </p>
                   <div class="fter">
                     <p>
-                      © 2023 | <a href="privacy-policy.php">Privacy Policy</a>
+                      © 2023 | <a href="/privacy-policy">Privacy Policy</a>
                     </p>
                   </div>
                 </div>

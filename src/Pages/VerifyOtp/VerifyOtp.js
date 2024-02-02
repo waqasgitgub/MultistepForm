@@ -104,10 +104,6 @@ const VerifyOtp = () => {
   };
 
  
-
-
-
-
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('error');
@@ -164,7 +160,7 @@ const VerifyOtp = () => {
 
         console.log(data.user, 'here where we verify otp')
         dispatch(setUserDetails({ firstName: data.user?.first_name, 
-          middleName: data.user?.verified_middleName,
+          middleName: data.user?.middle_name,
           
           lastName: data.user?.last_name }));
         // localStorage.setItem('loginTrue', loginTrue);
@@ -200,9 +196,6 @@ const VerifyOtp = () => {
   return (
 
 
-
-
-    
     <div>
       <Navbar />
 
@@ -231,7 +224,7 @@ const VerifyOtp = () => {
                     <input
                       type="text"
                       name="email"
-                      placeholder="S-123456"
+                      placeholder="Enter your OTP in the format S-123456"
                       class="emailinput form-control"
                       required=""
                       id="id_email"

@@ -9,12 +9,13 @@ import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import LinearProgress from "@mui/material/LinearProgress";
 import "./ApplicationStatus.css";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import { useState, useEffect } from "react";
 import {
+  AddAlert,
   Check,
   CheckCircle,
   Clear,
@@ -26,8 +27,8 @@ import axios from "axios";
 import FileInputComponent from "../../Components/FileInputComponent";
 import LoadingScreen from "../../Components/LoadingScreen";
 import { Modal } from "@mui/material";
-import { setUserDetails } from "../../Redux/Slices/userSlice";
-import { useDispatch } from "react-redux";
+import { removeToken, setUserDetails } from "../../Redux/Slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function LinearProgressWithLabel(props) {
   return (
@@ -55,10 +56,13 @@ export default function ApplicationStatus({}) {
   const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
-
-
+  const location = useLocation()
+  const firstName = useSelector((state) => state.user.firstName);
+  const lastName = useSelector((state) => state.user.lastName);
+  const middleName = useSelector((state) => state.user.middleName);
+  
   const [openModalDate, setOpenModalDate] = useState(false);
-
+  const [openModalDateTwo, setOpenModalDateTwo] = useState(false);
   const [userData, setUserData] = useState();
   const [uploadingFile, setUploadingFile] = useState("");
   const [activeTab, setActiveTab] = useState("status_tab"); // Default to 'status_tab' or last selected tab
@@ -130,11 +134,82 @@ export default function ApplicationStatus({}) {
   });
 
 
-  //for close payment modal
-  const handleCloseModal = () => {
+    //for close payment modal
+    const handleCloseModal = () => {
+    
+      setActiveTab("final_calculation");
+      setOpenModalDate(false);
+    };
+
+    useEffect(() => {
+      const queryParams = new URLSearchParams(location.search);
+      const eventParam = queryParams.get('event');
+
+      if (eventParam) {
+        if (eventParam === 'cancel' || eventParam === 'decline') {
+          setActiveTab('esignature_tab');
+        }
+      }
+    }, [location.search, setActiveTab]);
+
+
+  const handleCloseModalTwo =async (e) => {
   
-    setActiveTab("final_calculation");
-    setOpenModalDate(false);
+    e.preventDefault();
+    setOpenModalDateTwo(false);
+    // // Check if 'docuSign' status is completed in local storage
+    // const docuSignStatus = localStorage.getItem('docuSign');
+
+    if (userData?.strip_inprocess == "true") {
+      // If 'docuSign' is completed, navigate to /strip
+      // window.location.href = "/strip";
+      history.push("/strip");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    try {
+      setLoading(true);
+
+      const apiUrl = "https://agree.setczone.com/api/user/digisign";
+
+      const formData = {
+        name: userData?.first_name,
+        email: userData?.email,
+      };
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+      console.log("API response:", data);
+      const url = data.result.url;
+
+      // // Store success status in local storage
+      // localStorage.setItem('docuSign', 'completed');
+
+      // Redirect to the received URL
+      window.location.href = url;
+      // history.push("/strip");
+
+
+      // You can perform further actions with the API response here
+    } catch (error) {
+      alert("Something went wrong...");
+      console.error("Error calling API:", error.message);
+    }finally {
+      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+    }
   };
 
 
@@ -854,6 +929,7 @@ const deleteFilesComFile = async (fileKey) => {
 
 
             const isModalAlreadyOpened = localStorage.getItem("isModalOpened");
+            const isModalAlreadyOpenedTwo = localStorage.getItem("isModalOpenedTwo");
             const userData = await response.json();
             // dispatch(setUserDetails({ firstName: userData?.first_name, lastName: userData?.last_name }));
 
@@ -862,6 +938,14 @@ const deleteFilesComFile = async (fileKey) => {
               localStorage.setItem("isModalOpened", "true");
             } else {
               setOpenModalDate(false);
+              // localStorage.removeItem("isModalOpened")
+            }
+
+            if (userData?.pre_signature_document !== null && !isModalAlreadyOpenedTwo) {
+              setOpenModalDateTwo(true);
+              localStorage.setItem("isModalOpenedTwo", "true");
+            } else {
+              setOpenModalDateTwo(false);
               // localStorage.removeItem("isModalOpened")
             }
   
@@ -953,8 +1037,76 @@ const deleteFilesComFile = async (fileKey) => {
     // }
 //   // }, [userData.payment]); 
 // }, [userData?.first_name]); 
+
+    // const handleMouseMove = (e) => {
+    //   // e.preventDefault();
+    //   // // Show alert when the cursor moves
+    //   if(userData?.first_name === 'Herrod'){
+    //     history.push('/login')
+    //   }
+    //   else {
+    //     console.log("nothing")
+    //   }
+    
+    // };
+
+
+
+    // useEffect(() => {
+  
+    //   const handleMouseMove = async () => {
+    //     const token = localStorage.getItem("token");
+    //     if (token) {
+
+    //       try {
+    //         const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+    //           method: "GET",
+    //           headers: {
+    //             Authorization: `Bearer ${token}`,
+    //           },
+    //         });
+            
+    //         if (response.ok) {
+    //           console.log("handle mouse move passed...")
+    //         } else {
+    //           // Handle error
+    //     console.error("Error in API call");
+    //     const errorData = await response.json();
+
+    //     if (
+    //       errorData.errMessage === "Authorization token invalid" &&
+    //       errorData.details.name === "TokenExpiredError"
+    //     ) {
+    //       dispatch(removeToken());
+
+    //       localStorage.removeItem("activeTab");
+    //       localStorage.removeItem("isModalOpened");
+    //       history.push("/login");
+    //       alert("Your session expired, please login again. Thanks");
+        
+         
+    //     } else {
+    //       // Handle other types of errors
+    //       console.error("Unhandled error:", errorData);
+    //     }
+    //         }
+    //       } catch (error) {
+    //         console.error("Network error", error);
+    //       }
+    //     }
+    //   };
+  
+    //   // Attach the event listener to the entire document
+    //   document.addEventListener('mousemove', handleMouseMove);
+  
+    //   // Remove the event listener when the component is unmounted
+    //   return () => {
+    //     document.removeEventListener('mousemove', handleMouseMove);
+    //   };
+    // }, []);
+
   return (
-    <div>
+    <div >
 
       <Navbar />
       {loading && <LoadingScreen />}
@@ -988,7 +1140,7 @@ const deleteFilesComFile = async (fileKey) => {
                             </a>
                           </li>
 
-                          {/* <li class="tab-item me-3">
+                          <li class="tab-item me-3">
                             <a
                               className={`status-heading nav-link ${
                                 activeTab === "document_tab" ? "active" : ""
@@ -1003,7 +1155,7 @@ const deleteFilesComFile = async (fileKey) => {
                             >
                               Documents
                             </a>
-                          </li> */}
+                          </li>
                           {userData && userData?.pre_signature_document !== null && (
                           <li class="tab-item me-3">
                             <a
@@ -1082,6 +1234,7 @@ const deleteFilesComFile = async (fileKey) => {
                         
 
                             {userData?.strip_payment === null && (
+
                               <button
                                 onClick={handleStrip}
                                 className="esigbutton"
@@ -1091,6 +1244,7 @@ const deleteFilesComFile = async (fileKey) => {
                               >
                                 E-Signature
                               </button>
+
                             )}
 
                             {/* {userData?.strip_payment !== null && (
@@ -1165,7 +1319,7 @@ const deleteFilesComFile = async (fileKey) => {
                               
                               {/* {verified_middleName !== null && ( */}
                                 <div class="status-inform">
-                                    {userData?.first_name} {userData?.verified_middleName} {userData?.last_name}
+                                    {firstName && firstName} {middleName && middleName} {lastName && lastName}
                                   </div>
                               {/* )} */}
                                   
@@ -1207,13 +1361,13 @@ const deleteFilesComFile = async (fileKey) => {
                                       fontWeight: "500",
                                     }}
                                   >
-                                    Business Legal Name
+                                     Legal Business Name
                                   </div>
                                   <div class="status-inform">
                                     {userData?.business_name}
                                   </div>
                                 </div>
-                                <div class="mb-3">
+                                {/* <div class="mb-3">
                                   <div
                                     class="form-label-status styleTitle"
                                     style={{
@@ -1226,7 +1380,7 @@ const deleteFilesComFile = async (fileKey) => {
                                   <div class="status-inform">
                                     {userData?.trade_name}
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
 
                               <div class="col-lg-6">
@@ -1241,7 +1395,7 @@ const deleteFilesComFile = async (fileKey) => {
                                     Business Address
                                   </div>
                                   <div class="status-inform">
-                                    {userData?.address_line_1}
+                                    {userData?.address_line_1} {userData?.address_line_2}
                                   </div>
                                 </div>
                                 <div class="mb-3">
@@ -1286,7 +1440,7 @@ const deleteFilesComFile = async (fileKey) => {
                                     {userData?.zip}
                                   </div>
                                 </div>
-                                <div class="mb-3">
+                                {/* <div class="mb-3">
                                   <div
                                     class="form-label-status"
                                     style={{
@@ -1299,7 +1453,7 @@ const deleteFilesComFile = async (fileKey) => {
                                   <div class="status-inform">
                                     {userData?.know_about_us}
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           </div>
@@ -1414,6 +1568,86 @@ const deleteFilesComFile = async (fileKey) => {
                                      
                                   </Box>
                                 </Modal>
+
+                                <Modal
+  open={openModalDateTwo}
+  onClose={handleCloseModalTwo}
+  aria-labelledby="modal-title"
+  aria-describedby="modal-description"
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <Box
+    sx={{
+      bgcolor: "background.paper",
+      boxShadow: 24,
+      p: 4,
+      maxWidth: 500,
+      borderRadius: "12px",
+      width: "90%",
+      textAlign: "center",
+    }}
+  >
+    <>
+      <AddAlert
+        style={{
+          width: "50px",
+          height: "50px",
+          color: "#ff8b00",
+          marginBottom: 3,
+        }}
+      />
+      {/* <Typography
+        style={{
+          fontSize: 20,
+          color: "black",
+          fontWeight: "600",
+          color: "#192c57",
+        }}
+      >
+        Congratulations...
+      </Typography> */}
+
+      <p id="modal-description">
+        <strong>Unlock My Calculation</strong>
+        <br />
+        We won't process any claims less than $2,000.
+        <br />
+        Our Tax professionals have completed your calculation, and your SETC credit is over $ (calculated threshold amount).
+        <br />
+        (*We won't process any claims less than $2,000)
+        <br />
+        <br />
+        Click Here (button) To unlock your exact calculated SETC amount.
+        <br />
+        <ol style={{ textAlign: "left", marginLeft: "20px" }}>
+          <li>Please sign the agreement</li>
+          <li>Remit payment of $1495.00</li>
+          <li>Upon receipt of payment, our tax professionals will amend and file your return(s) within the next 5 business days.</li>
+          <li>You can sit back, relax, and wait for your check(s) to arrive from the IRS! Processing times are approximately 12-20 weeks.</li>
+        </ol>
+      </p>
+
+      <button
+        style={{
+          padding: "5px 16px",
+          borderRadius: "5px",
+          color: "white",
+          backgroundColor: "#467A8A",
+          border: "1px solid #467A8A",
+        }}
+        className="mt-3"
+        onClick={handleCloseModalTwo}
+      >
+        E-Signature
+      </button>
+    </>
+  </Box>
+                        </Modal>
+
 
                           {(userData?.applicationStatus === true ||
                             userData?.applicationWithDocument === true) && (

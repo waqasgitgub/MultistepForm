@@ -60,7 +60,9 @@ const Navbar = () => {
     localStorage.removeItem("fName")
     localStorage.removeItem("activeTab");
     localStorage.removeItem("isModalOpened");
+    localStorage.removeItem("isModalOpenedTwo");
     history.push("/login");
+    // history.push("/application");
     setTimeout(() => {
       window.location.reload();
     }, 200);
@@ -191,7 +193,7 @@ const Navbar = () => {
                           fontSize: 30,
                           marginLeft: 3,
                         }}
-                      />{firstName} {middleName} {lastName} 
+                      />{firstName && firstName} {middleName && middleName} {lastName && lastName} 
   </a>
   <ul class="dropdown-menu">
     <li><a class="dropdown-item" href="#" onClick={handleClose}> Logout</a></li>
@@ -294,7 +296,7 @@ const Navbar = () => {
 
                 <div class="offcanvas-body justify-content-end">
                   <ul class="navbar-nav">
-                    <li
+                    {/* <li
                       class="about nav-item active me-1"
                       onClick={handleLogin}
                     >
@@ -306,7 +308,7 @@ const Navbar = () => {
                       >
                         Login
                       </NavLink>
-                    </li>
+                    </li> */}
 
                     <li
                       class="about nav-item active me-1"
