@@ -89,7 +89,7 @@ const App = () => {
     //   }
     // };
 
-const appVersion = '3.0.1';
+const appVersion = '3.0.2';
 
 console.log("current app version" , appVersion)
 console.log("previous App version" , localStorage.getItem('appVersion'))
@@ -112,33 +112,33 @@ if (storedVersion === null || storedVersion !== appVersion) {
 
 
 
-const PrivateRoute = ({ component: Component, isLoggedIn, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      isLoggedIn ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to="/" />
-      )
-    }
-  />
-);
-useEffect(() => {
-  const disableBackButton = (e) => {
-    e.preventDefault();
-    history.push('/');
-  };
+// const PrivateRoute = ({ component: Component, isLoggedIn, ...rest }) => (
+//   <Route
+//     {...rest}
+//     render={(props) =>
+//       isLoggedIn ? (
+//         <Component {...props} />
+//       ) : (
+//         <Redirect to="/" />
+//       )
+//     }
+//   />
+// );
+// useEffect(() => {
+//   const disableBackButton = (e) => {
+//     e.preventDefault();
+//     history.push('/');
+//   };
 
-  // Disable back button
-  window.history.pushState(null, '', '/');
-  window.addEventListener('popstate', disableBackButton);
+//   // Disable back button
+//   window.history.pushState(null, '', '/');
+//   window.addEventListener('popstate', disableBackButton);
 
-  // Clean up event listener on component unmount
-  return () => {
-    window.removeEventListener('popstate', disableBackButton);
-  };
-}, [history]);
+//   // Clean up event listener on component unmount
+//   return () => {
+//     window.removeEventListener('popstate', disableBackButton);
+//   };
+// }, [history]);
 
 
   return (

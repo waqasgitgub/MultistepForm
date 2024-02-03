@@ -86,7 +86,7 @@ const fetchDataWithoutEvent = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const apiUrl = 'https://agree.setczone.com//user/sessions';
+    const apiUrl = 'https://agree.setczone.com/api/user/sessions';
 
     // Make an API call using fetch or Axios
     const response = await fetch(apiUrl, {
@@ -130,7 +130,7 @@ const fetchUserDataa = async () => {
   const token = localStorage.getItem("token");
   if (token) {
     try {
-      const response = await fetch("https://agree.setczone.com//user/getUser", {
+      const response = await fetch("https://agree.setczone.com/api/user/getUser", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -151,14 +151,14 @@ const fetchUserDataa = async () => {
 
 
 const fetchData = async (eventValue) => {
-  console.log(eventValue, 'waqas')
+
   const token = localStorage.getItem("token");
   console.log('Event Value in  fetch  data:', eventValue);
   if(eventValue == 'signing_complete' || userData?.strip_inprocess == "true"){
   console.log("signing conditions  true")
 
     try {
-      const apiUrl = 'https://agree.setczone.com//user/sessions';
+      const apiUrl = 'https://agree.setczone.com/api/user/sessions';
       // Make an API call using fetch or Axios
       const response = await fetch(apiUrl, {
         method: 'POST', // or 'GET' depending on your API
