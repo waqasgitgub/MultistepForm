@@ -56,12 +56,15 @@ const Navbar = () => {
     event.preventDefault();
     setAnchorEl(null);
     dispatch(removeToken());
-    localStorage.removeItem("lName")
-    localStorage.removeItem("fName")
-    localStorage.removeItem("activeTab");
-    localStorage.removeItem("isModalOpened");
-    localStorage.removeItem("isModalOpenedTwo");
-    history.push("/login");
+    // localStorage.removeItem("lName")
+    // localStorage.removeItem("fName")
+    // localStorage.removeItem("activeTab");
+    // localStorage.removeItem("isModalOpened");
+    // localStorage.removeItem("isModalOpenedTwo");
+    // localStorage.removeItem('appVersion');
+    localStorage.clear()
+
+    history.push("/");
     // history.push("/application");
     setTimeout(() => {
       window.location.reload();
@@ -296,7 +299,7 @@ const Navbar = () => {
 
                 <div class="offcanvas-body justify-content-end">
                   <ul class="navbar-nav">
-                    {/* <li
+                    <li
                       class="about nav-item active me-1"
                       onClick={handleLogin}
                     >
@@ -308,7 +311,7 @@ const Navbar = () => {
                       >
                         Login
                       </NavLink>
-                    </li> */}
+                    </li>
 
                     <li
                       class="about nav-item active me-1"

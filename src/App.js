@@ -1,5 +1,4 @@
 import {
-  BrowserRouter as Router,
   Route,
   Switch,
   Redirect,
@@ -18,6 +17,7 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 
 import CacheBuster from 'react-cache-buster';
 import packageInfo from '../package.json'
+import { useHistory } from "react-router-dom";
 const version = packageInfo.version;
 
 
@@ -39,7 +39,7 @@ const App = () => {
       // If token doesn't exist, remove it from component state
       setToken(null);
     }
-  }, [token]); // Run this effect only on the initial mount
+  }, []); // Run this effect only on the initial mount
 
 
   const fetchUserData = async (token) => {
@@ -77,54 +77,118 @@ const App = () => {
 
     };
 
-    const onCacheClear = async (refreshCacheAndReload) => {      
-      try {
-        let result = await refreshCacheAndReload();
-        console.log(result)
-        setToken(null)
-      } catch (error) {
-        console.error('Error during cache clearing or reloading:', error);
-      }
-    };
+    // const onCacheClear = async (refreshCacheAndReload) => {
+    //   try {
+    //     if (caches && window.caches) { // Check if caches is available
+    //       const names = await window.caches.keys(); // Use window.caches
+    //       await Promise.all(names.map(name => window.caches.delete(name))); // Use window.caches
+    //     }
+    //     refreshCacheAndReload();
+    //   } catch (error) {
+    //     console.error('Error during cache clearing or reloading:', error);
+    //   }
+    // };
+
+const appVersion = '3.0.1';
+
+console.log("current app version" , appVersion)
+console.log("previous App version" , localStorage.getItem('appVersion'))
+const history = useHistory()
+
+function clearLocalStorageAndReload() {
+  localStorage.clear();
+  window.location.reload(true);
+  setToken(null)
+  window.location.href = 'https://agree.setczone.com/';
+}
+
+const storedVersion = localStorage.getItem('appVersion');
+
+if (storedVersion === null || storedVersion !== appVersion) {
+  clearLocalStorageAndReload();
+  localStorage.setItem('appVersion', appVersion);
+  
+ }
+
+
+
+const PrivateRoute = ({ component: Component, isLoggedIn, ...rest }) => (
+  <Route
+    {...rest}
+    render={(props) =>
+      isLoggedIn ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to="/" />
+      )
+    }
+  />
+);
+useEffect(() => {
+  const disableBackButton = (e) => {
+    e.preventDefault();
+    history.push('/');
+  };
+
+  // Disable back button
+  window.history.pushState(null, '', '/');
+  window.addEventListener('popstate', disableBackButton);
+
+  // Clean up event listener on component unmount
+  return () => {
+    window.removeEventListener('popstate', disableBackButton);
+  };
+}, [history]);
 
 
   return (
-    <CacheBuster
-    currentVersion={version}
-    isEnabled={true} //If false, the library is disabled.
-    isVerboseMode={true} //If true, the library writes verbose logs to console.
-    // loadingComponent={<div>loading ..</div>} //If not pass, nothing appears at the time of new version check.
-    metaFileDirectory={'.'} //If public assets are hosted somewhere other than root on your server.
-    onCacheClear={onCacheClear}
-    >
-    <Router>
+      // <Switch>
+      //   <Route
+      //     exact
+      //     path="/"
+      //     render={() => (token ? <Redirect to="/application" /> : <LandingPage />)}
+      //   />
+      //   {/* Protected routes */}
+       
+      //   <PrivateRoute
+      //     path="/status"
+      //     exact
+      //     component={ApplicationStatus}
+      //     isLoggedIn={!!token}
+      //   />
+      //   <PrivateRoute
+      //     path="/support"
+      //     component={Support}
+      //     isLoggedIn={!!token}
+      //   />
+      //   {/* Public routes */}
+      //   <Route path="/login" component={Login} />
+      //   <Route path="/verifyOtp" component={VerifyOtp} />
+      //   <Route path="/strip" component={Strip} />
+      //   <Route path="/privacy-policy" component={PrivacyPolicy} />
+      //   <Route path="/application" component={ApplicationForm} />
+      //   {/* Redirect to LandingPage for any other undefined route */}
+      //   <Redirect to="/" />
+      // </Switch>
       <Switch>
-        {/* Route to ApplicationForm component if token exists */}
         <Route
           exact
           path="/"
-          render={() => (token ? <Redirect to="/status" /> : <LandingPage />)}
+          render={() => (token ? <Redirect to="/application" /> : <LandingPage />)}
         />
-        {/* Private route - Render ApplicationForm if token exists */}
-        {/* <Route
-          path="/status"
-          render={() => (token ? <ApplicationStatus /> : <Redirect to="/" />)}
-        /> */}
+       
         {/* Public routes */}
+        <Route path="/support" component={Support} />
+        <Route path="/status" component={ApplicationStatus} />
         <Route path="/login" component={Login} />
         <Route path="/verifyOtp" component={VerifyOtp} />
-        <Route path="/application" component={ApplicationForm} />
-        <Route path="/status" exact component={ApplicationStatus} />
-        <Route path="/support" component={Support} />
         <Route path="/strip" component={Strip} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
-
+        <Route path="/application" component={ApplicationForm} />
         {/* Redirect to LandingPage for any other undefined route */}
         <Redirect to="/" />
       </Switch>
-    </Router>
-  </CacheBuster>
-  );
+);
 };
 
 export default App;

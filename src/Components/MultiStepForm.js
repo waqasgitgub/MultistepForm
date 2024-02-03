@@ -35,6 +35,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "@mui/material/Modal";
 import { Clear, Visibility, VisibilityOff } from "@mui/icons-material";
 
+import img_2019 from '../assets/images/Capture2019.PNG'
+import img_2020 from '../assets/images/Capture2020.PNG'
+import img_2021 from '../assets/images/Capture2021.PNG'
+
+
 import {
   CheckBoxSharp,
   CheckCircle,
@@ -1099,7 +1104,7 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
 
     try {
-      setLoading(true); // Set loading to true to display the loader
+      setLoader(true); // Set loading to true to display the loader
 
       const response = await axios.put(
         "https://agree.setczone.com/api/user/updateApplication",
@@ -1125,7 +1130,7 @@ const MultiStepForm = () => {
       console.error(`Error uploading files:`, error);
       // Handle error
     } finally {
-      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+      setLoader(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
 
@@ -1133,7 +1138,7 @@ const MultiStepForm = () => {
     const token = localStorage.getItem("token");
 
     try {
-      setLoading(true); // Set loading to true to display the loader
+      setLoader(true); // Set loading to true to display the loader
 
       const response = await axios.put(
         "https://agree.setczone.com/api/user/updateDocumentStatus",
@@ -1160,9 +1165,11 @@ const MultiStepForm = () => {
       console.error(`Error uploading files:`, error);
       // Handle error
     } finally {
-      setLoading(false); // Hide the loader when the request is completed (either success or failure)
+      setLoader(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
+
+
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.user);
@@ -5068,7 +5075,7 @@ const MultiStepForm = () => {
     if (fileKey && userData) {
       const fileUrls = userData[fileKey];
       if (fileUrls && fileUrls[index]) {
-        alert("Are you sure to remove file");
+        // alert("Are you sure to remove file");
 
         try {
           const url = "https://agree.setczone.com/api/user/deleteFile";
@@ -11916,7 +11923,7 @@ const MultiStepForm = () => {
                                     for="Self-employed"
                                     className="form-label bg-light py-3 px-1 fs-5"
                                   >
-                                    If yes, did your employer pay Family Sick
+                                    Did your employer pay Family Sick
                                     Leave during Covid, and what amount?
                                   </label>
                                   <div className="optio mb-2">
@@ -12197,17 +12204,17 @@ const MultiStepForm = () => {
                                 <div class="modal-body text-center">
                                   <img
                                     class="img-fluid mb-2 p-2"
-                                    src="https://beta.setczone.com/storage/2019-%201040%20FORM%20SCHEDULE%20C.pdf"
+                                    src='https://beta.setczone.com/storage/pdf-2019.png'
                                     style={{ border: "1px solid black" }}
                                   />
                                   <img
                                     class="img-fluid mb-2 p-2"
-                                    src="https://beta.setczone.com/storage/2020-%201040%20FORM%20SCHEDULE%20C.pdf"
+                                    src="https://beta.setczone.com/storage/pdf-2020.png"
                                     style={{ border: "1px solid black" }}
                                   />
                                   <img
                                     class="img-fluid mb-2 p-2"
-                                    src="https://beta.setczone.com/storage/2021-%201040%20FORM%20SCHEDULE%20C.pdf"
+                                    src="https://beta.setczone.com/storage/pdf-2021.png"
                                     style={{ border: "1px solid black" }}
                                   />
                                   <div class="row justify-content-end mb-3">
@@ -15436,7 +15443,7 @@ const MultiStepForm = () => {
 
 
 <>
-      {!userData?.isOldUser ? (
+      {userData?.isOldUser ? (
         <>
           <div style={{ marginTop: "140px" }} className="container">
             <div className="row">

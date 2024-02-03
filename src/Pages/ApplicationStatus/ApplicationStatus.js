@@ -20,6 +20,7 @@ import {
   CheckCircle,
   Clear,
   DoneOutline,
+  Payment,
   PictureAsPdfSharp,
   TaskAlt,
 } from "@mui/icons-material";
@@ -60,6 +61,9 @@ export default function ApplicationStatus({}) {
   const firstName = useSelector((state) => state.user.firstName);
   const lastName = useSelector((state) => state.user.lastName);
   const middleName = useSelector((state) => state.user.middleName);
+
+  const [finalReviewCalculation, setFinalReviewCalculation] = useState(/* initial value */);
+
   
   const [openModalDate, setOpenModalDate] = useState(false);
   const [openModalDateTwo, setOpenModalDateTwo] = useState(false);
@@ -135,10 +139,11 @@ export default function ApplicationStatus({}) {
 
 
     //for close payment modal
-    const handleCloseModal = () => {
-    
+    const handleCloseModal = (event) => {
+    event.preventDefault();
       setActiveTab("final_calculation");
       setOpenModalDate(false);
+      closePaymentModal();
     };
 
     useEffect(() => {
@@ -152,13 +157,100 @@ export default function ApplicationStatus({}) {
       }
     }, [location.search, setActiveTab]);
 
+    const handleCloseModalTwo = async (event) => {  
+      
+      event.preventDefault();
+      setActiveTab("esignature_tab");
+      setOpenModalDateTwo(false);
+      closeDocumentModal();
+      
+      
+      };
 
-  const handleCloseModalTwo =async (e) => {
+      const closePaymentModal = async () => {
+        const token = localStorage.getItem("token");
+        const step = userData?.step;
+       
+         try {
+          
+           const response = await axios.put(
+             `https://agree.setczone.com/api/user/${step}/updateuser`,
+             { showPaymentModal: true },
+             {
+               headers: {
+                 Authorization: `Bearer ${token}`, // Fix: Use backticks for template literals
+                 "Content-Type": "application/json",
+               },
+               onUploadProgress: (progressEvent) => {
+                 // Update progress for each file
+                 // Handle progress tracking for multiple files as needed
+               },
+             }
+           );
+       
+           // if (response) {
+           //   setConfirmationLoader(false);
+           // }
+       
+          //  console.log('Old user updated', response?.data);
+          //  if (response?.data?.showPaymentModal === true) {
+          //    alert("updated isOld status");
+          //  }
+       
+           await fetchUserDataa(); // Fix: Correct function name
+         } catch (err) {
+           console.log(err);
+         }
+      }
+
+      const closeDocumentModal = async () => {
+        const token = localStorage.getItem("token");
+        const step = userData?.step;
+       
+         try {
+          
+           const response = await axios.put(
+             `https://agree.setczone.com/api/user/${step}/updateuser`,
+             { showDocumentModal: true },
+             {
+               headers: {
+                 Authorization: `Bearer ${token}`, // Fix: Use backticks for template literals
+                 "Content-Type": "application/json",
+               },
+               onUploadProgress: (progressEvent) => {
+                 // Update progress for each file
+                 // Handle progress tracking for multiple files as needed
+               },
+             }
+           );
+       
+           // if (response) {
+           //   setConfirmationLoader(false);
+           // }
+       
+          //  console.log('Old user updated', response?.data);
+          //  if (response?.data?.showDocumentModal === true) {
+          //    alert("updated isOld status");
+          //  }
+       
+           await fetchUserDataa(); // Fix: Correct function name
+         } catch (err) {
+           console.log(err);
+         }
+      }
+
+
+
+  const handleCloseModalTwwo =async (e) => {
   
-    e.preventDefault();
-    setOpenModalDateTwo(false);
+  
+  
+      e.preventDefault();
+      setOpenModalDateTwo(false);
     // // Check if 'docuSign' status is completed in local storage
     // const docuSignStatus = localStorage.getItem('docuSign');
+
+    closeDocumentModal();
 
     if (userData?.strip_inprocess == "true") {
       // If 'docuSign' is completed, navigate to /strip
@@ -611,7 +703,7 @@ export default function ApplicationStatus({}) {
       const fileUrls = userData[fileKey];
 
       if (fileUrls && fileUrls[index]) {
-        alert("Are you sure to remove file");
+        // alert("Are you sure to remove file");
 
         try {
           const url = "https://agree.setczone.com/api/user/deleteFile";
@@ -910,6 +1002,29 @@ const deleteFilesComFile = async (fileKey) => {
     }
   };
 
+  const roundToNearestDownThousand = (value) => {
+    return Math.floor(value / 1000) * 1000;
+  };
+
+  const formatCurrency = (value) => {
+    const cleanedValue = value.replace(/[^\d.]/g, '');
+    const [beforeDecimal, afterDecimal] = cleanedValue.split('.');
+
+    let formattedBeforeDecimal = beforeDecimal ? '$' + new Intl.NumberFormat().format(Number(beforeDecimal)) : '$';
+    if (afterDecimal) {
+      formattedBeforeDecimal += '.' + afterDecimal;
+    }
+
+    return formattedBeforeDecimal;
+  };
+
+  const roundedValue = roundToNearestDownThousand(finalReviewCalculation);
+  const formattedValue = formatCurrency(`${roundedValue}`);
+
+
+
+
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -932,8 +1047,10 @@ const deleteFilesComFile = async (fileKey) => {
             const isModalAlreadyOpenedTwo = localStorage.getItem("isModalOpenedTwo");
             const userData = await response.json();
             // dispatch(setUserDetails({ firstName: userData?.first_name, lastName: userData?.last_name }));
-
-            if (userData?.strip_payment !== null && !isModalAlreadyOpened) {
+            setFinalReviewCalculation(userData?.final_review_calculation_amount);
+            if (userData?.strip_payment !== null  && !isModalAlreadyOpened &&
+              userData?.showPaymentModal !== true
+              ) {
               setOpenModalDate(true);
               localStorage.setItem("isModalOpened", "true");
             } else {
@@ -941,7 +1058,10 @@ const deleteFilesComFile = async (fileKey) => {
               // localStorage.removeItem("isModalOpened")
             }
 
-            if (userData?.pre_signature_document !== null && !isModalAlreadyOpenedTwo) {
+            if (userData?.pre_signature_document !== null && 
+              userData?.showDocumentModal !== true &&
+              
+              !isModalAlreadyOpenedTwo && userData?.strip_inprocess === null) {
               setOpenModalDateTwo(true);
               localStorage.setItem("isModalOpenedTwo", "true");
             } else {
@@ -1242,7 +1362,10 @@ const deleteFilesComFile = async (fileKey) => {
                                   userData?.pre_signature_document === null
                                 }
                               >
-                                E-Signature
+                               {userData && userData?.strip_inprocess === "true" ? 
+                               "Payment" : "E-Signature"
+                              } 
+
                               </button>
 
                             )}
@@ -1616,12 +1739,15 @@ const deleteFilesComFile = async (fileKey) => {
         <br />
         We won't process any claims less than $2,000.
         <br />
-        Our Tax professionals have completed your calculation, and your SETC credit is over $ (calculated threshold amount).
+        Our Tax professionals have completed your calculation, and your SETC credit is over <span style={{color: 'orangered', fontWeight: 600}}>{formattedValue}</span>.
         <br />
         (*We won't process any claims less than $2,000)
         <br />
         <br />
-        Click Here (button) To unlock your exact calculated SETC amount.
+        <span onClick={handleCloseModalTwwo} style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}>
+                Click Here
+            </span> to unlock your exact calculated SETC amount.
+        {/* Click Here  */}
         <br />
         <ol style={{ textAlign: "left", marginLeft: "20px" }}>
           <li>Please sign the agreement</li>
@@ -1640,9 +1766,9 @@ const deleteFilesComFile = async (fileKey) => {
           border: "1px solid #467A8A",
         }}
         className="mt-3"
-        onClick={handleCloseModalTwo}
+        onClick={handleCloseModalTwwo}
       >
-        E-Signature
+        Ok
       </button>
     </>
   </Box>
