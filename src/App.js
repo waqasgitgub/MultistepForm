@@ -22,7 +22,7 @@ const version = packageInfo.version;
 
 
 const App = () => {
-  // const { token } = useSelector((state) => state.user);
+  const reduxToken = useSelector((state) => state.user.token);
 
   const dispatch = useDispatch();
 
@@ -96,10 +96,14 @@ console.log("previous App version" , localStorage.getItem('appVersion'))
 const history = useHistory()
 
 function clearLocalStorageAndReload() {
-  localStorage.clear();
+    //  localStorage.removeItem("final_roundedValue");
+    localStorage.removeItem("activeTab");
+    localStorage.removeItem("isModalOpened");
+    localStorage.removeItem("isModalOpenedTwo");
+    localStorage.removeItem('appVersion');
   window.location.reload(true);
   setToken(null)
-  window.location.href = 'https://agree.setczone.com/';
+  window.location.href = 'http://localhost:3000/';
 }
 
 const storedVersion = localStorage.getItem('appVersion');
@@ -170,28 +174,57 @@ if (storedVersion === null || storedVersion !== appVersion) {
       //   {/* Redirect to LandingPage for any other undefined route */}
       //   <Redirect to="/" />
       // </Switch>
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => (token ? <Redirect to="/application" /> : <LandingPage />)}
-        />
+
+      // <Switch>
+      //   <Route
+      //     exact
+      //     path="/"
+      //     render={() => (token ? <Redirect to="/application" /> : <LandingPage />)}
+      //   />
        
-        {/* Public routes */}
-        <Route path="/support" component={Support} />
-        <Route path="/status" component={ApplicationStatus} />
-        <Route path="/login" component={Login} />
-        <Route path="/verifyOtp" component={VerifyOtp} />
-        <Route path="/strip" component={Strip} />
-        <Route path="/privacy-policy" component={PrivacyPolicy} />
-        <Route path="/application" component={ApplicationForm} />
-        {/* Redirect to LandingPage for any other undefined route */}
-        <Redirect to="/" />
-      </Switch>
+      //   {/* Public routes */}
+      //   <Route path="/support" component={Support} />
+      //   <Route path="/status" component={ApplicationStatus} />
+      //   <Route path="/login" component={Login} />
+      //   <Route path="/verifyOtp" component={VerifyOtp} />
+      //   <Route path="/strip" component={Strip} />
+      //   <Route path="/privacy-policy" component={PrivacyPolicy} />
+      //   <Route path="/application" component={ApplicationForm} />
+      //   {/* Redirect to LandingPage for any other undefined route */}
+      //   <Redirect to="/" />
+      // </Switch>
+
+      <Switch>
+      <Route
+        exact
+        path="/"
+        render={() => (token ? <Redirect to="/application" /> : <LandingPage />)}
+      />
+     
+      {/* Public routes */}
+      <Route path="/support" render={()=> (token ? <Support /> : reduxToken ? <Support /> : <Redirect to = '/' />)} />
+      <Route path="/status" render={()=> (token ? <ApplicationStatus /> : reduxToken ? <ApplicationStatus /> : <Redirect to = '/' />)} />
+
+
+      {/* <Route path="/status"  component={ApplicationStatus} /> */}
+      <Route path="/login" component={Login} />
+      <Route path="/verifyOtp" component={VerifyOtp} />
+      <Route path="/strip" component={Strip} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/application" component={ApplicationForm} />
+      {/* Redirect to LandingPage for any other undefined route */}
+      <Redirect to="/" />
+    </Switch>
 );
 };
 
 export default App;
+
+
+
+
+
+
 
 
 

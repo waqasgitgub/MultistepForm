@@ -1025,9 +1025,9 @@ const MultiStepForm = () => {
 
   const handleGo = () => {
     history.push("/status");
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 100);
   };
 
   const handleFileChange = (inputName, event) => {
@@ -1168,6 +1168,7 @@ const MultiStepForm = () => {
       setLoader(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
+  
 
 
   const dispatch = useDispatch();
@@ -1358,7 +1359,8 @@ const MultiStepForm = () => {
   const handleVerification = async (step) => {
     try {
       setLoader(true);
-      let token = localStorage.getItem("token");
+      // let token = localStorage.getItem("token");
+      let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE0IiwiZW1haWwiOiJ4eXB1c2FrZXhpQG1haWxpbmF0b3IuY29tIiwiaWF0IjoxNzAxODU0MzIyLCJleHAiOjE3MDE5NDA3MjJ9.9v_ApnH4kf8rxkSLnhkO7ocoxB5bZMpQhbpj4ZclfC0"
 
       if (!token) {
         // Handle missing token - Redirect or handle the situation accordingly
@@ -1472,7 +1474,35 @@ const MultiStepForm = () => {
         await fetchUserDataa();
       } else {
         // Handle error
-        console.error("Error in API call");
+       
+         console.error("Error in API call");
+         const errorData = await response.json();
+ 
+         if (
+           errorData.errMessage === "Authorization token invalid" &&
+           errorData.details.name === "TokenExpiredError"
+         ) {
+           dispatch(removeToken());
+ 
+          //  localStorage.removeItem("final_roundedValue");
+           localStorage.removeItem("activeTab");
+           localStorage.removeItem("isModalOpened");
+           localStorage.removeItem("isModalOpenedTwo");
+           localStorage.removeItem('appVersion');
+           history.push("/login");
+           alert("Your session expired, please login again. Thanks");
+           setTimeout(() => {
+             window.location.reload();
+           }, 200);
+           // Token is invalid or expired, remove it from local storage and navigate to /login
+           // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+           // You can use your preferred navigation method, e.g., react-router-dom or window.location
+           // Example using react-router-dom:
+           // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+         } else {
+           // Handle other types of errors
+           console.error("Unhandled error:", errorData);
+         }
       }
     } catch (error) {
       // Handle network error
@@ -1755,8 +1785,11 @@ const MultiStepForm = () => {
         ) {
           dispatch(removeToken());
 
+          // localStorage.removeItem("final_roundedValue");
           localStorage.removeItem("activeTab");
           localStorage.removeItem("isModalOpened");
+          localStorage.removeItem("isModalOpenedTwo");
+          localStorage.removeItem('appVersion');
           history.push("/login");
           alert("Your session expired, please login again. Thanks");
           setTimeout(() => {
@@ -1865,7 +1898,8 @@ const MultiStepForm = () => {
     try {
       setLoading(true);
 
-      let token = localStorage.getItem("token");
+       let token = localStorage.getItem("token");
+
 
       if (!token) {
         // Handle missing token - Redirect or handle the situation accordingly
@@ -2142,8 +2176,11 @@ const MultiStepForm = () => {
         ) {
           dispatch(removeToken());
 
+         //  localStorage.removeItem("final_roundedValue");
           localStorage.removeItem("activeTab");
           localStorage.removeItem("isModalOpened");
+          localStorage.removeItem("isModalOpenedTwo");
+          localStorage.removeItem('appVersion');
           history.push("/login");
           alert("Your session expired, please login again. Thanks");
           setTimeout(() => {
@@ -2283,8 +2320,36 @@ const MultiStepForm = () => {
         await fetchUserDataa();
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
       } else {
-        // Handle error
-        console.error("Error in API call");
+      
+         // Handle error
+         console.error("Error in API call");
+         const errorData = await response.json();
+ 
+         if (
+           errorData.errMessage === "Authorization token invalid" &&
+           errorData.details.name === "TokenExpiredError"
+         ) {
+           dispatch(removeToken());
+ 
+          //  localStorage.removeItem("final_roundedValue");
+           localStorage.removeItem("activeTab");
+           localStorage.removeItem("isModalOpened");
+           localStorage.removeItem("isModalOpenedTwo");
+           localStorage.removeItem('appVersion');
+           history.push("/login");
+           alert("Your session expired, please login again. Thanks");
+           setTimeout(() => {
+             window.location.reload();
+           }, 200);
+           // Token is invalid or expired, remove it from local storage and navigate to /login
+           // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+           // You can use your preferred navigation method, e.g., react-router-dom or window.location
+           // Example using react-router-dom:
+           // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+         } else {
+           // Handle other types of errors
+           console.error("Unhandled error:", errorData);
+         }
       }
     } catch (error) {
       // Handle network error
@@ -3571,12 +3636,14 @@ const MultiStepForm = () => {
       formDataUpdateWithoutLoader(activeStep);
     }
     if (activeStep === 22) {
-    //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
-     handleVerification(activeStep);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    // handleVerification(activeStep);
     }
 
     if (activeStep === 23) {
-      formDataConfirmation(activeStep);
+     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+      // formDataConfirmation(activeStep);
     }
 
     window.scrollTo(0, 0);
@@ -4761,7 +4828,36 @@ const MultiStepForm = () => {
               ks22020: userData?.ks22020,
             }));
           } else {
-            console.error("Error fetching user data");
+             // Handle error
+       
+         console.error("Error in API call");
+         const errorData = await response.json();
+ 
+         if (
+           errorData.errMessage === "Authorization token invalid" &&
+           errorData.details.name === "TokenExpiredError"
+         ) {
+           dispatch(removeToken());
+ 
+        //   localStorage.removeItem("final_roundedValue");
+           localStorage.removeItem("activeTab");
+           localStorage.removeItem("isModalOpened");
+           localStorage.removeItem("isModalOpenedTwo");
+           localStorage.removeItem('appVersion');
+           history.push("/login");
+           alert("Your session expired, please login again. Thanks");
+           setTimeout(() => {
+             window.location.reload();
+           }, 200);
+           // Token is invalid or expired, remove it from local storage and navigate to /login
+           // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+           // You can use your preferred navigation method, e.g., react-router-dom or window.location
+           // Example using react-router-dom:
+           // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+         } else {
+           // Handle other types of errors
+           console.error("Unhandled error:", errorData);
+         }
           }
         } catch (error) {
           console.error("Network error", error);
@@ -11562,14 +11658,14 @@ const MultiStepForm = () => {
                                 </div>
                                 <div className="col-md-3">
                                   <div className="optio">
-                                    <label
+                                    <label className="wer"
                                       htmlFor="setc_program_yes"
                                       style={{
                                         width: "120px",
                                       }}
                                     >
                                       <p
-                                        className={` ${
+                                        className={` wer ${
                                           errors.setc_program
                                             ? "border-danger"
                                             : ""
@@ -11607,14 +11703,14 @@ const MultiStepForm = () => {
                                 </div>
                                 <div className="col-md-3">
                                   <div className="optio">
-                                    <label
+                                    <label className="wer"
                                       htmlFor="setc_program_no"
                                       style={{
                                         width: "120px",
                                       }}
                                     >
                                       <p
-                                        className={` ${
+                                        className={` wer ${
                                           errors.setc_program
                                             ? "border-danger"
                                             : ""
@@ -11680,14 +11776,14 @@ const MultiStepForm = () => {
                                 </div>
                                 <div className="col-md-3">
                                   <div className="optio">
-                                    <label
+                                    <label className="wer"
                                       htmlFor="setc_program2021_yes"
                                       style={{
                                         width: "120px",
                                       }}
                                     >
                                       <p
-                                        className={` ${
+                                        className={` wer ${
                                           errors.setc_program2021
                                             ? "border-danger"
                                             : ""
@@ -11725,14 +11821,14 @@ const MultiStepForm = () => {
                                 </div>
                                 <div className="col-md-3">
                                   <div className="optio">
-                                    <label
+                                    <label className="wer"
                                       htmlFor="setc_program2021_no"
                                       style={{
                                         width: "120px",
                                       }}
                                     >
                                       <p
-                                        className={` ${
+                                        className={`wer ${
                                           errors.setc_program2021
                                             ? "border-danger"
                                             : ""

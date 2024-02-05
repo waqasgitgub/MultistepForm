@@ -56,13 +56,13 @@ const Navbar = () => {
     event.preventDefault();
     setAnchorEl(null);
     dispatch(removeToken());
-    // localStorage.removeItem("lName")
-    // localStorage.removeItem("fName")
-    // localStorage.removeItem("activeTab");
-    // localStorage.removeItem("isModalOpened");
-    // localStorage.removeItem("isModalOpenedTwo");
-    // localStorage.removeItem('appVersion');
-    localStorage.clear()
+   
+    // localStorage.removeItem("final_roundedValue");
+    localStorage.removeItem("activeTab");
+    localStorage.removeItem("isModalOpened");
+    localStorage.removeItem("isModalOpenedTwo");
+    localStorage.removeItem('appVersion');
+    // localStorage.clear()
 
     history.push("/");
     // history.push("/application");

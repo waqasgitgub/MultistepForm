@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Mobile from "../../Components/GlobalImages/Mobile_inbox-pana.png";
 import mail from "../../Components/GlobalImages/Mail_sent-amico.png";
 import actionImg from "../../Components/GlobalImages/actions_img.png";
@@ -6,42 +6,123 @@ import timeMang from "../../Components/GlobalImages/Time_management-rafiki 1.png
 import checklist from "../../Components/GlobalImages/Checklist-pana.png";
 import "./Supportt.css";
 import Navbar from "../../Components/Navbar/Navbar";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import axios from "axios";
+
 
 const Support = () => {
+  const history = useHistory();
+  const [loading ,setLoading] = useState(false);
+  const [userData , setUserData] = useState({});
+  const [consentConfirmationLoader, setConfirmationLoader] = useState(false);
 
 
+
+  const fetchUserDataa = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        setLoading(true); // Hide the loader when the request is completed (either success or failure)
+
+        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const userData = await response.json(); // Use await to wait for the JSON parsing
+          setUserData(userData);
+        } else {
+          console.error("Error fetching user data");
+        }
+      } catch (error) {
+        console.error("Network error", error);
+      } finally {
+        setLoading(false); // Hide the loader when the request is completed (either success or failure)
+      }
+    }
+  };
+
+  useEffect(async()=>{
+    await fetchUserDataa()
+  },[])
+
+
+
+  const handleConsentConfirmation = async () => {
+    const token = localStorage.getItem("token");
+    let step = 0;
+  
+    try {
+      setConfirmationLoader(true);
+      const response = await axios.put(
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        { isOldUser: false },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json",
+          },
+          onUploadProgress: (progressEvent) => {
+          },
+        }
+      );
+  
+      if (response) {
+        setConfirmationLoader(false);
+      }
+  
+      console.log('Old user updated', response?.data);
+      if (response?.data?.isOldUser === false) {
+      }
+  
+      await fetchUserDataa(); // Fix: Correct function name
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setConfirmationLoader(false);
+    }
+  };
 
   return (
     <div  >
-    {/* <Navbar/>
-    <Container maxWidth="lg" style={{ backgroundColor: '#f7f7f7', padding: '20px' }}>
-      <Grid container justifyContent="center" spacing={4} style={{marginTop: 65}}>
-        <Grid item xs={12} sm={6} md={4} style={{ textAlign: 'center' }}>
-          <Typography variant="h5">Contact Us</Typography>
-          <Typography variant="subtitle1">(855) 701-3678</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} style={{ textAlign: 'center' }}>
-          <Typography variant="h5">Email</Typography>
-          <Typography variant="subtitle1">support@setczone.com</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} style={{ textAlign: 'center' }}>
-          <Typography variant="h5">Appointment</Typography>
-          <Typography variant="subtitle1">Book an appointment with an SETC Expert</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} style={{ textAlign: 'center' }}>
-          <Typography variant="h5">Application Status</Typography>
-          <Typography variant="subtitle1">
-            Check the current application status of Setczone
-          </Typography>
-        </Grid>
-      </Grid>
-    </Container>
-    <Footer/> */}
+      {userData?.isOldUser ? (
+        <>
+          <>
+          <Navbar/>
 
-
-<Navbar/>
-
-<div>
+      <div style={{ marginTop: "140px" }} className="container">
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">
+                Important Update!
+              </h5>
+              <p className="card-text">
+              We were down for maintenance, updated our system, and will now need you to verify your information. Thank you!
+              </p>
+              <button className="btn btn-primary mt-2" type="button" onClick={handleConsentConfirmation}>
+                Confirm
+                {consentConfirmationLoader && (
+                  <span
+                  className="spinner-border spinner-border-sm ml-3"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                )}
+                  </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></>
+        </>
+      ) : (
+        <>
+        <div>
+        <Navbar/>
       <section class="suppot">
         <div class="customer_support">
           <h1 class="text-white">Customer Support</h1>
@@ -59,8 +140,8 @@ const Support = () => {
                 </div> */}
                 <div class="actions_div">
                   <a
-                    href="/status"
-                    style={{ textDecoration: "none" }}
+                   onClick={() => history.push("/status")}
+                   style={{ textDecoration: "none", cursor: 'pointer' }}
                   >
                     Check the status of your application
                   </a>
@@ -75,16 +156,17 @@ const Support = () => {
                 </div>
                 <div class="actions_div">
                   <a
-                     href="/status"
-                    style={{ textDecoration: "none" }}
+                      onClick={() => history.push("/status")}
+                      style={{ textDecoration: "none", cursor: 'pointer' }}
                   >
                     Upload  documents
                   </a>
                 </div>
                 <div class="actions_div">
-                  <a
-                    href="/login"
-                    style={{ textDecoration: "none" }}
+                  <a 
+                    //  href="/status"
+                     onClick={() => history.push("/status")}
+                    style={{ textDecoration: "none", cursor: 'pointer' }}
                   >
                     Pick up where I left off
                   </a>
@@ -273,9 +355,16 @@ const Support = () => {
         </a>
       </div>
     </div>
+        </>
+      )}
+
+
     </div>
   );
 };
 
 export default Support;
+
+
+
 

@@ -61,6 +61,7 @@ export default function ApplicationStatus({}) {
   const firstName = useSelector((state) => state.user.firstName);
   const lastName = useSelector((state) => state.user.lastName);
   const middleName = useSelector((state) => state.user.middleName);
+  const [consentConfirmationLoader, setConfirmationLoader] = useState(false);
 
   const [finalReviewCalculation, setFinalReviewCalculation] = useState(/* initial value */);
 
@@ -345,7 +346,36 @@ export default function ApplicationStatus({}) {
           const userData = await response.json(); // Use await to wait for the JSON parsing
           setUserData(userData);
         } else {
-          console.error("Error fetching user data");
+          // Handle error
+       
+          console.error("Error in API call");
+          const errorData = await response.json();
+  
+          if (
+            errorData.errMessage === "Authorization token invalid" &&
+            errorData.details.name === "TokenExpiredError"
+          ) {
+            dispatch(removeToken());
+  
+            // localStorage.removeItem("final_roundedValue");
+            localStorage.removeItem("activeTab");
+            localStorage.removeItem("isModalOpened");
+            localStorage.removeItem("isModalOpenedTwo");
+            localStorage.removeItem('appVersion');
+            history.push("/login");
+            alert("Your session expired, please login again. Thanks");
+            setTimeout(() => {
+              window.location.reload();
+            }, 200);
+            // Token is invalid or expired, remove it from local storage and navigate to /login
+            // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+            // You can use your preferred navigation method, e.g., react-router-dom or window.location
+            // Example using react-router-dom:
+            // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+          } else {
+            // Handle other types of errors
+            console.error("Unhandled error:", errorData);
+          }
         }
       } catch (error) {
         console.error("Network error", error);
@@ -630,6 +660,7 @@ export default function ApplicationStatus({}) {
   // };
 
   const openFileInNewTab = async (fileKey, index, originalFileName) => {
+  
      
     // Split the original file name using the backslash as the separator
     const parts = originalFileName.split('\\');
@@ -1001,6 +1032,41 @@ const deleteFilesComFile = async (fileKey) => {
       setLoading(false); // Hide the loader when the request is completed (either success or failure)
     }
   };
+  
+  const handleConsentConfirmation = async () => {
+    const token = localStorage.getItem("token");
+    let step = 0;
+  
+    try {
+      setConfirmationLoader(true);
+      const response = await axios.put(
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        { isOldUser: false },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json",
+          },
+          onUploadProgress: (progressEvent) => {
+          },
+        }
+      );
+  
+      if (response) {
+        setConfirmationLoader(false);
+      }
+  
+      console.log('Old user updated', response?.data);
+      if (response?.data?.isOldUser === false) {
+      }
+  
+      await fetchUserDataa(); // Fix: Correct function name
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setConfirmationLoader(false);
+    }
+  };
 
   const roundToNearestDownThousand = (value) => {
     return Math.floor(value / 1000) * 1000;
@@ -1088,6 +1154,33 @@ const deleteFilesComFile = async (fileKey) => {
             }));
           } else {
             console.error("Error fetching user data:", response.status, response.statusText);
+            const errorData = await response.json();
+  
+            if (
+              errorData.errMessage === "Authorization token invalid" &&
+              errorData.details.name === "TokenExpiredError"
+            ) {
+              dispatch(removeToken());
+    
+              // localStorage.removeItem("final_roundedValue");
+              localStorage.removeItem("activeTab");
+              localStorage.removeItem("isModalOpened");
+              localStorage.removeItem("isModalOpenedTwo");
+              localStorage.removeItem('appVersion');
+              history.push("/login");
+              alert("Your session expired, please login again. Thanks");
+              setTimeout(() => {
+                window.location.reload();
+              }, 200);
+              // Token is invalid or expired, remove it from local storage and navigate to /login
+              // localStorage.removeItem('yourAuthTokenKey'); // Replace 'yourAuthTokenKey' with the actual key used to store the token
+              // You can use your preferred navigation method, e.g., react-router-dom or window.location
+              // Example using react-router-dom:
+              // history.push('/login'); // Assuming history is available, you may need to pass it as a parameter
+            } else {
+              // Handle other types of errors
+              console.error("Unhandled error:", errorData);
+            }
           }
         } else {
           console.error("Token not found");
@@ -1227,6 +1320,40 @@ const deleteFilesComFile = async (fileKey) => {
 
   return (
     <div >
+      {userData?.isOldUser ? (
+        <>
+          <>
+          <Navbar/>
+
+      <div style={{ marginTop: "140px" }} className="container">
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">
+                Important Update!
+              </h5>
+              <p className="card-text">
+              We were down for maintenance, updated our system, and will now need you to verify your information. Thank you!
+              </p>
+              <button className="btn btn-primary mt-2" type="button" onClick={handleConsentConfirmation}>
+                Confirm
+                {consentConfirmationLoader && (
+                  <span
+                  className="spinner-border spinner-border-sm ml-3"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                )}
+                  </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></>
+        </>
+      ) : (
+        <>
 
       <Navbar />
       {loading && <LoadingScreen />}
@@ -1945,7 +2072,10 @@ const deleteFilesComFile = async (fileKey) => {
                                           >
                                             View
                                           </div>
-                                         {!shouldHideRemoveButton && ( 
+
+                                         { 
+                                          !userData.schedule_pdf_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && 
+                                        ( 
                                             <div
                                               onClick={() =>
                                                 removeFile(
@@ -2069,7 +2199,7 @@ const deleteFilesComFile = async (fileKey) => {
                                             >
                                               View
                                             </div>
-                                            {!shouldHideRemoveButton && (
+                                            {!userData.Tax_Return_2020_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton &&  (
                                               <div
                                                 onClick={() =>
                                                   removeFile(
@@ -2189,7 +2319,7 @@ const deleteFilesComFile = async (fileKey) => {
                                             >
                                               View
                                             </div>
-                                            {!shouldHideRemoveButton && (
+                                            {!userData.Tax_Return_2021_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                               <div
                                                 onClick={() =>
                                                   removeFile(
@@ -2324,7 +2454,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                 >
                                                   View
                                                 </div>
-                                                {!shouldHideRemoveButton && (
+                                                {!userData.supplemental_attachment_2020_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                                   <div
                                                     onClick={() =>
                                                       removeFile(
@@ -2465,7 +2595,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   >
                                                     View
                                                   </div>
-                                                  {!shouldHideRemoveButton && (
+                                                  {!userData.supplemental_attachment_2021_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                                     <div
                                                       onClick={() =>
                                                         removeFile(
@@ -2598,7 +2728,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   >
                                                     View
                                                   </div>
-                                                  {!shouldHideRemoveButton && (
+                                                  {!userData.FormA1099_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                                     <div
                                                       onClick={() =>
                                                         removeFile(
@@ -2720,7 +2850,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   >
                                                     View
                                                   </div>
-                                                  {!shouldHideRemoveButton && (
+                                                  {!userData.FormB1099_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                                     <div
                                                       onClick={() =>
                                                         removeFile(
@@ -2837,7 +2967,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                 >
                                                   View
                                                 </div>
-                                                {!shouldHideRemoveButton && (
+                                                {!userData.ks2020_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                                   <div
                                                     onClick={() =>
                                                       removeFile(
@@ -2952,7 +3082,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                 >
                                                   View
                                                 </div>
-                                                {!shouldHideRemoveButton && (
+                                                {!userData.ks22020_name[index].includes("pdf_file_changeable") && !shouldHideRemoveButton && (
                                                   <div
                                                     onClick={() =>
                                                       removeFile(
@@ -3160,6 +3290,9 @@ const deleteFilesComFile = async (fileKey) => {
         </div>
       </div>
       <Footer />
+      </>
+      )
+          }
     </div>
   );
 }

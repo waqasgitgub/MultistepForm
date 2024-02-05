@@ -1188,6 +1188,12 @@ h3.plain {
     font-size: 14px;
 } */
 @media (max-width: 767px) {
+
+  .rmdp-panel {
+    width: 100px;
+     /* border: 1px solid #1c921c; */
+   }
+
   .desktop-box {
     padding: 110px 20px !important;
   }
