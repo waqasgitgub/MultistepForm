@@ -1,0 +1,29 @@
+.status-heading.nav-link.active {
+    color: #1a2c57; /* Your desired color */
+    text-shadow: 1px 1px #ded3d3;
+  }
+  .status-heading.nav-link {
+    color: grey; /* Your desired color */
+  }
+  .MuiTimeline-root.MuiTimeline-positionRight.css-55vwbm-MuiTimeline-root {
+    margin-top: -31px !important;
+  }
+  .esigbutton{
+    margin-left: 16px;
+    /* background: #f46969; */
+    /* color: rgb(53, 6, 6); */
+    /* border: 1px solid rgb(186, 186, 186); */
+    border-radius: 4px;
+    padding: 6px 22px;
+    margin-top: 23px;
+  }
+  
+  @media (max-width: 768px) {
+    
+  }
+
+
+  @media only screen and (max-width: 600px) {
+  
+  }
+  
