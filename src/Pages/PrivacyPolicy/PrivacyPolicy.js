@@ -1669,11 +1669,11 @@ const PrivacyPolicy = () => {
                         <p>
                           By visiting this page on our website:
                           <a
-                            href="https://agree.setczone.com"
+                            href="https://app.setczone.com"
                             rel="external nofollow noopener"
                             target="_blank"
                           >
-                            https://agree.setczone.com
+                            https://app.setczone.com
                           </a>
                         </p>
                       </li>
@@ -1972,11 +1972,11 @@ const PrivacyPolicy = () => {
                         <p>
                           By visiting this page on our website:
                           <a
-                            href="https://agree.setczone.com"
+                            href="https://app.setczone.com"
                             rel="external nofollow noopener"
                             target="_blank"
                           >
-                            https://agree.setczone.com
+                            https://app.setczone.com
                           </a>
                         </p>
                       </li>
