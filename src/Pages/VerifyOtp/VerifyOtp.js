@@ -68,7 +68,7 @@ const VerifyOtp = () => {
     try {
       setLoading(true);
   
-      const response = await axios.post('https://app.setczone.com/api/user/send-invitation', {
+      const response = await axios.post('https://agree.setczone.com/api/user/send-invitation', {
         email: emailUser
       });
   
@@ -146,7 +146,7 @@ const VerifyOtp = () => {
     try {
       setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-      const response = await axios.post("https://app.setczone.com/api/user/verify", {
+      const response = await axios.post("https://agree.setczone.com/api/user/verify", {
         otp: formData.email,
         email: emailUser
       });

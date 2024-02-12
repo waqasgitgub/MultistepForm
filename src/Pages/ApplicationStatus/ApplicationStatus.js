@@ -143,11 +143,11 @@ const sendEmailPayment = async (user) => {
   {
     // Send email on payment
     try {
-      const response = await axios.post('https://app.setczone.com/api/user/sendEmailonpayment', {
+      const response = await axios.post('https://agree.setczone.com/api/user/sendEmailonpayment', {
         user
       });
       if (response.status === 200) {
-        console.log('HTTP POST request to https://app.setczone.com/api/user/sendEmailonpayment successful');
+        console.log('HTTP POST request to https://agree.setczone.com/api/user/sendEmailonpayment successful');
       } else {
         console.error('Unexpected HTTP response status:', response.status);
       }
@@ -161,14 +161,14 @@ const sendEmailPayment = async (user) => {
     let ln = user.last_name;
     let em = user.email;
     try {
-      const response = await axios.post('https://app.setczone.com/api/user/sendprocessemail', {
+      const response = await axios.post('https://agree.setczone.com/api/user/sendprocessemail', {
         process: "pay and agreement done of user",
         fn: fn,
         ln: ln,
         em: em
       });
       if (response.status === 200) {
-        console.log('HTTP POST request to https://app.setczone.com/api/user/sendprocessemail successful');
+        console.log('HTTP POST request to https://agree.setczone.com/api/user/sendprocessemail successful');
    
       } else {
         console.error('Unexpected HTTP response status:', response.status);
@@ -216,7 +216,7 @@ const sendEmailPayment = async (user) => {
          try {
           
            const response = await axios.put(
-             `https://app.setczone.com/api/user/${step}/updateuser`,
+             `https://agree.setczone.com/api/user/${step}/updateuser`,
              { showPaymentModal: true },
              {
                headers: {
@@ -252,7 +252,7 @@ const sendEmailPayment = async (user) => {
          try {
           
            const response = await axios.put(
-             `https://app.setczone.com/api/user/${step}/updateuser`,
+             `https://agree.setczone.com/api/user/${step}/updateuser`,
              { showDocumentModal: true },
              {
                headers: {
@@ -317,7 +317,7 @@ const sendEmailPayment = async (user) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://app.setczone.com/api/user/digisign";
+      const apiUrl = "https://agree.setczone.com/api/user/digisign";
 
       const formData = {
         name: userData?.first_name,
@@ -390,7 +390,7 @@ const sendEmailPayment = async (user) => {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("https://app.setczone.com/api/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -466,7 +466,7 @@ const sendEmailPayment = async (user) => {
         };
 
         const response = await axios.put(
-          "https://app.setczone.com/api/user/multiple-form-data",
+          "https://agree.setczone.com/api/user/multiple-form-data",
           formData,
           config
         );
@@ -574,7 +574,7 @@ const sendEmailPayment = async (user) => {
     const filenameFinal = parts[parts.length - 1];
    
 
-  const apiUrl = "https://app.setczone.com/api/user/sendfiletosawabi";
+  const apiUrl = "https://agree.setczone.com/api/user/sendfiletosawabi";
 
   const data = {
     email: userData?.email,
@@ -701,7 +701,7 @@ const sendEmailPayment = async (user) => {
   //   // if (fileKey && userData) {
   //   //   const fileUrls = userData[fileKey]; // Array of file URLs
   //   //   if (fileUrls && fileUrls[index]) {
-  //   //     window.open(`https://app.setczone.com${fileUrls[index]}`, "_blank");
+  //   //     window.open(`https://agree.setczone.com${fileUrls[index]}`, "_blank");
   //   //   } else {
   //   //     console.error("File URL not found for the provided index");
   //   //   }
@@ -709,7 +709,7 @@ const sendEmailPayment = async (user) => {
   //   //   console.error("Invalid fileKey or userData is missing");
   //   // }
   //   if (fileKey && userData && originalFileName) {
-  //     window.open(`https://app.setczone.com/${originalFileName}`, "_blank");
+  //     window.open(`https://agree.setczone.com/${originalFileName}`, "_blank");
   //   } else {
   //     console.error("File URL not found for the provided index");
   //   }
@@ -731,7 +731,7 @@ const sendEmailPayment = async (user) => {
       return;
   }
 
-  const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
+  const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
 
   const data = {
     email: userData?.email,
@@ -793,7 +793,7 @@ const sendEmailPayment = async (user) => {
         // alert("Are you sure to remove file");
 
         try {
-          const url = "https://app.setczone.com/api/user/deleteFile";
+          const url = "https://agree.setczone.com/api/user/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -848,7 +848,7 @@ const sendEmailPayment = async (user) => {
       
     
 
-    const apiUrl = "https://app.setczone.com/api/user/deleteFilesawabi";
+    const apiUrl = "https://agree.setczone.com/api/user/deleteFilesawabi";
   
     const data = {
       email: userData?.email,
@@ -894,7 +894,7 @@ const sendEmailPayment = async (user) => {
     try {
         // setLoading(true);
 
-        const apiUrl = "https://app.setczone.com/api/user/downloadfile";
+        const apiUrl = "https://agree.setczone.com/api/user/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -949,7 +949,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "https://app.setczone.com/api/user/deletefilecom";
+    const apiUrl = "https://agree.setczone.com/api/user/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -1048,7 +1048,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://app.setczone.com/api/user/digisign";
+      const apiUrl = "https://agree.setczone.com/api/user/digisign";
 
       const formData = {
         name: userData?.first_name,
@@ -1096,7 +1096,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setConfirmationLoader(true);
       const response = await axios.put(
-        `https://app.setczone.com/api/user/${step}/updateuser`,
+        `https://agree.setczone.com/api/user/${step}/updateuser`,
         { isOldUser: false },
         {
           headers: {
@@ -1173,7 +1173,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("https://app.setczone.com/api/user/getUser", {
+          const response = await fetch("https://agree.setczone.com/api/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -1188,17 +1188,18 @@ const deleteFilesComFile = async (fileKey) => {
             const userData = await response.json();
             // dispatch(setUserDetails({ firstName: userData?.first_name, lastName: userData?.last_name }));
             setFinalReviewCalculation(userData?.final_review_calculation_amount);
-            if (userData?.strip_payment !== null  && !isModalAlreadyOpened &&
+            if (userData?.strip_payment !== null  && 
               userData?.showPaymentModal !== true
               ) {
               setOpenModalDate(true);
+              sendEmailPayment(userData)
+
               localStorage.setItem("isModalOpened", "true");
             } else {
 
               // hereeee...
               
               setOpenModalDate(false);
-              // sendEmailPayment(userData)
               localStorage.removeItem("isModalOpened")
             }
 
@@ -1352,7 +1353,7 @@ const deleteFilesComFile = async (fileKey) => {
     //     if (token) {
 
     //       try {
-    //         const response = await fetch("https://app.setczone.com/api/user/getUser", {
+    //         const response = await fetch("https://agree.setczone.com/api/user/getUser", {
     //           method: "GET",
     //           headers: {
     //             Authorization: `Bearer ${token}`,
@@ -1606,60 +1607,68 @@ const deleteFilesComFile = async (fileKey) => {
                             id="final_calculation"
                           >
                            
+                           
                             {userData?.strip_payment !== null && (
-                              <div style={{ marginTop: 16 }}>
-                                <a
-                                  // href="https://beta.ccalerc.com//public/pdfs/pdf_file_changeable_1704734452_31c95b170ba977d5bb26d7f6159d9ed0_orignal_aptly.pdf"
-                                  href={userData?.pre_signature_document}
+  <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+    {userData?.pre_signature_document && (
+      <div>
+        <a
+          href={userData?.pre_signature_document}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <PictureAsPdfSharp
+            sx={{
+              width: "30px",
+              height: "30px",
+              marginRight: "5px",
+            }}
+          />
+          ETC Amended 2020 1040X 
+        </a>
+      </div>
+    )}
 
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <PictureAsPdfSharp
-                                    sx={{
-                                      width: "30px",
-                                      height: "30px",
-                                      marginRight: "5px",
-                                    }}
-                                  />
-                                  Download/View PDF (TaxPayment_Share_SetCZone) 
-                                </a>
+    {userData?.pre_signature_second_document && (
+      <div>
+        <a
+          href={userData?.pre_signature_second_document}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <PictureAsPdfSharp
+            sx={{
+              width: "30px",
+              height: "30px",
+              marginRight: "5px",
+            }}
+          />
+          ETC Amended 2021 1040X 
+        </a>
+      </div>
+    )}
 
-                                <a
-                                  // href="https://beta.ccalerc.com//public/pdfs/pdf_file_changeable_1704734452_31c95b170ba977d5bb26d7f6159d9ed0_orignal_aptly.pdf"
-                                  href={userData?.pre_signature_second_document}
+    {/* {userData?.pre_signature_third_document && (
+      <div>
+        <a
+          href={userData?.pre_signature_third_document}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <PictureAsPdfSharp
+            sx={{
+              width: "30px",
+              height: "30px",
+              marginRight: "5px",
+            }}
+          />
+          3-Form 8879 
+        </a>
+      </div>
+    )} */}
+  </div>
+)}
 
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <PictureAsPdfSharp
-                                    sx={{
-                                      width: "30px",
-                                      height: "30px",
-                                      marginRight: "5px",
-                                    }}
-                                  />
-                                  Download/View PDF (TaxPayment_Share_SetCZone) 
-                                </a>
-
-                                <a
-                                  // href="https://beta.ccalerc.com//public/pdfs/pdf_file_changeable_1704734452_31c95b170ba977d5bb26d7f6159d9ed0_orignal_aptly.pdf"
-                                  href={userData?.pre_signature_third_document}
-
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <PictureAsPdfSharp
-                                    sx={{
-                                      width: "30px",
-                                      height: "30px",
-                                      marginRight: "5px",
-                                    }}
-                                  />
-                                  Download/View PDF (TaxPayment_Share_SetCZone) 
-                                </a>
-                              </div>
-                            )}
 
                           </div>
                           <div
