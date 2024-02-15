@@ -1195,6 +1195,14 @@ h3.plain {
   border: 1px solid #ff8731 ;
 }
 
+.capitalizee{
+  font-size: 18px;
+  text-transform: capitalize;
+ font-weight: bold;
+  /* text-decoration: dotted; */
+
+}
+
 /* .custom-date-picker-input {
   width: 180px;
   margin-bottom: 14px;

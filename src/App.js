@@ -50,7 +50,7 @@ if (process.env.REACT_APP_ENV === 'production') {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const response = await fetch("http://localhost:5000/user/getUser", {
+        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ if (process.env.REACT_APP_ENV === 'production') {
     //   }
     // };
 
-const appVersion = '4.6.0';
+const appVersion = '4.7.0';
 
 console.log("current app version" , appVersion)
 console.log("previous App version" , localStorage.getItem('appVersion'))
@@ -122,8 +122,8 @@ function clearLocalStorageAndReload() {
     localStorage.removeItem('token')
     window.location.reload(true);
     setToken(null)
-    // window.location.href = 'http://localhost:5000';
-    window.location.href = 'http://localhost:3000';
+    // window.location.href = 'https://agree.setczone.com';
+    window.location.href = 'https://agree.setczone.com';
     
 }
 
