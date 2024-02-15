@@ -142,19 +142,19 @@ export default function ApplicationStatus({}) {
 const sendEmailPayment = async (user) => {
 
   {
-    // // Send email on payment
-    // try {
-    //   const response = await axios.post('https://agree.setczone.com/api/user/sendEmailonpayment', {
-    //     user
-    //   });
-    //   if (response.status === 200) {
-    //     console.log('HTTP POST request to https://agree.setczone.com/api/user/sendEmailonpayment successful');
-    //   } else {
-    //     console.error('Unexpected HTTP response status:', response.status);
-    //   }
-    // } catch (error) {
-    //   console.error('Error making HTTP POST request:', error.message);
-    // }
+    // Send email on payment
+    try {
+      const response = await axios.post('https://app.setczone.com/api/user/sendEmailonpayment', {
+        user
+      });
+      if (response.status === 200) {
+        console.log('HTTP POST request to https://app.setczone.com/api/user/sendEmailonpayment successful');
+      } else {
+        console.error('Unexpected HTTP response status:', response.status);
+      }
+    } catch (error) {
+      console.error('Error making HTTP POST request:', error.message);
+    }
   
     // Send email to admin
    
@@ -162,14 +162,14 @@ const sendEmailPayment = async (user) => {
     let ln = user?.last_name;
     let em = user?.email;
     try {
-      const response = await axios.post('https://agree.setczone.com/api/user/sendprocessemail', {
+      const response = await axios.post('https://app.setczone.com/api/user/sendprocessemail', {
         process: "Pay and Agreement done of user",
         fn: fn,
         ln: ln,
         em: em
       });
       if (response.status === 200) {
-        console.log('HTTP POST request to https://agree.setczone.com/api/user/sendprocessemail successful');
+        console.log('HTTP POST request to https://app.setczone.com/api/user/sendprocessemail successful');
    
       } else {
         console.error('Unexpected HTTP response status:', response.status);
@@ -217,7 +217,7 @@ const sendEmailPayment = async (user) => {
          try {
           
            const response = await axios.put(
-             `https://agree.setczone.com/api/user/${step}/updateuser`,
+             `https://app.setczone.com/api/user/${step}/updateuser`,
              { showPaymentModal: true },
              {
                headers: {
@@ -253,7 +253,7 @@ const sendEmailPayment = async (user) => {
          try {
           
            const response = await axios.put(
-             `https://agree.setczone.com/api/user/${step}/updateuser`,
+             `https://app.setczone.com/api/user/${step}/updateuser`,
              { showDocumentModal: true },
              {
                headers: {
@@ -321,7 +321,7 @@ const sendEmailPayment = async (user) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://agree.setczone.com/api/user/digisign";
+      const apiUrl = "https://app.setczone.com/api/user/digisign";
       
       //  const fName = userData?.first_name;
       //  const lName = userData?.last_name;
@@ -331,7 +331,7 @@ const sendEmailPayment = async (user) => {
 
       const formData = {
         // name: `${fName} ${lName}`,
-        name: `${firstName && firstName} ${middleName && middleName} ${lastName && lastName}`,
+        name: `${firstName ? firstName : ''} ${middleName ? middleName : ''} ${lastName ? lastName : ''}`,
         email: userData?.email,
       };
 
@@ -401,7 +401,7 @@ const sendEmailPayment = async (user) => {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+        const response = await fetch("https://app.setczone.com/api/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -477,7 +477,7 @@ const sendEmailPayment = async (user) => {
         };
 
         const response = await axios.put(
-          "https://agree.setczone.com/api/user/multiple-form-data",
+          "https://app.setczone.com/api/user/multiple-form-data",
           formData,
           config
         );
@@ -585,7 +585,7 @@ const sendEmailPayment = async (user) => {
     const filenameFinal = parts[parts.length - 1];
    
 
-  const apiUrl = "https://agree.setczone.com/api/user/sendfiletosawabi";
+  const apiUrl = "https://app.setczone.com/api/user/sendfiletosawabi";
 
   const data = {
     email: userData?.email,
@@ -712,7 +712,7 @@ const sendEmailPayment = async (user) => {
   //   // if (fileKey && userData) {
   //   //   const fileUrls = userData[fileKey]; // Array of file URLs
   //   //   if (fileUrls && fileUrls[index]) {
-  //   //     window.open(`https://agree.setczone.com${fileUrls[index]}`, "_blank");
+  //   //     window.open(`https://app.setczone.com${fileUrls[index]}`, "_blank");
   //   //   } else {
   //   //     console.error("File URL not found for the provided index");
   //   //   }
@@ -720,7 +720,7 @@ const sendEmailPayment = async (user) => {
   //   //   console.error("Invalid fileKey or userData is missing");
   //   // }
   //   if (fileKey && userData && originalFileName) {
-  //     window.open(`https://agree.setczone.com/${originalFileName}`, "_blank");
+  //     window.open(`https://app.setczone.com/${originalFileName}`, "_blank");
   //   } else {
   //     console.error("File URL not found for the provided index");
   //   }
@@ -742,7 +742,7 @@ const sendEmailPayment = async (user) => {
       return;
   }
 
-  const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
+  const apiUrl = "https://app.setczone.com/api/user/generateUrlwasabi";
 
   const data = {
     email: userData?.email,
@@ -804,7 +804,7 @@ const sendEmailPayment = async (user) => {
         // alert("Are you sure to remove file");
 
         try {
-          const url = "https://agree.setczone.com/api/user/deleteFile";
+          const url = "https://app.setczone.com/api/user/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -859,7 +859,7 @@ const sendEmailPayment = async (user) => {
       
     
 
-    const apiUrl = "https://agree.setczone.com/api/user/deleteFilesawabi";
+    const apiUrl = "https://app.setczone.com/api/user/deleteFilesawabi";
   
     const data = {
       email: userData?.email,
@@ -905,7 +905,7 @@ const sendEmailPayment = async (user) => {
     try {
         // setLoading(true);
 
-        const apiUrl = "https://agree.setczone.com/api/user/downloadfile";
+        const apiUrl = "https://app.setczone.com/api/user/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -960,7 +960,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "https://agree.setczone.com/api/user/deletefilecom";
+    const apiUrl = "https://app.setczone.com/api/user/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -1059,12 +1059,12 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://agree.setczone.com/api/user/digisign";
+      const apiUrl = "https://app.setczone.com/api/user/digisign";
 
       const fName = userData?.first_name;
        const lName = userData?.last_name;
       const formData = {
-        name: `${firstName && firstName} ${middleName && middleName} ${lastName && lastName}`,
+        name: `${firstName ? firstName : ''} ${middleName ? middleName : ''} ${lastName ? lastName : ''}`,
         email: userData?.email,
       };
 
@@ -1109,7 +1109,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setConfirmationLoader(true);
       const response = await axios.put(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `https://app.setczone.com/api/user/${step}/updateuser`,
         { isOldUser: false },
         {
           headers: {
@@ -1186,7 +1186,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+          const response = await fetch("https://app.setczone.com/api/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -1205,7 +1205,6 @@ const deleteFilesComFile = async (fileKey) => {
               userData?.showPaymentModal !== true
               ) {
               setOpenModalDate(true);
-              console.log('waqas payment')
               sendEmailPayment(userData)
 
               localStorage.setItem("isModalOpened", "true");
@@ -1367,7 +1366,7 @@ const deleteFilesComFile = async (fileKey) => {
     //     if (token) {
 
     //       try {
-    //         const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+    //         const response = await fetch("https://app.setczone.com/api/user/getUser", {
     //           method: "GET",
     //           headers: {
     //             Authorization: `Bearer ${token}`,
@@ -1824,7 +1823,7 @@ const deleteFilesComFile = async (fileKey) => {
                                       fontWeight: "500",
                                     }}
                                   >
-                                    Postel Code
+                                    Postal Code
                                   </div>
                                   <div class="status-inform">
                                     {userData?.zip}
