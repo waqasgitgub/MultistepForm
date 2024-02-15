@@ -24,7 +24,7 @@ const Support = () => {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+        const response = await fetch("http://localhost:5000/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const Support = () => {
     try {
       setConfirmationLoader(true);
       const response = await axios.put(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         { isOldUser: false },
         {
           headers: {

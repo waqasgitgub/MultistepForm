@@ -1669,11 +1669,11 @@ const PrivacyPolicy = () => {
                         <p>
                           By visiting this page on our website:
                           <a
-                            href="https://agree.setczone.com"
+                            href="http://localhost:5000"
                             rel="external nofollow noopener"
                             target="_blank"
                           >
-                            https://agree.setczone.com
+                            http://localhost:5000
                           </a>
                         </p>
                       </li>
@@ -1972,11 +1972,11 @@ const PrivacyPolicy = () => {
                         <p>
                           By visiting this page on our website:
                           <a
-                            href="https://agree.setczone.com"
+                            href="http://localhost:5000"
                             rel="external nofollow noopener"
                             target="_blank"
                           >
-                            https://agree.setczone.com
+                            http://localhost:5000
                           </a>
                         </p>
                       </li>

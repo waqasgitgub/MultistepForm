@@ -18,6 +18,7 @@ import {
   AddAlert,
   Check,
   CheckCircle,
+  CheckTwoTone,
   Clear,
   DoneOutline,
   Payment,
@@ -141,34 +142,34 @@ export default function ApplicationStatus({}) {
 const sendEmailPayment = async (user) => {
 
   {
-    // Send email on payment
-    try {
-      const response = await axios.post('https://agree.setczone.com/api/user/sendEmailonpayment', {
-        user
-      });
-      if (response.status === 200) {
-        console.log('HTTP POST request to https://agree.setczone.com/api/user/sendEmailonpayment successful');
-      } else {
-        console.error('Unexpected HTTP response status:', response.status);
-      }
-    } catch (error) {
-      console.error('Error making HTTP POST request:', error.message);
-    }
+    // // Send email on payment
+    // try {
+    //   const response = await axios.post('http://localhost:5000/user/sendEmailonpayment', {
+    //     user
+    //   });
+    //   if (response.status === 200) {
+    //     console.log('HTTP POST request to http://localhost:5000/user/sendEmailonpayment successful');
+    //   } else {
+    //     console.error('Unexpected HTTP response status:', response.status);
+    //   }
+    // } catch (error) {
+    //   console.error('Error making HTTP POST request:', error.message);
+    // }
   
     // Send email to admin
-    console.log("user", user);
-    let fn = user.first_name;
-    let ln = user.last_name;
-    let em = user.email;
+   
+    let fn = user?.first_name;
+    let ln = user?.last_name;
+    let em = user?.email;
     try {
-      const response = await axios.post('https://agree.setczone.com/api/user/sendprocessemail', {
-        process: "pay and agreement done of user",
+      const response = await axios.post('http://localhost:5000/user/sendprocessemail', {
+        process: "Pay and Agreement done of user",
         fn: fn,
         ln: ln,
         em: em
       });
       if (response.status === 200) {
-        console.log('HTTP POST request to https://agree.setczone.com/api/user/sendprocessemail successful');
+        console.log('HTTP POST request to http://localhost:5000/user/sendprocessemail successful');
    
       } else {
         console.error('Unexpected HTTP response status:', response.status);
@@ -216,7 +217,7 @@ const sendEmailPayment = async (user) => {
          try {
           
            const response = await axios.put(
-             `https://agree.setczone.com/api/user/${step}/updateuser`,
+             `http://localhost:5000/user/${step}/updateuser`,
              { showPaymentModal: true },
              {
                headers: {
@@ -252,7 +253,7 @@ const sendEmailPayment = async (user) => {
          try {
           
            const response = await axios.put(
-             `https://agree.setczone.com/api/user/${step}/updateuser`,
+             `http://localhost:5000/user/${step}/updateuser`,
              { showDocumentModal: true },
              {
                headers: {
@@ -314,13 +315,23 @@ const sendEmailPayment = async (user) => {
     }
 
     const token = localStorage.getItem("token");
+    // if (token){
+    //  alert('digiSign')
+    // }
     try {
       setLoading(true);
 
-      const apiUrl = "https://agree.setczone.com/api/user/digisign";
+      const apiUrl = "http://localhost:5000/user/digisign";
+      
+      //  const fName = userData?.first_name;
+      //  const lName = userData?.last_name;
+      
+     
+
 
       const formData = {
-        name: userData?.first_name,
+        // name: `${fName} ${lName}`,
+        name: `${firstName && firstName} ${middleName && middleName} ${lastName && lastName}`,
         email: userData?.email,
       };
 
@@ -390,7 +401,7 @@ const sendEmailPayment = async (user) => {
       try {
         setLoading(true); // Hide the loader when the request is completed (either success or failure)
 
-        const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+        const response = await fetch("http://localhost:5000/user/getUser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -466,7 +477,7 @@ const sendEmailPayment = async (user) => {
         };
 
         const response = await axios.put(
-          "https://agree.setczone.com/api/user/multiple-form-data",
+          "http://localhost:5000/user/multiple-form-data",
           formData,
           config
         );
@@ -574,7 +585,7 @@ const sendEmailPayment = async (user) => {
     const filenameFinal = parts[parts.length - 1];
    
 
-  const apiUrl = "https://agree.setczone.com/api/user/sendfiletosawabi";
+  const apiUrl = "http://localhost:5000/user/sendfiletosawabi";
 
   const data = {
     email: userData?.email,
@@ -701,7 +712,7 @@ const sendEmailPayment = async (user) => {
   //   // if (fileKey && userData) {
   //   //   const fileUrls = userData[fileKey]; // Array of file URLs
   //   //   if (fileUrls && fileUrls[index]) {
-  //   //     window.open(`https://agree.setczone.com${fileUrls[index]}`, "_blank");
+  //   //     window.open(`http://localhost:5000${fileUrls[index]}`, "_blank");
   //   //   } else {
   //   //     console.error("File URL not found for the provided index");
   //   //   }
@@ -709,7 +720,7 @@ const sendEmailPayment = async (user) => {
   //   //   console.error("Invalid fileKey or userData is missing");
   //   // }
   //   if (fileKey && userData && originalFileName) {
-  //     window.open(`https://agree.setczone.com/${originalFileName}`, "_blank");
+  //     window.open(`http://localhost:5000/${originalFileName}`, "_blank");
   //   } else {
   //     console.error("File URL not found for the provided index");
   //   }
@@ -731,7 +742,7 @@ const sendEmailPayment = async (user) => {
       return;
   }
 
-  const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
+  const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
 
   const data = {
     email: userData?.email,
@@ -793,7 +804,7 @@ const sendEmailPayment = async (user) => {
         // alert("Are you sure to remove file");
 
         try {
-          const url = "https://agree.setczone.com/api/user/deleteFile";
+          const url = "http://localhost:5000/user/deleteFile";
           const payload = {
             // fieldName: fileKey,
             // fileName: fileUrls[index],
@@ -848,7 +859,7 @@ const sendEmailPayment = async (user) => {
       
     
 
-    const apiUrl = "https://agree.setczone.com/api/user/deleteFilesawabi";
+    const apiUrl = "http://localhost:5000/user/deleteFilesawabi";
   
     const data = {
       email: userData?.email,
@@ -894,7 +905,7 @@ const sendEmailPayment = async (user) => {
     try {
         // setLoading(true);
 
-        const apiUrl = "https://agree.setczone.com/api/user/downloadfile";
+        const apiUrl = "http://localhost:5000/user/downloadfile";
         let fileNamee = index;
 
         if (Array.isArray(fileNamee)) {
@@ -949,7 +960,7 @@ const deleteFilesComFile = async (fileKey) => {
   try {
     setLoading(true);
 
-    const apiUrl = "https://agree.setczone.com/api/user/deletefilecom";
+    const apiUrl = "http://localhost:5000/user/deletefilecom";
     // let fileNamee = index;
 
     // if (Array.isArray(fileNamee)) {
@@ -1048,10 +1059,12 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setLoading(true);
 
-      const apiUrl = "https://agree.setczone.com/api/user/digisign";
+      const apiUrl = "http://localhost:5000/user/digisign";
 
+      const fName = userData?.first_name;
+       const lName = userData?.last_name;
       const formData = {
-        name: userData?.first_name,
+        name: `${firstName && firstName} ${middleName && middleName} ${lastName && lastName}`,
         email: userData?.email,
       };
 
@@ -1096,7 +1109,7 @@ const deleteFilesComFile = async (fileKey) => {
     try {
       setConfirmationLoader(true);
       const response = await axios.put(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         { isOldUser: false },
         {
           headers: {
@@ -1133,7 +1146,7 @@ const deleteFilesComFile = async (fileKey) => {
       return 4000;
   } else if (value >= 5001 && value <= 7500) {
       return 5000;
-  } else if (value >= 7501 && value <= 100000) {
+  } else if (value >= 7501 && value <= 10000) {
       return 7500;
   } else if (value >= 10001 && value <= 15000) {
       return 10000;
@@ -1173,7 +1186,7 @@ const deleteFilesComFile = async (fileKey) => {
         const token = localStorage.getItem("token");
   
         if (token) {
-          const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+          const response = await fetch("http://localhost:5000/user/getUser", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -1192,6 +1205,7 @@ const deleteFilesComFile = async (fileKey) => {
               userData?.showPaymentModal !== true
               ) {
               setOpenModalDate(true);
+              console.log('waqas payment')
               sendEmailPayment(userData)
 
               localStorage.setItem("isModalOpened", "true");
@@ -1353,7 +1367,7 @@ const deleteFilesComFile = async (fileKey) => {
     //     if (token) {
 
     //       try {
-    //         const response = await fetch("https://agree.setczone.com/api/user/getUser", {
+    //         const response = await fetch("http://localhost:5000/user/getUser", {
     //           method: "GET",
     //           headers: {
     //             Authorization: `Bearer ${token}`,
@@ -1468,7 +1482,7 @@ const deleteFilesComFile = async (fileKey) => {
                             </a>
                           </li>
 
-                          {/* <li class="tab-item me-3">
+                          <li class="tab-item me-3">
                             <a
                               className={`status-heading nav-link ${
                                 activeTab === "document_tab" ? "active" : ""
@@ -1483,8 +1497,9 @@ const deleteFilesComFile = async (fileKey) => {
                             >
                               Documents
                             </a>
-                          </li> */}
-                          {userData && userData?.completed_application !== null && (
+                          </li>
+                          {userData && userData?.completed_application !== null &&
+                          userData?.final_review_calculation_amount > 2000 && (
                           <li class="tab-item me-3">
                             <a
                               className={`status-heading nav-link ${
@@ -1544,8 +1559,8 @@ const deleteFilesComFile = async (fileKey) => {
                               }}
                             >
                               {" "}
-                              Your Name: {userData?.first_name}{" "}
-                              {userData?.last_name}
+                              Your Name: {firstName && firstName} {middleName && middleName} {lastName && lastName}
+
                             </Typography>
                             <Typography
                               style={{
@@ -1947,7 +1962,7 @@ const deleteFilesComFile = async (fileKey) => {
           <Modal
           open={openModalDateTwo}
           onClose={
-            userData?.finalReviewCalculation <= 2000
+            userData?.final_review_calculation_amount <= 2000
               ? handleCloseModalWithoutDocuAndStrip
               : handleCloseModalTwwo
           }
@@ -2018,7 +2033,7 @@ const deleteFilesComFile = async (fileKey) => {
         (*We won't process any claims less than $2,000)
         <br />
         <br />
-        <span onClick={ userData?.finalReviewCalculation <= 2000
+        <span onClick={ userData?.final_review_calculation_amount <= 2000
               ? handleCloseModalWithoutDocuAndStrip
               : handleCloseModalTwwo} style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}>
                 Click Here
@@ -2046,7 +2061,7 @@ const deleteFilesComFile = async (fileKey) => {
           border: "1px solid #467A8A",
         }}
         className="mt-3"
-        onClick={ userData?.finalReviewCalculation <= 2000
+        onClick={ userData?.final_review_calculation_amount <= 2000
               ? handleCloseModalWithoutDocuAndStrip
               : handleCloseModalTwwo}
       >
@@ -2058,7 +2073,7 @@ const deleteFilesComFile = async (fileKey) => {
 
 
                           {(userData?.applicationStatus === true ||
-                            userData?.applicationWithDocument === true) && (
+                            userData?.applicationWithDocument === true || userData?.completed_application !== null)   && (
                             <div
                               className={`tab-pane fade ${
                                 activeTab === "document_tab"
@@ -2190,6 +2205,13 @@ const deleteFilesComFile = async (fileKey) => {
                                   Return), including ALL schedules, if the 2019
                                   Self-Employed Income is higher than 2020. We
                                   would prefer one PDF file.
+                                  {userData?.final_review_calculation_amount !== null &&
+                                  
+                                //   userData?.schedule_pdf &&
+                                // userData?.schedule_pdf.length > 0 &&
+                                 (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                 </h4>
 
                                 {userData?.schedule_pdf &&
@@ -2202,18 +2224,24 @@ const deleteFilesComFile = async (fileKey) => {
                                     return (
                                       <div key={index} className="containerr">
                                         <div className="itemm">
+                                        {userData?.final_review_calculation_amount === null && (
+                                          <>
                                           <TaskAlt />
                                           <span className="namee">
                                             {userData.schedule_pdf[index]}
                                           </span>
+                                          </>
+                                          ) }
                                         </div>
+
+                                        {userData?.final_review_calculation_amount === null && (
                                         <div
                                           className="itemm"
                                           style={{
                                             padding: "0px 20px !important",
                                           }}
                                         >
-                                          <div
+                                          {/* <div
                                             onClick={() =>
                                               openFileInNewTab(
                                                 "schedule_pdf",
@@ -2226,7 +2254,7 @@ const deleteFilesComFile = async (fileKey) => {
                                             className="buttonn"
                                           >
                                             View
-                                          </div>
+                                          </div> */}
 
                                          { 
                                           (!userData.schedule_pdf_name[index].includes("pdf_file_changeable")) && (!userData.schedule_pdf_name[index].includes("pdf_file")) && !shouldHideRemoveButton && 
@@ -2254,6 +2282,7 @@ const deleteFilesComFile = async (fileKey) => {
                                             </div> */}
                                           
                                         </div>
+                                        )}
                                       </div>
                                     );
                                   })
@@ -2274,7 +2303,7 @@ const deleteFilesComFile = async (fileKey) => {
                                 )}
 
                                 {userData?.schedule_pdf &&
-                                  userData?.schedule_pdf.length > 0 && (
+                                  userData?.schedule_pdf.length > 0 &&  userData?.final_review_calculation_amount === null && (
                                     <button
                                       style={{
                                         marginTop: "20px",
@@ -2312,6 +2341,9 @@ const deleteFilesComFile = async (fileKey) => {
                                 <h4>
                                   A PDF Copy of your 2020 Form 1040 (Tax
                                   Return), including ALL schedules.
+                                  {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                 </h4>
 
                                 {userData?.Tax_Return_2020 &&
@@ -2325,6 +2357,8 @@ const deleteFilesComFile = async (fileKey) => {
                                       return (
                                         <div key={index} className="containerr">
                                           <div className="itemm">
+                                          {userData?.final_review_calculation_amount === null && (
+                                          <>
                                             <TaskAlt />
                                             <span className="namee">
                                               {
@@ -2333,14 +2367,17 @@ const deleteFilesComFile = async (fileKey) => {
                                                 ]
                                               }
                                             </span>
+                                            </>
+                                          )}
                                           </div>
+                                          {userData?.final_review_calculation_amount === null && (
                                           <div
                                             className="itemm"
                                             style={{
                                               padding: "0px 20px !important",
                                             }}
                                           >
-                                            <div
+                                            {/* <div
                                               onClick={() =>
                                                 openFileInNewTab(
                                                   "Tax_Return_2020",
@@ -2353,7 +2390,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               className="buttonn"
                                             >
                                               View
-                                            </div>
+                                            </div> */}
                                             {!userData.Tax_Return_2020_name[index].includes("pdf_file_changeable")  && !userData.Tax_Return_2020_name[index].includes("pdf_file")&& !shouldHideRemoveButton &&  (
                                               <div
                                                 onClick={() =>
@@ -2372,6 +2409,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               </div>
                                             )}
                                           </div>
+                                          )}
                                         </div>
                                       );
                                     }
@@ -2393,7 +2431,7 @@ const deleteFilesComFile = async (fileKey) => {
                                 )}
 
                                 {userData?.Tax_Return_2020 &&
-                                  userData?.Tax_Return_2020.length > 0 && (
+                                  userData?.Tax_Return_2020.length > 0 &&  userData?.final_review_calculation_amount === null &&  (
                                     <button
                                       style={{
                                         marginTop: "20px",
@@ -2431,6 +2469,9 @@ const deleteFilesComFile = async (fileKey) => {
                                 <h4>
                                   A PDF Copy of your 2021 Form 1040 (Tax
                                   Return), including ALL schedules.
+                                  {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                 </h4>
 
                                 {userData?.Tax_Return_2021 &&
@@ -2445,6 +2486,8 @@ const deleteFilesComFile = async (fileKey) => {
                                       return (
                                         <div key={index} className="containerr">
                                           <div className="itemm">
+                                          {userData?.final_review_calculation_amount === null && (
+                                          <>
                                             <TaskAlt />
                                             <span className="namee">
                                               {
@@ -2453,14 +2496,18 @@ const deleteFilesComFile = async (fileKey) => {
                                                 ]
                                               }
                                             </span>
+                                            </>
+                                          )}
                                           </div>
+
+                                          {userData?.final_review_calculation_amount === null && (
                                           <div
                                             className="itemm"
                                             style={{
                                               padding: "0px 20px !important",
                                             }}
                                           >
-                                            <div
+                                            {/* <div
                                               onClick={() =>
                                                 openFileInNewTab(
                                                   "Tax_Return_2021",
@@ -2473,7 +2520,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               className="buttonn"
                                             >
                                               View
-                                            </div>
+                                            </div> */}
                                             {!userData.Tax_Return_2021_name[index].includes("pdf_file_changeable") && !userData.Tax_Return_2021_name[index].includes("pdf_file") && !shouldHideRemoveButton && (
                                               <div
                                                 onClick={() =>
@@ -2492,6 +2539,7 @@ const deleteFilesComFile = async (fileKey) => {
                                               </div>
                                             )}
                                           </div>
+                                          )}
                                         </div>
                                       );
                                     }
@@ -2513,7 +2561,7 @@ const deleteFilesComFile = async (fileKey) => {
                                 )}
 
                                 {userData?.Tax_Return_2021 &&
-                                  userData?.Tax_Return_2021.length > 0 && (
+                                  userData?.Tax_Return_2021.length > 0 && userData?.final_review_calculation_amount === null && (
                                     <button
                                       style={{
                                         marginTop: "20px",
@@ -2547,8 +2595,8 @@ const deleteFilesComFile = async (fileKey) => {
                                 )}
                               </div>
 
-                              {userData.Family_Sick_Leave === "Yes" &&
-                                userData.employed_as_W2 === "Yes" && (
+                              {userData?.Family_Sick_Leave === "Yes" &&
+                                userData?.employed_as_W2 === "Yes" && (
                                   <>
                                     <div class="file_div">
                                       <h4>
@@ -2556,6 +2604,9 @@ const deleteFilesComFile = async (fileKey) => {
                                         including ANY Family First Coronavirus
                                         Response Act (FFCRA) supplemental
                                         attachment(s).*
+                                        {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                       </h4>
 
                                       {userData?.supplemental_attachment_2020 &&
@@ -2576,6 +2627,8 @@ const deleteFilesComFile = async (fileKey) => {
                                               className="containerr"
                                             >
                                               <div className="itemm">
+                                              {userData?.final_review_calculation_amount === null && (
+                                          <>
                                                 <TaskAlt />
                                                 <span className="namee">
                                                   {
@@ -2586,15 +2639,19 @@ const deleteFilesComFile = async (fileKey) => {
                                                   }
                                                   
                                                 </span>
+                                                </>
+                                              )}
                                               </div>
-                                              <div
+                                              {userData?.final_review_calculation_amount === null && (
+                                      
+                                                  <div
                                                 className="itemm"
                                                 style={{
                                                   padding:
                                                     "0px 20px !important",
                                                 }}
                                               >
-                                                <div
+                                                {/* <div
                                                   onClick={() =>
                                                     openFileInNewTab(
                                                       "supplemental_attachment_2020",
@@ -2608,7 +2665,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   className="buttonn"
                                                 >
                                                   View
-                                                </div>
+                                                </div> */}
                                                 {!userData.supplemental_attachment_2020_name[index].includes("pdf_file_changeable") && !userData.supplemental_attachment_2020_name[index].includes("pdf_file") && !shouldHideRemoveButton && (
                                                   <div
                                                     onClick={() =>
@@ -2627,6 +2684,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   </div>
                                                 )}
                                               </div>
+                                              )}
                                             </div>
                                               ) ;
                                           }
@@ -2652,7 +2710,7 @@ const deleteFilesComFile = async (fileKey) => {
 
                                       {userData?.supplemental_attachment_2020 &&
                                         userData?.supplemental_attachment_2020
-                                          .length > 0 && (
+                                          .length > 0 && userData?.final_review_calculation_amount === null && (
                                           <button
                                             style={{
                                               marginTop: "20px",
@@ -2698,6 +2756,9 @@ const deleteFilesComFile = async (fileKey) => {
                                         including ANY Family First Coronavirus
                                         Response Act (FFCRA) supplemental
                                         attachment(s).
+                                        {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                       </h4>
 
                                       {userData?.supplemental_attachment_2021 &&
@@ -2718,6 +2779,8 @@ const deleteFilesComFile = async (fileKey) => {
                                                 className="containerr"
                                               >
                                                 <div className="itemm">
+                                                {userData?.final_review_calculation_amount === null && (
+                           <>
                                                   <TaskAlt />
                                                   <span className="namee">
                                                     {
@@ -2727,7 +2790,10 @@ const deleteFilesComFile = async (fileKey) => {
                                                       ]
                                                     }
                                                   </span>
+                                                  </>
+                                                )}
                                                 </div>
+                                                {userData?.final_review_calculation_amount === null && (
                                                 <div
                                                   className="itemm"
                                                   style={{
@@ -2735,7 +2801,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                       "0px 20px !important",
                                                   }}
                                                 >
-                                                  <div
+                                                  {/* <div
                                                     onClick={() =>
                                                       openFileInNewTab(
                                                         "supplemental_attachment_2021",
@@ -2749,7 +2815,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     className="buttonn"
                                                   >
                                                     View
-                                                  </div>
+                                                  </div> */}
                                                   {!userData.supplemental_attachment_2021_name[index].includes("pdf_file_changeable") && !userData.supplemental_attachment_2021_name[index].includes("pdf_file") && !shouldHideRemoveButton && (
                                                     <div
                                                       onClick={() =>
@@ -2768,6 +2834,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     </div>
                                                   )}
                                                 </div>
+                                                )}
                                               </div>
                                             );
                                           }
@@ -2793,7 +2860,7 @@ const deleteFilesComFile = async (fileKey) => {
 
                                       {userData?.supplemental_attachment_2021 &&
                                         userData?.supplemental_attachment_2021
-                                          .length > 0 && (
+                                          .length > 0 && userData?.final_review_calculation_amount === null && (
                                           <button
                                             style={{
                                               marginTop: "20px",
@@ -2833,10 +2900,14 @@ const deleteFilesComFile = async (fileKey) => {
                                       )}
                                     </div>
 
+
                                     <div class="file_div">
                                       <h4>
                                         PDF Copy of All your 2020 Form
                                         1099-R(s), if any
+                                        {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                       </h4>
 
                                       {userData?.FormA1099 &&
@@ -2853,6 +2924,8 @@ const deleteFilesComFile = async (fileKey) => {
                                                 className="containerr"
                                               >
                                                 <div className="itemm">
+                                                {userData?.final_review_calculation_amount === null && (
+                                       <>
                                                   <TaskAlt />
                                                   <span className="namee">
                                                     {
@@ -2861,7 +2934,11 @@ const deleteFilesComFile = async (fileKey) => {
                                                       ]
                                                     }
                                                   </span>
+                                                  </>
+                                                )}
                                                 </div>
+
+                                                {userData?.final_review_calculation_amount === null && (
                                                 <div
                                                   className="itemm"
                                                   style={{
@@ -2869,7 +2946,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                       "0px 20px !important",
                                                   }}
                                                 >
-                                                  <div
+                                                  {/* <div
                                                     onClick={() =>
                                                       openFileInNewTab(
                                                         "FormA1099",
@@ -2882,7 +2959,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     className="buttonn"
                                                   >
                                                     View
-                                                  </div>
+                                                  </div> */}
                                                   {!userData.FormA1099_name[index].includes("pdf_file_changeable") && !userData.FormA1099_name[index].includes("pdf_file") && !shouldHideRemoveButton && (
                                                     <div
                                                       onClick={() =>
@@ -2901,6 +2978,8 @@ const deleteFilesComFile = async (fileKey) => {
                                                     </div>
                                                   )}
                                                 </div>
+
+                                                )}
                                               </div>
                                             );
                                           }
@@ -2922,7 +3001,7 @@ const deleteFilesComFile = async (fileKey) => {
                                       )}
 
                                       {userData?.FormA1099 &&
-                                        userData?.FormA1099.length > 0 && (
+                                        userData?.FormA1099.length > 0 && userData?.final_review_calculation_amount === null && (
                                           <button
                                             style={{
                                               marginTop: "20px",
@@ -2958,7 +3037,10 @@ const deleteFilesComFile = async (fileKey) => {
 
                                     <div class="file_div">
                                       <h4>
-                                        PDF Copy of All your 2020 K-1s, if any
+                                      PDF Copy of All your 2021 Form 1099-R(s), if any
+                                      {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                       </h4>
 
                                       {userData?.FormB1099 &&
@@ -2975,6 +3057,8 @@ const deleteFilesComFile = async (fileKey) => {
                                                 className="containerr"
                                               >
                                                 <div className="itemm">
+                                                {userData?.final_review_calculation_amount === null && (
+                           <>
                                                   <TaskAlt />
                                                   <span className="namee">
                                                     {
@@ -2983,7 +3067,11 @@ const deleteFilesComFile = async (fileKey) => {
                                                       ]
                                                     }
                                                   </span>
+
+                                                  </>
+                                                )}
                                                 </div>
+                                                 {userData?.final_review_calculation_amount === null && (
                                                 <div
                                                   className="itemm"
                                                   style={{
@@ -2991,7 +3079,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                       "0px 20px !important",
                                                   }}
                                                 >
-                                                  <div
+                                                  {/* <div
                                                     onClick={() =>
                                                       openFileInNewTab(
                                                         "FormB1099",
@@ -3004,7 +3092,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     className="buttonn"
                                                   >
                                                     View
-                                                  </div>
+                                                  </div> */}
                                                   {!userData.FormB1099_name[index].includes("pdf_file_changeable") && !userData.FormB1099_name[index].includes("pdf_file") && !shouldHideRemoveButton && (
                                                     <div
                                                       onClick={() =>
@@ -3023,6 +3111,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     </div>
                                                   )}
                                                 </div>
+                                                 )}
                                               </div>
                                             );
                                           }
@@ -3044,7 +3133,7 @@ const deleteFilesComFile = async (fileKey) => {
                                       )}
 
                                       {userData?.FormB1099 &&
-                                        userData?.FormB1099.length > 0 && (
+                                        userData?.FormB1099.length > 0  && userData?.final_review_calculation_amount === null && (
                                           <button
                                             style={{
                                               marginTop: "20px",
@@ -3080,7 +3169,10 @@ const deleteFilesComFile = async (fileKey) => {
 
                                     <div class="file_div">
                                       <h4>
-                                        PDF Copy of All your 2020 K-1s, if any
+                                      PDF Copy of All your 2020 K-2s, if any
+                                      {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                       </h4>
 
                                       {userData?.ks2020 &&
@@ -3096,11 +3188,16 @@ const deleteFilesComFile = async (fileKey) => {
                                               className="containerr"
                                             >
                                               <div className="itemm">
+                                              {userData?.final_review_calculation_amount === null && (
+                           <>
                                                 <TaskAlt />
                                                 <span className="namee">
                                                   {userData.ks2020[index]}
                                                 </span>
+                                                </>
+                                              )}
                                               </div>
+                                              {userData?.final_review_calculation_amount === null && (
                                               <div
                                                 className="itemm"
                                                 style={{
@@ -3108,7 +3205,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     "0px 20px !important",
                                                 }}
                                               >
-                                                <div
+                                                {/* <div
                                                   onClick={() =>
                                                     openFileInNewTab(
                                                       "ks2020",
@@ -3121,7 +3218,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   className="buttonn"
                                                 >
                                                   View
-                                                </div>
+                                                </div> */}
                                                 {!userData.ks2020_name[index].includes("pdf_file_changeable") && !userData.ks2020_name[index].includes("pdf_file") && !shouldHideRemoveButton && (
                                                   <div
                                                     onClick={() =>
@@ -3139,6 +3236,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   </div>
                                                 )}
                                               </div>
+                                              )}
                                             </div>
                                           );
                                         })
@@ -3159,7 +3257,7 @@ const deleteFilesComFile = async (fileKey) => {
                                       )}
 
                                       {userData?.ks2020 &&
-                                        userData?.ks2020.length > 0 && (
+                                        userData?.ks2020.length > 0 && userData?.final_review_calculation_amount === null && (
                                           <button
                                             style={{
                                               marginTop: "20px",
@@ -3195,7 +3293,10 @@ const deleteFilesComFile = async (fileKey) => {
 
                                     <div class="file_div">
                                       <h4>
-                                        PDF Copy of All your 2020 K-1s, if any
+                                      PDF Copy of All your 2021 K-1s, if any
+                                      {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                                       </h4>
 
                                       {userData?.ks22020 &&
@@ -3211,11 +3312,18 @@ const deleteFilesComFile = async (fileKey) => {
                                               className="containerr"
                                             >
                                               <div className="itemm">
+                                              {userData?.final_review_calculation_amount === null && (
+                           <>
                                                 <TaskAlt />
                                                 <span className="namee">
                                                   {userData.ks22020[index]}
                                                 </span>
+
+                                                </>
+                                              )}
                                               </div>
+
+                                              {userData?.final_review_calculation_amount === null && (
                                               <div
                                                 className="itemm"
                                                 style={{
@@ -3223,7 +3331,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                     "0px 20px !important",
                                                 }}
                                               >
-                                                <div
+                                                {/* <div
                                                   onClick={() =>
                                                     openFileInNewTab(
                                                       "ks22020",
@@ -3236,7 +3344,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   className="buttonn"
                                                 >
                                                   View
-                                                </div>
+                                                </div> */}
                                                 {!userData.ks22020_name[index].includes("pdf_file_changeable") && !userData.ks22020_name[index].includes("pdf_file")  && !shouldHideRemoveButton && (
                                                   <div
                                                     onClick={() =>
@@ -3254,6 +3362,7 @@ const deleteFilesComFile = async (fileKey) => {
                                                   </div>
                                                 )}
                                               </div>
+                                              )}
                                             </div>
                                           );
                                         })
@@ -3274,7 +3383,7 @@ const deleteFilesComFile = async (fileKey) => {
                                       )}
 
                                       {userData?.ks22020 &&
-                                        userData?.ks22020.length > 0 && (
+                                        userData?.ks22020.length > 0 && userData?.final_review_calculation_amount === null && (
                                           <button
                                             style={{
                                               marginTop: "20px",
@@ -3318,6 +3427,8 @@ const deleteFilesComFile = async (fileKey) => {
                 </div>
               </div>
             </div>
+
+           
 
             <div
               class="col-lg-5 px-0"
@@ -3441,6 +3552,9 @@ const deleteFilesComFile = async (fileKey) => {
 
               </div>
             </div>
+           
+
+
           </div>
         </div>
       </div>

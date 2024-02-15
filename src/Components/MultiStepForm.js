@@ -864,6 +864,35 @@ const MultiStepForm = () => {
     );
   };
 
+  // const allFilesSelectedAdditional = () => {
+  
+  //   if (formData.did_receive_unemployement20 === 'No') {
+  //     if (
+  //       selectedFiles?.schedule_pdf?.length > 0 &&
+  //       selectedFiles?.Tax_Return_2020?.length > 0 &&
+  //       selectedFiles?.supplemental_attachment_2020?.length > 0 &&
+  //       selectedFiles?.FormA1099?.length > 0 &&
+  //       selectedFiles?.ks2020?.length > 0
+  //     ) {
+  //       return true;
+  //     }
+  //   }
+  
+  //   if (formData.did_receive_unemployement21 === 'No') {
+  //     if (
+  //       selectedFiles?.Tax_Return_2021?.length > 0 &&
+  //       selectedFiles?.supplemental_attachment_2021?.length > 0 &&
+  //       selectedFiles?.FormB1099?.length > 0 &&
+  //       selectedFiles?.ks22020?.length > 0
+  //     ) {
+  //       return true;
+  //     }
+  //   }
+  
+  //   return false;
+  // };
+  
+
   const allFilesSelectedAdditional = () => {
     return (
       // selectedFiles?.driving_licence?.length > 0 &&
@@ -913,7 +942,7 @@ const MultiStepForm = () => {
       setLoader(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "https://agree.setczone.com/api/user/updateApplication",
+        "http://localhost:5000/user/updateApplication",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -938,6 +967,7 @@ const MultiStepForm = () => {
     } finally {
       setLoader(false); // Hide the loader when the request is completed (either success or failure)
     }
+
   };
 
 
@@ -948,7 +978,7 @@ const MultiStepForm = () => {
      try {
       
        const response = await axios.put(
-         `https://agree.setczone.com/api/user/${step}/updateuser`,
+         `http://localhost:5000/user/${step}/updateuser`,
          { completed_application: "true" },
          {
            headers: {
@@ -984,7 +1014,7 @@ const MultiStepForm = () => {
       setLoader(true); // Set loading to true to display the loader
 
       const response = await axios.put(
-        "https://agree.setczone.com/api/user/updateDocumentStatus",
+        "http://localhost:5000/user/updateDocumentStatus",
         {}, // You might need to pass data here if required by the API
         {
           headers: {
@@ -1147,7 +1177,7 @@ const MultiStepForm = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://agree.setczone.com/api/user/create",
+        "http://localhost:5000/user/create",
         {
           method: "POST",
           headers: {
@@ -1218,7 +1248,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1341,7 +1371,7 @@ const MultiStepForm = () => {
   
   const callVeriffAPI = async (token) => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
-    const apiEndpoint = "https://agree.setczone.com/api/user/createSession"; // Replace with your actual API endpoint
+    const apiEndpoint = "http://localhost:5000/user/createSession"; // Replace with your actual API endpoint
 
     // Replace 'YOUR_BEARER_TOKEN' with the actual Bearer token
 
@@ -1446,7 +1476,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1648,7 +1678,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -1789,7 +1819,7 @@ const MultiStepForm = () => {
     try {
       setConfirmationLoader(true);
       const response = await axios.put(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         { isOldUser: false },
         {
           headers: {
@@ -1809,7 +1839,7 @@ const MultiStepForm = () => {
 
       console.log("Old user updated", response?.data);
       if (response?.data?.isOldUser === false) {
-        alert("updated isOld status");
+        console.log("updated isOld status");
       }
 
       await fetchUserDataa(); // Fix: Correct function name
@@ -1898,7 +1928,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2061,7 +2091,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2243,7 +2273,7 @@ const MultiStepForm = () => {
      
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2361,7 +2391,7 @@ const MultiStepForm = () => {
     setLoader(true);
     try {
       const response = await fetch(
-        "https://agree.setczone.com/api/user/setcformData",
+        "http://localhost:5000/user/setcformData",
         {
           method: "POST",
           headers: {
@@ -2500,7 +2530,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${stepToSend}/updateuser`,
+        `http://localhost:5000/user/${stepToSend}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2602,7 +2632,7 @@ const MultiStepForm = () => {
   const callSetcformDataWithoutLoader = async (token, formData) => {
     try {
       const response = await fetch(
-        "https://agree.setczone.com/api/user/setcformData",
+        "http://localhost:5000/user/setcformData",
         {
           method: "POST",
           headers: {
@@ -2689,7 +2719,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2742,7 +2772,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2849,7 +2879,7 @@ const MultiStepForm = () => {
       }
 
       const response = await fetch(
-        `https://agree.setczone.com/api/user/${step}/updateuser`,
+        `http://localhost:5000/user/${step}/updateuser`,
         {
           method: "PUT", // Change the method to PUT
           headers: {
@@ -2946,7 +2976,7 @@ const MultiStepForm = () => {
   const checkEmailAvailability = async () => {
     try {
       const response = await axios.post(
-        "https://agree.setczone.com/api/user/checkMail",
+        "http://localhost:5000/user/checkMail",
         {
           email: formData.email,
         }
@@ -3201,14 +3231,14 @@ const MultiStepForm = () => {
     }
     
     if (activeStep === 22) {
-       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      //  handleVerification(activeStep);
+     //  setActiveStep((prevActiveStep) => prevActiveStep + 1);
+       handleVerification(activeStep);
     }
 
     if (activeStep === 23) {
-       setActiveStep((prevActiveStep) => prevActiveStep + 1);
+     // setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-      // formDataConfirmation(activeStep);
+         formDataConfirmation(activeStep);
     }
 
     window.scrollTo(0, 0);
@@ -3334,6 +3364,45 @@ const MultiStepForm = () => {
         [name]: inputValue,
       }));
     }
+
+
+    // if (name === "did_receive_unemployement20" && inputValue === "Yes") {
+    
+
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     setc_program: "",
+    //     amount2020: "",
+    //     [name]: inputValue,
+    //   }));
+    // } else {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     [name]: inputValue,
+    //   }));
+    // }
+
+
+    // if (name === "did_receive_unemployement21" && inputValue === "Yes") {
+    
+
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     setc_program2021: "",
+    //     amount2021: "",
+    //     [name]: inputValue,
+    //   }));
+    // } else {
+    //   setFormData((prevFormData) => ({
+    //     ...prevFormData,
+    //     [name]: inputValue,
+    //   }));
+    // }
+
+
+
+
+
     if (
       (name === "minor_child_tax_20" && inputValue === "No") ||
       formData.did_receive_unemployement20 === "Yes"
@@ -3805,24 +3874,24 @@ const MultiStepForm = () => {
 
     if (activeStep === 18) {
 
-      if (formData.did_receive_unemployement20 === 'No') {
+      // if (formData.did_receive_unemployement20 === 'No') {
 
       if (!formData.setc_program) {
         errorsObj.setc_program = "Please select an option";
         hasErrors = true;
       }
-    }
+    // }
 
-    if (formData.did_receive_unemployement21 === 'No') {
+    // if (formData.did_receive_unemployement21 === 'No') {
 
       if (!formData.setc_program2021) {
         errorsObj.setc_program2021 = "Please select an option";
         hasErrors = true;
       }
-    }
+    // }
 
-    if (formData.did_receive_unemployement20 === 'No' &&
-        formData.did_receive_unemployement21 === 'No' ) {
+    // if (formData.did_receive_unemployement20 === 'No' &&
+       //  formData.did_receive_unemployement21 === 'No' ) {
 
       if (
         formData.setc_program === "Yes" &&
@@ -3843,7 +3912,7 @@ const MultiStepForm = () => {
         }
         hasErrors = true;
       }
-    }
+    // }
     }
 
    
@@ -3881,7 +3950,7 @@ const MultiStepForm = () => {
         netIncome2019Amount,
         netIncome2020Amount,
         netIncome2021Amount,
-      ].filter((amount) => amount < 10000 && amount !== 0).length;
+      ].filter((amount) => amount < 10000 && (amount !== 0 || amount !== "$0")).length;
 
       if (countGreaterThanOrEqualTo10K >= 2) {
         setActiveErrorQualify17(true);
@@ -3943,15 +4012,21 @@ const MultiStepForm = () => {
         hasErrors = true;
       }
 
-      if (
-        formData.employed_as_W2 === "Yes" &&
-        formData.family_sick === "Yes" &&
-        formData.amount2020 === ""
-      ) {
-        errorsObj.amount2020 = "Please select an option";
-        // errorsObj.amount2021 = "Please select an option";
-        hasErrors = true;
-      }
+      //  if (formData.did_receive_unemployement20 === 'No')
+      //  {
+        if (
+          formData.employed_as_W2 === "Yes" &&
+          formData.family_sick === "Yes" &&
+          formData.amount2020 === ""
+        ) {
+          errorsObj.amount2020 = "Please select an option";
+          // errorsObj.amount2021 = "Please select an option";
+          hasErrors = true;
+        }
+      //  }
+      
+      // if (formData.did_receive_unemployement21 === 'No')
+      // {
       if (
         formData.employed_as_W2 === "Yes" &&
         formData.family_sick === "Yes" &&
@@ -3961,6 +4036,8 @@ const MultiStepForm = () => {
         // errorsObj.amount2021 = "Please select an option";
         hasErrors = true;
       }
+    //}
+
     }
     // Add more validations for other steps if needed
 
@@ -3998,7 +4075,7 @@ const MultiStepForm = () => {
         //  alert(token, 'useeffect tokeeeeeeeeeeeennnnnnnnnnnnnn')
         try {
           const response = await fetch(
-            "https://agree.setczone.com/api/user/getUser",
+            "http://localhost:5000/user/getUser",
             {
               method: "GET",
               headers: {
@@ -4281,7 +4358,7 @@ const MultiStepForm = () => {
     if (token) {
       try {
         const response = await fetch(
-          "https://agree.setczone.com/api/user/getUser",
+          "http://localhost:5000/user/getUser",
           {
             method: "GET",
             headers: {
@@ -4305,7 +4382,7 @@ const MultiStepForm = () => {
   };
 
   const submitHubspotForm = async () => {
-    const apiUrl = "https://agree.setczone.com/api/user/dataPosttoHubspot";
+    const apiUrl = "http://localhost:5000/user/dataPosttoHubspot";
     const token = localStorage.getItem("token");
 
     const data = {
@@ -4344,7 +4421,7 @@ const MultiStepForm = () => {
   };
 
   //   const callFilesCom = async () => {
-  //     const apiUrl = "https://agree.setczone.com/api/user/multiupload";
+  //     const apiUrl = "http://localhost:5000/user/multiupload";
 
   //     const payload = {
   //         path: [...userData?.driving_licence_name, ...userData?.schedule_pdf_name, ...userData?.Tax_Return_2020_name, ...userData?.Tax_Return_2021_name, ...userData?.supplemental_attachment_2020_name, ...userData?.supplemental_attachment_2021_name, ...userData?.FormA1099_name, ...userData?.FormB1099_name, ...userData?.ks2020_name, ...userData?.ks22020_name],
@@ -4387,7 +4464,7 @@ const MultiStepForm = () => {
   //     }
   // };
   const callFilesCom = async () => {
-    const apiUrl = "https://agree.setczone.com/api/user/multiupload";
+    const apiUrl = "http://localhost:5000/user/multiupload";
 
     const payload = {
       path: [
@@ -4472,7 +4549,7 @@ const MultiStepForm = () => {
       return;
     }
 
-    const apiUrl = "https://agree.setczone.com/api/user/generateUrlwasabi";
+    const apiUrl = "http://localhost:5000/user/generateUrlwasabi";
 
     const data = {
       email: userData?.email,
@@ -4531,7 +4608,7 @@ const MultiStepForm = () => {
         // alert("Are you sure to remove file");
 
         try {
-          const url = "https://agree.setczone.com/api/user/deleteFile";
+          const url = "http://localhost:5000/user/deleteFile";
           const payload = {
             fieldName: `${fileKey}_name`,
             fileName: originalFileName,
@@ -4580,7 +4657,7 @@ const MultiStepForm = () => {
     // Get the last part of the resulting array, which is the filename
     const filename = parts[parts.length - 1];
 
-    const apiUrl = "https://agree.setczone.com/api/user/deleteFilesawabi";
+    const apiUrl = "http://localhost:5000/user/deleteFilesawabi";
 
     const data = {
       email: userData?.email,
@@ -4646,7 +4723,7 @@ const MultiStepForm = () => {
         };
 
         const response = await axios.put(
-          "https://agree.setczone.com/api/user/multiple-form-data",
+          "http://localhost:5000/user/multiple-form-data",
           formData,
           config
         );
@@ -4739,7 +4816,7 @@ const MultiStepForm = () => {
     // Get the last part of the resulting array, which is the filename
     const filenameFinal = parts[parts.length - 1];
 
-    const apiUrl = "https://agree.setczone.com/api/user/sendfiletosawabi";
+    const apiUrl = "http://localhost:5000/user/sendfiletosawabi";
 
     const data = {
       email: userData?.email,
@@ -7946,7 +8023,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -7955,7 +8032,7 @@ const MultiStepForm = () => {
                             className="text-center"
                           >
                             Question 1 of 13 step = {activeStep}
-                          </h3> 
+                          </h3>  */}
                           <div style={{ marginTop: 40 }}>
                             <h1
                               style={{
@@ -8107,7 +8184,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -8116,7 +8193,7 @@ const MultiStepForm = () => {
                             className="text-center"
                           >
                             Question 2 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <h1
                               style={{
@@ -8272,7 +8349,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -8282,7 +8359,7 @@ const MultiStepForm = () => {
                             className=" mb-4"
                           >
                             Question 3 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           {/* </div> */}
                           <label
                             for="self_employed_from"
@@ -8640,7 +8717,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -8650,7 +8727,7 @@ const MultiStepForm = () => {
                             className=" mb-4"
                           >
                             Question 4 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -9003,7 +9080,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -9013,7 +9090,7 @@ const MultiStepForm = () => {
                             className=" mb-4"
                           >
                             Question 5 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -9362,7 +9439,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -9372,7 +9449,7 @@ const MultiStepForm = () => {
                             className=" mb-4"
                           >
                             Question 6 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -9721,7 +9798,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -9730,7 +9807,7 @@ const MultiStepForm = () => {
                             className="text-center"
                           >
                             Question 7 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <label
                               for="setc_program"
@@ -9936,7 +10013,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -9946,7 +10023,7 @@ const MultiStepForm = () => {
                             className=" mb-4"
                           >
                             Question 8 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -10325,7 +10402,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -10334,7 +10411,7 @@ const MultiStepForm = () => {
                             className="text-center"
                           >
                             Question 9 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <h1
                               style={{
@@ -10483,7 +10560,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -10493,7 +10570,7 @@ const MultiStepForm = () => {
                             className=" mb-4"
                           >
                             Question 10 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <label
                             for="self_employed_from"
                             className="form-label headng "
@@ -10957,7 +11034,7 @@ const MultiStepForm = () => {
                             >
                               Are you eligible?
                             </h1>
-                            <h3
+                            {/* <h3
                               style={{
                                 fontWeight: 300,
                                 lineHeight: 0.2,
@@ -10966,7 +11043,7 @@ const MultiStepForm = () => {
                               className="text-center"
                             >
                               Question 11 of 13 step = {activeStep}
-                            </h3>
+                            </h3> */}
                             <div style={{ marginTop: 40 }}>
                               <label
                                 for="setc_program"
@@ -10977,61 +11054,8 @@ const MultiStepForm = () => {
                                 program/FFCRA for the years of 2020 and 2021?
                               </label>
 
-                              {/* <div className="optio mb-2">
-                                <label for="setc_program_yes">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.setc_program === "Yes"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.setc_program
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="setc_program"
-                                      checked={formData.setc_program === "Yes"}
-                                      value="Yes"
-                                      id="setc_program_yes"
-                                      onChange={handleInputChange}
-                                    />
-                                    Yes
-                                  </p>
-                                </label>
-                              </div>
-                              <div className="optio">
-                                <label for="setc_program_no">
-                                  <p
-                                    style={{
-                                      backgroundColor:
-                                        formData.setc_program === "No"
-                                          ? "lightblue"
-                                          : "initial",
-                                    }}
-                                  >
-                                    <input
-                                      className={`form-check-input ${
-                                        errors.setc_program
-                                          ? "border-danger"
-                                          : ""
-                                      }`}
-                                      type="radio"
-                                      name="setc_program"
-                                      checked={formData.setc_program === "No"}
-                                      value="No"
-                                      id="setc_program_no"
-                                      onChange={handleInputChange}
-                                    />
-                                    No
-                                  </p>
-                                </label>
-                              </div> */}
-                              {formData.did_receive_unemployement20 === 'No' && ( 
+                            
+                              {/* {formData.did_receive_unemployement20 === 'No' && (  */}
 
                               <div
                                 style={{
@@ -11153,10 +11177,11 @@ const MultiStepForm = () => {
                                 </div>
                               </div>
 
-                              )}
+                              {/* )} */}
 
                          
-                            {formData.did_receive_unemployement21 === 'No' && ( 
+                            {/* {formData.did_receive_unemployement21 === 'No' && (  */}
+
                               <div
                                 style={{
                                   display: "flex",
@@ -11276,7 +11301,7 @@ const MultiStepForm = () => {
                                   </div>
                                 </div>
                               </div>
-                               )}
+                               {/* )} */}
 
                               {formData.setc_program === "Yes" &&
                                 formData.setc_program2021 === "Yes" &&
@@ -11349,7 +11374,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -11358,7 +11383,7 @@ const MultiStepForm = () => {
                             className="text-center"
                           >
                             Question 12 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <div style={{ marginTop: 40 }}>
                             <label
                               for="setc_program"
@@ -11460,7 +11485,7 @@ const MultiStepForm = () => {
                                           value="Yes"
                                           id="family_sick_yes"
                                           onChange={handleInputChange}
-                                          disabled={userData?.final_review_calculation_amount !== null}
+                                        //  disabled={userData?.final_review_calculation_amount !== null}
 
                                         />
                                         Yes
@@ -11503,7 +11528,11 @@ const MultiStepForm = () => {
                                     id="amount"
                                     style={{ marginTop: "5.5px" }}
                                   >
+                                    
                                     <div className="optio mb-2">
+
+                                    {/* {formData.did_receive_unemployement20 === 'No' && (  */}
+
                                       <input
                                         style={{ width: "100%" }}
                                         type="text"
@@ -11518,7 +11547,9 @@ const MultiStepForm = () => {
                                         onChange={handleInputChange}
                                         id="amount2020"
                                       />
+                                    {/* )} */}
 
+                                 {/* {formData.did_receive_unemployement21 === 'No' && (  */}
                                       <input
                                         style={{ width: "100%" }}
                                         type="text"
@@ -11533,6 +11564,7 @@ const MultiStepForm = () => {
                                         onChange={handleInputChange}
                                         id="amount2021"
                                       />
+                                        {/* )} */}
                                     </div>
                                   </div>
                                 )}
@@ -11653,7 +11685,7 @@ const MultiStepForm = () => {
                           >
                             Are you eligible?
                           </h1>
-                          <h3
+                          {/* <h3
                             style={{
                               fontWeight: 300,
                               lineHeight: 0.2,
@@ -11662,7 +11694,7 @@ const MultiStepForm = () => {
                             className="text-center"
                           >
                             Question 13 of 13 step = {activeStep}
-                          </h3>
+                          </h3> */}
                           <h4
                             className="text-center "
                             style={{ color: "rgb(13, 189, 243)" }}
@@ -12078,7 +12110,7 @@ const MultiStepForm = () => {
                               userData?.approval_status !== "declined" && (
                                 <>
                                   <div class="title d-flex align-items-center justify-content-center mb-4 w-100 text-center">
-                                    <h1 className="text-center">
+                                    <h1 className="text-center" >
                                       {" "}
                                       Identity Verification
                                     </h1>
@@ -12110,7 +12142,7 @@ const MultiStepForm = () => {
                                   </h1>
                                 </div>
 
-                                <p class="mb-3" style={{ color: "red" }}>
+                                <p class="mb-3" style={{ color: "red", fontWeight: 600 }}>
                                   Your verification isn't varified. You have a
                                   one more attempt to verify your License ID
                                   before it's locked. Thank you!
@@ -12128,7 +12160,7 @@ const MultiStepForm = () => {
                                       support@setczone.com
                                     </a>
                                     <br />
-                                    We'll be happy to assit yoy!
+                                    We'll be happy to assit you!
                                   </p>
                                 </div>
                               </>
@@ -13483,6 +13515,10 @@ const MultiStepForm = () => {
                   )}
                 </div> */}
 
+
+
+                 {/* {formData.did_receive_unemployement20 === 'No' && ( 
+                  <> */}
                 <div className="mb-3 file_div">
 
                   {/* <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}> */}
@@ -13491,12 +13527,10 @@ const MultiStepForm = () => {
                 ALL schedules, if the 2019 Self-Employed Income is higher
                 than 2020. We would prefer one PDF file.
                 {userData?.final_review_calculation_amount !== null && (
-                  <>
-                    &nbsp;&nbsp;&nbsp;&nbsp; {/* Add some space */}
-                    <CheckTwoTone sx={{fontSize: 30, color:'green'}} />
-                  </>
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
                 )}
               </label>
+
 
 
                 
@@ -13535,7 +13569,7 @@ const MultiStepForm = () => {
 
 
                            
-                            <div
+                            {/* <div
                               onClick={() =>
                                 openFileInNewTab(
                                   "schedule_pdf",
@@ -13546,7 +13580,7 @@ const MultiStepForm = () => {
                               className="buttonn"
                             >
                               View
-                            </div>
+                            </div> */}
 
                             <div
                               onClick={() =>
@@ -13620,7 +13654,11 @@ const MultiStepForm = () => {
                   <label for="Tax_Return_2020" className="form-label">
                     {" "}
                     A PDF Copy of your 2020 Form 1040 (Tax Return), including
-                    ALL schedules.{" "}
+                    ALL schedules.
+
+                    {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                   </label>
 
                   {userData?.Tax_Return_2020 &&
@@ -13628,17 +13666,14 @@ const MultiStepForm = () => {
                     userData.Tax_Return_2020.map((file, index) => (
                       <div key={index} className="containerr">
                         <div className="itemm">
-                        {userData?.final_review_calculation_amount === null ? (
+                        {userData?.final_review_calculation_amount === null && (
                            <>
                           <TaskAlt />
                           <span className="namee">
                             {userData.Tax_Return_2020[index]}
                           </span>
                           </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                         
                             )
                     }
                         </div>
@@ -13647,7 +13682,7 @@ const MultiStepForm = () => {
                           className="itemm"
                           style={{ padding: "0px 20px !important" }}
                         >
-                          <div
+                          {/* <div
                             onClick={() =>
                               openFileInNewTab(
                                 "Tax_Return_2020",
@@ -13658,7 +13693,7 @@ const MultiStepForm = () => {
                             className="buttonn"
                           >
                             View
-                          </div>
+                          </div> */}
                           {showRemoveButton && (
                             <div
                               onClick={() =>
@@ -13723,27 +13758,35 @@ const MultiStepForm = () => {
                     />
                   )}
                 </div>
+                {/* </>
+
+              )} */}
+
+
+
+               {/* {formData.did_receive_unemployement21 === 'No' && (  */}
+
                 <div className="mb-3 file_div">
                   <label for="Tax_Return_2021" className="form-label">
                     A PDF Copy of your 2021 Form 1040 (Tax Return), including
-                    ALL schedules.{" "}
+                    ALL schedules.
+                    {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                   </label>
                   {userData?.Tax_Return_2021 &&
                   userData?.Tax_Return_2021.length > 0 ? (
                     userData.Tax_Return_2021.map((file, index) => (
                       <div key={index} className="containerr">
                         <div className="itemm">
-                        {userData?.final_review_calculation_amount === null ? (
+                        {userData?.final_review_calculation_amount === null && (
                            <>
                           <TaskAlt />
                           <span className="namee">
                             {userData.Tax_Return_2021[index]}
                           </span>
                           </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                        
                             )
                     }
                         </div>
@@ -13752,7 +13795,7 @@ const MultiStepForm = () => {
                           className="itemm"
                           style={{ padding: "0px 20px !important" }}
                         >
-                          <div
+                          {/* <div
                             onClick={() =>
                               openFileInNewTab(
                                 "Tax_Return_2021",
@@ -13763,7 +13806,7 @@ const MultiStepForm = () => {
                             className="buttonn"
                           >
                             View
-                          </div>
+                          </div> */}
                           {showRemoveButton && (
                             <div
                               onClick={() =>
@@ -13829,9 +13872,13 @@ const MultiStepForm = () => {
                   )}
                 </div>
 
+                 {/* )} */}
+
                 {formData.family_sick === "Yes" &&
                   formData.employed_as_W2 === "Yes" && (
                     <div className="pdf-upload-extra">
+
+          {/* {formData.did_receive_unemployement20 === 'No' && (  */}
                       <div className="mb-3 file_div">
                         <label
                           for="supplemental_attachment_2020"
@@ -13840,6 +13887,9 @@ const MultiStepForm = () => {
                           PDF Copy of All your 2020 Form W-2(s), including ANY
                           Family First Coronavirus Response Act (FFCRA)
                           supplemental attachment(s).*
+                          {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                         </label>
                         {userData?.supplemental_attachment_2020 &&
                         userData?.supplemental_attachment_2020.length > 0 ? (
@@ -13847,7 +13897,7 @@ const MultiStepForm = () => {
                             (file, index) => (
                               <div key={index} className="containerr">
                                 <div className="itemm">
-                                {userData?.final_review_calculation_amount === null ? (
+                                {userData?.final_review_calculation_amount === null && (
                            <>
                                   <TaskAlt />
                                   <span className="namee">
@@ -13859,10 +13909,7 @@ const MultiStepForm = () => {
                                     }
                                   </span>
                                   </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                         
                             )
                     }
                                 </div>
@@ -13871,7 +13918,7 @@ const MultiStepForm = () => {
                                   className="itemm"
                                   style={{ padding: "0px 20px !important" }}
                                 >
-                                  <div
+                                  {/* <div
                                     onClick={() =>
                                       openFileInNewTab(
                                         "supplemental_attachment_2020",
@@ -13885,7 +13932,7 @@ const MultiStepForm = () => {
                                     className="buttonn"
                                   >
                                     View
-                                  </div>
+                                  </div> */}
                                   {showRemoveButton && (
                                     <div
                                       onClick={() =>
@@ -13963,7 +14010,11 @@ const MultiStepForm = () => {
                           />
                         )}
                       </div>
+               {/* )} */}
 
+
+            {/* {formData.did_receive_unemployement21 === 'No' && (  */}
+                      
                       <div className="mb-3 file_div">
                         <label
                           for="2021_supplemental_attachment_2021"
@@ -13972,6 +14023,9 @@ const MultiStepForm = () => {
                           PDF Copy of All your 2021 Form W-2(s), including ANY
                           Family First Coronavirus Response Act (FFCRA)
                           supplemental attachment(s).
+                          {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                         </label>
                         {userData?.supplemental_attachment_2021 &&
                         userData?.supplemental_attachment_2021.length > 0 ? (
@@ -13979,7 +14033,7 @@ const MultiStepForm = () => {
                             (file, index) => (
                               <div key={index} className="containerr">
                                 <div className="itemm">
-                                {userData?.final_review_calculation_amount === null ? (
+                                {userData?.final_review_calculation_amount === null && (
                            <>
                                   <TaskAlt />
                                   <span className="namee">
@@ -13990,10 +14044,7 @@ const MultiStepForm = () => {
                                     }
                                   </span>
                                   </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                         
                             )
                     }
                                 </div>
@@ -14002,7 +14053,7 @@ const MultiStepForm = () => {
                                   className="itemm"
                                   style={{ padding: "0px 20px !important" }}
                                 >
-                                  <div
+                                  {/* <div
                                     onClick={() =>
                                       openFileInNewTab(
                                         "supplemental_attachment_2021",
@@ -14016,7 +14067,7 @@ const MultiStepForm = () => {
                                     className="buttonn"
                                   >
                                     View
-                                  </div>
+                                  </div> */}
                                   {showRemoveButton && (
                                     <div
                                       onClick={() =>
@@ -14095,9 +14146,16 @@ const MultiStepForm = () => {
                         )}
                       </div>
 
+            {/* )} */}
+
+       {/* {formData.did_receive_unemployement20 === 'No' && (  */}
+
                       <div className="mb-3 file_div">
                         <label for="FormA1099" className="form-label">
-                          PDF Copy of All your 2020 Form 1099-R(s), if any
+                        PDF Copy of All your 2020 Form 1099-R(s), if any
+                          {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                         </label>
 
                         {userData?.FormA1099 &&
@@ -14105,17 +14163,14 @@ const MultiStepForm = () => {
                           userData.FormA1099.map((file, index) => (
                             <div key={index} className="containerr">
                               <div className="itemm">
-                              {userData?.final_review_calculation_amount === null ? (
+                              {userData?.final_review_calculation_amount === null && (
                            <>
                                 <TaskAlt />
                                 <span className="namee">
                                   {userData.FormA1099[index]}
                                 </span>
                                 </>
-                          )
-                          :
-                          (
-                            <TaskAlt />
+                         
                           )
                     }
                               </div>
@@ -14201,9 +14256,17 @@ const MultiStepForm = () => {
                         )}
                       </div>
 
+          {/* )} */}
+
+
+            {/* {formData.did_receive_unemployement21 === 'No' && (  */}
+
                       <div className="mb-3 file_div">
                         <label for="FormB1099" className="form-label">
-                          PDF Copy of All your 2021 Form 1099-R(s), if any
+                        PDF Copy of All your 2021 Form 1099-R(s), if any
+                          {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                         </label>
 
                         {userData?.FormB1099 &&
@@ -14211,17 +14274,14 @@ const MultiStepForm = () => {
                           userData.FormB1099.map((file, index) => (
                             <div key={index} className="containerr">
                               <div className="itemm">
-                              {userData?.final_review_calculation_amount === null ? (
+                              {userData?.final_review_calculation_amount === null && (
                            <>
                                 <TaskAlt />
                                 <span className="namee">
                                   {userData.FormB1099[index]}
                                 </span>
                                 </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                         
                             )
                     }
                               </div>
@@ -14307,15 +14367,22 @@ const MultiStepForm = () => {
                         )}
                       </div>
 
+            {/* )} */}
+
+          {/* {formData.did_receive_unemployement20 === 'No' && ( */}
+
                       <div className="mb-3 file_div">
                         <label for="ks2020" className="form-label">
-                          PDF Copy of All your 2020 K-1s, if any
+                        PDF Copy of All your 2020 K-2s, if any
+                          {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                         </label>
                         {userData?.ks2020 && userData?.ks2020.length > 0 ? (
                           userData.ks2020.map((file, index) => (
                             <div key={index} className="containerr">
                               <div className="itemm">
-                              {userData?.final_review_calculation_amount === null ? (
+                              {userData?.final_review_calculation_amount === null && (
                            <>
 
                                 <TaskAlt />
@@ -14323,10 +14390,7 @@ const MultiStepForm = () => {
                                   {userData.ks2020[index]}
                                 </span>
                                 </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                        
                             )
                     }
                               </div>
@@ -14410,16 +14474,23 @@ const MultiStepForm = () => {
                           />
                         )}
                       </div>
+
+          {/* )} */}
+
+         {/* {formData.did_receive_unemployement21 === 'No' && ( */}
                      
                       <div className="mb-3 file_div">
                         <label for="ks22020" className="form-label">
-                          PDF Copy of All your 2020 K-1s, if any
+                        PDF Copy of All your 2021 K-1s, if any
+                          {userData?.final_review_calculation_amount !== null && (
+                  <CheckTwoTone sx={{ fontSize: 35, color: 'green', marginLeft: '30px' }} />
+                )}
                         </label>
                         {userData?.ks22020 && userData?.ks22020.length > 0 ? (
                           userData.ks22020.map((file, index) => (
                             <div key={index} className="containerr">
                               <div className="itemm">
-                              {userData?.final_review_calculation_amount === null ? (
+                              {userData?.final_review_calculation_amount === null && (
                            <>
 
                                 <TaskAlt />
@@ -14427,10 +14498,7 @@ const MultiStepForm = () => {
                                   {userData.ks22020[index]}
                                 </span>
                                 </>
-                          )
-                          :
-                          (
-                            <CheckTwoTone sx={{fontSize: 35}} />
+                        
                             )
                     }
                               </div>
@@ -14514,6 +14582,7 @@ const MultiStepForm = () => {
                           />
                         )}
                       </div>
+         {/* )} */}
 
                     </div>
                   )}
@@ -14875,12 +14944,12 @@ const MultiStepForm = () => {
                     data-bs-target="#confirmSubmitModalwithout"
                     className="btn btn-primary px-5 py-2 me-2 mb-2 next-step"
                     // disabled={shouldDisableButtonLater()}
-                    // disabled={
-                    //   formData.family_sick === "Yes" &&
-                    //   formData.employed_as_W2 === "Yes"
-                    //     ? shouldDisableButtonsAdditionalFirst()
-                    //     : shouldDisableButtonsFirst()
-                    // }
+                    disabled={
+                      formData.family_sick === "Yes" &&
+                      formData.employed_as_W2 === "Yes"
+                        ? shouldDisableButtonsAdditionalFirst()
+                        : shouldDisableButtonsFirst()
+                    }
                     onClick={handleSubmitLater}
                   >
                     Add Documents later
@@ -15298,7 +15367,7 @@ const MultiStepForm = () => {
               <>{getStepContent()}</>
             )}
 
-          {userData?.applicationStatus === true && (
+          {userData?.applicationStatus === true && userData?.completed_application !== "true" && (
             <>
               <div className="myClas2" style={{ marginBottom: 100 }}>
                 <div className="modal-body d-flex justify-content-center flex-column align-items-center pt-0">
